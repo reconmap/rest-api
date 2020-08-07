@@ -1,0 +1,20 @@
+server {
+        listen [::]:80;
+        listen 80;
+
+        server_tokens off;
+        server_name localhost;
+
+        root /var/www/webapp;
+        index index.html index.php;
+
+        location / {
+                try_files $uri $uri/ /index.php;
+        }
+
+        location ~ \.php$ {
+                include snippets/fastcgi-php.conf;
+                fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;
+        }
+}
+
