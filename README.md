@@ -1,3 +1,6 @@
+
+![images/iconfinder_success_2799200.png](images/iconfinder_success_2799200.png)
+
 # Reconmap
 
 Project planning, implementation and documentation for security professionals and teams. From reconnaissance to intelligence gathering step by step.
