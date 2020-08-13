@@ -24,3 +24,5 @@ $ firefox localhost:8080
 Contributions are more than welcome! Fork the repo, make changes, then open a pull request against our repo and we will review it and merge it promptly.
 
 If you have bugs or feature requests to report please use the [issues](https://github.com/reconmap/application/issues) tab on Github.
+
+If you want to chat to one of us join our IRC channel on [Freenode](https://webchat.freenode.net/) using the channel #reconmap.
