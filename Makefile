@@ -2,8 +2,12 @@
 DOCKER_IMAGE=reconmap
 
 .PHONY: run
-run:
+run: build
 	docker-compose up -d
+
+.PHONY: build
+build:
+	docker-compose build
 
 .PHONY: shell
 shell:

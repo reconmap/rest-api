@@ -10,6 +10,18 @@
     <a href="create-project.html">Create project</a>
 </div>
 
+<script>
+fetch('/projects')
+    .then(res => res.json())
+    .then((out) => {
+        document.getElementById('projects').innerHTML = JSON.stringify(out);
+}).catch(err => console.error(err));
+</script>
+
+<div id="projects">
+
+</div>
+
 <div>
     <h3>Project Foo</h3>
     <a href="project.html">Open</a> | <a href="#">Archive</a>
