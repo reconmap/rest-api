@@ -1,4 +1,7 @@
-<?php
+<?php declare(strict_types=1);
+
+namespace Reconmap\Controllers;
+
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -10,7 +13,7 @@ class ProjectsController extends Controller {
 		$rs = $db->query('SELECT * FROM project');
 		$projects = $rs->fetch_all(MYSQLI_ASSOC);
 
-		$response = new GuzzleHttp\Psr7\Response;
+		$response = new \GuzzleHttp\Psr7\Response;
 		$response->getBody()->write(json_encode($projects));
 		return $response->withHeader('Access-Control-Allow-Origin', '*')
 				  ->withAddedHeader('content-type', 'application/json');

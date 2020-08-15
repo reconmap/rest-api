@@ -8,6 +8,6 @@
         "laminas/laminas-httphandlerrunner": "^1.2"
     },
     "autoload": {
-	"psr-4": {"": "src/"}
+	"psr-4": {"Reconmap\\": "src/"}
     }
 }

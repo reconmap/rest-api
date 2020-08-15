@@ -1,22 +1,19 @@
-<?php
+<?php declare(strict_types=1);
 
 require 'vendor/autoload.php';
 
-use League\Route\Strategy\JsonStrategy;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
+use Reconmap\Controllers\ProjectController;
 
 $logger = new Logger('general');
 $logger->pushHandler(new StreamHandler('logs/application.log', Logger::DEBUG));
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-
 $request = GuzzleHttp\Psr7\ServerRequest::fromGlobals(); 
 $router = new League\Route\Router;
-$router->map('GET', '/', 'IndexController::handleRequest');
-$router->map('GET', '/projects', 'ProjectsController::handleRequest');
-
+$router->map('GET', '/', 'Reconmap\Controllers\IndexController::handleRequest');
+$router->map('GET', '/projects', 'Reconmap\Controllers\ProjectsController::handleRequest');
+$router->map('GET', '/projects/{id:number}', [ProjectController::class, 'handleRequest']);
 
 try {
 	$response = $router->dispatch($request);
