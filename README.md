@@ -19,9 +19,26 @@ A running demo is available for you to try here: https://demo.reconmap.org
 
 ## Build instructions
 
+The first thing you need to do is build the containers and prepare the app. This can be achieved by invoking the default make target.
+you need to build and start the containers:
+
 ```sh
 $ make
-$ firefox localhost:8080
+```
+
+Once the containers are built and the app prepared you can run the docker services.
+
+```sh
+$ make run
+```
+
+If everything went ok you should be able to use curl or any other HTTP client (eg your browser) to call the API:
+
+```sh
+$ curl http://localhost:8080
+Reconmap API
+$ curl http://localhost:8080/projects
+[{"id":"1","insert_ts":"2020-08-15 13:46:05","update_ts":null,"is_template":"0","name":"Web server pentest project","description":"Test project to show pentest tasks and reports"}]
 ```
 
 ## Contributions

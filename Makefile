@@ -1,26 +1,32 @@
 
 DOCKER_IMAGE=reconmap
 
-.PHONY: run
-run: build
-	docker-compose up -d
-
 .PHONY: prepare
-prepare:
-	docker-compose exec -w /var/www/webapp fe composer install
+prepare: build
+	docker-compose run --rm -w /var/www/webapp --entrypoint composer svc install
 
 .PHONY: build
 build:
 	docker-compose build
 
-.PHONY: shell
-shell:
-	docker-compose exec fe bash
+.PHONY: run
+run: 
+	docker-compose up -d
 
-.PHONY: mysqlclient
-mysqlclient:
+.PHONY: conn_svc
+connect_svc:
+	docker-compose exec svc bash
+
+.PHONY: conn_db
+conn_db:
 	docker-compose exec db mysql -uroot -preconmuppet reconmap
 
 .PHONY: stop
 stop:
 	docker-compose stop
+
+.PHONY: clean
+clean: stop
+	docker-compose down -v
+	rm -rf db_data
+	rm -rf vendor

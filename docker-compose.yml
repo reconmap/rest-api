@@ -14,9 +14,9 @@ services:
             MYSQL_DATABASE: reconmap
             MYSQL_USER: reconmapper
             MYSQL_PASSWORD: reconmapped
-    fe:
+    svc:
         build:
-            context: docker/frontend
+            context: docker/service
             dockerfile: Dockerfile
         volumes:
             - "$PWD:/var/www/webapp"
