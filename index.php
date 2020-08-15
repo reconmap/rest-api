@@ -2,6 +2,7 @@
 
 require 'vendor/autoload.php';
 
+use League\Route\Http\Exception\NotFoundException;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Reconmap\Controllers\ProjectController;
@@ -17,11 +18,13 @@ $router->map('GET', '/projects/{id:number}', [ProjectController::class, 'handleR
 
 try {
 	$response = $router->dispatch($request);
-	(new \Laminas\HttpHandlerRunner\Emitter\SapiEmitter)->emit($response);
+} catch (NotFoundException $e) {
+	$logger->error($e->getMessage());
+	$response = (new \GuzzleHttp\Psr7\Response)->withStatus(404);
 } catch (Exception $e) {
-	$controller = new ErrorController;
-	$response = $controller->handleRequest($request);
-	http_response_code($response->getStatusCode());
-	echo $response->getBody();
+	$logger->error($e->getMessage());
+	$response = (new \GuzzleHttp\Psr7\Response)->withStatus(500);
 }
+
+(new \Laminas\HttpHandlerRunner\Emitter\SapiEmitter)->emit($response);
 

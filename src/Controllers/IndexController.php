@@ -1,18 +1,19 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Controllers;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class IndexController extends Controller {
+class IndexController extends Controller
+{
 
-	public function handleRequest(ServerRequestInterface $request) : ResponseInterface {
-		$body = $this->templates->render('index', ['name' => 'user']);
-
+	public function handleRequest(ServerRequestInterface $request): ResponseInterface
+	{
 		$response = new \GuzzleHttp\Psr7\Response;
-		$response->getBody()->write($body);
+		$response->getBody()->write('Reconmap API');
 		return $response;
 	}
 }
-
