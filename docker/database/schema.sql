@@ -1,11 +1,72 @@
 
-CREATE TABLE project (
+CREATE TABLE user (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    name VARCHAR(200) NOT NULL,
-    description VARCHAR(2000) NULL,
     insert_ts TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+    name VARCHAR(80) NOT NULL COMMENT 'Username, not full name',
+    password VARCHAR(80) NOT NULL,
+    email VARCHAR(200) NOT NULL,
+    role ENUM('creator', 'writer', 'reader'),
+    
+        PRIMARY KEY(id),
+        UNIQUE KEY(name)
+) ENGINE=InnoDB;
+
+CREATE TABLE audit_log (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    insert_ts TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    user_id INT UNSIGNED NOT NULL REFERENCES user,
+    action VARCHAR(200) NOT NULL,
+    
+        PRIMARY KEY(id)
+) ENGINE=InnoDB;
+
+CREATE TABLE project (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    insert_ts TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+    is_template BOOLEAN NOT NULL DEFAULT FALSE,
+    name VARCHAR(200) NOT NULL,
+    description VARCHAR(2000) NULL,
 
         PRIMARY KEY(id),
         UNIQUE KEY(name)
-);
+) ENGINE=InnoDB;
+
+CREATE TABLE target (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    project_id INT UNSIGNED NOT NULL REFERENCES project,
+    insert_ts TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+    name VARCHAR(200) NOT NULL,
+    kind ENUM('host', 'domain', 'binary'),
+
+        PRIMARY KEY(id),
+        UNIQUE KEY(name)
+) ENGINE=InnoDB;
+
+CREATE TABLE vulnerability (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    project_id INT UNSIGNED NOT NULL REFERENCES project,
+    reported_by_user_id INT UNSIGNED NOT NULL REFERENCES user,
+    insert_ts TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+    summary VARCHAR(200) NOT NULL,
+    description VARCHAR(2000) NOT NULL,
+    risk ENUM('low', 'medium', 'high') NOT NULL,
+
+        PRIMARY KEY(id),
+        UNIQUE KEY(name)
+) ENGINE=InnoDB;
+
+CREATE TABLE task (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    project_id INT UNSIGNED NOT NULL REFERENCES project,
+    insert_ts TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+    name VARCHAR(200) NOT NULL,
+    description VARCHAR(2000) NULL,
+
+        PRIMARY KEY(id),
+        UNIQUE KEY(name)
+) ENGINE=InnoDB;
