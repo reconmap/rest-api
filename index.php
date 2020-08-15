@@ -9,8 +9,6 @@ use Monolog\Handler\StreamHandler;
 $logger = new Logger('general');
 $logger->pushHandler(new StreamHandler('logs/application.log', Logger::DEBUG));
 
-$templates = new League\Plates\Engine(__DIR__ . '/templates');
-
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 

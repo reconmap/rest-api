@@ -1,4 +1,6 @@
 
+[![Build Status](https://travis-ci.org/reconmap/api-backend.svg?branch=master)](https://travis-ci.org/reconmap/api-backend)
+
 ![images/iconfinder_success_2799200.png](images/iconfinder_success_2799200.png)
 
 # Reconmap

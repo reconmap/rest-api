@@ -12,7 +12,8 @@ class ProjectsController extends Controller {
 
 		$response = new GuzzleHttp\Psr7\Response;
 		$response->getBody()->write(json_encode($projects));
-		return $response->withAddedHeader('content-type', 'application/json');
+		return $response->withHeader('Access-Control-Allow-Origin', '*')
+				  ->withAddedHeader('content-type', 'application/json');
 	}
 }
 
