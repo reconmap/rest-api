@@ -1,4 +1,5 @@
 
+DROP TABLE IF EXISTS user;
 CREATE TABLE user (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT,
     insert_ts TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -12,6 +13,7 @@ CREATE TABLE user (
         UNIQUE KEY(name)
 ) ENGINE=InnoDB;
 
+DROP TABLE IF EXISTS audit_log;
 CREATE TABLE audit_log (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT,
     insert_ts TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -21,6 +23,7 @@ CREATE TABLE audit_log (
         PRIMARY KEY(id)
 ) ENGINE=InnoDB;
 
+DROP TABLE IF EXISTS project;
 CREATE TABLE project (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT,
     insert_ts TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -33,32 +36,35 @@ CREATE TABLE project (
         UNIQUE KEY(name)
 ) ENGINE=InnoDB;
 
+DROP TABLE IF EXISTS target;
 CREATE TABLE target (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT,
     project_id INT UNSIGNED NOT NULL REFERENCES project,
     insert_ts TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
     name VARCHAR(200) NOT NULL,
-    kind ENUM('host', 'domain', 'binary'),
+    kind ENUM('host', 'webapp', 'binary'),
 
         PRIMARY KEY(id),
         UNIQUE KEY(name)
 ) ENGINE=InnoDB;
 
+DROP TABLE IF EXISTS vulnerability;
 CREATE TABLE vulnerability (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT,
     project_id INT UNSIGNED NOT NULL REFERENCES project,
-    reported_by_user_id INT UNSIGNED NOT NULL REFERENCES user,
+    target_id INT UNSIGNED NOT NULL REFERENCES target,
+    reported_by_uid INT UNSIGNED NOT NULL REFERENCES user,
     insert_ts TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
     summary VARCHAR(200) NOT NULL,
-    description VARCHAR(2000) NOT NULL,
+    description VARCHAR(2000) NULL,
     risk ENUM('low', 'medium', 'high') NOT NULL,
 
-        PRIMARY KEY(id),
-        UNIQUE KEY(name)
+        PRIMARY KEY(id)
 ) ENGINE=InnoDB;
 
+DROP TABLE IF EXISTS task;
 CREATE TABLE task (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT,
     project_id INT UNSIGNED NOT NULL REFERENCES project,
@@ -69,4 +75,15 @@ CREATE TABLE task (
 
         PRIMARY KEY(id),
         UNIQUE KEY(name)
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS task_result;
+CREATE TABLE task_result (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    task_id INT UNSIGNED NOT NULL REFERENCES task,
+    submitted_by_uid INT UNSIGNED NOT NULL REFERENCES user,
+    insert_ts TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    output VARCHAR(2000) NOT NULL,
+
+        PRIMARY KEY(id)
 ) ENGINE=InnoDB;
