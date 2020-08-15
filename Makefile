@@ -5,6 +5,10 @@ DOCKER_IMAGE=reconmap
 run: build
 	docker-compose up -d
 
+.PHONY: prepare
+prepare:
+	docker-compose exec -w /var/www/webapp fe composer install
+
 .PHONY: build
 build:
 	docker-compose build
