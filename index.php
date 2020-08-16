@@ -36,8 +36,8 @@ $router->setStrategy($strategy);
 // OPTIONS to support CORS
 $router->map('OPTIONS', '/{any:.*}', function (ServerRequestInterface $request) : ResponseInterface {
 	$response = (new \GuzzleHttp\Psr7\Response)->withStatus(200);
-	$response->getBody()->write('hoo');
-	return $response->withHeader('Access-Control-Allow-Methods', 'GET,POST,PUT')
+	return $response
+		->withHeader('Access-Control-Allow-Methods', 'GET,POST,PUT')
 		->withHeader('Access-Control-Allow-Headers', 'Authorization')
 		->withHeader('Access-Control-Allow-Origin', '*');
 });

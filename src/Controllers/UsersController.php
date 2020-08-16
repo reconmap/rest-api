@@ -19,8 +19,14 @@ class UsersController extends Controller {
 		$stmt->execute();
 		$rs = $stmt->get_result();
 		$user = $rs->fetch_assoc();
+
+		$response = new \GuzzleHttp\Psr7\Response;
+
 		if(is_null($user)) {
-			throw new ForbiddenException();
+			return $response
+				->withStatus(403)
+				->withHeader('Access-Control-Allow-Methods', 'GET,POST,PUT')
+				->withHeader('Access-Control-Allow-Origin', '*');
 		}
 
 		$now = time();
@@ -37,10 +43,11 @@ class UsersController extends Controller {
 		];
 		$user['access_token'] = JWT::encode($jwt, self::JWT_KEY, 'HS256');
 
-		$response = new \GuzzleHttp\Psr7\Response;
 		$response->getBody()->write(json_encode($user));
-		return $response->withHeader('Access-Control-Allow-Origin', '*')
-				  ->withAddedHeader('content-type', 'application/json');
+		return $response
+			->withHeader('Access-Control-Allow-Methods', 'GET,POST,PUT')
+			->withHeader('Access-Control-Allow-Origin', '*')
+			->withAddedHeader('content-type', 'application/json');
 	}
 }
 
