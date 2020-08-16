@@ -3,7 +3,6 @@
 namespace Reconmap\Controllers;
 
 use Firebase\JWT\JWT;
-use League\Route\Http\Exception\ForbiddenException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 

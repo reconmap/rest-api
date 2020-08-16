@@ -8,6 +8,8 @@ use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\Controllers\AuditLogController;
+use Reconmap\Controllers\IndexController;
 use Reconmap\Controllers\ProjectController;
 use Reconmap\Controllers\UsersController;
 
@@ -42,9 +44,10 @@ $router->map('OPTIONS', '/{any:.*}', function (ServerRequestInterface $request) 
 		->withHeader('Access-Control-Allow-Origin', '*');
 });
 
-$router->map('GET', '/', 'Reconmap\Controllers\IndexController::handleRequest');
+$router->map('GET', '/', [IndexController::class, 'handleRequest']);
 $router->map('POST', '/users', [UsersController::class, 'handleRequest']);
-$router->map('GET', '/projects', 'Reconmap\Controllers\ProjectsController::handleRequest');
+$router->map('GET', '/auditlog', [AuditLogController::class, 'handleRequest']);
+$router->map('GET', '/projects', [ProjectsController::class, 'handleRequest']);
 $router->map('GET', '/projects/{id:number}', [ProjectController::class, 'handleRequest']);
 	
 try {
