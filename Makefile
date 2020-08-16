@@ -14,7 +14,7 @@ run:
 	docker-compose up -d
 
 .PHONY: conn_svc
-connect_svc:
+conn_svc:
 	docker-compose exec svc bash
 
 .PHONY: conn_db
