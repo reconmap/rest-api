@@ -11,13 +11,24 @@ use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\ProjectController;
 use Reconmap\Controllers\UsersController;
 
-$logger = new Logger('general');
-$logger->pushHandler(new StreamHandler('logs/application.log', Logger::DEBUG));
-
 $request = GuzzleHttp\Psr7\ServerRequest::fromGlobals(); 
+
+$container = new League\Container\Container;
+$container->delegate(new League\Container\ReflectionContainer);
+$container->add(Logger::class, function() {
+	$logger = new Logger('general');
+	$logger->pushHandler(new StreamHandler('logs/application.log', Logger::DEBUG));
+	return $logger;
+});
+$container->add(\mysqli::class, function() {
+	// @todo pull credentials from env variables
+	$db = new \mysqli('db', 'reconmapper', 'reconmapped', 'reconmap');
+	return $db;
+});
 
 $responseFactory = new ResponseFactory;
 $strategy = new League\Route\Strategy\JsonStrategy($responseFactory);
+$strategy->setContainer($container);
 
 $router = new League\Route\Router;
 $router->setStrategy($strategy);

@@ -15,9 +15,7 @@ class ProjectController extends Controller {
 
 		$id = $args['id'];
 		
-		// @todo pull credentials from env variables
-		$db = new \mysqli('db', 'reconmapper', 'reconmapped', 'reconmap');
-		$stmt = $db->prepare('SELECT * FROM project WHERE id = ?');
+		$stmt = $this->db->prepare('SELECT * FROM project WHERE id = ?');
 		$stmt->bind_param('i', $id);
 		$stmt->execute();
 		$rs = $stmt->get_result();

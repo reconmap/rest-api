@@ -10,9 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
 class ProjectsController extends Controller {
 
 	public function handleRequest(ServerRequestInterface $request) : ResponseInterface {
-		// @todo pull credentials from env variables
-		$db = new \mysqli('db', 'reconmapper', 'reconmapped', 'reconmap');
-		$rs = $db->query('SELECT * FROM project');
+		$rs = $this->db->query('SELECT * FROM project');
 		$projects = $rs->fetch_all(MYSQLI_ASSOC);
 
 		$this->validateJwtToken($request);

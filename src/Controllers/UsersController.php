@@ -14,11 +14,7 @@ class UsersController extends Controller {
 		$username = $json['username'];
 		$password = $json['password'];
 
-		// @todo pull credentials from env variables
-		$db = new \mysqli('db', 'reconmapper', 'reconmapped', 'reconmap');
-		$rs = $db->query('SELECT * FROM project');
-
-		$stmt = $db->prepare('SELECT * FROM user WHERE name = ? AND password = ?');
+		$stmt = $this->db->prepare('SELECT * FROM user WHERE name = ? AND password = ?');
 		$stmt->bind_param('ss', $username, $password);
 		$stmt->execute();
 		$rs = $stmt->get_result();

@@ -4,17 +4,20 @@ namespace Reconmap\Controllers;
 
 use Firebase\JWT\JWT;
 use League\Route\Http\Exception\ForbiddenException;
+use Monolog\Logger;
 use Psr\Http\Message\ServerRequestInterface;
 
-class Controller {
+abstract class Controller {
 
 	// @todo replace with RSA keys
 	const JWT_KEY = 'this is going to be replaced with asymmetric keys';
 
 	protected $logger;
+	protected $db;
 
-	public function __construct() {
-		$this->logger = $GLOBALS['logger'];
+	public function __construct(Logger $logger, \mysqli $db) {
+		$this->logger = $logger;
+		$this->db = $db;
 	}
 
 	protected function validateJwtToken(ServerRequestInterface $request) {

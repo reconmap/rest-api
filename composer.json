@@ -6,7 +6,8 @@
         "guzzlehttp/psr7": "^1.6",
         "laminas/laminas-diactoros": "^2.3",
         "laminas/laminas-httphandlerrunner": "^1.2",
-        "firebase/php-jwt": "^5.2"
+        "firebase/php-jwt": "^5.2",
+        "league/container": "^3.3"
     },
     "autoload": {
 	"psr-4": {"Reconmap\\": "src/"}
