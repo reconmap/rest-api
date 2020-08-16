@@ -13,9 +13,13 @@ build:
 run: 
 	docker-compose up -d
 
+.PHONY: tests
+tests:
+	docker-compose run --rm -w /var/www/webapp --entrypoint ./vendor/bin/phpunit svc tests
+
 .PHONY: conn_svc
 conn_svc:
-	docker-compose exec svc bash
+	docker-compose exec -w /var/www/webapp svc bash
 
 .PHONY: conn_db
 conn_db:
