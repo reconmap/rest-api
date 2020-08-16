@@ -2,6 +2,8 @@
 
 namespace Reconmap\Controllers;
 
+use Firebase\JWT\JWT;
+use League\Route\Http\Exception\ForbiddenException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -12,6 +14,8 @@ class ProjectsController extends Controller {
 		$db = new \mysqli('db', 'reconmapper', 'reconmapped', 'reconmap');
 		$rs = $db->query('SELECT * FROM project');
 		$projects = $rs->fetch_all(MYSQLI_ASSOC);
+
+		$this->validateJwtToken($request);
 
 		$response = new \GuzzleHttp\Psr7\Response;
 		$response->getBody()->write(json_encode($projects));

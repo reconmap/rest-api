@@ -9,6 +9,7 @@ use Monolog\Handler\StreamHandler;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\ProjectController;
+use Reconmap\Controllers\UsersController;
 
 $logger = new Logger('general');
 $logger->pushHandler(new StreamHandler('logs/application.log', Logger::DEBUG));
@@ -31,6 +32,7 @@ $router->map('OPTIONS', '/{any:.*}', function (ServerRequestInterface $request) 
 });
 
 $router->map('GET', '/', 'Reconmap\Controllers\IndexController::handleRequest');
+$router->map('POST', '/users', [UsersController::class, 'handleRequest']);
 $router->map('GET', '/projects', 'Reconmap\Controllers\ProjectsController::handleRequest');
 $router->map('GET', '/projects/{id:number}', [ProjectController::class, 'handleRequest']);
 	

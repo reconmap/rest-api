@@ -2,12 +2,17 @@
 
 namespace Reconmap\Controllers;
 
+use Firebase\JWT\JWT;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class ProjectController extends Controller {
 
 	public function handleRequest(ServerRequestInterface $request, array $args) : ResponseInterface {
+		$jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
+		// @todo replace with RSA keys
+		$token = JWT::decode($jwt, self::JWT_KEY, ['HS256']);
+
 		$id = $args['id'];
 		
 		// @todo pull credentials from env variables
