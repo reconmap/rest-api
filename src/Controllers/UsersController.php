@@ -28,6 +28,11 @@ class UsersController extends Controller {
 				->withHeader('Access-Control-Allow-Origin', '*');
 		}
 
+		$action = 'Logged in';
+		$stmt = $this->db->prepare('INSERT INTO audit_log (user_id, action) VALUES (?, ?)');
+		$stmt->bind_param('is', $user['id'], $action);
+		$stmt->execute();
+
 		$now = time();
 		$jwt = [
 			'iss' => 'reconmap.org',
