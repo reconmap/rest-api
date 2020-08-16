@@ -11,6 +11,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\AuditLogController;
 use Reconmap\Controllers\IndexController;
 use Reconmap\Controllers\ProjectController;
+use Reconmap\Controllers\ProjectsController;
 use Reconmap\Controllers\UsersController;
 
 $request = GuzzleHttp\Psr7\ServerRequest::fromGlobals(); 
