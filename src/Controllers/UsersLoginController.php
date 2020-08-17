@@ -2,13 +2,16 @@
 
 namespace Reconmap\Controllers;
 
+use Exception;
 use Firebase\JWT\JWT;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\AuthMiddleware;
+use Reconmap\Services\NetworkService;
 
-class UsersController extends Controller {
+class UsersLoginController extends Controller {
 
-	public function handleRequest(ServerRequestInterface $request) : ResponseInterface {
+	public function __invoke(ServerRequestInterface $request) : ResponseInterface {
 		$json = $request->getParsedBody();
 		$username = $json['username'];
 		$password = $json['password'];
@@ -29,9 +32,12 @@ class UsersController extends Controller {
 		}
 
 		$action = 'Logged in';
-		$stmt = $this->db->prepare('INSERT INTO audit_log (user_id, action) VALUES (?, ?)');
-		$stmt->bind_param('is', $user['id'], $action);
-		$stmt->execute();
+		$clientIp = (new NetworkService)->getClientIp();
+		$stmt = $this->db->prepare('INSERT INTO audit_log (user_id, client_ip, action) VALUES (?, INET_ATON(?), ?)');
+		$stmt->bind_param('iss', $user['id'], $clientIp, $action);
+		if(false === $stmt->execute()) {
+			throw new Exception($stmt->error);
+		}
 
 		$now = time();
 		$jwt = [
@@ -45,7 +51,7 @@ class UsersController extends Controller {
 				'role' => $user['role']
 			]
 		];
-		$user['access_token'] = JWT::encode($jwt, self::JWT_KEY, 'HS256');
+		$user['access_token'] = JWT::encode($jwt, AuthMiddleware::JWT_KEY, 'HS256');
 
 		$response->getBody()->write(json_encode($user));
 		return $response

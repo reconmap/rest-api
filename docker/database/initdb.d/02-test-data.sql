@@ -2,9 +2,13 @@
 TRUNCATE TABLE user;
 INSERT INTO user (id, name, password, email, role) VALUES (1, 'admin', 'admin123', 'admin@localhost', 'creator');
 
-INSERT INTO audit_log (user_id, action) VALUES (1, 'Initialised system');
+TRUNCATE TABLE audit_log;
+INSERT INTO audit_log (user_id, client_ip, action) VALUES (1, INET_ATON('127.0.0.1'), 'Initialised system');
 
-INSERT INTO project (id, name, description) VALUES (1, 'Web server pentest project', 'Test project to show pentest tasks and reports');
+INSERT INTO project (id, name, description, is_template) VALUES
+    (1, 'Web server pentest project', 'Test project to show pentest tasks and reports', FALSE),
+    (2, 'Linux host', 'Test project to show general linux host reconnaissance tasks', FALSE),
+    (3, 'Linux host template', 'Project template to show general linux host reconnaissance tasks', TRUE);
 
 INSERT INTO target (project_id, name, kind) VALUES
     (1, 'test.com', 'webapp'),
