@@ -15,6 +15,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\AuthMiddleware;
 use Reconmap\Controllers\AuditLogController;
 use Reconmap\Controllers\DeleteProjectController;
+use Reconmap\Controllers\DeleteUserController;
 use Reconmap\Controllers\GetProjectsController;
 use Reconmap\Controllers\GetProjectTasksController;
 use Reconmap\Controllers\GetUsersController;
@@ -62,6 +63,7 @@ $router->map('GET', '/', [IndexController::class, 'handleRequest']);
 $router->map('POST', '/users/login', UsersLoginController::class);
 $router->group('', function (RouteGroup $router): void {
 	$router->map('GET', '/users', GetUsersController::class);
+	$router->map('DELETE', '/users/{id:number}', DeleteUserController::class);
 	$router->map('GET', '/vulnerabilities', GetVulnerabilityController::class);
 	$router->map('GET', '/auditlog', [AuditLogController::class, 'handleRequest']);
 	$router->map('GET', '/projects', GetProjectsController::class);
