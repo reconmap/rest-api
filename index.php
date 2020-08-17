@@ -18,6 +18,7 @@ use Reconmap\Controllers\DeleteProjectController;
 use Reconmap\Controllers\GetProjectsController;
 use Reconmap\Controllers\GetProjectTasksController;
 use Reconmap\Controllers\GetUsersController;
+use Reconmap\Controllers\GetVulnerabilityController;
 use Reconmap\Controllers\IndexController;
 use Reconmap\Controllers\ProjectController;
 use Reconmap\Controllers\ProjectsController;
@@ -61,6 +62,7 @@ $router->map('GET', '/', [IndexController::class, 'handleRequest']);
 $router->map('POST', '/users/login', UsersLoginController::class);
 $router->group('', function (RouteGroup $router): void {
 	$router->map('GET', '/users', GetUsersController::class);
+	$router->map('GET', '/vulnerabilities', GetVulnerabilityController::class);
 	$router->map('GET', '/auditlog', [AuditLogController::class, 'handleRequest']);
 	$router->map('GET', '/projects', GetProjectsController::class);
 	$router->map('GET', '/projects/{id:number}', [ProjectController::class, 'handleRequest']);

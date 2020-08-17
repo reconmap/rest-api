@@ -20,7 +20,7 @@ class GetProjectsController extends Controller
 		if(isset($params['isTemplate'])) {
 			$projects = $orderRepository->findTemplateProjects((int)$params['isTemplate']);
 		} else {
-			$projects = $orderRepository->findAll();
+			$projects = $orderRepository->findTemplateProjects(0);
 		}
 
 		$response = new \GuzzleHttp\Psr7\Response;
