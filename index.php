@@ -16,6 +16,8 @@ use Reconmap\AuthMiddleware;
 use Reconmap\Controllers\AuditLogController;
 use Reconmap\Controllers\DeleteProjectController;
 use Reconmap\Controllers\DeleteUserController;
+use Reconmap\Controllers\ExportAuditLogController;
+use Reconmap\Controllers\GetAuditLogController;
 use Reconmap\Controllers\GetProjectsController;
 use Reconmap\Controllers\GetProjectTasksController;
 use Reconmap\Controllers\GetUsersController;
@@ -65,7 +67,8 @@ $router->group('', function (RouteGroup $router): void {
 	$router->map('GET', '/users', GetUsersController::class);
 	$router->map('DELETE', '/users/{id:number}', DeleteUserController::class);
 	$router->map('GET', '/vulnerabilities', GetVulnerabilityController::class);
-	$router->map('GET', '/auditlog', [AuditLogController::class, 'handleRequest']);
+	$router->map('GET', '/auditlog', GetAuditLogController::class);
+	$router->map('GET', '/auditlog/export', ExportAuditLogController::class);
 	$router->map('GET', '/projects', GetProjectsController::class);
 	$router->map('GET', '/projects/{id:number}', [ProjectController::class, 'handleRequest']);
 	$router->map('GET', '/projects/{id:number}/tasks', GetProjectTasksController::class);

@@ -6,21 +6,15 @@ namespace Reconmap\Controllers;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\Repositories\AuditLogRepository;
 
-class AuditLogController extends Controller
+class GetAuditLogController extends Controller
 {
 
-	public function handleRequest(ServerRequestInterface $request): ResponseInterface
+	public function __invoke(ServerRequestInterface $request): ResponseInterface
 	{
-		$sql = <<<SQL
-		SELECT al.*, u.*
-		FROM audit_log al
-		INNER JOIN user u ON (u.id = al.user_id)
-		ORDER BY al.insert_ts DESC
-		SQL;
-
-		$rs = $this->db->query($sql);
-		$auditLog = $rs->fetch_all(MYSQLI_ASSOC);
+		$repository = new AuditLogRepository($this->db);
+		$auditLog = $repository->findAll();
 
 		$response = new \GuzzleHttp\Psr7\Response;
 		$response->getBody()->write(json_encode($auditLog));
