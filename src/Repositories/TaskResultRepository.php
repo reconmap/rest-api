@@ -34,4 +34,16 @@ class TaskResultRepository
 
         return $success;
     }
+
+    public function findByTaskId(int $taskId): array
+    {
+        $stmt = $this->db->prepare('SELECT * FROM task_result WHERE task_id = ?');
+        $stmt->bind_param('i', $taskId);
+        $stmt->execute();
+        $rs = $stmt->get_result();
+        $results = $rs->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+
+        return $results;
+    }
 }
