@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Reconmap\Controllers;
+namespace Reconmap\Controllers\Users;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\UserRepository;
 
 class GetUsersController extends Controller

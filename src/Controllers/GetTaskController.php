@@ -6,20 +6,20 @@ namespace Reconmap\Controllers;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Reconmap\Repositories\UserRepository;
+use Reconmap\Repositories\TaskRepository;
 
-class DeleteUserController extends Controller
+class GetTaskController extends Controller
 {
 
 	public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
 	{
 		$id = $args['id'];
 
-		$userRepository = new UserRepository($this->db);
-		$success = $userRepository->deleteById((int)$id);
+		$repository = new TaskRepository($this->db);
+		$task = $repository->findById($id);
 
 		$response = new \GuzzleHttp\Psr7\Response;
-		$response->getBody()->write(json_encode($success));
+		$response->getBody()->write(json_encode($task));
 		return $response->withHeader('Access-Control-Allow-Origin', '*');
 	}
 }

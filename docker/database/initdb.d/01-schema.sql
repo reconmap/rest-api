@@ -73,6 +73,7 @@ CREATE TABLE task (
     update_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
     name VARCHAR(200) NOT NULL,
     description VARCHAR(2000) NULL,
+    completed BOOLEAN NOT NULL DEFAULT FALSE,
 
         PRIMARY KEY(id),
         UNIQUE KEY(name)

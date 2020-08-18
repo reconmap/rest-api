@@ -6,20 +6,20 @@ namespace Reconmap\Controllers;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Reconmap\Repositories\TaskRepository;
+use Reconmap\Repositories\TargetRepository;
 
-class GetProjectTasksController extends Controller
+class GetProjectTargetsController extends Controller
 {
 
 	public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
 	{
 		$id = (int)$args['id'];
 
-		$repository = new TaskRepository($this->db);
-		$tasks = $repository->findByProjectId($id);
+		$repository = new TargetRepository($this->db);
+		$targets = $repository->findByProjectId($id);
 
 		$response = new \GuzzleHttp\Psr7\Response;
-		$response->getBody()->write(json_encode($tasks));
+		$response->getBody()->write(json_encode($targets));
 		return $response->withHeader('Access-Control-Allow-Origin', '*')
 			->withAddedHeader('content-type', 'application/json');
 	}

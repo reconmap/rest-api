@@ -17,7 +17,7 @@ class AuditLogRepository
     public function findAll(): array
     {
         $sql = <<<SQL
-		SELECT al.*, u.*
+		SELECT al.insert_ts, INET_NTOA(al.client_ip) AS client_ip, al.action, u.name, u.role
 		FROM audit_log al
 		INNER JOIN user u ON (u.id = al.user_id)
 		ORDER BY al.insert_ts DESC

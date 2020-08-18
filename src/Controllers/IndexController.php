@@ -10,10 +10,10 @@ use Psr\Http\Message\ServerRequestInterface;
 class IndexController extends Controller
 {
 
-	public function handleRequest(ServerRequestInterface $request): ResponseInterface
+	public function __invoke(ServerRequestInterface $request): ResponseInterface
 	{
 		$response = new \GuzzleHttp\Psr7\Response;
-		$response->getBody()->write('Reconmap API');
+		$response->getBody()->write('ReconMap API');
 		return $response;
 	}
 }
