@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Reconmap\Controllers;
+namespace Reconmap\Controllers\Tasks;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\TaskRepository;
 
 class GetTaskController extends Controller
@@ -13,7 +14,7 @@ class GetTaskController extends Controller
 
 	public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
 	{
-		$id = $args['id'];
+		$id = (int)$args['id'];
 
 		$repository = new TaskRepository($this->db);
 		$task = $repository->findById($id);

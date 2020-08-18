@@ -29,6 +29,8 @@ class AuthMiddleware implements MiddlewareInterface
             throw new ForbiddenException();
         }
 
+        $request = $request->withAttribute('userId', $token->data->id);
+
         $response = $handler->handle($request);
         return $response;
     }

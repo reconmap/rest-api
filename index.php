@@ -9,10 +9,11 @@ use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Reconmap\ApiRouter;
 
+$logger = new Logger('general');
+
 $container = new League\Container\Container;
 $container->delegate(new League\Container\ReflectionContainer);
-$container->add(Logger::class, function () {
-	$logger = new Logger('general');
+$container->add(Logger::class, function () use($logger) {
 	$logger->pushHandler(new StreamHandler(__DIR__ . '/logs/application.log', Logger::DEBUG));
 	return $logger;
 });

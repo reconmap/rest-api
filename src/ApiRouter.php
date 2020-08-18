@@ -11,15 +11,17 @@ use League\Route\Router;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-use Reconmap\Controllers\DeleteProjectController;
 use Reconmap\Controllers\ExportAuditLogController;
 use Reconmap\Controllers\GetAuditLogController;
-use Reconmap\Controllers\GetProjectController;
-use Reconmap\Controllers\GetProjectsController;
-use Reconmap\Controllers\GetProjectTargetsController;
-use Reconmap\Controllers\GetProjectTasksController;
+use Reconmap\Controllers\Projects\DeleteProjectController;
+use Reconmap\Controllers\Projects\GetProjectController;
+use Reconmap\Controllers\Projects\GetProjectsController;
+use Reconmap\Controllers\Projects\GetProjectTargetsController;
+use Reconmap\Controllers\Projects\GetProjectTasksController;
 use Reconmap\Controllers\GetVulnerabilityController;
 use Reconmap\Controllers\IndexController;
+use Reconmap\Controllers\Tasks\GetTaskController;
+use Reconmap\Controllers\Tasks\UploadTaskResultController;
 use Reconmap\Controllers\Users\CreateUserController;
 use Reconmap\Controllers\Users\DeleteUserController;
 use Reconmap\Controllers\Users\GetUserController;
@@ -49,7 +51,7 @@ class ApiRouter extends Router
                 ->withHeader('Access-Control-Allow-Origin', '*');
         });
 
-        $this->map('GET', '/', [IndexController::class, 'handleRequest']);
+        $this->map('GET', '/', IndexController::class);
         $this->map('POST', '/users/login', UsersLoginController::class);
         $this->group('', function (RouteGroup $router): void {
             $router->map('GET', '/users', GetUsersController::class);
@@ -59,7 +61,7 @@ class ApiRouter extends Router
             $router->map('GET', '/vulnerabilities', GetVulnerabilityController::class);
             $router->map('GET', '/auditlog', GetAuditLogController::class);
             $router->map('GET', '/auditlog/export', ExportAuditLogController::class);
-            $router->map('GET', '/tasks', GetProjectsController::class);
+            $router->map('POST', '/tasks/results', UploadTaskResultController::class);
             $router->map('GET', '/tasks/{id:number}', GetTaskController::class);
             $router->map('GET', '/projects', GetProjectsController::class);
             $router->map('GET', '/projects/{id:number}', GetProjectController::class);

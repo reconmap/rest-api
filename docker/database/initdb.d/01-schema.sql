@@ -85,7 +85,7 @@ CREATE TABLE task_result (
     task_id INT UNSIGNED NOT NULL REFERENCES task,
     submitted_by_uid INT UNSIGNED NOT NULL REFERENCES user,
     insert_ts TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    output VARCHAR(2000) NOT NULL,
+    output VARCHAR(10000) NOT NULL,
 
         PRIMARY KEY(id)
 ) ENGINE=InnoDB;
