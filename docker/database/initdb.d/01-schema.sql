@@ -75,8 +75,7 @@ CREATE TABLE task (
     description VARCHAR(2000) NULL,
     completed BOOLEAN NOT NULL DEFAULT FALSE,
 
-        PRIMARY KEY(id),
-        UNIQUE KEY(name)
+        PRIMARY KEY(id)
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS task_result;

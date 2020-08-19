@@ -20,6 +20,9 @@ use Reconmap\Controllers\Projects\GetProjectTargetsController;
 use Reconmap\Controllers\Projects\GetProjectTasksController;
 use Reconmap\Controllers\GetVulnerabilityController;
 use Reconmap\Controllers\IndexController;
+use Reconmap\Controllers\Projects\CloneProjectController;
+use Reconmap\Controllers\Projects\GenerateReport;
+use Reconmap\Controllers\Projects\GetProjectVulnerabilitiesController;
 use Reconmap\Controllers\Tasks\GetTaskResultsController;
 use Reconmap\Controllers\Tasks\GetTaskController;
 use Reconmap\Controllers\Tasks\UploadTaskResultController;
@@ -67,8 +70,11 @@ class ApiRouter extends Router
             $router->map('GET', '/tasks/{id:number}/results', GetTaskResultsController::class);
             $router->map('GET', '/projects', GetProjectsController::class);
             $router->map('GET', '/projects/{id:number}', GetProjectController::class);
+            $router->map('GET', '/projects/{id:number}/report', GenerateReport::class);
+            $router->map('POST', '/projects/{id:number}/clone', CloneProjectController::class);
             $router->map('GET', '/projects/{id:number}/tasks', GetProjectTasksController::class);
             $router->map('GET', '/projects/{id:number}/targets', GetProjectTargetsController::class);
+            $router->map('GET', '/projects/{id:number}/vulnerabilities', GetProjectVulnerabilitiesController::class);
             $router->map('DELETE', '/projects/{id:number}', DeleteProjectController::class);
         })->middleware($authMiddleware);
     }

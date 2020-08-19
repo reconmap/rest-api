@@ -43,4 +43,31 @@ class ProjectRepository
         $stmt->close();
         return $projects;
     }
+
+    public function createFromTemplate(int $templateId): array {
+        $this->db->begin_transaction();
+
+        $projectSql = <<<SQL
+        INSERT INTO project (name, description) SELECT CONCAT(name, ' - ', CURRENT_TIMESTAMP()), description FROM project WHERE id = ?
+        SQL;
+        $stmt = $this->db->prepare($projectSql);
+        $stmt->bind_param('i', $templateId);
+        $stmt->execute();
+        $projectId = $stmt->insert_id;
+        $stmt->close();
+
+        $tasksSql = <<<SQL
+        INSERT INTO task (project_id, name, description) SELECT ?, name, description FROM task WHERE project_id = ?
+        SQL;
+        $stmt = $this->db->prepare($tasksSql);
+        $stmt->bind_param('ii', $projectId, $templateId);
+        $stmt->execute();
+        $stmt->close();
+
+        $this->db->commit();
+
+        return [
+            'projectId' => $projectId
+        ];
+    }
 }

@@ -8,6 +8,7 @@ use League\Route\Http\Exception\NotFoundException;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Reconmap\ApiRouter;
+use Reconmap\DatabaseFactory;
 
 $logger = new Logger('general');
 
@@ -17,11 +18,7 @@ $container->add(Logger::class, function () use($logger) {
 	$logger->pushHandler(new StreamHandler(__DIR__ . '/logs/application.log', Logger::DEBUG));
 	return $logger;
 });
-$container->add(\mysqli::class, function () {
-	// @todo pull credentials from env variables
-	$db = new \mysqli('db', 'reconmapper', 'reconmapped', 'reconmap');
-	return $db;
-});
+$container->add(\mysqli::class, DatabaseFactory::createConnection());
 
 $router = new ApiRouter();
 $router->mapRoutes($container);

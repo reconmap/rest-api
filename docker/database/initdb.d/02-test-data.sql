@@ -6,9 +6,9 @@ TRUNCATE TABLE audit_log;
 INSERT INTO audit_log (user_id, client_ip, action) VALUES (1, INET_ATON('127.0.0.1'), 'Initialised system');
 
 INSERT INTO project (id, name, description, is_template) VALUES
-    (1, 'Web server pentest project', 'Test project to show pentest tasks and reports', FALSE),
-    (2, 'Linux host', 'Test project to show general linux host reconnaissance tasks', FALSE),
-    (3, 'Linux host template', 'Project template to show general linux host reconnaissance tasks', TRUE);
+    (1, 'Linux host template', 'Project template to show general linux host reconnaissance tasks', TRUE),
+    (2, 'Web server pentest project', 'Test project to show pentest tasks and reports', FALSE),
+    (3, 'Linux host', 'Test project to show general linux host reconnaissance tasks', FALSE);
 
 INSERT INTO target (project_id, name, kind) VALUES
     (1, 'test.com', 'webapp'),
@@ -20,7 +20,9 @@ INSERT INTO vulnerability (project_id, target_id, reported_by_uid, summary, risk
 
 INSERT INTO task (project_id, name) VALUES
     (1, 'Run port scanner'),
-    (1, 'Check domain expiration date');
+    (1, 'Check domain expiration date'),
+    (3, 'Run port scanner'),
+    (3, 'Check domain expiration date');
 
 INSERT INTO task_result (task_id, submitted_by_uid, output) VALUES
     (1, 1, 'tcp/22: open, tcp/80: open'),
