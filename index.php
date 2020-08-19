@@ -19,6 +19,10 @@ $container->add(Logger::class, function () use($logger) {
 	return $logger;
 });
 $container->add(\mysqli::class, DatabaseFactory::createConnection());
+$container->add(\League\Plates\Engine::class, function() {
+	$templates = new \League\Plates\Engine(__DIR__ . '/resources/templates');
+	return $templates;
+});
 
 $router = new ApiRouter();
 $router->mapRoutes($container);

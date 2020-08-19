@@ -13,10 +13,12 @@ abstract class Controller
 {
 	protected $logger;
 	protected $db;
+	protected $template;
 
-	public function __construct(Logger $logger, \mysqli $db)
+	public function __construct(Logger $logger, \mysqli $db, \League\Plates\Engine $template)
 	{
 		$this->logger = $logger;
 		$this->db = $db;
+		$this->template = $template;
 	}
 }
