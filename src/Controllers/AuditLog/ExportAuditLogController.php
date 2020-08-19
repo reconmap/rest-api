@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Reconmap\Controllers;
+namespace Reconmap\Controllers\AuditLog;
 
 use Laminas\Diactoros\CallbackStream;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\AuditLogRepository;
 
 class ExportAuditLogController extends Controller

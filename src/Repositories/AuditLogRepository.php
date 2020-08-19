@@ -23,8 +23,22 @@ class AuditLogRepository
 		ORDER BY al.insert_ts DESC
 		SQL;
 
-		$rs = $this->db->query($sql);
-		$rows = $rs->fetch_all(MYSQLI_ASSOC);
+        $rs = $this->db->query($sql);
+        $rows = $rs->fetch_all(MYSQLI_ASSOC);
+        return $rows;
+    }
+
+    public function findCountByDayStats(): array
+    {
+        $sql = <<<SQL
+        SELECT DATE(insert_ts) AS log_date, COUNT(*) AS total
+        FROM audit_log
+        GROUP BY log_date
+        ORDER BY log_date ASC
+        SQL;
+
+        $rs = $this->db->query($sql);
+        $rows = $rs->fetch_all(MYSQLI_ASSOC);
         return $rows;
     }
 }

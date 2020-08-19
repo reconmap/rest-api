@@ -10,9 +10,9 @@ use League\Route\RouteGroup;
 use League\Route\Router;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-
-use Reconmap\Controllers\ExportAuditLogController;
-use Reconmap\Controllers\GetAuditLogController;
+use Reconmap\Controllers\AuditLog\GetAuditLogStatsController;
+use Reconmap\Controllers\AuditLog\ExportAuditLogController;
+use Reconmap\Controllers\AuditLog\GetAuditLogController;
 use Reconmap\Controllers\Projects\DeleteProjectController;
 use Reconmap\Controllers\Projects\GetProjectController;
 use Reconmap\Controllers\Projects\GetProjectsController;
@@ -65,6 +65,7 @@ class ApiRouter extends Router
             $router->map('GET', '/vulnerabilities', GetVulnerabilityController::class);
             $router->map('GET', '/auditlog', GetAuditLogController::class);
             $router->map('GET', '/auditlog/export', ExportAuditLogController::class);
+            $router->map('GET', '/auditlog/stats',GetAuditLogStatsController::class);
             $router->map('POST', '/tasks/results', UploadTaskResultController::class);
             $router->map('GET', '/tasks/{id:number}', GetTaskController::class);
             $router->map('GET', '/tasks/{id:number}/results', GetTaskResultsController::class);
