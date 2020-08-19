@@ -3,7 +3,7 @@
 
 ![Reconmap logo](https://reconmap.org/images/logo.png)
 
-# Reconmap
+# ReconMap
 
 Project planning, implementation and documentation for security professionals and teams. From reconnaissance to intelligence gathering step by step.
 
@@ -41,9 +41,13 @@ $ curl http://localhost:8080/projects
 [{"id":"1","insert_ts":"2020-08-15 13:46:05","update_ts":null,"is_template":"0","name":"Web server pentest project","description":"Test project to show pentest tasks and reports"}]
 ```
 
-## Contributions
+## How to contribute
 
-Contributions are more than welcome! Fork the repo, make changes, then open a pull request against our repo and we will review it and merge it promptly.
+**We are glad you are thinking about contributing to this project.** All help is hugely appreciated.
+
+Before you jump to make any changes make sure you have read the [contributing guidelines](CONTRIBUTING.md). This would save us all time. Thanks!
+
+## How to report bugs or feature requests
 
 If you have bugs or feature requests to report please use the [issues](https://github.com/reconmap/application/issues) tab on Github.
 
