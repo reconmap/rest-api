@@ -25,6 +25,7 @@ use Reconmap\Controllers\Projects\GenerateReport;
 use Reconmap\Controllers\Projects\GetProjectVulnerabilitiesController;
 use Reconmap\Controllers\Tasks\GetTaskResultsController;
 use Reconmap\Controllers\Tasks\GetTaskController;
+use Reconmap\Controllers\Tasks\GetTasksController;
 use Reconmap\Controllers\Tasks\UploadTaskResultController;
 use Reconmap\Controllers\Users\CreateUserController;
 use Reconmap\Controllers\Users\DeleteUserController;
@@ -67,6 +68,7 @@ class ApiRouter extends Router
             $router->map('GET', '/auditlog/export', ExportAuditLogController::class);
             $router->map('GET', '/auditlog/stats',GetAuditLogStatsController::class);
             $router->map('POST', '/tasks/results', UploadTaskResultController::class);
+            $router->map('GET', '/tasks', GetTasksController::class);
             $router->map('GET', '/tasks/{id:number}', GetTaskController::class);
             $router->map('GET', '/tasks/{id:number}/results', GetTaskResultsController::class);
             $router->map('GET', '/projects', GetProjectsController::class);
