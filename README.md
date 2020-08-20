@@ -3,7 +3,7 @@
 
 ![Reconmap logo](https://reconmap.org/images/logo.png)
 
-# ReconMap
+# Reconmap
 
 Project planning, implementation and documentation for security professionals and teams. From reconnaissance to intelligence gathering step by step.
 
@@ -16,6 +16,10 @@ A running demo is available for you to try here: https://demo.reconmap.org
 - Docker
 - Docker compose
 - Make
+
+## Documentation
+
+The API specs have been documented using [OpenAPI](openapi.yaml). You can use the interactive [Swagger UI](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/Reconmap/api-backend/master/openapi.yaml) to play with it.
 
 ## Build instructions
 
