@@ -34,3 +34,11 @@ clean: stop
 	docker-compose down -v
 	rm -rf db_data
 	rm -rf vendor
+
+.PHONY: runswagger
+runswagger:
+	docker run -p 80:8080 -e SWAGGER_JSON=/local/openapi.yaml -v $(PWD):/local swaggerapi/swagger-ui
+
+.PHONY: generateapidocs
+generateapidocs:
+	docker run --rm -v $(PWD):/local swaggerapi/swagger-codegen-cli-v3 generate -i /local/openapi.yaml -l dynamic-html -o /local/apidocs
