@@ -18,11 +18,11 @@ INSERT INTO vulnerability (project_id, target_id, reported_by_uid, summary, risk
     (1, 1, 1, 'Domain about to expire', 'medium'),
     (1, 2, 1, 'Open port (tcp/22)', 'medium');
 
-INSERT INTO task (project_id, name) VALUES
-    (1, 'Run port scanner'),
-    (1, 'Check domain expiration date'),
-    (3, 'Run port scanner'),
-    (3, 'Check domain expiration date');
+INSERT INTO task (project_id, name, description) VALUES
+    (1, 'Run port scanner', 'sudo nmap -oX out.xml -v -sS @@TARGET@@'),
+    (1, 'Check domain expiration date', 'whois @@TARGET@@'),
+    (3, 'Run port scanner', 'sudo nmap -oX out.xml -v -sS @@TARGET@@'),
+    (3, 'Check domain expiration date', 'whois @@TARGET@@');
 
 INSERT INTO task_result (task_id, submitted_by_uid, output) VALUES
     (1, 1, 'tcp/22: open, tcp/80: open'),

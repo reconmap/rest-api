@@ -7,8 +7,10 @@ namespace Reconmap\Controllers\Tasks;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
+use Reconmap\Processors\NmapResultsProcessor;
 use Reconmap\Repositories\TaskRepository;
 use Reconmap\Repositories\TaskResultRepository;
+use Reconmap\Repositories\VulnerabilityRepository;
 
 class UploadTaskResultController extends Controller
 {
@@ -30,8 +32,20 @@ class UploadTaskResultController extends Controller
 		
 		$userId = $request->getAttribute('userId');
 
+		$taskRepo = new TaskRepository($this->db);
+		$task = $taskRepo->findById($taskId);
+
 		$repository = new TaskResultRepository($this->db);
 		$user = $repository->insert($taskId, $userId, $output);
+
+		$processor = new NmapResultsProcessor($resultFile->getStream()->getMetadata()['uri']);
+		$openPorts = $processor->parseOpenPorts();
+
+		$targetId = null;
+		$vulnRepository = new VulnerabilityRepository($this->db);
+		foreach($openPorts as $openPort) {
+			$vulnRepository->insert($task['project_id'], $targetId, $userId, 'Open port', "Port ${openPort} is open", 'medium');
+		}
 
 		$response = new \GuzzleHttp\Psr7\Response;
 		$response->getBody()->write(json_encode($user));
