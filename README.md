@@ -17,6 +17,10 @@ A running demo is available for you to try here: https://demo.reconmap.org
 - Docker compose
 - Make
 
+## Documentation
+
+The API specs have been documented using [OpenAPI](openapi.yaml). You can use the interactive [Swagger UI](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/Reconmap/api-backend/master/openapi.yaml) to play with it.
+
 ## Build instructions
 
 The first thing you need to do is build the containers and prepare the app. This can be achieved by invoking the default make target.
