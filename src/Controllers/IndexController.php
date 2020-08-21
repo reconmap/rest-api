@@ -13,7 +13,7 @@ class IndexController extends Controller
 	public function __invoke(ServerRequestInterface $request): ResponseInterface
 	{
 		$response = new \GuzzleHttp\Psr7\Response;
-		$response->getBody()->write('ReconMap API');
+		$response->getBody()->write('Reconmap API');
 		return $response;
 	}
 }
