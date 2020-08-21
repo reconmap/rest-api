@@ -32,6 +32,7 @@ use Reconmap\Controllers\Users\DeleteUserController;
 use Reconmap\Controllers\Users\GetUserController;
 use Reconmap\Controllers\Users\GetUsersController;
 use Reconmap\Controllers\Users\UsersLoginController;
+use Reconmap\Controllers\Users\UsersLogoutController;
 
 class ApiRouter extends Router
 {
@@ -59,6 +60,7 @@ class ApiRouter extends Router
         $this->map('GET', '/', IndexController::class);
         $this->map('POST', '/users/login', UsersLoginController::class);
         $this->group('', function (RouteGroup $router): void {
+            $router->map('POST', '/users/logout', UsersLogoutController::class);
             $router->map('GET', '/users', GetUsersController::class);
             $router->map('POST', '/users', CreateUserController::class);
             $router->map('GET', '/users/{id:number}', GetUserController::class);

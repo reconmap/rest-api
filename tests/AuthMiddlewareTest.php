@@ -13,6 +13,18 @@ class AuthMiddlewareTest extends TestCase
 
     public function testJwtTokenValidation()
     {
+        /*
+        {
+        "iss": "reconmap.org",
+        "aud": "reconmap.com",
+        "iat": 1516239022,
+        "nbf": 1516239022,
+        "exp": 1616239022,
+        "data": {
+            "id": 5,
+            "role": "creator"
+        }
+        }*/
         $request = $this->createMock(ServerRequestInterface::class);
         $request->expects($this->once())
             ->method('getHeader')

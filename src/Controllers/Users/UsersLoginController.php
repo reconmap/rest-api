@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Reconmap\Controllers\Users;
 
-use Exception;
 use Firebase\JWT\JWT;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\AuthMiddleware;
 use Reconmap\Controllers\Controller;
+use Reconmap\Models\AuditLogAction;
+use Reconmap\Repositories\AuditLogRepository;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\NetworkService;
 
@@ -34,13 +35,9 @@ class UsersLoginController extends Controller
 				->withHeader('Access-Control-Allow-Origin', '*');
 		}
 
-		$action = 'Logged in';
 		$clientIp = (new NetworkService)->getClientIp();
-		$stmt = $this->db->prepare('INSERT INTO audit_log (user_id, client_ip, action) VALUES (?, INET_ATON(?), ?)');
-		$stmt->bind_param('iss', $user['id'], $clientIp, $action);
-		if (false === $stmt->execute()) {
-			throw new Exception($stmt->error);
-		}
+		$auditRepository = new AuditLogRepository($this->db);
+		$auditRepository->insert($user['id'], $clientIp, AuditLogAction::USER_LOGGED_IN);
 
 		$now = time();
 		$jwt = [

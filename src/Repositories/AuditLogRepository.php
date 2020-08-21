@@ -41,4 +41,14 @@ class AuditLogRepository
         $rows = $rs->fetch_all(MYSQLI_ASSOC);
         return $rows;
     }
+
+    public function insert(int $userId, string $clientIp, string $action): void
+    {
+        $stmt = $this->db->prepare('INSERT INTO audit_log (user_id, client_ip, action) VALUES (?, INET_ATON(?), ?)');
+        $stmt->bind_param('iss', $userId, $clientIp, $action);
+        if (false === $stmt->execute()) {
+            throw new \Exception($stmt->error);
+        }
+        $stmt->close();
+    }
 }
