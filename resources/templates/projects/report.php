@@ -1,5 +1,5 @@
 <h2>Security report</h2>
-<h3>Generated on the <?= $date ?> by <a href="https://reconmap.org">ReconMap</a>.</h3>
+<h3>Generated on the <?= $date ?> by <a href="https://reconmap.org">Reconmap</a>.</h3>
 
 <p>CONTENT IS CONFIDENTIAL</p>
 <div style="break-after:page"></div>

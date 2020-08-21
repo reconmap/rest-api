@@ -23,7 +23,7 @@ class TaskRepository
 
     public function findById(int $id): array
     {
-        $stmt = $this->db->prepare('SELECT * FROM project WHERE id = ?');
+        $stmt = $this->db->prepare('SELECT * FROM task WHERE id = ?');
         $stmt->bind_param('i', $id);
         $stmt->execute();
         $rs = $stmt->get_result();
