@@ -7,7 +7,7 @@ namespace Reconmap\Controllers\Tasks;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Processors\NmapResultsProcessor;
+use Reconmap\Processors\ProcessorFactory;
 use Reconmap\Repositories\TaskRepository;
 use Reconmap\Repositories\TaskResultRepository;
 use Reconmap\Repositories\VulnerabilityRepository;
@@ -29,7 +29,7 @@ class UploadTaskResultController extends Controller
 
 		$params = $request->getParsedBody();
 		$taskId = (int)$params['taskId'];
-		
+
 		$userId = $request->getAttribute('userId');
 
 		$taskRepo = new TaskRepository($this->db);
@@ -38,13 +38,18 @@ class UploadTaskResultController extends Controller
 		$repository = new TaskResultRepository($this->db);
 		$user = $repository->insert($taskId, $userId, $output);
 
-		$processor = new NmapResultsProcessor($resultFile->getStream()->getMetadata()['uri']);
-		$openPorts = $processor->parseOpenPorts();
-
 		$targetId = null;
 		$vulnRepository = new VulnerabilityRepository($this->db);
-		foreach($openPorts as $openPort) {
-			$vulnRepository->insert($task['project_id'], $targetId, $userId, 'Open port', "Port ${openPort} is open", 'medium');
+
+		$path = $resultFile->getStream()->getMetadata()['uri'];
+		$processorFactory = new ProcessorFactory;
+		$processor = $processorFactory->createByTaskType($task['parser']);
+		if ($processor) {
+			$vulnerabilities = $processor->parseVulnerabilities($path);
+
+			foreach ($vulnerabilities as $vulnerability) {
+				$vulnRepository->insert($task['project_id'], $targetId, $userId, $vulnerability->summary, $vulnerability->description, 'medium');
+			}
 		}
 
 		$response = new \GuzzleHttp\Psr7\Response;

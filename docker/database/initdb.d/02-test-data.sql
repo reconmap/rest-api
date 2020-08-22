@@ -18,11 +18,13 @@ INSERT INTO vulnerability (project_id, target_id, reported_by_uid, summary, risk
     (1, 1, 1, 'Domain about to expire', 'medium'),
     (1, 2, 1, 'Open port (tcp/22)', 'medium');
 
-INSERT INTO task (project_id, name, description) VALUES
-    (1, 'Run port scanner', 'sudo nmap -oX out.xml -v -sS @@TARGET@@'),
-    (1, 'Check domain expiration date', 'whois @@TARGET@@'),
-    (3, 'Run port scanner', 'sudo nmap -oX out.xml -v -sS @@TARGET@@'),
-    (3, 'Check domain expiration date', 'whois @@TARGET@@');
+INSERT INTO task (project_id, parser, name, description) VALUES
+    (1, 'nmap', 'Run port scanner', 'nmap -oX out.xml -v -sS @@TARGET@@'),
+    (1, 'sqlmap', 'Run SQL injection scanner', 'python sqlmap.py -u @@TARGET@@ --method POST --data "username=foo&password=bar" -p username --level 5 --dbms=mysql -v 1 --tables'),
+    (1, NULL, 'Check domain expiration date', 'whois @@TARGET@@'),
+    (3, 'nmap', 'Run port scanner', 'nmap -oX out.xml -v -sS @@TARGET@@'),
+    (3, 'sqlmap', 'Run SQL injection scanner', 'python sqlmap.py -u @@TARGET@@ --method POST --data "username=foo&password=bar" -p username --level 5 --dbms=mysql -v 1 --tables'),
+    (3, NULL, 'Check domain expiration date', 'whois @@TARGET@@');
 
 INSERT INTO task_result (task_id, submitted_by_uid, output) VALUES
     (1, 1, 'tcp/22: open, tcp/80: open'),

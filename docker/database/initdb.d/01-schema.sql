@@ -61,6 +61,7 @@ CREATE TABLE vulnerability (
     summary VARCHAR(200) NOT NULL,
     description VARCHAR(2000) NULL,
     risk ENUM('low', 'medium', 'high') NOT NULL,
+    cvss_score DECIMAL(2, 1) NULL,
 
         PRIMARY KEY(id)
 ) ENGINE=InnoDB;
@@ -71,6 +72,7 @@ CREATE TABLE task (
     project_id INT UNSIGNED NOT NULL REFERENCES project,
     insert_ts TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+    parser VARCHAR(50) NULL,    
     name VARCHAR(200) NOT NULL,
     description VARCHAR(2000) NULL,
     completed BOOLEAN NOT NULL DEFAULT FALSE,

@@ -57,7 +57,7 @@ class ProjectRepository
         $stmt->close();
 
         $tasksSql = <<<SQL
-        INSERT INTO task (project_id, name, description) SELECT ?, name, description FROM task WHERE project_id = ?
+        INSERT INTO task (project_id, parser, name, description) SELECT ?, parser, name, description FROM task WHERE project_id = ?
         SQL;
         $stmt = $this->db->prepare($tasksSql);
         $stmt->bind_param('ii', $projectId, $templateId);

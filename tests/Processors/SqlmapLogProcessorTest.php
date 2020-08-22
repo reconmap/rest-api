@@ -6,12 +6,12 @@ namespace Reconmap\Processors;
 
 use PHPUnit\Framework\TestCase;
 
-class NmapResultsProcessorTest extends TestCase
+class SqlmapLogProcessorTest extends TestCase
 {
 
     public function testGetOpenPorts()
     {
-        $processor = new NmapResultsProcessor(__DIR__ . '/nmap-output-example.xml');
+        $processor = new SqlmapLogProcessor(__DIR__ . '/sqlmap-log-example.txt');
         $openPorts = $processor->parseOpenPorts();
         $this->assertContains(3306, $openPorts);
         $this->assertContains(8080, $openPorts);
