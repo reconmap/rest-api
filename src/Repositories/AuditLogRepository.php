@@ -17,13 +17,31 @@ class AuditLogRepository
     public function findAll(): array
     {
         $sql = <<<SQL
-		SELECT al.insert_ts, INET_NTOA(al.client_ip) AS client_ip, al.action, u.name, u.role
+		SELECT al.insert_ts, INET_NTOA(al.client_ip) AS client_ip, al.action, u.id AS user_id, u.name, u.role
 		FROM audit_log al
 		INNER JOIN user u ON (u.id = al.user_id)
 		ORDER BY al.insert_ts DESC
 		SQL;
 
         $rs = $this->db->query($sql);
+        $rows = $rs->fetch_all(MYSQLI_ASSOC);
+        return $rows;
+    }
+
+    public function findByUserId(int $userId): array
+    {
+        $sql = <<<SQL
+        SELECT al.insert_ts, INET_NTOA(al.client_ip) AS client_ip, al.action, u.id AS user_id, u.name, u.role
+        FROM audit_log al
+        INNER JOIN user u ON (u.id = al.user_id)
+        WHERE al.user_id = ?
+        ORDER BY al.insert_ts DESC
+        SQL;
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bind_param('i', $userId);
+        $stmt->execute();
+        $rs = $stmt->get_result();
         $rows = $rs->fetch_all(MYSQLI_ASSOC);
         return $rows;
     }
