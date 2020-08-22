@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Reconmap\Controllers;
+namespace Reconmap\Controllers\Vulnerabilities;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\VulnerabilityRepository;
 
-class GetVulnerabilityController extends Controller
+class GetVulnerabilitiesController extends Controller
 {
 
 	public function __invoke(ServerRequestInterface $request): ResponseInterface
