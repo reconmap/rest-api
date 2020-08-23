@@ -41,8 +41,6 @@ If everything went ok you should be able to use curl or any other HTTP client (e
 ```sh
 $ curl http://localhost:8080
 Reconmap API
-$ curl http://localhost:8080/projects
-[{"id":"1","insert_ts":"2020-08-15 13:46:05","update_ts":null,"is_template":"0","name":"Web server pentest project","description":"Test project to show pentest tasks and reports"}]
 ```
 
 ## How to contribute
@@ -55,4 +53,4 @@ Before you jump to make any changes make sure you have read the [contributing gu
 
 If you have bugs or feature requests to report please use the [issues](https://github.com/reconmap/application/issues) tab on Github.
 
-If you want to chat to one of us join our IRC channel on [Freenode](https://webchat.freenode.net/) using the channel #reconmap.
+If you want to chat to somebody on the development team head to our [Gitter](https://gitter.im/reconmap/community) community.
