@@ -20,18 +20,26 @@ class AuthMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
-        $token = JWT::decode($jwt, self::JWT_KEY, ['HS256']);
 
-        if ($token->iss !== 'reconmap.org') {
-            throw new ForbiddenException();
+        try {
+            $token = JWT::decode($jwt, self::JWT_KEY, ['HS256']);
+
+            if ($token->iss !== 'reconmap.org') {
+                throw new ForbiddenException();
+            }
+            if ($token->aud !== 'reconmap.com') {
+                throw new ForbiddenException();
+            }
+
+            $request = $request->withAttribute('userId', $token->data->id);
+            $response = $handler->handle($request);
+            return $response;
+        } catch (\Exception $e) {
+            return (new \GuzzleHttp\Psr7\Response)
+                ->withStatus(401)
+                ->withHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE')
+                ->withHeader('Access-Control-Allow-Headers', 'Authorization')
+                ->withHeader('Access-Control-Allow-Origin', '*');
         }
-        if ($token->aud !== 'reconmap.com') {
-            throw new ForbiddenException();
-        }
-
-        $request = $request->withAttribute('userId', $token->data->id);
-
-        $response = $handler->handle($request);
-        return $response;
     }
 }
