@@ -5,7 +5,7 @@ CREATE TABLE user (
     insert_ts TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
     name VARCHAR(80) NOT NULL COMMENT 'Username, not full name',
-    password VARCHAR(80) NOT NULL,
+    password VARCHAR(255) NOT NULL COMMENT 'Hashed password',
     email VARCHAR(200) NOT NULL,
     role ENUM('creator', 'writer', 'reader'),
     

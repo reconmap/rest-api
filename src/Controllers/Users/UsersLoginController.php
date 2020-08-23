@@ -24,11 +24,11 @@ class UsersLoginController extends Controller
 		$password = $json['password'];
 
 		$repository = new UserRepository($this->db);
-		$user = $repository->findByUsernamePassword($username, $password);
+		$user = $repository->findByUsername($username);
 
 		$response = new \GuzzleHttp\Psr7\Response;
 
-		if (is_null($user)) {
+		if (is_null($user) || !password_verify($password, $user['password'])) {
 			return $response
 				->withStatus(403)
 				->withHeader('Access-Control-Allow-Methods', 'GET,POST,PUT')

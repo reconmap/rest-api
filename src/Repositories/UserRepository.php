@@ -45,6 +45,18 @@ class UserRepository
         return $user;
     }
 
+    public function findByUsername(string $username): array
+    {
+        $stmt = $this->db->prepare('SELECT * FROM user WHERE name = ?');
+        $stmt->bind_param('s', $username);
+        $stmt->execute();
+        $rs = $stmt->get_result();
+        $user = $rs->fetch_assoc();
+        $stmt->close();
+
+        return $user;
+    }
+
     public function deleteById(int $id): bool
     {
         $stmt = $this->db->prepare('DELETE FROM user WHERE id = ?');

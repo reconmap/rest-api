@@ -25,32 +25,38 @@ class CreateUserController extends Controller implements ConfigConsumer
 
 	public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
 	{
-		$user = json_decode((string)$request->getBody());
+		$requestBody = json_decode((string)$request->getBody());
+
+		$user = $requestBody;
+		$user->password = password_hash($requestBody->password, PASSWORD_DEFAULT);
 
 		$repository = new UserRepository($this->db);
-		if(!$repository->create($user)) {
-
+		if (!$repository->create($user)) {
 		}
 
-		$smtpSettings = $this->config->getSettings('smtp');
+		if ((bool)($requestBody->sendEmailToUser)) {
+			$smtpSettings = $this->config->getSettings('smtp');
 
-		$transport = (new Swift_SmtpTransport($smtpSettings['host'], $smtpSettings['port'], 'tls'))
-			->setUsername($smtpSettings['username'])
-			->setPassword($smtpSettings['password']);
+			$transport = (new Swift_SmtpTransport($smtpSettings['host'], $smtpSettings['port'], 'tls'))
+				->setUsername($smtpSettings['username'])
+				->setPassword($smtpSettings['password']);
 
-		$mailer = new Swift_Mailer($transport);
+			$mailer = new Swift_Mailer($transport);
 
-		$emailBody = $this->template->render('users/newAccount', [
-			'user' => (array)$user
-		]);
+			$emailBody = $this->template->render('users/newAccount', [
+				'user' => (array)$user
+			]);
 
-		$message = (new Swift_Message('[Reconmap] Account created'))
-			->setFrom([$smtpSettings['fromEmail'] => $smtpSettings['fromName']])
-			->setTo([$user->email => $user->name])
-			->setBody($emailBody);
+			$message = (new Swift_Message('[Reconmap] Account created'))
+				->setFrom([$smtpSettings['fromEmail'] => $smtpSettings['fromName']])
+				->setTo([$user->email => $user->name])
+				->setBody($emailBody);
 
-		if(!$mailer->send($message, $errors)) {
-			$this->logger->error('Unable to send email', $errors);
+			if (!$mailer->send($message, $errors)) {
+				$this->logger->error('Unable to send email', $errors);
+			}
+		} else {
+			$this->logger->info('Not sending email');
 		}
 
 		$response = new \GuzzleHttp\Psr7\Response;
