@@ -1,0 +1,10 @@
+{
+	"smtp": {
+		"host": "just.another.smtp.server",
+		"port": 587,
+		"username": "smtpuser",
+		"password": "smtpsecret",
+		"fromEmail": "no-reply@reconmap.org",
+		"fromName": "Reconmap"
+	}
+}

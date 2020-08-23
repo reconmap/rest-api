@@ -9,15 +9,24 @@ use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Reconmap\ApiRouter;
 use Reconmap\DatabaseFactory;
+use Reconmap\Services\Config;
+use Reconmap\Services\ConfigConsumer;
 
 $logger = new Logger('general');
 
+$config = new Config(__DIR__ . '/config.json');
+
 $container = new League\Container\Container;
 $container->delegate(new League\Container\ReflectionContainer);
+
+$container->inflector(ConfigConsumer::class)
+	->invokeMethod('setConfig', [Config::class]);
+
 $container->add(Logger::class, function () use($logger) {
 	$logger->pushHandler(new StreamHandler(__DIR__ . '/logs/application.log', Logger::DEBUG));
 	return $logger;
 });
+$container->add(Config::class, $config);
 $container->add(\mysqli::class, DatabaseFactory::createConnection());
 $container->add(\League\Plates\Engine::class, function() {
 	$templates = new \League\Plates\Engine(__DIR__ . '/resources/templates');

@@ -9,7 +9,8 @@
         "firebase/php-jwt": "^5.2",
         "league/container": "^3.3",
         "dompdf/dompdf": "^0.8.5",
-        "league/plates": "^3.3"
+        "league/plates": "^3.3",
+        "swiftmailer/swiftmailer": "^6.2"
     },
     "autoload": {
 	"psr-4": {"Reconmap\\": "src/"}
