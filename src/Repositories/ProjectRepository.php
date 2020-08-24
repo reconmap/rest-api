@@ -35,7 +35,13 @@ class ProjectRepository
 
     public function findTemplateProjects(int $isTemplate): array
     {
-        $stmt = $this->db->prepare('SELECT * FROM project WHERE is_template = ?');
+        $sql = <<<SQL
+        SELECT
+            *, (SELECT COUNT(*) FROM task WHERE project_id = id) AS num_tasks
+        FROM project
+        WHERE is_template = ?
+        SQL;
+        $stmt = $this->db->prepare($sql);
         $stmt->bind_param('i', $isTemplate);
         $stmt->execute();
         $rs = $stmt->get_result();
