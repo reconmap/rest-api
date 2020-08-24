@@ -51,7 +51,7 @@ class GenerateReportController extends Controller
 		$filename = sprintf("report-%d.%s", $reportId, $format);
 
 		if ($format === 'html') {
-			file_put_contents(RECONMAP_APP_DIR . '/' . $filename, $html);
+			file_put_contents(RECONMAP_APP_DIR . '/data/' . $filename, $html);
 
 			$response = new \GuzzleHttp\Psr7\Response;
 			$response->getBody()->write($html);
@@ -63,7 +63,7 @@ class GenerateReportController extends Controller
 
 			$dompdf->setPaper('A4', 'landscape');
 			$dompdf->render();
-			file_put_contents(RECONMAP_APP_DIR . '/' . $filename, $dompdf->output());
+			file_put_contents(RECONMAP_APP_DIR . '/data/' . $filename, $dompdf->output());
 
 			$body = new CallbackStream(function () use ($dompdf) {
 				$dompdf->stream();

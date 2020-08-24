@@ -25,6 +25,7 @@ use Reconmap\Controllers\Vulnerabilities\DeleteVulnerabilityController;
 use Reconmap\Controllers\IndexController;
 use Reconmap\Controllers\Projects\CloneProjectController;
 use Reconmap\Controllers\Projects\GetProjectVulnerabilitiesController;
+use Reconmap\Controllers\Reports\DownloadReportController;
 use Reconmap\Controllers\Reports\GenerateReportController;
 use Reconmap\Controllers\Reports\GetReportsController;
 use Reconmap\Controllers\Users\UsersLoginController;
@@ -64,6 +65,7 @@ class ApiRouter extends Router
             $router->map('GET', '/auditlog/export', ExportAuditLogController::class);
             $router->map('GET', '/auditlog/stats', GetAuditLogStatsController::class);
             $router->map('GET', '/reports', GetReportsController::class);
+            $router->map('GET', '/reports/{id:number}/download', DownloadReportController::class);
             $router->map('GET', '/projects', GetProjectsController::class);
             $router->map('GET', '/projects/{id:number}', GetProjectController::class);
             $router->map('GET', '/projects/{id:number}/report', GenerateReportController::class);
