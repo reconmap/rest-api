@@ -2,3 +2,4 @@ vendor
 logs/*
 db-data
 config.json
+data/*
