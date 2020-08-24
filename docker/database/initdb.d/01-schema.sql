@@ -90,3 +90,14 @@ CREATE TABLE task_result (
 
         PRIMARY KEY(id)
 ) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS report;
+CREATE TABLE report (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    project_id INT UNSIGNED NOT NULL REFERENCES project,
+    generated_by_uid INT UNSIGNED NOT NULL REFERENCES user,
+    insert_ts TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    format ENUM('html', 'pdf') NOT NULL,
+
+        PRIMARY KEY(id)
+) ENGINE=InnoDB;

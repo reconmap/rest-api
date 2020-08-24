@@ -8,6 +8,7 @@ use Laminas\Diactoros\ResponseFactory;
 use League\Container\Container;
 use League\Route\RouteGroup;
 use League\Route\Router;
+use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\AuditLog\GetAuditLogStatsController;
@@ -23,18 +24,17 @@ use Reconmap\Controllers\Vulnerabilities\GetVulnerabilityController;
 use Reconmap\Controllers\Vulnerabilities\DeleteVulnerabilityController;
 use Reconmap\Controllers\IndexController;
 use Reconmap\Controllers\Projects\CloneProjectController;
-use Reconmap\Controllers\Projects\GenerateReport;
 use Reconmap\Controllers\Projects\GetProjectVulnerabilitiesController;
+use Reconmap\Controllers\Reports\GenerateReportController;
+use Reconmap\Controllers\Reports\GetReportsController;
 use Reconmap\Controllers\Users\UsersLoginController;
-
 
 class ApiRouter extends Router
 {
 
-
-    public function mapRoutes(Container $container): void
+    public function mapRoutes(Container $container, Logger $logger): void
     {
-        $authMiddleware = new AuthMiddleware;
+        $authMiddleware = new AuthMiddleware($logger);
 
         $responseFactory = new ResponseFactory;
         $strategy = new \League\Route\Strategy\JsonStrategy($responseFactory);
@@ -63,9 +63,10 @@ class ApiRouter extends Router
             $router->map('GET', '/auditlog', GetAuditLogController::class);
             $router->map('GET', '/auditlog/export', ExportAuditLogController::class);
             $router->map('GET', '/auditlog/stats', GetAuditLogStatsController::class);
+            $router->map('GET', '/reports', GetReportsController::class);
             $router->map('GET', '/projects', GetProjectsController::class);
             $router->map('GET', '/projects/{id:number}', GetProjectController::class);
-            $router->map('GET', '/projects/{id:number}/report', GenerateReport::class);
+            $router->map('GET', '/projects/{id:number}/report', GenerateReportController::class);
             $router->map('POST', '/projects/{id:number}/clone', CloneProjectController::class);
             $router->map('GET', '/projects/{id:number}/tasks', GetProjectTasksController::class);
             $router->map('GET', '/projects/{id:number}/targets', GetProjectTargetsController::class);

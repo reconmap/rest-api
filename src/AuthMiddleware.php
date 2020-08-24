@@ -6,6 +6,7 @@ namespace Reconmap;
 
 use Firebase\JWT\JWT;
 use League\Route\Http\Exception\ForbiddenException;
+use Monolog\Logger;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -13,6 +14,12 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class AuthMiddleware implements MiddlewareInterface
 {
+    private $logger;
+
+    public function __construct(Logger $logger)
+    {
+        $this->logger = $logger;
+    }
 
     // @todo replace with RSA keys
     const JWT_KEY = 'this is going to be replaced with asymmetric keys';
@@ -35,6 +42,7 @@ class AuthMiddleware implements MiddlewareInterface
             $response = $handler->handle($request);
             return $response;
         } catch (\Exception $e) {
+            $this->logger->error($e->getMessage());
             return (new \GuzzleHttp\Psr7\Response)
                 ->withStatus(401)
                 ->withHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE')

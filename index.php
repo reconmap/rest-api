@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+define('RECONMAP_APP_DIR', __DIR__);
+
 require 'vendor/autoload.php';
 
 use League\Route\Http\Exception\NotFoundException;
@@ -34,7 +36,7 @@ $container->add(\League\Plates\Engine::class, function() {
 });
 
 $router = new ApiRouter();
-$router->mapRoutes($container);
+$router->mapRoutes($container, $logger);
 
 try {
 	$request = GuzzleHttp\Psr7\ServerRequest::fromGlobals();
