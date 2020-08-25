@@ -14,6 +14,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\AuditLog\GetAuditLogStatsController;
 use Reconmap\Controllers\AuditLog\ExportAuditLogController;
 use Reconmap\Controllers\AuditLog\GetAuditLogController;
+use Reconmap\Controllers\Vulnerabilities\GetVulnerabilitiesStatsController;
 use Reconmap\Controllers\Projects\DeleteProjectController;
 use Reconmap\Controllers\Projects\GetProjectController;
 use Reconmap\Controllers\Projects\GetProjectsController;
@@ -59,6 +60,7 @@ class ApiRouter extends Router
             (new UsersRouter)->mapRoutes($router);
 
             $router->map('GET', '/vulnerabilities', GetVulnerabilitiesController::class);
+            $router->map('GET', '/vulnerabilities/stats', GetVulnerabilitiesStatsController::class);
             $router->map('GET', '/vulnerabilities/{id:number}', GetVulnerabilityController::class);
             $router->map('DELETE', '/vulnerabilities/{id:number}', DeleteVulnerabilityController::class);
             $router->map('GET', '/auditlog', GetAuditLogController::class);
