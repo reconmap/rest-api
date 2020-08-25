@@ -60,7 +60,7 @@ CREATE TABLE vulnerability (
     update_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
     summary VARCHAR(200) NOT NULL,
     description VARCHAR(2000) NULL,
-    risk ENUM('low', 'medium', 'high') NOT NULL,
+    risk ENUM('none', 'low', 'medium', 'high', 'critical') NOT NULL,
     cvss_score DECIMAL(2, 1) NULL,
 
         PRIMARY KEY(id)
