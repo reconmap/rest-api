@@ -34,6 +34,7 @@ class ReportRepository
             FROM report r
             INNER JOIN project p ON (p.id = r.project_id)
             ORDER BY r.insert_ts DESC
+            LIMIT 20
         SQL;
         $rs = $this->db->query($sql);
         $projects = $rs->fetch_all(MYSQLI_ASSOC);

@@ -16,7 +16,7 @@ class TargetRepository
 
     public function findAll(): array
     {
-        $rs = $this->db->query('SELECT * FROM target');
+        $rs = $this->db->query('SELECT * FROM target LIMIT 20');
         $targets = $rs->fetch_all(MYSQLI_ASSOC);
         return $targets;
     }

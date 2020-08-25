@@ -16,7 +16,7 @@ class TaskRepository
 
     public function findAll(): array
     {
-        $rs = $this->db->query('SELECT * FROM task');
+        $rs = $this->db->query('SELECT * FROM task LIMIT 20');
         $projects = $rs->fetch_all(MYSQLI_ASSOC);
         return $projects;
     }

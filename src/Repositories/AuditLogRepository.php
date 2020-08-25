@@ -14,18 +14,40 @@ class AuditLogRepository
         $this->db = $db;
     }
 
-    public function findAll(): array
+    public function findAll(int $page = 0): array
     {
         $sql = <<<SQL
-		SELECT al.insert_ts, INET_NTOA(al.client_ip) AS client_ip, al.action, u.id AS user_id, u.name, u.role
-		FROM audit_log al
-		INNER JOIN user u ON (u.id = al.user_id)
-		ORDER BY al.insert_ts DESC
-		SQL;
+        SELECT al.insert_ts, INET_NTOA(al.client_ip) AS client_ip, al.action, u.id AS user_id, u.name, u.role
+        FROM audit_log al
+        INNER JOIN user u ON (u.id = al.user_id)
+        ORDER BY al.insert_ts DESC
+        LIMIT ?, ?
+        SQL;
 
-        $rs = $this->db->query($sql);
+        $limitPerPage = 20;
+        $limitOffset = $page * $limitPerPage;
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bind_param('ii', $limitOffset, $limitPerPage);
+        $stmt->execute();
+        $rs = $stmt->get_result();
         $rows = $rs->fetch_all(MYSQLI_ASSOC);
         return $rows;
+    }
+
+    public function countAll(): int
+    {
+        $sql = <<<SQL
+        SELECT COUNT(*) AS total
+        FROM audit_log al
+        INNER JOIN user u ON (u.id = al.user_id)
+        SQL;
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        $rs = $stmt->get_result();
+        $row = $rs->fetch_assoc();
+        return (int)$row['total'];
     }
 
     public function findByUserId(int $userId): array

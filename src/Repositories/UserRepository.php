@@ -16,7 +16,7 @@ class UserRepository
 
     public function findAll(): array
     {
-        $rs = $this->db->query('SELECT * FROM user');
+        $rs = $this->db->query('SELECT * FROM user LIMIT 20');
         $projects = $rs->fetch_all(MYSQLI_ASSOC);
         return $projects;
     }

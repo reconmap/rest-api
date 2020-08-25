@@ -14,12 +14,22 @@ class GetAuditLogController extends Controller
 
 	public function __invoke(ServerRequestInterface $request): ResponseInterface
 	{
+		$params = $request->getQueryParams();
+		$page = (int)$params['page'];
+		$this->logger->debug("page: $page");
+
 		$repository = new AuditLogRepository($this->db);
-		$auditLog = $repository->findAll();
+		$auditLog = $repository->findAll($page);
+		$count = $repository->countAll();
+
+		$pageCount = ceil($count / 20);
 
 		$response = new \GuzzleHttp\Psr7\Response;
 		$response->getBody()->write(json_encode($auditLog));
-		return $response->withHeader('Access-Control-Allow-Origin', '*')
+		return $response
+			->withHeader('Access-Control-Expose-Headers', 'X-Page-Count')
+			->withHeader('X-Page-Count', $pageCount)
+			->withHeader('Access-Control-Allow-Origin', '*')
 			->withAddedHeader('content-type', 'application/json');
 	}
 }
