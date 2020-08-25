@@ -25,6 +25,10 @@ conn_svc:
 conn_db:
 	docker-compose exec db mysql -uroot -preconmuppet reconmap
 
+.PHONY: reset_db
+reset_db:
+	cat $(wildcard docker/database/initdb.d/*.sql) | docker container exec -i $(shell docker-compose ps -q db) mysql -uroot -preconmuppet reconmap
+	
 .PHONY: stop
 stop:
 	docker-compose stop
