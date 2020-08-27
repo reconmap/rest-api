@@ -9,11 +9,11 @@ use PHPUnit\Framework\TestCase;
 class SqlmapLogProcessorTest extends TestCase
 {
 
-    public function testGetOpenPorts()
+    public function testParseVulnerabilities()
     {
-        $processor = new SqlmapLogProcessor(__DIR__ . '/sqlmap-log-example.txt');
-        $openPorts = $processor->parseOpenPorts();
-        $this->assertContains(3306, $openPorts);
-        $this->assertContains(8080, $openPorts);
+        $processor = new SqlmapProcessor();
+        $vulnerabilities = $processor->parseVulnerabilities(__DIR__ . '/sqlmap-log-example.txt');
+        $this->assertCount(1, $vulnerabilities);
+        $this->assertEquals("SQL can be injected using parameter 'username (POST)'", $vulnerabilities[0]->description);
     }
 }
