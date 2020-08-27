@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
+use Exception;
+
 class TargetRepository
 {
 
@@ -50,6 +52,18 @@ class TargetRepository
         $stmt = $this->db->prepare('DELETE FROM target WHERE id = ?');
         $stmt->bind_param('i', $id);
         $result = $stmt->execute();
+        $success = $result && 1 === $stmt->affected_rows;
+        $stmt->close();
+
+        return $success;
+    }
+
+    public function insert(int $projectId, string $name, string $kind): bool
+    {
+        $stmt = $this->db->prepare('INSERT INTO target (project_id, name, kind) VALUES (?, ?, ?)');
+        $stmt->bind_param('iss', $projectId, $name, $kind);
+        $result = $stmt->execute();
+        if (!$result) throw new Exception($stmt->error);
         $success = $result && 1 === $stmt->affected_rows;
         $stmt->close();
 

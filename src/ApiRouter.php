@@ -26,9 +26,8 @@ use Reconmap\Controllers\Vulnerabilities\DeleteVulnerabilityController;
 use Reconmap\Controllers\IndexController;
 use Reconmap\Controllers\Projects\CloneProjectController;
 use Reconmap\Controllers\Projects\GetProjectVulnerabilitiesController;
-use Reconmap\Controllers\Reports\DownloadReportController;
-use Reconmap\Controllers\Reports\GenerateReportController;
-use Reconmap\Controllers\Reports\GetReportsController;
+use Reconmap\Controllers\Targets\CreateTargetController;
+use Reconmap\Controllers\Tasks\CreateTaskController;
 use Reconmap\Controllers\Users\UsersLoginController;
 
 class ApiRouter extends Router
@@ -58,6 +57,7 @@ class ApiRouter extends Router
         $this->group('', function (RouteGroup $router): void {
             (new TasksRouter)->mapRoutes($router);
             (new UsersRouter)->mapRoutes($router);
+            (new ReportsRouter)->mapRoutes($router);
 
             $router->map('GET', '/vulnerabilities', GetVulnerabilitiesController::class);
             $router->map('GET', '/vulnerabilities/stats', GetVulnerabilitiesStatsController::class);
@@ -66,14 +66,13 @@ class ApiRouter extends Router
             $router->map('GET', '/auditlog', GetAuditLogController::class);
             $router->map('GET', '/auditlog/export', ExportAuditLogController::class);
             $router->map('GET', '/auditlog/stats', GetAuditLogStatsController::class);
-            $router->map('GET', '/reports', GetReportsController::class);
-            $router->map('GET', '/reports/{id:number}/download', DownloadReportController::class);
             $router->map('GET', '/projects', GetProjectsController::class);
             $router->map('GET', '/projects/{id:number}', GetProjectController::class);
-            $router->map('GET', '/projects/{id:number}/report', GenerateReportController::class);
             $router->map('POST', '/projects/{id:number}/clone', CloneProjectController::class);
             $router->map('GET', '/projects/{id:number}/tasks', GetProjectTasksController::class);
+            $router->map('POST', '/projects/{id:number}/tasks', CreateTaskController::class);
             $router->map('GET', '/projects/{id:number}/targets', GetProjectTargetsController::class);
+            $router->map('POST', '/projects/{id:number}/targets', CreateTargetController::class);
             $router->map('GET', '/projects/{id:number}/vulnerabilities', GetProjectVulnerabilitiesController::class);
             $router->map('DELETE', '/projects/{id:number}', DeleteProjectController::class);
         })->middleware($authMiddleware);

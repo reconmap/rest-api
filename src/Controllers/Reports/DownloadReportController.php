@@ -26,11 +26,11 @@ class DownloadReportController extends Controller
 
 		if ($report['format'] === 'html') {
 			return $response
-			->withBody(new Stream(fopen($filename, 'r')))
-			->withHeader('Access-Control-Expose-Headers', 'Content-Disposition')
-			->withHeader('Access-Control-Allow-Origin', '*')
-			->withHeader('Content-Disposition', 'attachment; filename="report.html";')
-			->withHeader('Content-type', 'text/html');
+				->withBody(new Stream(fopen($filename, 'r')))
+				->withHeader('Access-Control-Expose-Headers', 'Content-Disposition')
+				->withHeader('Access-Control-Allow-Origin', '*')
+				->withHeader('Content-Disposition', 'attachment; filename="report.html";')
+				->withHeader('Content-type', 'text/html');
 		} else {
 			return $response
 				->withBody(new Stream(fopen($filename, 'r')))

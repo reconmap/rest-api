@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
+use Exception;
+
 class TaskRepository
 {
 
@@ -50,6 +52,18 @@ class TaskRepository
         $stmt = $this->db->prepare('DELETE FROM task WHERE id = ?');
         $stmt->bind_param('i', $id);
         $result = $stmt->execute();
+        $success = $result && 1 === $stmt->affected_rows;
+        $stmt->close();
+
+        return $success;
+    }
+
+    public function insert(int $projectId, string $parser, string $name, string $description): bool
+    {
+        $stmt = $this->db->prepare('INSERT INTO task (project_id, parser, name, description) VALUES (?, ?, ?, ?)');
+        $stmt->bind_param('isss', $projectId, $parser, $name, $description);
+        $result = $stmt->execute();
+        if (!$result) throw new Exception($stmt->error);
         $success = $result && 1 === $stmt->affected_rows;
         $stmt->close();
 
