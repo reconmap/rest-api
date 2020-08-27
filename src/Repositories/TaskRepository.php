@@ -58,6 +58,17 @@ class TaskRepository
         return $success;
     }
 
+    public function updateById(int $id, string $column, string $value): bool
+    {
+        $stmt = $this->db->prepare('UPDATE task SET ' . $column . ' = ? WHERE id = ?');
+        $stmt->bind_param('si', $value, $id);
+        $result = $stmt->execute();
+        $success = $result && 1 === $stmt->affected_rows;
+        $stmt->close();
+
+        return $success;
+    }
+
     public function insert(int $projectId, string $parser, string $name, string $description): bool
     {
         $stmt = $this->db->prepare('INSERT INTO task (project_id, parser, name, description) VALUES (?, ?, ?, ?)');

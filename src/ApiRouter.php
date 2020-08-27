@@ -47,7 +47,7 @@ class ApiRouter extends Router
         $this->map('OPTIONS', '/{any:.*}', function (ServerRequestInterface $request): ResponseInterface {
             $response = (new \GuzzleHttp\Psr7\Response)->withStatus(200);
             return $response
-                ->withHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE')
+                ->withHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,PATCH')
                 ->withHeader('Access-Control-Allow-Headers', 'Authorization')
                 ->withHeader('Access-Control-Allow-Origin', '*');
         });
