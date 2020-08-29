@@ -23,7 +23,6 @@ use Reconmap\Controllers\Projects\GetProjectTasksController;
 use Reconmap\Controllers\Vulnerabilities\GetVulnerabilitiesController;
 use Reconmap\Controllers\Vulnerabilities\GetVulnerabilityController;
 use Reconmap\Controllers\Vulnerabilities\DeleteVulnerabilityController;
-use Reconmap\Controllers\IndexController;
 use Reconmap\Controllers\Projects\CloneProjectController;
 use Reconmap\Controllers\Projects\GetProjectVulnerabilitiesController;
 use Reconmap\Controllers\Targets\CreateTargetController;
@@ -52,7 +51,6 @@ class ApiRouter extends Router
                 ->withHeader('Access-Control-Allow-Origin', '*');
         });
 
-        $this->map('GET', '/', IndexController::class);
         $this->map('POST', '/users/login', UsersLoginController::class);
         $this->group('', function (RouteGroup $router): void {
             (new TasksRouter)->mapRoutes($router);
