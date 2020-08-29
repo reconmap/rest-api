@@ -18,7 +18,12 @@ class GetVulnerabilitiesController extends Controller
 		$page = (int)$params['page'];
 
 		$repository = new VulnerabilityRepository($this->db);
-		$vulnerabilities = $repository->findAll($page);
+		if(isset($params['keywords'])) {
+			$keywords = $params['keywords'];
+			$vulnerabilities = $repository->findByKeywords($keywords);
+		} else {
+			$vulnerabilities = $repository->findAll($page);
+		}
 		$count = $repository->countAll();
 
 		$pageCount = ceil($count / 20);
