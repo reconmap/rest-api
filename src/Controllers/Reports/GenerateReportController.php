@@ -13,6 +13,7 @@ use Reconmap\Repositories\VulnerabilityRepository;
 use Dompdf\Dompdf;
 use Laminas\Diactoros\CallbackStream;
 use Reconmap\Repositories\ReportRepository;
+use Reconmap\Repositories\TargetRepository;
 
 class GenerateReportController extends Controller
 {
@@ -33,12 +34,16 @@ class GenerateReportController extends Controller
 		$taskRepository = new TaskRepository($this->db);
 		$tasks = $taskRepository->findByProjectId($id);
 
+		$targetsRepository = new TargetRepository($this->db);
+		$targets = $targetsRepository->findByProjectId($id);
+
 		$vulnerabilityRepository = new VulnerabilityRepository($this->db);
 		$vulnerabilities = $vulnerabilityRepository->findByProjectId($id);
 
 		$html = $this->template->render('projects/report', [
 			'project' => $project,
 			'date' => $date,
+			'targets' => $targets,
 			'tasks' => $tasks,
 			'vulnerabilities' => $vulnerabilities
 		]);
