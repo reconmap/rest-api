@@ -28,8 +28,6 @@ class GetAuditLogController extends Controller
 		$response->getBody()->write(json_encode($auditLog));
 		return $response
 			->withHeader('Access-Control-Expose-Headers', 'X-Page-Count')
-			->withHeader('X-Page-Count', $pageCount)
-			->withHeader('Access-Control-Allow-Origin', '*')
-			->withAddedHeader('content-type', 'application/json');
+			->withHeader('X-Page-Count', $pageCount);
 	}
 }
