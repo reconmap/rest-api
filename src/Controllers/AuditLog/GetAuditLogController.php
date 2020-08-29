@@ -16,7 +16,6 @@ class GetAuditLogController extends Controller
 	{
 		$params = $request->getQueryParams();
 		$page = (int)$params['page'];
-		$this->logger->debug("page: $page");
 
 		$repository = new AuditLogRepository($this->db);
 		$auditLog = $repository->findAll($page);

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Reconmap\Controllers\Vulnerabilities;
 
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\VulnerabilityRepository;
@@ -11,12 +12,21 @@ use Reconmap\Repositories\VulnerabilityRepository;
 class GetVulnerabilitiesController extends Controller
 {
 
-	public function __invoke(ServerRequestInterface $request): array
+	public function __invoke(ServerRequestInterface $request): ResponseInterface
 	{
+		$params = $request->getQueryParams();
+		$page = (int)$params['page'];
+
 		$repository = new VulnerabilityRepository($this->db);
+		$vulnerabilities = $repository->findAll($page);
+		$count = $repository->countAll();
 
-		$vulnerabilities = $repository->findAll();
+		$pageCount = ceil($count / 20);
 
-		return $vulnerabilities;
+		$response = new \GuzzleHttp\Psr7\Response;
+		$response->getBody()->write(json_encode($vulnerabilities));
+		return $response
+			->withHeader('Access-Control-Expose-Headers', 'X-Page-Count')
+			->withHeader('X-Page-Count', $pageCount);
 	}
 }
