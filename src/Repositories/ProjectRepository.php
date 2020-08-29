@@ -50,7 +50,8 @@ class ProjectRepository
         return $projects;
     }
 
-    public function createFromTemplate(int $templateId): array {
+    public function createFromTemplate(int $templateId): array
+    {
         $this->db->begin_transaction();
 
         $projectSql = <<<SQL
@@ -75,5 +76,16 @@ class ProjectRepository
         return [
             'projectId' => $projectId
         ];
+    }
+
+    public function deleteById(int $id): bool
+    {
+        $stmt = $this->db->prepare('DELETE FROM project WHERE id = ?');
+        $stmt->bind_param('i', $id);
+        $result = $stmt->execute();
+        $success = $result && 1 === $stmt->affected_rows;
+        $stmt->close();
+
+        return $success;
     }
 }

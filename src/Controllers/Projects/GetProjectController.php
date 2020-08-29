@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Reconmap\Controllers\Projects;
 
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\ProjectRepository;
@@ -12,15 +11,13 @@ use Reconmap\Repositories\ProjectRepository;
 class GetProjectController extends Controller
 {
 
-	public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
+	public function __invoke(ServerRequestInterface $request, array $args): array
 	{
 		$id = (int)$args['id'];
 
 		$repository = new ProjectRepository($this->db);
 		$project = $repository->findById($id);
 
-		$response = new \GuzzleHttp\Psr7\Response;
-		$response->getBody()->write(json_encode($project));
-		return $response->withHeader('Access-Control-Allow-Origin', '*');
+		return $project;
 	}
 }

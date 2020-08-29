@@ -18,13 +18,13 @@ class ExportAuditLogController extends Controller
 		$repository = new AuditLogRepository($this->db);
 		$auditLog = $repository->findAll();
 
-		$fileName = 'reconmap-auditlog-' . date('Y-m-d') . '.csv';		
+		$fileName = 'reconmap-auditlog-' . date('Y-m-d') . '.csv';
 
 		$response = new \GuzzleHttp\Psr7\Response;
-		
-		$body = new CallbackStream(function() use($auditLog) {
+
+		$body = new CallbackStream(function () use ($auditLog) {
 			$f = fopen('php://output', 'w');
-			foreach($auditLog as $log) {
+			foreach ($auditLog as $log) {
 				fputcsv($f, $log);
 			}
 		});
@@ -32,7 +32,6 @@ class ExportAuditLogController extends Controller
 		return $response
 			->withBody($body)
 			->withHeader('Access-Control-Expose-Headers', 'Content-Disposition')
-			->withHeader('Access-Control-Allow-Origin', '*')
 			->withHeader('Content-Disposition', 'attachment; filename="' . $fileName . '";')
 			->withAddedHeader('Content-Type', 'application/csv; charset=UTF-8');
 	}
