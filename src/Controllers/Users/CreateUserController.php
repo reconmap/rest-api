@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Reconmap\Controllers\Users;
 
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\UserRepository;
@@ -23,7 +22,7 @@ class CreateUserController extends Controller implements ConfigConsumer
 		$this->config = $config;
 	}
 
-	public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
+	public function __invoke(ServerRequestInterface $request, array $args): array
 	{
 		$requestBody = json_decode((string)$request->getBody());
 
@@ -59,8 +58,6 @@ class CreateUserController extends Controller implements ConfigConsumer
 			$this->logger->info('Not sending email');
 		}
 
-		$response = new \GuzzleHttp\Psr7\Response;
-		$response->getBody()->write(json_encode($user));
-		return $response->withHeader('Access-Control-Allow-Origin', '*');
+		return $user;
 	}
 }

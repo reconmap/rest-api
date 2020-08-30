@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Reconmap\Controllers\Users;
 
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\UserRepository;
@@ -12,14 +11,11 @@ use Reconmap\Repositories\UserRepository;
 class GetUsersController extends Controller
 {
 
-	public function __invoke(ServerRequestInterface $request): ResponseInterface
+	public function __invoke(ServerRequestInterface $request): array
 	{
 		$userRepository = new UserRepository($this->db);
 		$users = $userRepository->findAll();
 
-		$response = new \GuzzleHttp\Psr7\Response;
-		$response->getBody()->write(json_encode($users));
-		return $response->withHeader('Access-Control-Allow-Origin', '*')
-			->withAddedHeader('content-type', 'application/json');
+		return $users;
 	}
 }
