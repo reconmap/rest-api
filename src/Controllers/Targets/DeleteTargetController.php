@@ -8,19 +8,16 @@ use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\TargetRepository;
 
-class CreateTargetController extends Controller
+class DeleteTargetController extends Controller
 {
 
 	public function __invoke(ServerRequestInterface $request, array $args): array
 	{
-		$projectId = (int)$args['id'];
-		$requestBody = json_decode((string)$request->getBody());
-
-		$target = $requestBody;
+		$id = (int)$args['id'];
 
 		$repository = new TargetRepository($this->db);
-		$result = $repository->insert($projectId, $target->name, $target->kind);
+		$success = $repository->deleteById($id);
 
-		return $result;
+		return ['success' => $success];
 	}
 }

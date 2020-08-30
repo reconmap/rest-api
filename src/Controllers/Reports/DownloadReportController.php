@@ -23,21 +23,17 @@ class DownloadReportController extends Controller
 		$response = new \GuzzleHttp\Psr7\Response;
 
 		$filename = sprintf(RECONMAP_APP_DIR . "/data/report-%d.%s", $id, $report['format']);
+		$fileName = 'reconmap-report-' . date('Ymd-His') . '.' . $report['format'];
 
-		if ($report['format'] === 'html') {
-			return $response
-				->withBody(new Stream(fopen($filename, 'r')))
-				->withHeader('Access-Control-Expose-Headers', 'Content-Disposition')
-				->withHeader('Access-Control-Allow-Origin', '*')
-				->withHeader('Content-Disposition', 'attachment; filename="report.html";')
-				->withHeader('Content-type', 'text/html');
-		} else {
-			return $response
-				->withBody(new Stream(fopen($filename, 'r')))
-				->withHeader('Access-Control-Expose-Headers', 'Content-Disposition')
-				->withHeader('Access-Control-Allow-Origin', '*')
-				->withHeader('Content-Disposition', 'attachment; filename="report.pdf";')
-				->withHeader('Content-type', 'application/pdf');
-		}
+		$contentTypes = [
+			'pdf' => 'application/pdf',
+			'html' => 'text/html',
+		];
+
+		return $response
+			->withHeader('Access-Control-Expose-Headers', 'Content-Disposition')
+			->withHeader('Content-Disposition', 'attachment; filename="' . $fileName . '";')
+			->withHeader('Content-type', $contentTypes[$report['format']])
+			->withBody(new Stream(fopen($filename, 'r')));
 	}
 }

@@ -18,7 +18,7 @@ class ExportAuditLogController extends Controller
 		$repository = new AuditLogRepository($this->db);
 		$auditLog = $repository->findAll();
 
-		$fileName = 'reconmap-auditlog-' . date('Y-m-d') . '.csv';
+		$fileName = 'reconmap-auditlog-' . date('Ymd-His') . '.csv';
 
 		$response = new \GuzzleHttp\Psr7\Response;
 

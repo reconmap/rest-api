@@ -60,7 +60,7 @@ class GenerateReportController extends Controller
 
 			$response = new \GuzzleHttp\Psr7\Response;
 			$response->getBody()->write($html);
-			return $response->withHeader('Access-Control-Allow-Origin', '*')
+			return $response
 				->withHeader('Content-type', 'text/html');
 		} else {
 			$dompdf = new Dompdf();
@@ -71,13 +71,12 @@ class GenerateReportController extends Controller
 			file_put_contents(RECONMAP_APP_DIR . '/data/' . $filename, $dompdf->output());
 
 			$body = new CallbackStream(function () use ($dompdf) {
-				$dompdf->stream();
+				return $dompdf->output();
 			});
 			$fileName = 'report.pdf';
 			return $response
 				->withBody($body)
 				->withHeader('Access-Control-Expose-Headers', 'Content-Disposition')
-				->withHeader('Access-Control-Allow-Origin', '*')
 				->withHeader('Content-Disposition', 'attachment; filename="' . $fileName . '";')
 				->withHeader('Content-type', 'application/pdf');
 		}
