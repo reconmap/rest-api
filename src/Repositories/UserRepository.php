@@ -78,4 +78,17 @@ class UserRepository
 
         return $success;
     }
+
+    public function findByProjectId(int $projectId): array {
+        $sql = <<<SQL
+        SELECT * FROM user WHERE id IN (SELECT user_id FROM project_user WHERE project_id = ?)
+        SQL;
+        $stmt = $this->db->prepare($sql);
+        $stmt->bind_param('i', $projectId);
+        $stmt->execute();
+        $rs = $stmt->get_result();
+        $users = $rs->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+        return $users;
+    }
 }

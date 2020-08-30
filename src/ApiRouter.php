@@ -24,6 +24,7 @@ use Reconmap\Controllers\Vulnerabilities\GetVulnerabilitiesController;
 use Reconmap\Controllers\Vulnerabilities\GetVulnerabilityController;
 use Reconmap\Controllers\Vulnerabilities\DeleteVulnerabilityController;
 use Reconmap\Controllers\Projects\CloneProjectController;
+use Reconmap\Controllers\Projects\GetProjectUsersController;
 use Reconmap\Controllers\Projects\GetProjectVulnerabilitiesController;
 use Reconmap\Controllers\Targets\CreateTargetController;
 use Reconmap\Controllers\Tasks\CreateTaskController;
@@ -73,6 +74,7 @@ class ApiRouter extends Router
             $router->map('GET', '/projects/{id:number}/tasks', GetProjectTasksController::class);
             $router->map('POST', '/projects/{id:number}/tasks', CreateTaskController::class);
             $router->map('GET', '/projects/{id:number}/targets', GetProjectTargetsController::class);
+            $router->map('GET', '/projects/{id:number}/users', GetProjectUsersController::class);
             $router->map('POST', '/projects/{id:number}/targets', CreateTargetController::class);
             $router->map('GET', '/projects/{id:number}/vulnerabilities', GetProjectVulnerabilitiesController::class);
             $router->map('DELETE', '/projects/{id:number}', DeleteProjectController::class);

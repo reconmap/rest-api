@@ -1,6 +1,11 @@
 
 TRUNCATE TABLE user;
-INSERT INTO user (id, name, password, email, role) VALUES (1, 'admin', '$2y$10$J/DF8J/Az8DiSEpXel18NOcN0qbYt5VSvKCc8oJFarXDtj7HkmCmK', 'admin@localhost', 'creator');
+INSERT INTO user (id, name, password, email, role) VALUES
+	(1, 'admin', '$2y$10$J/DF8J/Az8DiSEpXel18NOcN0qbYt5VSvKCc8oJFarXDtj7HkmCmK', 'admin@localhost', 'creator'),
+	(2, 'writer1', '$2y$10$J/DF8J/Az8DiSEpXel18NOcN0qbYt5VSvKCc8oJFarXDtj7HkmCmK', 'writer1@localhost', 'writer'),
+	(3, 'writer2', '$2y$10$J/DF8J/Az8DiSEpXel18NOcN0qbYt5VSvKCc8oJFarXDtj7HkmCmK', 'writer2@localhost', 'writer'),
+	(4, 'writer3', '$2y$10$J/DF8J/Az8DiSEpXel18NOcN0qbYt5VSvKCc8oJFarXDtj7HkmCmK', 'writer3admin@localhost', 'writer'),
+	(5, 'reader', '$2y$10$J/DF8J/Az8DiSEpXel18NOcN0qbYt5VSvKCc8oJFarXDtj7HkmCmK', 'admin@localhost', 'reader');
 
 TRUNCATE TABLE audit_log;
 INSERT INTO audit_log (user_id, client_ip, action) VALUES (1, INET_ATON('127.0.0.1'), 'Initialised system');
@@ -9,6 +14,11 @@ INSERT INTO project (id, name, description, is_template) VALUES
     (1, 'Linux host template', 'Project template to show general linux host reconnaissance tasks', TRUE),
     (2, 'Web server pentest project', 'Test project to show pentest tasks and reports', FALSE),
     (3, 'Linux host', 'Test project to show general linux host reconnaissance tasks', FALSE);
+
+INSERT INTO project_user (project_id, user_id) VALUES
+	(2, 1),
+	(3, 1),
+	(3, 2);
 
 INSERT INTO target (project_id, name, kind) VALUES
     (1, 'test.com', 'webapp'),
