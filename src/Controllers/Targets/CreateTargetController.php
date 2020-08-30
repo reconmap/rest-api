@@ -21,6 +21,6 @@ class CreateTargetController extends Controller
 		$repository = new TargetRepository($this->db);
 		$result = $repository->insert($projectId, $target->name, $target->kind);
 
-		return $result;
+		return ['success' => $result];
 	}
 }
