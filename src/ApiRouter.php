@@ -28,6 +28,7 @@ use Reconmap\Controllers\Projects\GetProjectVulnerabilitiesController;
 use Reconmap\Controllers\Targets\CreateTargetController;
 use Reconmap\Controllers\Tasks\CreateTaskController;
 use Reconmap\Controllers\Users\UsersLoginController;
+use Reconmap\Controllers\Vulnerabilities\UpdateVulnerabilityController;
 
 class ApiRouter extends Router
 {
@@ -61,6 +62,7 @@ class ApiRouter extends Router
             $router->map('GET', '/vulnerabilities', GetVulnerabilitiesController::class);
             $router->map('GET', '/vulnerabilities/stats', GetVulnerabilitiesStatsController::class);
             $router->map('GET', '/vulnerabilities/{id:number}', GetVulnerabilityController::class);
+            $router->map('PATCH', '/vulnerabilities/{id:number}', UpdateVulnerabilityController::class);
             $router->map('DELETE', '/vulnerabilities/{id:number}', DeleteVulnerabilityController::class);
             $router->map('GET', '/auditlog', GetAuditLogController::class);
             $router->map('GET', '/auditlog/export', ExportAuditLogController::class);

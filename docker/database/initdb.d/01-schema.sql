@@ -62,6 +62,7 @@ CREATE TABLE vulnerability (
     description VARCHAR(2000) NULL,
     risk ENUM('none', 'low', 'medium', 'high', 'critical') NOT NULL,
     cvss_score DECIMAL(2, 1) NULL,
+    status ENUM('open', 'closed') NOT NULL DEFAULT 'open', 
 
         PRIMARY KEY(id)
 ) ENGINE=InnoDB;
