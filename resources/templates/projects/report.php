@@ -19,6 +19,15 @@
     <p><?= $project['description'] ?></p>
 
     <div style="break-after:page"></div>
+    <h2>Team</h2>
+
+    <ul>
+        <?php foreach ($users as $user) : ?>
+            <li><strong><?= $user['name'] ?></strong></li>
+        <?php endforeach ?>
+    </ul>
+
+    <div style="break-after:page"></div>
     <h2>Targets</h2>
 
     <ul>

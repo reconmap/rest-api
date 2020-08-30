@@ -14,6 +14,7 @@ use Dompdf\Dompdf;
 use Laminas\Diactoros\CallbackStream;
 use Reconmap\Repositories\ReportRepository;
 use Reconmap\Repositories\TargetRepository;
+use Reconmap\Repositories\UserRepository;
 
 class GenerateReportController extends Controller
 {
@@ -34,6 +35,9 @@ class GenerateReportController extends Controller
 		$taskRepository = new TaskRepository($this->db);
 		$tasks = $taskRepository->findByProjectId($id);
 
+		$usersRepository = new UserRepository($this->db);
+		$users = $usersRepository->findByProjectId($id);
+
 		$targetsRepository = new TargetRepository($this->db);
 		$targets = $targetsRepository->findByProjectId($id);
 
@@ -43,6 +47,7 @@ class GenerateReportController extends Controller
 		$html = $this->template->render('projects/report', [
 			'project' => $project,
 			'date' => $date,
+			'users' => $users,
 			'targets' => $targets,
 			'tasks' => $tasks,
 			'vulnerabilities' => $vulnerabilities
