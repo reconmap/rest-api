@@ -51,7 +51,8 @@ class ApiRouter extends Router
                 ->withHeader('Access-Control-Allow-Origin', '*');
         });
 
-        $this->map('POST', '/users/login', UsersLoginController::class);
+        $this->map('POST', '/users/login', UsersLoginController::class)
+            ->middleware($corsMiddleware);
         $this->group('', function (RouteGroup $router): void {
             (new TasksRouter)->mapRoutes($router);
             (new UsersRouter)->mapRoutes($router);
@@ -74,7 +75,7 @@ class ApiRouter extends Router
             $router->map('GET', '/projects/{id:number}/vulnerabilities', GetProjectVulnerabilitiesController::class);
             $router->map('DELETE', '/projects/{id:number}', DeleteProjectController::class);
         })
-            ->middleware($authMiddleware)
-            ->middleware($corsMiddleware);
+            ->middleware($corsMiddleware)
+            ->middleware($authMiddleware);
     }
 }

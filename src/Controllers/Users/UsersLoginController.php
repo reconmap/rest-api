@@ -30,9 +30,7 @@ class UsersLoginController extends Controller
 
 		if (is_null($user) || !password_verify($password, $user['password'])) {
 			return $response
-				->withStatus(403)
-				->withHeader('Access-Control-Allow-Methods', 'GET,POST,PUT')
-				->withHeader('Access-Control-Allow-Origin', '*');
+				->withStatus(403);
 		}
 
 		$clientIp = (new NetworkService)->getClientIp();
@@ -55,8 +53,6 @@ class UsersLoginController extends Controller
 
 		$response->getBody()->write(json_encode($user));
 		return $response
-			->withHeader('Access-Control-Allow-Methods', 'GET,POST,PUT')
-			->withHeader('Access-Control-Allow-Origin', '*')
-			->withAddedHeader('content-type', 'application/json');
+			->withHeader('Content-type', 'application/json');
 	}
 }

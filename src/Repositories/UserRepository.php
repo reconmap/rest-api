@@ -45,7 +45,7 @@ class UserRepository
         return $user;
     }
 
-    public function findByUsername(string $username): array
+    public function findByUsername(string $username): ?array
     {
         $stmt = $this->db->prepare('SELECT * FROM user WHERE name = ?');
         $stmt->bind_param('s', $username);
