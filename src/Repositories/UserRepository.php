@@ -81,7 +81,15 @@ class UserRepository
 
     public function findByProjectId(int $projectId): array {
         $sql = <<<SQL
-        SELECT * FROM user WHERE id IN (SELECT user_id FROM project_user WHERE project_id = ?)
+        SELECT
+            pu.id AS membership_id,
+            u.*
+        FROM
+            user u INNER JOIN project_user pu ON (pu.user_id = u.id)
+        WHERE
+            project_id = ?
+        ORDER BY
+            u.name ASC
         SQL;
         $stmt = $this->db->prepare($sql);
         $stmt->bind_param('i', $projectId);

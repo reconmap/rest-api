@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Reconmap;
 
+use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
 use League\Route\Http\Exception\ForbiddenException;
 use Monolog\Logger;
@@ -41,13 +42,14 @@ class AuthMiddleware implements MiddlewareInterface
             $request = $request->withAttribute('userId', $token->data->id);
             $response = $handler->handle($request);
             return $response;
+        } catch (ForbiddenException | ExpiredException $e) {
+            $this->logger->warning($e->getMessage());
+            return (new \GuzzleHttp\Psr7\Response)
+                ->withStatus(401);
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
             return (new \GuzzleHttp\Psr7\Response)
-                ->withStatus(401)
-                ->withHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE')
-                ->withHeader('Access-Control-Allow-Headers', 'Authorization')
-                ->withHeader('Access-Control-Allow-Origin', '*');
+                ->withStatus(500);
         }
     }
 }
