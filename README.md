@@ -1,7 +1,11 @@
 
 [![Build Status](https://travis-ci.org/reconmap/api-backend.svg?branch=master)](https://travis-ci.org/reconmap/api-backend)
 
-![Reconmap logo](https://reconmap.org/images/logo.png)
+
+![Reconmap devices](https://pasteall.org/media/2/0/204759e8714dc1def4209d10b3370c4d.png)
+
+![Reconmap logo](https://pasteall.org/media/4/7/4780c30723f90cfd56ec0d056555b7e6.png) 
+
 
 # Reconmap
 
