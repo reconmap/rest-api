@@ -10,6 +10,7 @@ use Reconmap\Controllers\Users\DeleteUserController;
 use Reconmap\Controllers\Users\GetUserController;
 use Reconmap\Controllers\Users\GetUserActivityController;
 use Reconmap\Controllers\Users\GetUsersController;
+use Reconmap\Controllers\Users\UpdateUserController;
 use Reconmap\Controllers\Users\UsersLogoutController;
 
 class UsersRouter
@@ -21,6 +22,7 @@ class UsersRouter
         $router->map('GET', '/users', GetUsersController::class);
         $router->map('POST', '/users', CreateUserController::class);
         $router->map('GET', '/users/{id:number}', GetUserController::class);
+        $router->map('PATCH', '/users/{id:number}', UpdateUserController::class);
         $router->map('GET', '/users/{id:number}/activity', GetUserActivityController::class);
         $router->map('DELETE', '/users/{id:number}', DeleteUserController::class);
     }

@@ -47,7 +47,7 @@ class UserRepository
 
     public function findByUsername(string $username): ?array
     {
-        $stmt = $this->db->prepare('SELECT u.id, u.insert_ts, u.update_ts, u.name, u.email, u.password, u.role FROM user u WHERE u.name = ?');
+        $stmt = $this->db->prepare('SELECT u.id, u.insert_ts, u.update_ts, u.name, u.email, u.password, u.role, u.timezone FROM user u WHERE u.name = ?');
         $stmt->bind_param('s', $username);
         $stmt->execute();
         $rs = $stmt->get_result();
@@ -98,5 +98,16 @@ class UserRepository
         $users = $rs->fetch_all(MYSQLI_ASSOC);
         $stmt->close();
         return $users;
+    }
+
+    public function updateById(int $id, string $column, string $value): bool
+    {
+        $stmt = $this->db->prepare('UPDATE user SET ' . $column . ' = ? WHERE id = ?');
+        $stmt->bind_param('si', $value, $id);
+        $result = $stmt->execute();
+        $success = $result && 1 === $stmt->affected_rows;
+        $stmt->close();
+
+        return $success;
     }
 }
