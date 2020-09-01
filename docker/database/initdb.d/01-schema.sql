@@ -37,7 +37,7 @@ CREATE TABLE project (
         UNIQUE KEY(name)
 ) ENGINE=InnoDB;
 
-DROP TABLE project_user;
+DROP TABLE IF EXISTS project_user;
 CREATE TABLE project_user (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT,
     insert_ts TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
