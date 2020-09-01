@@ -23,7 +23,7 @@ class UserRepository
 
     public function findById(int $id): ?array
     {
-        $stmt = $this->db->prepare('SELECT u.id, u.insert_ts, u.update_ts, u.name, u.email, u.role FROM user u WHERE u.id = ?');
+        $stmt = $this->db->prepare('SELECT u.id, u.insert_ts, u.update_ts, u.name, u.email, u.role, u.timezone FROM user u WHERE u.id = ?');
         $stmt->bind_param('i', $id);
         $stmt->execute();
         $rs = $stmt->get_result();
