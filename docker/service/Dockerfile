@@ -9,6 +9,9 @@ RUN apt-get install -y nginx
 
 RUN wget https://getcomposer.org/installer -O - -q | php -- --install-dir=/usr/local/bin/ --filename=composer --quiet
 
+ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.7.3/wait /usr/local/bin/wait
+RUN chmod +x /usr/local/bin/wait
+
 RUN rm /etc/nginx/sites-enabled/default
 COPY nginx/sites-enabled/* /etc/nginx/sites-enabled/
 

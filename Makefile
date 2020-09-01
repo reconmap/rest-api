@@ -14,8 +14,8 @@ run:
 	docker-compose up -d
 
 .PHONY: tests
-tests:
-	docker-compose run --rm -w /var/www/webapp --entrypoint ./vendor/bin/phpunit svc tests
+tests: run
+	docker-compose run --rm -w /var/www/webapp --entrypoint ./run-tests.sh svc
 
 .PHONY: conn_svc
 conn_svc:
@@ -37,7 +37,6 @@ stop:
 clean: stop
 	docker-compose down -v
 	rm -rf db_data
-	rm -rf vendor
 
 .PHONY: runswagger
 runswagger:
