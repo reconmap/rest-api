@@ -33,6 +33,8 @@ class UsersLoginController extends Controller
 				->withStatus(403);
 		}
 
+		unset($user['password']); // DOT NOT leak password in the response.
+
 		$clientIp = (new NetworkService)->getClientIp();
 		$auditRepository = new AuditLogRepository($this->db);
 		$auditRepository->insert($user['id'], $clientIp, AuditLogAction::USER_LOGGED_IN);

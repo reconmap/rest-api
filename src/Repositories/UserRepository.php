@@ -47,7 +47,7 @@ class UserRepository
 
     public function findByUsername(string $username): ?array
     {
-        $stmt = $this->db->prepare('SELECT u.id, u.insert_ts, u.update_ts, u.name, u.email, u.role FROM user u WHERE u.name = ?');
+        $stmt = $this->db->prepare('SELECT u.id, u.insert_ts, u.update_ts, u.name, u.email, u.password, u.role FROM user u WHERE u.name = ?');
         $stmt->bind_param('s', $username);
         $stmt->execute();
         $rs = $stmt->get_result();
