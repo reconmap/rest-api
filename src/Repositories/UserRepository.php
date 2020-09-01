@@ -16,14 +16,14 @@ class UserRepository
 
     public function findAll(): array
     {
-        $rs = $this->db->query('SELECT * FROM user LIMIT 20');
+        $rs = $this->db->query('SELECT u.id, u.insert_ts, u.update_ts, u.name, u.email, u.role FROM user u LIMIT 20');
         $projects = $rs->fetch_all(MYSQLI_ASSOC);
         return $projects;
     }
 
-    public function findById(int $id): array
+    public function findById(int $id): ?array
     {
-        $stmt = $this->db->prepare('SELECT * FROM user WHERE id = ?');
+        $stmt = $this->db->prepare('SELECT u.id, u.insert_ts, u.update_ts, u.name, u.email, u.role FROM user u WHERE u.id = ?');
         $stmt->bind_param('i', $id);
         $stmt->execute();
         $rs = $stmt->get_result();
@@ -35,7 +35,7 @@ class UserRepository
 
     public function findByUsernamePassword(string $username, string $password): array
     {
-        $stmt = $this->db->prepare('SELECT * FROM user WHERE name = ? AND password = ?');
+        $stmt = $this->db->prepare('SELECT u.id, u.insert_ts, u.update_ts, u.name, u.email, u.role FROM user u WHERE u.name = ? AND u.password = ?');
         $stmt->bind_param('ss', $username, $password);
         $stmt->execute();
         $rs = $stmt->get_result();
@@ -47,7 +47,7 @@ class UserRepository
 
     public function findByUsername(string $username): ?array
     {
-        $stmt = $this->db->prepare('SELECT * FROM user WHERE name = ?');
+        $stmt = $this->db->prepare('SELECT u.id, u.insert_ts, u.update_ts, u.name, u.email, u.role FROM user u WHERE u.name = ?');
         $stmt->bind_param('s', $username);
         $stmt->execute();
         $rs = $stmt->get_result();
@@ -83,7 +83,7 @@ class UserRepository
         $sql = <<<SQL
         SELECT
             pu.id AS membership_id,
-            u.*
+            u.id, u.insert_ts, u.update_ts, u.name, u.email, u.role
         FROM
             user u INNER JOIN project_user pu ON (pu.user_id = u.id)
         WHERE

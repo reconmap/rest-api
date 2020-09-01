@@ -21,4 +21,16 @@ class UserRepositoryTest extends TestCase
         $users = $this->subject->findAll();
         $this->assertCount(5, $users);
     }
+
+    public function testFindByValidIdReturnsUser()
+    {
+        $user = $this->subject->findById(4);
+        $this->assertEquals('writer3', $user['name']);
+    }
+
+    public function testFindByInvalidIdReturnsNull()
+    {
+        $user = $this->subject->findById(0);
+        $this->assertNull($user);
+    }
 }

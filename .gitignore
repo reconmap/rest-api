@@ -3,3 +3,4 @@ logs/*
 db-data
 config.json
 data/*
+.phpunit.result.cache
