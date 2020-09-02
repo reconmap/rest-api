@@ -13,7 +13,8 @@ INSERT INTO audit_log (user_id, client_ip, action) VALUES (1, INET_ATON('127.0.0
 INSERT INTO project (id, name, description, is_template) VALUES
     (1, 'Linux host template', 'Project template to show general linux host reconnaissance tasks', TRUE),
     (2, 'Web server pentest project', 'Test project to show pentest tasks and reports', FALSE),
-    (3, 'Linux host', 'Test project to show general linux host reconnaissance tasks', FALSE);
+    (3, 'Linux host', 'Test project to show general linux host reconnaissance tasks', FALSE),
+	(4, 'Bug hunting', 'List of tasks created by Sayaan Alam (@ehsayaan). A very systematic way of bug hunting. #bugbounty', TRUE);
 
 INSERT INTO project_user (project_id, user_id) VALUES
 	(2, 1),
@@ -134,7 +135,32 @@ INSERT INTO task (project_id, parser, name, description) VALUES
     (1, NULL, 'Check domain expiration date', 'whois @@TARGET@@'),
     (3, 'nmap', 'Run port scanner', 'nmap -oX out.xml -v -sS @@TARGET@@'),
     (3, 'sqlmap', 'Run SQL injection scanner', 'python sqlmap.py -u @@TARGET@@ --method POST --data "username=foo&password=bar" -p username --level 5 --dbms=mysql -v 1 --tables'),
-    (3, NULL, 'Check domain expiration date', 'whois @@TARGET@@');
+    (3, NULL, 'Check domain expiration date', 'whois @@TARGET@@'),
+	(4, NULL, 'Find subdomains', ''),
+	(4, NULL, 'Check CNAME records', 'Check CNAME records of those subdomains. Check for subdomain takeover. Use wayback URLs on them too.'),
+	(4, NULL, 'Do Port Scanning', 'Use MassScan for port scanning'),
+	(4, NULL, 'Do Github recon', ''),
+	(4, NULL, 'Check CORS misconfiguration', ''),
+	(4, NULL, 'Check for email header injection on reset password function', ''),
+	(4, NULL, 'Check for SMPT and HOST header injection', ''),
+	(4, NULL, 'Check for Iframe', 'Check for Iframe (eg for clickjacking)'),
+	(4, NULL, 'Check for improper access control and parameter tampering', ''),
+	(4, NULL, 'Check Burp history for finding endpoint', ''),
+	(4, NULL, 'Use arjun for finding hidden endpoints', ''),
+	(4, NULL, 'Check for CSRF', ''),
+	(4, NULL, 'Check for SSRF parameters', ''),
+	(4, NULL, 'Check for XSS and SSTI', ''),
+	(4, NULL, 'Check Cryptography in reset password token', ''),
+	(4, NULL, 'Check for unicode injection in email parameter', ''),
+	(4, NULL, 'Check for bypassing rate limit', ''),
+	(4, NULL, 'Directory brute force', ''),
+	(4, NULL, 'Check for HTTP request smuggling', ''),
+	(4, NULL, 'Check for open redirect through wayback URLs', ''),
+	(4, NULL, 'Check for Social-Signon bypass', ''),
+	(4, NULL, 'Check for state parameter in social Sign-in', 'Check whether it is possible to cause DoS using multiple cookies injection'),
+	(4, NULL, 'File upload CSRF, XSS, SSRF, RCE, LFI, XXE', ''),
+	(4, NULL, 'Check for Buffer overflow', '')
+	;
 
 INSERT INTO task_result (task_id, submitted_by_uid, output) VALUES
     (1, 1, 'tcp/22: open, tcp/80: open'),

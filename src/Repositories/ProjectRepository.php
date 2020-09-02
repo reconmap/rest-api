@@ -37,7 +37,7 @@ class ProjectRepository
     {
         $sql = <<<SQL
         SELECT
-            *, (SELECT COUNT(*) FROM task WHERE project_id = id) AS num_tasks
+            *, (SELECT COUNT(*) FROM task WHERE project_id = project.id) AS num_tasks
         FROM project
         WHERE is_template = ?
         SQL;
