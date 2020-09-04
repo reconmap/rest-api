@@ -2,6 +2,14 @@
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="phpunit.xsd"
          colors="true">
+	<coverage>
+		<include>
+			<directory>src</directory>
+		</include>
+		<report>
+    		<clover outputFile="tests/clover-coverage-report.xml"/>
+    	</report>
+	</coverage>
     <testsuites>
         <testsuite name="default">
             <directory>tests</directory>
