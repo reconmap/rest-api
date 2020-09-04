@@ -2,6 +2,57 @@
 <reconmap>
     <projects>
         <project template="true">
+            <name>Bug Bounty Hunter Methodology Methodology v3</name>
+            <tasks>
+                <task>
+                    <name>Map the application</name>
+                    <description></description>
+                </task>
+                <task>
+                    <name>Analyse the application</name>
+                    <description></description>
+                </task>
+                <task>
+                    <name>Test client-side controls</name>
+                    <description></description>
+                </task>
+                <task>
+                    <name>Test access controls</name>
+                    <description></description>
+                </task>
+                <task>
+                    <name>Test for logic flaws</name>
+                    <description></description>
+                </task>
+                <task>
+                    <name>Test the authentication mechanism</name>
+                    <description></description>
+                </task>
+                <task>
+                    <name>Test the session management mechanism</name>
+                    <description></description>
+                </task>
+                <task>
+                    <name>Test of web serve vulnerabilities</name>
+                    <description></description>
+                </task>
+                <task>
+                    <name>Test for input-based vulnerabilities</name>
+                    <description></description>
+                </task>
+                <task>
+                    <name>Perform other checks</name>
+                    <description>
+                    - Check for DOM-based attacks
+                    - Check for Frame injection
+                    - Check for local privacy vulnerabilities
+                    - Follow up any information leakage
+                    - Check for weak SSL ciphers
+                    </description>
+                </task>
+            </tasks>
+        </project>
+        <project template="true">
             <name>Webapp pentesting project by https://hackercombat.com/</name>
             <tasks>
                 <task>

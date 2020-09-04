@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
+use Reconmap\Models\Project;
+
 class ProjectRepository extends MysqlRepository
 {
 
@@ -75,10 +77,10 @@ class ProjectRepository extends MysqlRepository
         ];
     }
 
-    public function insert(string $name, string $description): int
+    public function insert(Project $project): int
     {
-        $stmt = $this->db->prepare('INSERT INTO project (name, description) VALUES (?, ?)');
-        $stmt->bind_param('ss', $name, $description);
+        $stmt = $this->db->prepare('INSERT INTO project (name, description, is_template) VALUES (?, ?, ?)');
+        $stmt->bind_param('ssi', $project->name, $project->description, $project->isTemplate);
         return $this->executeInsertStatement($stmt);
     }
 
