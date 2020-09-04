@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
-class UserRepository
+class UserRepository extends MysqlRepository
 {
 
     private $db;
@@ -68,18 +68,15 @@ class UserRepository
         return $success;
     }
 
-    public function create(object $user): bool
+    public function create(object $user): int
     {
         $stmt = $this->db->prepare('INSERT INTO user (name, password, email, role) VALUES (?, ?, ?, ?)');
         $stmt->bind_param('ssss', $user->name, $user->password, $user->email, $user->role);
-        $result = $stmt->execute();
-        $success = $result && 1 === $stmt->affected_rows;
-        $stmt->close();
-
-        return $success;
+        return $this->executeInsertStatement($stmt);
     }
 
-    public function findByProjectId(int $projectId): array {
+    public function findByProjectId(int $projectId): array
+    {
         $sql = <<<SQL
         SELECT
             pu.id AS membership_id,

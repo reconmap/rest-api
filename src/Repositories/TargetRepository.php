@@ -6,7 +6,7 @@ namespace Reconmap\Repositories;
 
 use Exception;
 
-class TargetRepository
+class TargetRepository extends MysqlRepository
 {
 
     private $db;
@@ -58,15 +58,10 @@ class TargetRepository
         return $success;
     }
 
-    public function insert(int $projectId, string $name, string $kind): bool
+    public function insert(int $projectId, string $name, string $kind): int
     {
         $stmt = $this->db->prepare('INSERT INTO target (project_id, name, kind) VALUES (?, ?, ?)');
         $stmt->bind_param('iss', $projectId, $name, $kind);
-        $result = $stmt->execute();
-        if (!$result) throw new Exception($stmt->error);
-        $success = $result && 1 === $stmt->affected_rows;
-        $stmt->close();
-
-        return $success;
+        return $this->executeInsertStatement($stmt);
     }
 }

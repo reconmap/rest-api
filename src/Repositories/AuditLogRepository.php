@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
-class AuditLogRepository
+class AuditLogRepository extends MysqlRepository
 {
 
     private $db;
@@ -82,13 +82,10 @@ class AuditLogRepository
         return $rows;
     }
 
-    public function insert(int $userId, string $clientIp, string $action): void
+    public function insert(int $userId, string $clientIp, string $action): int
     {
         $stmt = $this->db->prepare('INSERT INTO audit_log (user_id, client_ip, action) VALUES (?, INET_ATON(?), ?)');
         $stmt->bind_param('iss', $userId, $clientIp, $action);
-        if (false === $stmt->execute()) {
-            throw new \Exception($stmt->error);
-        }
-        $stmt->close();
+        return $this->executeInsertStatement($stmt);
     }
 }

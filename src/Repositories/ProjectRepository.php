@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
-class ProjectRepository
+class ProjectRepository extends MysqlRepository
 {
 
     private $db;
@@ -59,23 +59,27 @@ class ProjectRepository
         SQL;
         $stmt = $this->db->prepare($projectSql);
         $stmt->bind_param('i', $templateId);
-        $stmt->execute();
-        $projectId = $stmt->insert_id;
-        $stmt->close();
+        $projectId = $this->executeInsertStatement($stmt);
 
         $tasksSql = <<<SQL
         INSERT INTO task (project_id, parser, name, description) SELECT ?, parser, name, description FROM task WHERE project_id = ?
         SQL;
         $stmt = $this->db->prepare($tasksSql);
         $stmt->bind_param('ii', $projectId, $templateId);
-        $stmt->execute();
-        $stmt->close();
+        $this->executeInsertStatement($stmt);
 
         $this->db->commit();
 
         return [
             'projectId' => $projectId
         ];
+    }
+
+    public function insert(string $name, string $description): int
+    {
+        $stmt = $this->db->prepare('INSERT INTO project (name, description) VALUES (?, ?)');
+        $stmt->bind_param('ss', $name, $description);
+        return $this->executeInsertStatement($stmt);
     }
 
     public function deleteById(int $id): bool

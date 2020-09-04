@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
-class ReportRepository
+class ReportRepository extends MysqlRepository
 {
 
     private $db;
@@ -45,13 +45,7 @@ class ReportRepository
     {
         $stmt = $this->db->prepare('INSERT INTO report (project_id, generated_by_uid, format) VALUES (?, ?, ?)');
         $stmt->bind_param('iis', $projectId, $userId, $format);
-        if (false === $stmt->execute()) {
-            throw new \Exception($stmt->error);
-        }
-        $reportId = $stmt->insert_id;
-        $stmt->close();
-
-        return $reportId;
+        return $this->executeInsertStatement($stmt);
     }
 
     public function deleteById(int $id): bool

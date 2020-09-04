@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
-class ProjectUserRepository
+class ProjectUserRepository extends MysqlRepository
 {
 
     private $db;
@@ -14,15 +14,11 @@ class ProjectUserRepository
         $this->db = $db;
     }
 
-    public function create(int $projectId, int $userId): bool
+    public function create(int $projectId, int $userId): int
     {
         $stmt = $this->db->prepare('INSERT INTO project_user (project_id, user_id) VALUES (?, ?)');
         $stmt->bind_param('ii', $projectId, $userId);
-        $result = $stmt->execute();
-        $success = $result && 1 === $stmt->affected_rows;
-        $stmt->close();
-
-        return $success;
+        return $this->executeInsertStatement($stmt);
     }
 
     public function deleteById(int $id): bool
@@ -34,5 +30,5 @@ class ProjectUserRepository
         $stmt->close();
 
         return $success;
-    }    
+    }
 }

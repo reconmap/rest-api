@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
-use Exception;
-
-class TaskResultRepository
+class TaskResultRepository extends MysqlRepository
 {
 
     private $db;
@@ -23,16 +21,11 @@ class TaskResultRepository
         return $projects;
     }
 
-    public function insert(int $taskId, int $userId, string $output): bool
+    public function insert(int $taskId, int $userId, string $output): int
     {
         $stmt = $this->db->prepare('INSERT INTO task_result (task_id, submitted_by_uid, output) VALUES (?, ?, ?)');
         $stmt->bind_param('iis', $taskId, $userId, $output);
-        $result = $stmt->execute();
-        if(!$result) throw new Exception($stmt->error);
-        $success = $result && 1 === $stmt->affected_rows;
-        $stmt->close();
-
-        return $success;
+        return $this->executeInsertStatement($stmt);
     }
 
     public function findByTaskId(int $taskId): array
