@@ -7,7 +7,7 @@
 			<directory>src</directory>
 		</include>
 		<report>
-    		<clover outputFile="tests/clover-coverage-report.xml"/>
+    		<clover outputFile="clover.xml"/>
     	</report>
 	</coverage>
     <testsuites>
