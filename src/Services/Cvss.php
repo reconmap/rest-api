@@ -10,15 +10,21 @@ class Cvss
     {
         switch (true) {
             case $score == 0:
-                return 'none';
+                $severity = 'none';
+            break;
             case $score >= 0.1 && $score <= 3.9:
-                return 'low';
+                $severity = 'low';
+            break;
             case $score >= 4.0 && $score <= 6.9:
-                return 'medium';
+                $severity = 'medium';
+            break;
             case $score >= 7.0 && $score <= 8.9:
-                return 'high';
+                $severity = 'high';
+            break;
             case $score >= 9.0:
-                return 'critica';
+                $severity = 'critical';
+            break;
         }
+        return $severity;
     }
 }
