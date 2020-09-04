@@ -35,9 +35,7 @@ class UsersLoginController extends Controller
 
 		unset($user['password']); // DOT NOT leak password in the response.
 
-		$clientIp = (new NetworkService)->getClientIp();
-		$auditRepository = new AuditLogRepository($this->db);
-		$auditRepository->insert($user['id'], $clientIp, AuditLogAction::USER_LOGGED_IN);
+		$this->auditAction($user);
 
 		$now = time();
 		$jwt = [
@@ -56,5 +54,12 @@ class UsersLoginController extends Controller
 		$response->getBody()->write(json_encode($user));
 		return $response
 			->withHeader('Content-type', 'application/json');
+	}
+
+	private function auditAction(array $user): void
+	{
+		$clientIp = (new NetworkService)->getClientIp();
+		$auditRepository = new AuditLogRepository($this->db);
+		$auditRepository->insert($user['id'], $clientIp, AuditLogAction::USER_LOGGED_IN);
 	}
 }

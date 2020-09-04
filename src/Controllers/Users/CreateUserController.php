@@ -6,9 +6,12 @@ namespace Reconmap\Controllers\Users;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
+use Reconmap\Models\AuditLogAction;
+use Reconmap\Repositories\AuditLogRepository;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\Config;
 use Reconmap\Services\ConfigConsumer;
+use Reconmap\Services\NetworkService;
 use Swift_Mailer;
 use Swift_Message;
 use Swift_SmtpTransport;
@@ -30,8 +33,11 @@ class CreateUserController extends Controller implements ConfigConsumer
 		$user->password = password_hash($requestBody->password, PASSWORD_DEFAULT);
 
 		$repository = new UserRepository($this->db);
-		if (!$repository->create($user)) {
-		}
+		$userId = $repository->create($user);
+
+		$loggedInUserId = $request->getAttribute('userId');
+
+		$this->auditAction($loggedInUserId, $userId);
 
 		if ((bool)($requestBody->sendEmailToUser)) {
 			$smtpSettings = $this->config->getSettings('smtp');
@@ -59,5 +65,12 @@ class CreateUserController extends Controller implements ConfigConsumer
 		}
 
 		return $user;
+	}
+
+	private function auditAction(int $loggedInUserId, int $userId): void
+	{
+		$clientIp = (new NetworkService)->getClientIp();
+		$auditRepository = new AuditLogRepository($this->db);
+		$auditRepository->insert($loggedInUserId, $clientIp, AuditLogAction::USER_CREATED . " (user id: $userId)");
 	}
 }
