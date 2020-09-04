@@ -16,4 +16,4 @@ script:
 
 after_script:
   - sed -i "s@/var/www/webapp@$PWD@" clover.xml
-  - ./cc-test-reporter after-build -t clover -exit-code $TRAVIS_TEST_RESULT
+  - ./cc-test-reporter after-build -t clover --exit-code $TRAVIS_TEST_RESULT
