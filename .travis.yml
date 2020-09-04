@@ -15,4 +15,4 @@ script:
   - make tests
 
 after_script:
-  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+  - ./cc-test-reporter after-build tests/clover-coverage-report.xml -t clover -exit-code $TRAVIS_TEST_RESULT
