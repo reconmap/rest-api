@@ -4,3 +4,4 @@ db-data
 config.json
 data/*
 .phpunit.result.cache
+tests/clover-coverage-report.xml
