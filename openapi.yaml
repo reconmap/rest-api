@@ -1,10 +1,13 @@
 openapi: 3.0.1
+
 info:
-  version: 0.0.1
+  version: 0.1.0
   title: Reconmap API
+
 servers:
   - url: 'http://localhost:3000'
   - url: 'https://api.reconmap.org'
+
 components:
   securitySchemes:
     BearerAuth:
@@ -14,6 +17,11 @@ components:
   schemas:
     User:
       type: object
+      required: 
+        - name
+        - password
+        - email
+        - role
       properties:
         id:
           type: integer
@@ -25,6 +33,22 @@ components:
           type: string
         role:
           type: string
+    Target:
+      type: object
+      required:
+        - projectId
+        - name
+        - kind
+      properties:
+        id:
+          type: integer
+        projectId:
+          type: integer
+        name:
+          type: string
+        kind:
+          type: string
+
 security:
   - BearerAuth: []
 paths:
@@ -129,3 +153,60 @@ paths:
                   password:
                     type: string
 
+  /targets:
+    post:
+      tags:
+        - Targets
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Target'
+      responses:
+        '200':
+          description: User succesfully created response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                  password:
+                    type: string
+  '/targets/{id}':
+    get:
+      tags:
+        - Targets
+      parameters:
+        - name: id
+          in: path
+          description: Target ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Succesfully retrieved
+    delete:
+      tags:
+        - Targets
+      parameters:
+        - name: id
+          in: path
+          description: Target ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Succesfully deleted

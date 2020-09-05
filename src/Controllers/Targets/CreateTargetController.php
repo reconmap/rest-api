@@ -13,13 +13,12 @@ class CreateTargetController extends Controller
 
 	public function __invoke(ServerRequestInterface $request, array $args): array
 	{
-		$projectId = (int)$args['id'];
 		$requestBody = json_decode((string)$request->getBody());
 
 		$target = $requestBody;
 
 		$repository = new TargetRepository($this->db);
-		$result = $repository->insert($projectId, $target->name, $target->kind);
+		$result = $repository->insert((int)$target->projectId, $target->name, $target->kind);
 
 		return ['success' => $result];
 	}

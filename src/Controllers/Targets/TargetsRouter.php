@@ -11,7 +11,7 @@ class TargetsRouter
 
     public function mapRoutes(RouteCollectionInterface $router): void
     {
-        $router->map('POST', '/projects/{id:number}/targets', CreateTargetController::class);
+        $router->map('POST', '/targets', CreateTargetController::class);
         $router->map('GET', '/targets/{id:number}', GetTargetController::class);
         $router->map('DELETE', '/targets/{id:number}', DeleteTargetController::class);
     }
