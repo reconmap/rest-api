@@ -17,6 +17,11 @@
             "Reconmap\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Reconmap\\": "tests/"
+        }
+    },
     "require-dev": {
         "phpunit/phpunit": "^9"
     }

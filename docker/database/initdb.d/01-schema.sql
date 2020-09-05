@@ -56,7 +56,7 @@ CREATE TABLE target (
     insert_ts TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_ts TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
     name VARCHAR(200) NOT NULL,
-    kind ENUM('host', 'webapp', 'binary'),
+    kind ENUM('hostname', 'ip_address', 'cidr_range', 'url', 'binary'),
 
         PRIMARY KEY(id),
         UNIQUE KEY(name)

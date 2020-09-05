@@ -22,8 +22,8 @@ INSERT INTO project_user (project_id, user_id) VALUES
 	(3, 2);
 
 INSERT INTO target (project_id, name, kind) VALUES
-    (1, 'test.com', 'webapp'),
-    (2, '127.0.0.1', 'host');
+    (1, 'https://test.com', 'url'),
+    (2, '127.0.0.1', 'hostname');
 
 INSERT INTO vulnerability (project_id, target_id, reported_by_uid, summary, risk, cvss_score) VALUES
     (1, 1, 1, 'Domain about to expire', 'medium', 6.4),

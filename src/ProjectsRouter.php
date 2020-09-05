@@ -15,7 +15,6 @@ use Reconmap\Controllers\Projects\CloneProjectController;
 use Reconmap\Controllers\Projects\DeleteProjectUserController;
 use Reconmap\Controllers\Projects\GetProjectUsersController;
 use Reconmap\Controllers\Projects\GetProjectVulnerabilitiesController;
-use Reconmap\Controllers\Targets\CreateTargetController;
 use Reconmap\Controllers\Tasks\CreateTaskController;
 use Reconmap\Controllers\Projects\ImportTemplateController;
 
@@ -34,7 +33,6 @@ class ProjectsRouter
         $router->map('GET', '/projects/{id:number}/users', GetProjectUsersController::class);
         $router->map('POST', '/projects/{id:number}/users', AddProjectUserController::class);
         $router->map('DELETE', '/projects/{projectId:number}/users/{membershipId:number}', DeleteProjectUserController::class);
-        $router->map('POST', '/projects/{id:number}/targets', CreateTargetController::class);
         $router->map('GET', '/projects/{id:number}/vulnerabilities', GetProjectVulnerabilitiesController::class);
         $router->map('DELETE', '/projects/{id:number}', DeleteProjectController::class);
     }
