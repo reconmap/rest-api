@@ -6,14 +6,6 @@ namespace Reconmap\Repositories;
 
 class UserRepository extends MysqlRepository
 {
-
-    private $db;
-
-    public function __construct(\mysqli $db)
-    {
-        $this->db = $db;
-    }
-
     public function findAll(): array
     {
         $rs = $this->db->query('SELECT u.id, u.insert_ts, u.update_ts, u.name, u.email, u.role FROM user u LIMIT 20');

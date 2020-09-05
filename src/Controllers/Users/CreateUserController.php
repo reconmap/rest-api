@@ -7,11 +7,10 @@ namespace Reconmap\Controllers\Users;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditLogAction;
-use Reconmap\Repositories\AuditLogRepository;
 use Reconmap\Repositories\UserRepository;
+use Reconmap\Services\AuditLogService;
 use Reconmap\Services\Config;
 use Reconmap\Services\ConfigConsumer;
-use Reconmap\Services\NetworkService;
 use Swift_Mailer;
 use Swift_Message;
 use Swift_SmtpTransport;
@@ -64,13 +63,12 @@ class CreateUserController extends Controller implements ConfigConsumer
 			$this->logger->info('Not sending email');
 		}
 
-		return $user;
+		return (array)$user;
 	}
 
 	private function auditAction(int $loggedInUserId, int $userId): void
 	{
-		$clientIp = (new NetworkService)->getClientIp();
-		$auditRepository = new AuditLogRepository($this->db);
-		$auditRepository->insert($loggedInUserId, $clientIp, AuditLogAction::USER_CREATED . " (user id: $userId)");
+		$auditLogService = new AuditLogService($this->db);
+		$auditLogService->insert($loggedInUserId, AuditLogAction::USER_CREATED, ['type' => 'user', 'id' => $userId]);
 	}
 }

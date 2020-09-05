@@ -6,14 +6,6 @@ namespace Reconmap\Repositories;
 
 class ReportRepository extends MysqlRepository
 {
-
-    private $db;
-
-    public function __construct(\mysqli $db)
-    {
-        $this->db = $db;
-    }
-
     public function findById(int $id): array
     {
         $stmt = $this->db->prepare('SELECT * FROM report WHERE id = ?');

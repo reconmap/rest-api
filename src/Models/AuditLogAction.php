@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 namespace Reconmap\Models;
 
-class AuditLogAction
+class AuditLogAction implements UserAuditActions
 {
+    // Audit log
+    public const AUDIT_LOG_EXPORTED = 'Exported audit log';
 
-    // User related actions
-    public const USER_LOGGED_IN = 'User logged in';
-    public const USER_LOGGED_OUT = 'User logged out';
-    public const USER_CREATED = 'User created';
-    public const USER_MODIFIED = 'User modified';
-    public const USER_DELETED = 'User deleted';
+    public const PROJECT_DELETED = 'Deleted project';
 
-    // Integration related actions
-    public const INTEGRATION_ENABLED = 'Integration enabled';
-    public const INTEGRATION_DISABLED = 'Integration disabled';
+    public const TASK_DELETED = 'Deleted task';
+
+    public const VULNERABILITY_DELETED = 'Vulnerability deleted';
+
+    // Integration related
+    public const INTEGRATION_ENABLED = 'Enabled integration';
+    public const INTEGRATION_DISABLED = 'Disabled integration';
 }

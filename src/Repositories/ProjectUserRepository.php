@@ -6,14 +6,6 @@ namespace Reconmap\Repositories;
 
 class ProjectUserRepository extends MysqlRepository
 {
-
-    private $db;
-
-    public function __construct(\mysqli $db)
-    {
-        $this->db = $db;
-    }
-
     public function create(int $projectId, int $userId): int
     {
         $stmt = $this->db->prepare('INSERT INTO project_user (project_id, user_id) VALUES (?, ?)');

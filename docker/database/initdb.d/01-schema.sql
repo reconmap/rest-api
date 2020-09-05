@@ -21,6 +21,7 @@ CREATE TABLE audit_log (
     user_id INT UNSIGNED NOT NULL REFERENCES user,
     client_ip INT UNSIGNED NOT NULL COMMENT 'IPv4 IP',
     action VARCHAR(200) NOT NULL,
+    object JSON,
     
         PRIMARY KEY(id)
 ) ENGINE=InnoDB;

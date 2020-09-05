@@ -8,7 +8,9 @@ use Laminas\Diactoros\CallbackStream;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
+use Reconmap\Models\AuditLogAction;
 use Reconmap\Repositories\AuditLogRepository;
+use Reconmap\Services\AuditLogService;
 
 class ExportAuditLogController extends Controller
 {
@@ -29,10 +31,19 @@ class ExportAuditLogController extends Controller
 			}
 		});
 
+		$userId = $request->getAttribute('userId');
+		$this->auditAction($userId);
+
 		return $response
 			->withBody($body)
 			->withHeader('Access-Control-Expose-Headers', 'Content-Disposition')
 			->withHeader('Content-Disposition', 'attachment; filename="' . $fileName . '";')
 			->withAddedHeader('Content-Type', 'application/csv; charset=UTF-8');
+	}
+
+	private function auditAction(int $loggedInUserId): void
+	{
+		$auditLogService = new AuditLogService($this->db);
+		$auditLogService->insert($loggedInUserId, AuditLogAction::AUDIT_LOG_EXPORTED);
 	}
 }

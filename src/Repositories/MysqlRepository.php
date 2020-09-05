@@ -6,6 +6,12 @@ namespace Reconmap\Repositories;
 
 abstract class MysqlRepository
 {
+    protected \mysqli $db;
+
+    public function __construct(\mysqli $db)
+    {
+        $this->db = $db;
+    }
 
     public function executeInsertStatement(\mysqli_stmt $stmt): int
     {

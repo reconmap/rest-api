@@ -6,14 +6,6 @@ namespace Reconmap\Repositories;
 
 class TaskResultRepository extends MysqlRepository
 {
-
-    private $db;
-
-    public function __construct(\mysqli $db)
-    {
-        $this->db = $db;
-    }
-
     public function findAll(): array
     {
         $rs = $this->db->query('SELECT * FROM task LIMIT 20');

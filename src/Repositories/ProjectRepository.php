@@ -8,14 +8,6 @@ use Reconmap\Models\Project;
 
 class ProjectRepository extends MysqlRepository
 {
-
-    private $db;
-
-    public function __construct(\mysqli $db)
-    {
-        $this->db = $db;
-    }
-
     public function findAll(): array
     {
         $rs = $this->db->query('SELECT * FROM project LIMIT 20');

@@ -7,9 +7,8 @@ namespace Reconmap\Controllers\Users;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditLogAction;
-use Reconmap\Repositories\AuditLogRepository;
 use Reconmap\Repositories\UserRepository;
-use Reconmap\Services\NetworkService;
+use Reconmap\Services\AuditLogService;
 
 class DeleteUserController extends Controller
 {
@@ -29,8 +28,7 @@ class DeleteUserController extends Controller
 
 	private function auditAction(int $loggedInUserId, int $userId): void
 	{
-		$clientIp = (new NetworkService)->getClientIp();
-		$auditRepository = new AuditLogRepository($this->db);
-		$auditRepository->insert($loggedInUserId, $clientIp, AuditLogAction::USER_DELETED . " (user id: $userId)");
+		$auditLogService = new AuditLogService($this->db);
+		$auditLogService->insert($loggedInUserId, AuditLogAction::USER_DELETED, ['type' => 'user', 'id' => $userId]);
 	}
 }

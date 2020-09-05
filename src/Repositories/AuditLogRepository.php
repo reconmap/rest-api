@@ -6,18 +6,10 @@ namespace Reconmap\Repositories;
 
 class AuditLogRepository extends MysqlRepository
 {
-
-    private $db;
-
-    public function __construct(\mysqli $db)
-    {
-        $this->db = $db;
-    }
-
     public function findAll(int $page = 0): array
     {
         $sql = <<<SQL
-        SELECT al.insert_ts, INET_NTOA(al.client_ip) AS client_ip, al.action, u.id AS user_id, u.name, u.role
+        SELECT al.insert_ts, INET_NTOA(al.client_ip) AS client_ip, al.action, al.object, u.id AS user_id, u.name, u.role
         FROM audit_log al
         INNER JOIN user u ON (u.id = al.user_id)
         ORDER BY al.insert_ts DESC
@@ -82,10 +74,10 @@ class AuditLogRepository extends MysqlRepository
         return $rows;
     }
 
-    public function insert(int $userId, string $clientIp, string $action): int
+    public function insert(int $userId, string $clientIp, string $action, ?string $object = null): int
     {
-        $stmt = $this->db->prepare('INSERT INTO audit_log (user_id, client_ip, action) VALUES (?, INET_ATON(?), ?)');
-        $stmt->bind_param('iss', $userId, $clientIp, $action);
+        $stmt = $this->db->prepare('INSERT INTO audit_log (user_id, client_ip, action, object) VALUES (?, INET_ATON(?), ?, ?)');
+        $stmt->bind_param('isss', $userId, $clientIp, $action, $object);
         return $this->executeInsertStatement($stmt);
     }
 }

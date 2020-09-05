@@ -4,18 +4,8 @@ declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
-use Exception;
-
 class TargetRepository extends MysqlRepository
 {
-
-    private $db;
-
-    public function __construct(\mysqli $db)
-    {
-        $this->db = $db;
-    }
-
     public function findAll(): array
     {
         $rs = $this->db->query('SELECT * FROM target LIMIT 20');
