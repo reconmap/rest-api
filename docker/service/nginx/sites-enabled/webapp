@@ -5,7 +5,7 @@ server {
         server_tokens off;
         server_name localhost;
 
-        root /var/www/webapp;
+        root /var/www/webapp/public;
         index index.html index.php;
 
         location / {
