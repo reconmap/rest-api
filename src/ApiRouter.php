@@ -11,8 +11,15 @@ use League\Route\Router;
 use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\Controllers\AuditLog\AuditLogRouter;
+use Reconmap\Controllers\Integrations\IntegrationsRouter;
+use Reconmap\Controllers\Projects\ProjectsRouter;
+use Reconmap\Controllers\Reports\ReportsRouter;
 use Reconmap\Controllers\Targets\TargetsRouter;
+use Reconmap\Controllers\Tasks\TasksRouter;
 use Reconmap\Controllers\Users\UsersLoginController;
+use Reconmap\Controllers\Users\UsersRouter;
+use Reconmap\Controllers\Vulnerabilities\VulnerabilitiesRouter;
 
 class ApiRouter extends Router
 {
@@ -47,6 +54,7 @@ class ApiRouter extends Router
             (new AuditLogRouter)->mapRoutes($router);
             (new ProjectsRouter)->mapRoutes($router);
             (new TargetsRouter)->mapRoutes($router);
+            (new IntegrationsRouter)->mapRoutes($router);
         })
             ->middleware($corsMiddleware)
             ->middleware($authMiddleware);

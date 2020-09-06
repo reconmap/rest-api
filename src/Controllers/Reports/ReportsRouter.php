@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Reconmap;
+namespace Reconmap\Controllers\Reports;
 
 use League\Route\RouteCollectionInterface;
 use Reconmap\Controllers\Reports\DeleteReportController;

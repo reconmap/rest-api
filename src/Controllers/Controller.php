@@ -4,21 +4,28 @@ declare(strict_types=1);
 
 namespace Reconmap\Controllers;
 
-use Firebase\JWT\JWT;
-use League\Route\Http\Exception\ForbiddenException;
+use League\Plates\Engine;
 use Monolog\Logger;
-use Psr\Http\Message\ServerRequestInterface;
+use Psr\Container\ContainerInterface;
+use Reconmap\Services\ContainerConsumer;
 
-abstract class Controller
+abstract class Controller implements ContainerConsumer
 {
-	protected $logger;
-	protected $db;
-	protected $template;
+	protected Logger $logger;
+	protected \mysqli $db;
+	protected Engine $template;
+	protected ?ContainerInterface $container;
 
-	public function __construct(Logger $logger, \mysqli $db, \League\Plates\Engine $template)
+	public function __construct(Logger $logger, \mysqli $db, Engine $template)
 	{
 		$this->logger = $logger;
 		$this->db = $db;
 		$this->template = $template;
+		$this->container = null;
+	}
+
+	public function setContainer(ContainerInterface $container): void
+	{
+		$this->container = $container;
 	}
 }

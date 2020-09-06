@@ -8,7 +8,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditLogAction;
 use Reconmap\Repositories\UserRepository;
-use Reconmap\Services\AuditLogService;
+use Reconmap\Services\ActivityPublisherService;
 
 class DeleteUserController extends Controller
 {
@@ -28,7 +28,7 @@ class DeleteUserController extends Controller
 
 	private function auditAction(int $loggedInUserId, int $userId): void
 	{
-		$auditLogService = new AuditLogService($this->db);
-		$auditLogService->insert($loggedInUserId, AuditLogAction::USER_DELETED, ['type' => 'user', 'id' => $userId]);
+		$activityPublisherService = $this->container->get(ActivityPublisherService::class);
+		$activityPublisherService->publish($loggedInUserId, AuditLogAction::USER_DELETED, ['type' => 'user', 'id' => $userId]);
 	}
 }

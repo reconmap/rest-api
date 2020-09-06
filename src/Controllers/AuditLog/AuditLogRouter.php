@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Reconmap;
+namespace Reconmap\Controllers\AuditLog;
 
 use League\Route\RouteCollectionInterface;
 use Reconmap\Controllers\AuditLog\GetAuditLogStatsController;
