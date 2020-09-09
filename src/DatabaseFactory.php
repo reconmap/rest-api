@@ -4,16 +4,18 @@ declare(strict_types=1);
 
 namespace Reconmap;
 
+use Reconmap\Services\Config;
+
 class DatabaseFactory
 {
 
-    static public function createConnection()
+    static public function createConnection(Config $config)
     {
         $driver = new \mysqli_driver();
         $driver->report_mode = MYSQLI_REPORT_ALL ^ MYSQLI_REPORT_INDEX;
 
-        // @todo pull credentials from env variables
-        $db = new \mysqli('db', 'reconmapper', 'reconmapped', 'reconmap');
+        $dbSettings = $config->getSettings('database');
+        $db = new \mysqli($dbSettings['host'], $dbSettings['username'], $dbSettings['password'], $dbSettings['name']);
         return $db;
     }
 }

@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 define('RECONMAP_APP_DIR', realpath('../'));
 
-require '../vendor/autoload.php';
+require RECONMAP_APP_DIR . '/vendor/autoload.php';
 
 use League\Container\Container;
-use League\Container\ContainerAwareInterface;
 use League\Route\Http\Exception\NotFoundException;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
-use Psr\Container\ContainerInterface;
 use Reconmap\ApiRouter;
 use Reconmap\DatabaseFactory;
 use Reconmap\Services\Config;
@@ -36,7 +34,7 @@ $container->add(Logger::class, function () use ($logger) {
 });
 $container->add(Config::class, $config);
 $container->add(Container::class, $container);
-$container->add(\mysqli::class, DatabaseFactory::createConnection());
+$container->add(\mysqli::class, DatabaseFactory::createConnection($config));
 $container->add(\League\Plates\Engine::class, function () {
 	$templates = new \League\Plates\Engine(RECONMAP_APP_DIR . '/resources/templates');
 	return $templates;
@@ -57,4 +55,3 @@ try {
 }
 
 (new \Laminas\HttpHandlerRunner\Emitter\SapiEmitter)->emit($response);
-

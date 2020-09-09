@@ -1,4 +1,10 @@
 {
+	"database": {
+		"host": "db",
+		"username": "reconmapper",
+		"password": "reconmapped",
+		"name": "reconmap"
+	},
 	"smtp": {
 		"host": "just.another.smtp.server",
 		"port": 587,
