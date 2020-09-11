@@ -5,3 +5,4 @@ config.json
 data/*
 .phpunit.result.cache
 clover.xml
+.idea
