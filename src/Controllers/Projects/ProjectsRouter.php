@@ -5,18 +5,7 @@ declare(strict_types=1);
 namespace Reconmap\Controllers\Projects;
 
 use League\Route\RouteCollectionInterface;
-use Reconmap\Controllers\Projects\AddProjectUserController;
-use Reconmap\Controllers\Projects\DeleteProjectController;
-use Reconmap\Controllers\Projects\GetProjectController;
-use Reconmap\Controllers\Projects\GetProjectsController;
-use Reconmap\Controllers\Projects\GetProjectTargetsController;
-use Reconmap\Controllers\Projects\GetProjectTasksController;
-use Reconmap\Controllers\Projects\CloneProjectController;
-use Reconmap\Controllers\Projects\DeleteProjectUserController;
-use Reconmap\Controllers\Projects\GetProjectUsersController;
-use Reconmap\Controllers\Projects\GetProjectVulnerabilitiesController;
 use Reconmap\Controllers\Tasks\CreateTaskController;
-use Reconmap\Controllers\Projects\ImportTemplateController;
 
 class ProjectsRouter
 {

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Reconmap\Controllers\Projects;
 
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\ProjectRepository;

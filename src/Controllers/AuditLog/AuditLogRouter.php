@@ -5,9 +5,6 @@ declare(strict_types=1);
 namespace Reconmap\Controllers\AuditLog;
 
 use League\Route\RouteCollectionInterface;
-use Reconmap\Controllers\AuditLog\GetAuditLogStatsController;
-use Reconmap\Controllers\AuditLog\ExportAuditLogController;
-use Reconmap\Controllers\AuditLog\GetAuditLogController;
 
 class AuditLogRouter
 {

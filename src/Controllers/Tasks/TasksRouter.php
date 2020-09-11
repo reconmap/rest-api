@@ -5,12 +5,6 @@ declare(strict_types=1);
 namespace Reconmap\Controllers\Tasks;
 
 use League\Route\RouteCollectionInterface;
-use Reconmap\Controllers\Tasks\GetTaskResultsController;
-use Reconmap\Controllers\Tasks\GetTaskController;
-use Reconmap\Controllers\Tasks\GetTasksController;
-use Reconmap\Controllers\Tasks\UploadTaskResultController;
-use Reconmap\Controllers\Tasks\DeleteTaskController;
-use Reconmap\Controllers\Tasks\UpdateTaskController;
 
 class TasksRouter
 {

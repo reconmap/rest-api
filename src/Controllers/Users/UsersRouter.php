@@ -5,13 +5,6 @@ declare(strict_types=1);
 namespace Reconmap\Controllers\Users;
 
 use League\Route\RouteCollectionInterface;
-use Reconmap\Controllers\Users\CreateUserController;
-use Reconmap\Controllers\Users\DeleteUserController;
-use Reconmap\Controllers\Users\GetUserController;
-use Reconmap\Controllers\Users\GetUserActivityController;
-use Reconmap\Controllers\Users\GetUsersController;
-use Reconmap\Controllers\Users\UpdateUserController;
-use Reconmap\Controllers\Users\UsersLogoutController;
 
 class UsersRouter
 {

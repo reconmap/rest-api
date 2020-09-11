@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Reconmap\Controllers\AuditLog;
 
+use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
@@ -23,7 +24,7 @@ class GetAuditLogController extends Controller
 
 		$pageCount = ceil($count / 20);
 
-		$response = new \GuzzleHttp\Psr7\Response;
+		$response = new Response;
 		$response->getBody()->write(json_encode($auditLog));
 		return $response
 			->withHeader('Access-Control-Expose-Headers', 'X-Page-Count')

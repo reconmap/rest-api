@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Reconmap\Controllers\Reports;
 
+use GuzzleHttp\Psr7\Stream;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use GuzzleHttp\Psr7\Stream;
 use Reconmap\Repositories\ReportRepository;
 
 class DownloadReportController extends Controller

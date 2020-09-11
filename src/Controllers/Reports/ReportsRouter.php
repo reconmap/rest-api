@@ -5,10 +5,6 @@ declare(strict_types=1);
 namespace Reconmap\Controllers\Reports;
 
 use League\Route\RouteCollectionInterface;
-use Reconmap\Controllers\Reports\DeleteReportController;
-use Reconmap\Controllers\Reports\GenerateReportController;
-use Reconmap\Controllers\Reports\DownloadReportController;
-use Reconmap\Controllers\Reports\GetReportsController;
 
 class ReportsRouter
 {

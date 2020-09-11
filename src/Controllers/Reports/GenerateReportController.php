@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Reconmap\Controllers\Reports;
 
+use Dompdf\Dompdf;
+use Laminas\Diactoros\CallbackStream;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\ProjectRepository;
-use Reconmap\Repositories\TaskRepository;
-use Reconmap\Repositories\VulnerabilityRepository;
-use Dompdf\Dompdf;
-use Laminas\Diactoros\CallbackStream;
 use Reconmap\Repositories\ReportRepository;
 use Reconmap\Repositories\TargetRepository;
+use Reconmap\Repositories\TaskRepository;
 use Reconmap\Repositories\UserRepository;
+use Reconmap\Repositories\VulnerabilityRepository;
 
 class GenerateReportController extends Controller
 {

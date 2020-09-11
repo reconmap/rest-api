@@ -5,11 +5,6 @@ declare(strict_types=1);
 namespace Reconmap\Controllers\Vulnerabilities;
 
 use League\Route\RouteCollectionInterface;
-use Reconmap\Controllers\Vulnerabilities\GetVulnerabilitiesStatsController;
-use Reconmap\Controllers\Vulnerabilities\GetVulnerabilitiesController;
-use Reconmap\Controllers\Vulnerabilities\GetVulnerabilityController;
-use Reconmap\Controllers\Vulnerabilities\DeleteVulnerabilityController;
-use Reconmap\Controllers\Vulnerabilities\UpdateVulnerabilityController;
 
 class VulnerabilitiesRouter
 {
