@@ -44,7 +44,6 @@ If everything went ok you should be able to use curl or any other HTTP client (e
 
 ```sh
 $ curl http://localhost:8080
-Reconmap API
 ```
 
 ## How to contribute

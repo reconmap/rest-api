@@ -1,6 +1,7 @@
 vendor
 logs/*
-db-data
+data-redis
+data-mysql
 config.json
 data/*
 .phpunit.result.cache

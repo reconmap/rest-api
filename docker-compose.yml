@@ -1,28 +1,34 @@
 version: '3.6'
 
 services:
-    db:
-        image: mysql:8.0
-        volumes:
-            - db_data:/var/lib/mysql
-            - ./docker/database/initdb.d:/docker-entrypoint-initdb.d
-        restart: unless-stopped
-        ports:
-            - 3306:3306
-        environment:
-            MYSQL_ROOT_PASSWORD: reconmuppet
-            MYSQL_DATABASE: reconmap
-            MYSQL_USER: reconmapper
-            MYSQL_PASSWORD: reconmapped
-    svc:
-        build:
-            context: docker/service
-            dockerfile: Dockerfile
-        volumes:
-            - "$PWD:/var/www/webapp"
-        ports:
-            - 8080:80
-
-volumes:
-    db_data:
+  redis:
+    container_name: reconmap-backend-redis
+    image: redis:6.0
+    ports:
+      - 6379:6379
+    volumes:
+      - ./data-redis:/data
+  db:
+    container_name: reconmap-backend-db
+    image: mysql:8.0
+    volumes:
+      - ./data-mysql:/var/lib/mysql
+      - ./docker/database/initdb.d:/docker-entrypoint.sh-initdb.d
+    restart: unless-stopped
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: reconmuppet
+      MYSQL_DATABASE: reconmap
+      MYSQL_USER: reconmapper
+      MYSQL_PASSWORD: reconmapped
+  svc:
+    container_name: reconmap-backend-api
+    build:
+      context: docker/service
+      dockerfile: Dockerfile
+    volumes:
+      - "$PWD:/var/www/webapp"
+    ports:
+      - 8080:80
 

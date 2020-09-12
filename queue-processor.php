@@ -2,24 +2,21 @@
 
 declare(strict_types=1);
 
-define('RECONMAP_APP_DIR', realpath('../'));
+define('RECONMAP_APP_DIR', realpath(__DIR__));
 
 require RECONMAP_APP_DIR . '/vendor/autoload.php';
 
-use GuzzleHttp\Psr7\Response;
-use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use League\Container\Container;
 use League\Plates\Engine;
-use League\Route\Http\Exception\NotFoundException;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
-use Reconmap\ApiRouter;
 use Reconmap\DatabaseFactory;
+use Reconmap\QueueProcessor;
 use Reconmap\Services\Config;
 use Reconmap\Services\ConfigConsumer;
 use Reconmap\Services\ContainerConsumer;
 
-$logger = new Logger('http');
+$logger = new Logger('cron');
 $logger->pushHandler(new StreamHandler(RECONMAP_APP_DIR . '/logs/application.log', Logger::DEBUG));
 
 $config = new Config(RECONMAP_APP_DIR . '/config.json');
@@ -46,22 +43,12 @@ $container->add(\Redis::class, function () {
     return $redis;
 });
 $container->add(Engine::class, function () {
-    $templates = new Engine(RECONMAP_APP_DIR . '/resources/templates');
-    return $templates;
+    return new Engine(RECONMAP_APP_DIR . '/resources/templates');
 });
 
-$router = new ApiRouter();
-$router->mapRoutes($container, $logger);
+/** @var QueueProcessor $queueProcessor */
+$queueProcessor = $container->get(QueueProcessor::class);
+$exitCode = $queueProcessor->run();
 
-try {
-    $request = GuzzleHttp\Psr7\ServerRequest::fromGlobals();
-    $response = $router->dispatch($request);
-} catch (NotFoundException $e) {
-    $logger->error($e->getMessage());
-    $response = (new Response)->withStatus(404);
-} catch (Exception $e) {
-    $logger->error($e->getMessage());
-    $response = (new Response)->withStatus(500);
-}
+exit($exitCode);
 
-(new SapiEmitter)->emit($response);
