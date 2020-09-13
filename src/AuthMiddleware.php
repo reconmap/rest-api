@@ -8,14 +8,14 @@ use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
 use League\Route\Http\Exception\ForbiddenException;
 use Monolog\Logger;
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 class AuthMiddleware implements MiddlewareInterface
 {
-    private $logger;
+    private Logger $logger;
 
     public function __construct(Logger $logger)
     {

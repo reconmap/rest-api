@@ -7,10 +7,10 @@ namespace Reconmap\Repositories\QueryBuilders;
 class SelectQueryBuilder
 {
     private string $columns;
-    private $from;
+    private string $from;
     private ?string $where = null;
-    private $orderBy;
-    private $limit;
+    private ?string $orderBy;
+    private ?string $limit;
 
     public function __construct(string $from)
     {

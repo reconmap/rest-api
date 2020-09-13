@@ -11,19 +11,21 @@ class Cvss
         switch (true) {
             case $score == 0:
                 $severity = 'none';
-            break;
+                break;
             case $score >= 0.1 && $score <= 3.9:
                 $severity = 'low';
-            break;
+                break;
             case $score >= 4.0 && $score <= 6.9:
                 $severity = 'medium';
-            break;
+                break;
             case $score >= 7.0 && $score <= 8.9:
                 $severity = 'high';
-            break;
+                break;
             case $score >= 9.0:
                 $severity = 'critical';
-            break;
+                break;
+            default:
+                throw new \InvalidArgumentException("Invalid CVSS score: $score");
         }
         return $severity;
     }
