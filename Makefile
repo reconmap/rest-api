@@ -10,7 +10,7 @@ build:
 	docker-compose build
 
 .PHONY: tests
-tests: run
+tests: start
 	docker-compose run --rm -w /var/www/webapp --entrypoint ./run-tests.sh svc
 
 .PHONY: db-reset
