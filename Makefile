@@ -9,10 +9,6 @@ prepare: build
 build:
 	docker-compose build
 
-.PHONY: run
-run: 
-	docker-compose up -d
-
 .PHONY: tests
 tests: run
 	docker-compose run --rm -w /var/www/webapp --entrypoint ./run-tests.sh svc
@@ -21,6 +17,10 @@ tests: run
 db-reset:
 	cat $(wildcard docker/database/initdb.d/*.sql) | docker container exec -i $(shell docker-compose ps -q db) mysql -uroot -preconmuppet reconmap
 	
+.PHONY: start
+start:
+	docker-compose up -d
+
 .PHONY: stop
 stop:
 	docker-compose stop

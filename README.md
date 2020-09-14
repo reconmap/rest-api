@@ -27,17 +27,16 @@ The API specs have been documented using [OpenAPI](openapi.yaml). You can use th
 
 ## Build instructions
 
-The first thing you need to do is build the containers and prepare the app. This can be achieved by invoking the default make target.
-you need to build and start the containers:
+The first thing you need to do is build the containers and prepare the app. This can be achieved by invoking the default make target:
 
 ```sh
 $ make
 ```
 
-Once the containers are built and the app prepared you can run the docker services.
+Once the containers are built, and the app prepared, you can run the docker services with the following command:
 
 ```sh
-$ make run
+$ make start
 ```
 
 If everything went ok you should be able to use curl or any other HTTP client (eg your browser) to call the API:

@@ -40,6 +40,9 @@ $container->add(\Redis::class, function () {
     if (false === $redis->connect('redis', 6379)) {
         throw new Exception('Unable to connect to Redis');
     }
+    if (false === $redis->auth(['default', 'REconDIS'])) {
+        throw new Exception('Unable to authenticate to Redis');
+    }
     return $redis;
 });
 $container->add(Engine::class, function () {

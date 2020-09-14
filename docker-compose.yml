@@ -4,6 +4,7 @@ services:
   redis:
     container_name: reconmap-backend-redis
     image: redis:6.0
+    command: redis-server --requirepass REconDIS
     ports:
       - 6379:6379
     volumes:

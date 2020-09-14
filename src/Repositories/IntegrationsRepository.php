@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
-use Psr\Container\ContainerInterface;
+use League\Container\Container;
 use Reconmap\Integrations\GitterIntegration;
 use Reconmap\Integrations\Integration;
 
@@ -12,7 +12,7 @@ class IntegrationsRepository
 {
     private array $integrations;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(Container $container)
     {
         $this->integrations = [
             $container->get(GitterIntegration::class)
