@@ -13,6 +13,11 @@ build:
 tests: start
 	docker-compose run --rm -w /var/www/webapp --entrypoint ./run-tests.sh svc
 
+.PHONY: security-tests
+security-tests:
+	docker-compose run --rm -w /var/www/webapp --entrypoint composer svc require sensiolabs/security-checker
+	docker-compose run --rm -w /var/www/webapp --entrypoint ./vendor/bin/security-checker svc security:check
+
 .PHONY: db-reset
 db-reset:
 	cat $(wildcard docker/database/initdb.d/*.sql) | docker container exec -i $(shell docker-compose ps -q db) mysql -uroot -preconmuppet reconmap
