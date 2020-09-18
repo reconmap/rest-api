@@ -8,6 +8,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\Project;
 use Reconmap\Repositories\ProjectRepository;
+use Reconmap\Repositories\ProjectUserRepository;
 use Reconmap\Repositories\TaskRepository;
 
 class ImportTemplateController extends Controller
@@ -25,12 +26,13 @@ class ImportTemplateController extends Controller
         */
         $importXml = $importFile->getStream()->getContents();
 
-        $params = $request->getParsedBody();
         $userId = $request->getAttribute('userId');
 
         $projectRepository = new ProjectRepository($this->db);
-
+        $projectUserRepository = new ProjectUserRepository($this->db);
         $taskRepository = new TaskRepository($this->db);
+
+        $projectsImported = [];
 
         $xml = simplexml_load_string($importXml);
         foreach ($xml->projects->project as $xmlProject) {
@@ -40,11 +42,15 @@ class ImportTemplateController extends Controller
             $project->isTemplate = (bool)$xmlProject['template'];
             $projectId = $projectRepository->insert($project);
 
+            $projectUserRepository->create($projectId, $userId);
+
+            $projectsImported[] = $project;
+
             foreach ($xmlProject->tasks->task as $task) {
                 $taskRepository->insert($projectId, 'none', (string)$task->name, (string)$task->description);
             }
         }
 
-        return ['success' => true];
+        return ['projectsImported' => $projectsImported];
     }
 }
