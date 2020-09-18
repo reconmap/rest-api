@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Reconmap\Controllers\Reports;
 
 use Dompdf\Dompdf;
+use GuzzleHttp\Psr7\Response;
 use Laminas\Diactoros\CallbackStream;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -19,71 +20,85 @@ use Reconmap\Repositories\VulnerabilityRepository;
 class GenerateReportController extends Controller
 {
 
-	public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
-	{
-		$id = (int)$args['id'];
-		$params = $request->getQueryParams();
-		$format = $params['format'] ?? 'html';
+    public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
+    {
+        $id = (int)$args['id'];
+        $params = $request->getQueryParams();
+        $format = $params['format'] ?? 'html';
 
-		$userId = $request->getAttribute('userId');
+        $userId = $request->getAttribute('userId');
 
-		$repository = new ProjectRepository($this->db);
-		$project = $repository->findById($id);
+        $repository = new ProjectRepository($this->db);
+        $project = $repository->findById($id);
 
-		$date = date('Y-m-d');
+        $date = date('Y-m-d');
 
-		$taskRepository = new TaskRepository($this->db);
-		$tasks = $taskRepository->findByProjectId($id);
+        $taskRepository = new TaskRepository($this->db);
+        $tasks = $taskRepository->findByProjectId($id);
 
-		$usersRepository = new UserRepository($this->db);
-		$users = $usersRepository->findByProjectId($id);
+        $usersRepository = new UserRepository($this->db);
+        $users = $usersRepository->findByProjectId($id);
 
-		$targetsRepository = new TargetRepository($this->db);
-		$targets = $targetsRepository->findByProjectId($id);
+        $targetsRepository = new TargetRepository($this->db);
+        $targets = $targetsRepository->findByProjectId($id);
 
-		$vulnerabilityRepository = new VulnerabilityRepository($this->db);
-		$vulnerabilities = $vulnerabilityRepository->findByProjectId($id);
+        $vulnerabilityRepository = new VulnerabilityRepository($this->db);
+        $vulnerabilities = $vulnerabilityRepository->findByProjectId($id);
 
-		$html = $this->template->render('projects/report', [
-			'project' => $project,
-			'date' => $date,
-			'users' => $users,
-			'targets' => $targets,
-			'tasks' => $tasks,
-			'vulnerabilities' => $vulnerabilities
-		]);
+        $findingsOverview = array_map(function (string $severity) use ($vulnerabilities) {
+            return [
+                'severity' => $severity,
+                'count' => array_reduce($vulnerabilities, function (int $carry, array $item) use ($severity) {
+                    return $carry + ($item['risk'] == $severity ? 1 : 0);
+                }, 0)
+            ];
+        }, ['low', 'medium', 'high', 'critical']);
+        usort($findingsOverview, function ($a, $b) {
+            return $b['count'] <=> $a['count'];
+        });
 
-		$reportRepository = new ReportRepository($this->db);
-		$reportId = $reportRepository->insert($id, $userId, $format);
+        $html = $this->template->render('projects/report', [
+            'project' => $project,
+            'version' => '1.0',
+            'date' => $date,
+            'users' => $users,
+            'targets' => $targets,
+            'tasks' => $tasks,
+            'vulnerabilities' => $vulnerabilities,
+            'findingsOverview' => $findingsOverview
+        ]);
 
-		$response = new \GuzzleHttp\Psr7\Response;
+        $reportRepository = new ReportRepository($this->db);
+        $reportId = $reportRepository->insert($id, $userId, $format);
 
-		$filename = sprintf("report-%d.%s", $reportId, $format);
+        $response = new Response;
 
-		if ($format === 'html') {
-			file_put_contents(RECONMAP_APP_DIR . '/data/' . $filename, $html);
+        $filename = sprintf("report-%d.%s", $reportId, $format);
 
-			$response = new \GuzzleHttp\Psr7\Response;
-			$response->getBody()->write($html);
-			return $response
-				->withHeader('Content-type', 'text/html');
-		} else {
-			$dompdf = new Dompdf();
-			$dompdf->loadHtml($html);
+        if ($format === 'html') {
+            file_put_contents(RECONMAP_APP_DIR . '/data/' . $filename, $html);
 
-			$dompdf->setPaper('A4', 'landscape');
-			$dompdf->render();
-			file_put_contents(RECONMAP_APP_DIR . '/data/' . $filename, $dompdf->output());
+            $response = new Response;
+            $response->getBody()->write($html);
+            return $response
+                ->withHeader('Content-type', 'text/html');
+        } else {
+            $dompdf = new Dompdf();
+            $dompdf->loadHtml($html);
 
-			$body = new CallbackStream(function () use ($dompdf) {
-				return $dompdf->output();
-			});
-			$fileName = 'report.pdf';
-			return $response
-				->withBody($body)
-				->withHeader('Access-Control-Expose-Headers', 'Content-Disposition')
-				->withHeader('Content-Disposition', 'attachment; filename="' . $fileName . '";')
-				->withHeader('Content-type', 'application/pdf');
-		}
-	}
+            $dompdf->setPaper('A4', 'landscape');
+            $dompdf->render();
+            file_put_contents(RECONMAP_APP_DIR . '/data/' . $filename, $dompdf->output());
+
+            $body = new CallbackStream(function () use ($dompdf) {
+                return $dompdf->output();
+            });
+            $fileName = 'report.pdf';
+            return $response
+                ->withBody($body)
+                ->withHeader('Access-Control-Expose-Headers', 'Content-Disposition')
+                ->withHeader('Content-Disposition', 'attachment; filename="' . $fileName . '";')
+                ->withHeader('Content-type', 'application/pdf');
+        }
+    }
 }
