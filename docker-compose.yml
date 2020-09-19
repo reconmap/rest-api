@@ -14,7 +14,7 @@ services:
     image: mysql:8.0
     volumes:
       - ./data-mysql:/var/lib/mysql
-      - ./docker/database/initdb.d:/docker-entrypoint.sh-initdb.d
+      - ./docker/database/initdb.d:/docker-entrypoint-initdb.d
     restart: unless-stopped
     ports:
       - 3306:3306
