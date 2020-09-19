@@ -28,14 +28,26 @@ class ImportTemplateController extends Controller
 
         $userId = $request->getAttribute('userId');
 
-        $projectRepository = new ProjectRepository($this->db);
-        $projectUserRepository = new ProjectUserRepository($this->db);
-        $taskRepository = new TaskRepository($this->db);
-
         $projectsImported = [];
 
         $xml = simplexml_load_string($importXml);
         foreach ($xml->projects->project as $xmlProject) {
+            $project = $this->importProject($xmlProject, $userId);
+            if ($project) {
+                $projectsImported[] = $project;
+            }
+        }
+
+        return ['projectsImported' => $projectsImported];
+    }
+
+    private function importProject(\SimpleXMLElement $xmlProject, int $userId): ?Project
+    {
+        $projectRepository = new ProjectRepository($this->db);
+        $projectUserRepository = new ProjectUserRepository($this->db);
+        $taskRepository = new TaskRepository($this->db);
+
+        try {
             $project = new Project;
             $project->name = (string)$xmlProject->name;
             $project->description = (string)$xmlProject->description;
@@ -49,8 +61,12 @@ class ImportTemplateController extends Controller
             foreach ($xmlProject->tasks->task as $task) {
                 $taskRepository->insert($projectId, 'none', (string)$task->name, (string)$task->description);
             }
+
+            return $project;
+        } catch (\Exception $e) {
+            $this->logger->error($e->getMessage());
         }
 
-        return ['projectsImported' => $projectsImported];
+        return null;
     }
 }
