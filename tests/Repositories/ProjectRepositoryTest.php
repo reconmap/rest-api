@@ -19,7 +19,7 @@ class ProjectRepositoryTest extends TestCase
     public function testFindTemplateProjectsReturnsNumberOfTasks()
     {
         $projects = $this->subject->findTemplateProjects(1);
-        $this->assertCount(2, $projects);
-        $this->assertEquals(24, $projects[1]['num_tasks']);
+        $this->assertCount(1, $projects);
+        $this->assertEquals(3, $projects[0]['num_tasks']);
     }
 }
