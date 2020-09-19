@@ -137,18 +137,9 @@
                     <name>Check for Buffer overflow</name>
                 </task>
             </tasks>
-            (3, NULL, '', ''),
-            (3, NULL, '', ''),
-            (3, NULL, '', ''),
-            (3, NULL, '', ''),
-            (3, NULL, '', ''),
-            (3, NULL, '', ''),
-            (3, NULL, '', ''),
-            (3, NULL, '',
-            ''),
-            (3, NULL, '', ''),
-            (3, NULL, '', '')
-
+        </project>
+        <project template="true">
+            <name>Webapp pentesting project by https://hackercombat.com/</name>
             <tasks>
                 <task>
                     <name>Contact Form Testing</name>
