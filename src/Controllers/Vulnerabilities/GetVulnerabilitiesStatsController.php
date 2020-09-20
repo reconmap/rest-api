@@ -11,11 +11,18 @@ use Reconmap\Repositories\VulnerabilityRepository;
 class GetVulnerabilitiesStatsController extends Controller
 {
 
-	public function __invoke(ServerRequestInterface $request): array
-	{
-		$repository = new VulnerabilityRepository($this->db);
-		$stats = $repository->findCountByRisk();
+    public function __invoke(ServerRequestInterface $request): array
+    {
+        $params = $request->getQueryParams();
 
-		return $stats;
-	}
+        $repository = new VulnerabilityRepository($this->db);
+
+        if (!isset($params['groupBy']) || $params['groupBy'] === 'risk') {
+            $stats = $repository->findCountByRisk();
+        } else {
+            $stats = $repository->findCountByCategory();
+        }
+
+        return $stats;
+    }
 }
