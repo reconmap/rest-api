@@ -67,6 +67,17 @@ CREATE TABLE target
     UNIQUE KEY (name)
 ) ENGINE = InnoDB;
 
+DROP TABLE IF EXISTS vulnerability_category;
+CREATE TABLE vulnerability_category
+(
+    id          INT UNSIGNED  NOT NULL AUTO_INCREMENT,
+    name        VARCHAR(200)  NOT NULL,
+    description VARCHAR(2000) NULL,
+
+    PRIMARY KEY (id),
+    UNIQUE KEY (name)
+) ENGINE = InnoDB;
+
 DROP TABLE IF EXISTS vulnerability;
 CREATE TABLE vulnerability
 (
@@ -74,6 +85,7 @@ CREATE TABLE vulnerability
     project_id      INT UNSIGNED                                       NOT NULL REFERENCES project,
     target_id       INT UNSIGNED                                       NULL REFERENCES target,
     reported_by_uid INT UNSIGNED                                       NOT NULL REFERENCES user,
+    category_id     INT UNSIGNED                                       NULL REFERENCES vulnerability_category,
     insert_ts       TIMESTAMP                                          NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_ts       TIMESTAMP                                          NULL ON UPDATE CURRENT_TIMESTAMP,
     summary         VARCHAR(200)                                       NOT NULL,
