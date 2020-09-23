@@ -17,7 +17,7 @@ components:
   schemas:
     User:
       type: object
-      required: 
+      required:
         - name
         - password
         - email
@@ -50,13 +50,231 @@ components:
           type: string
 
 security:
-  - BearerAuth: []
+  - BearerAuth: [ ]
 paths:
+
+  /auditlog:
+    get:
+      tags:
+        - Audit log
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+
+  /clients:
+    get:
+      tags:
+        - Clients
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+  '/clients/{id}':
+    get:
+      tags:
+        - Clients
+      parameters:
+        - name: id
+          in: path
+          description: Client ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: Succesfully retrieved
+    delete:
+      tags:
+        - Clients
+      parameters:
+        - name: id
+          in: path
+          description: Client ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: Succesfully deleted
+
+  /integrations:
+    get:
+      tags:
+        - Integrations
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+
+  /projects:
+    get:
+      tags:
+        - Projects
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+  '/projects/{id}':
+    get:
+      tags:
+        - Projects
+      parameters:
+        - name: id
+          in: path
+          description: Project ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: Succesfully retrieved
+    delete:
+      tags:
+        - Projects
+      parameters:
+        - name: id
+          in: path
+          description: Project ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: Succesfully deleted
+
+  /reports:
+    get:
+      tags:
+        - Reports
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+
+  /targets:
+    post:
+      tags:
+        - Targets
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Target'
+      responses:
+        '200':
+          description: User succesfully created response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                  password:
+                    type: string
+  '/targets/{id}':
+    get:
+      tags:
+        - Targets
+      parameters:
+        - name: id
+          in: path
+          description: Target ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: Succesfully retrieved
+    delete:
+      tags:
+        - Targets
+      parameters:
+        - name: id
+          in: path
+          description: Target ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: Succesfully deleted
+
+  /tasks:
+    get:
+      tags:
+        - Tasks
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+  '/tasks/{id}':
+    get:
+      tags:
+        - Tasks
+      parameters:
+        - name: id
+          in: path
+          description: Task ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: Succesfully retrieved
+    delete:
+      tags:
+        - Tasks
+      parameters:
+        - name: id
+          in: path
+          description: Task ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: Succesfully deleted
+
   /users/login:
     post:
       tags:
         - Users
-      security: []
+      security: [ ]
       requestBody:
         required: true
         content:
@@ -90,7 +308,7 @@ paths:
       tags:
         - Users
       security:
-        - BearerAuth: []
+        - BearerAuth: [ ]
       responses:
         '200':
           description: Succesful login response
@@ -107,7 +325,7 @@ paths:
       tags:
         - Users
       security:
-        - BearerAuth: []
+        - BearerAuth: [ ]
       requestBody:
         required: true
         content:
@@ -139,7 +357,7 @@ paths:
             type: integer
             format: int64
       security:
-        - BearerAuth: []
+        - BearerAuth: [ ]
       responses:
         '200':
           description: Succesful login response
@@ -152,61 +370,63 @@ paths:
                     type: string
                   password:
                     type: string
-
-  /targets:
-    post:
+    delete:
       tags:
-        - Targets
-      security:
-        - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Target'
-      responses:
-        '200':
-          description: User succesfully created response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  username:
-                    type: string
-                  password:
-                    type: string
-  '/targets/{id}':
-    get:
-      tags:
-        - Targets
+        - Users
       parameters:
         - name: id
           in: path
-          description: Target ID
+          description: User ID
           required: true
           schema:
             type: integer
             format: int64
       security:
-        - BearerAuth: []
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: Succesfully deleted
+
+  /vulnerabilities:
+    get:
+      tags:
+        - Vulnerabilities
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+  '/vulnerabilities/{id}':
+    get:
+      tags:
+        - Vulnerabilities
+      parameters:
+        - name: id
+          in: path
+          description: Vulnerability ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      security:
+        - BearerAuth: [ ]
       responses:
         '200':
           description: Succesfully retrieved
     delete:
       tags:
-        - Targets
+        - Vulnerabilities
       parameters:
         - name: id
           in: path
-          description: Target ID
+          description: Vulnerability ID
           required: true
           schema:
             type: integer
             format: int64
       security:
-        - BearerAuth: []
+        - BearerAuth: [ ]
       responses:
         '200':
           description: Succesfully deleted
+
