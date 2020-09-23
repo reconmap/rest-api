@@ -27,12 +27,29 @@ CREATE TABLE audit_log
     PRIMARY KEY (id)
 ) ENGINE = InnoDB;
 
+DROP TABLE IF EXISTS client;
+CREATE TABLE client
+(
+    id            INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    insert_ts     TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_ts     TIMESTAMP    NULL ON UPDATE CURRENT_TIMESTAMP,
+    name          VARCHAR(80)  NOT NULL COMMENT 'eg Company name',
+    url           VARCHAR(255) NULL,
+    contact_name  VARCHAR(200) NOT NULL,
+    contact_email VARCHAR(200) NOT NULL,
+    contact_phone VARCHAR(200) NOT NULL,
+
+    PRIMARY KEY (id),
+    UNIQUE KEY (name)
+) ENGINE = InnoDB;
+
 DROP TABLE IF EXISTS project;
 CREATE TABLE project
 (
     id          INT UNSIGNED  NOT NULL AUTO_INCREMENT,
     insert_ts   TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_ts   TIMESTAMP     NULL ON UPDATE CURRENT_TIMESTAMP,
+    client_id   INT UNSIGNED  NULL COMMENT 'Null when project is template' REFERENCES client,
     is_template BOOLEAN       NOT NULL DEFAULT FALSE,
     name        VARCHAR(200)  NOT NULL,
     description VARCHAR(2000) NULL,

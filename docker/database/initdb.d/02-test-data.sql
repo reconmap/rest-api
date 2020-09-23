@@ -11,9 +11,12 @@ TRUNCATE TABLE audit_log;
 INSERT INTO audit_log (user_id, client_ip, action)
 VALUES (1, INET_ATON('127.0.0.1'), 'Initialised system');
 
-INSERT INTO project (id, name, description, is_template)
-VALUES (1, 'Linux host template', 'Project template to show general linux host reconnaissance tasks', TRUE),
-       (2, 'Web server pentest project', 'Test project to show pentest tasks and reports', FALSE);
+INSERT INTO client (id, name, url, contact_name, contact_email, contact_phone)
+VALUES (1, 'Insecure Co.', 'http://in.se.cure', 'John Doe', 'John.Doe@in.se.cure', '+99 123 245 389');
+
+INSERT INTO project (id, client_id, name, description, is_template)
+VALUES (1, NULL, 'Linux host template', 'Project template to show general linux host reconnaissance tasks', TRUE),
+       (2, 1, 'Web server pentest project', 'Test project to show pentest tasks and reports', FALSE);
 
 INSERT INTO project_user (project_id, user_id)
 VALUES (2, 1),

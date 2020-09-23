@@ -12,6 +12,7 @@ use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\AuditLog\AuditLogRouter;
+use Reconmap\Controllers\Clients\ClientsRouter;
 use Reconmap\Controllers\Integrations\IntegrationsRouter;
 use Reconmap\Controllers\Projects\ProjectsRouter;
 use Reconmap\Controllers\Reports\ReportsRouter;
@@ -48,6 +49,7 @@ class ApiRouter extends Router
             ->middleware($corsMiddleware);
         $this->group('', function (RouteGroup $router): void {
             (new TasksRouter)->mapRoutes($router);
+            (new ClientsRouter)->mapRoutes($router);
             (new UsersRouter)->mapRoutes($router);
             (new ReportsRouter)->mapRoutes($router);
             (new VulnerabilitiesRouter)->mapRoutes($router);
