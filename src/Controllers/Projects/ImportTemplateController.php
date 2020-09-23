@@ -6,10 +6,12 @@ namespace Reconmap\Controllers\Projects;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
+use Reconmap\Models\AuditLogAction;
 use Reconmap\Models\Project;
 use Reconmap\Repositories\ProjectRepository;
 use Reconmap\Repositories\ProjectUserRepository;
 use Reconmap\Repositories\TaskRepository;
+use Reconmap\Services\AuditLogService;
 
 class ImportTemplateController extends Controller
 {
@@ -37,6 +39,8 @@ class ImportTemplateController extends Controller
                 $projectsImported[] = $project;
             }
         }
+
+        $this->auditAction($userId);
 
         return ['projectsImported' => $projectsImported];
     }
@@ -68,5 +72,11 @@ class ImportTemplateController extends Controller
         }
 
         return null;
+    }
+
+    private function auditAction(int $loggedInUserId): void
+    {
+        $auditLogService = new AuditLogService($this->db);
+        $auditLogService->insert($loggedInUserId, AuditLogAction::DATA_IMPORTED);
     }
 }
