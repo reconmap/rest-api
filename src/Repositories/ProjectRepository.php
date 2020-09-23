@@ -31,9 +31,12 @@ class ProjectRepository extends MysqlRepository
     {
         $sql = <<<SQL
         SELECT
-            *, (SELECT COUNT(*) FROM task WHERE project_id = project.id) AS num_tasks
-        FROM project
-        WHERE is_template = ?
+            p.*,
+            c.name AS client_name,
+            (SELECT COUNT(*) FROM task WHERE project_id = p.id) AS num_tasks
+        FROM project p
+        LEFT JOIN client c ON (c.id = p.client_id)
+        WHERE p.is_template = ?
         SQL;
         $stmt = $this->db->prepare($sql);
         $stmt->bind_param('i', $isTemplate);
