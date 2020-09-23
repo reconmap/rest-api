@@ -303,5 +303,122 @@
                 </task>
             </tasks>
         </project>
+        <project template="true">
+            <name>WAHH methodology by @bugcrowd</name>
+            <tasks>
+                <task>
+                    <name>Map the application</name>
+                    <description>
+                        - Explore visible content
+                        - Consult public resources
+                        - Discover hidden content
+                        - Discover default content
+                        - Enumerate identifier-specified functions
+                        - Test for debug parameters
+                    </description>
+                </task>
+                <task>
+                    <name>Analyse the application</name>
+                    <description>
+                        - Identify functionality
+                        - Identify data entry points
+                        - Identify the technologies used
+                        - Map the attack surface
+                    </description>
+                </task>
+                <task>
+                    <name>Test client-side controls</name>
+                    <description>
+                        - Test transmission of data via the client
+                        - Test client-side control over user input
+                        - Test thick-client components
+                    </description>
+                </task>
+                <task>
+                    <name>Test access controls</name>
+                    <description>
+                        - Understand the access control requirements
+                        - Testing with multiple accounts
+                        - Testing with limited access
+                        - Test for insecure access control methods
+                    </description>
+                </task>
+                <task>
+                    <name>Test for logic flaws</name>
+                    <description>
+                        - Identify the key attack surface
+                        - Test multistage processes
+                        - Test handling of incomplete input
+                        - Test trust boundaries
+                        - Test transaction logic
+                    </description>
+                </task>
+                <task>
+                    <name>Test the authentication mechanism</name>
+                    <description>
+                        - Understand the mechanism
+                        - Test password quality
+                        - Test for username enumeration
+                        - Test resilience to password guessing
+                        - Test any account recovery function
+                        - Test any remember me function
+                        - Test any impersonation function
+                        - Test username uniqueness
+                        - Test predictability of auto-generated credentials
+                        - Check for unsafe transmission of credentials
+                        - Test for logic flaws
+                        - Exploit any vulnerabilities to gain unauthorized access
+                    </description>
+                </task>
+                <task>
+                    <name>Test the session management mechanism</name>
+                    <description>
+                        - Understand the mechanism
+                        - Test tokens for meaning
+                        - Test tokens for predictability
+                        - Check for insecure transmission of tokens
+                        - Check for disclosure of tokens in logs
+                        - Check mapping of tokens to sessions
+                        - Test session termination
+                        - Check for session fixation
+                        - Check for XSRF
+                        - Check cookie scope
+                    </description>
+                </task>
+                <task>
+                    <name>Test for web server vulnerabilities</name>
+                    <description>
+                        - Test for default credentials
+                        - Test for default content
+                        - Test for dangerous HTTP methods
+                        - Test for proxy functionality
+                        - Test for virtual hosting misconfiguration
+                        - Test for web server software bugs
+                    </description>
+                </task>
+                <task>
+                    <name>Test for input-based vulnerabilities</name>
+                    <description>
+                        - Fuzz all request parameters
+                        - Test for SQL injection
+                        - Test for XSS and other response injection
+                        - Test for OS command injection
+                        - Test for path traversal
+                        - Test for script injection
+                        - Test for file inclusion
+                    </description>
+                </task>
+                <task>
+                    <name>Run misc checks</name>
+                    <description>
+                        - Check for DOM-based attacks
+                        - Check for frame injection
+                        - Check for local privacy vulnerabilities
+                        - Follow up any information leakage
+                        - Check for weak SSL ciphers
+                    </description>
+                </task>
+            </tasks>
+        </project>
     </projects>
 </reconmap>
