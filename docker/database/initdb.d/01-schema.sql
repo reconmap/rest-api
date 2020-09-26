@@ -37,7 +37,7 @@ CREATE TABLE client
     url           VARCHAR(255) NULL,
     contact_name  VARCHAR(200) NOT NULL,
     contact_email VARCHAR(200) NOT NULL,
-    contact_phone VARCHAR(200) NOT NULL,
+    contact_phone VARCHAR(200) NULL,
 
     PRIMARY KEY (id),
     UNIQUE KEY (name)

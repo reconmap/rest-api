@@ -15,6 +15,25 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
+    Client:
+      type: object
+      required:
+        - name
+        - contactName
+        - contactEmail
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        url:
+          type: string
+        contactName:
+          type: string
+        contactEmail:
+          type: string
+        contactPhone:
+          type: string
     User:
       type: object
       required:
@@ -64,6 +83,24 @@ paths:
           description: OK
 
   /clients:
+    post:
+      tags:
+        - Clients
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Client'
+      responses:
+        '200':
+          description: Client succesfully created response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
     get:
       tags:
         - Clients
