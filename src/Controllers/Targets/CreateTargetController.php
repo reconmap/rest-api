@@ -11,15 +11,13 @@ use Reconmap\Repositories\TargetRepository;
 class CreateTargetController extends Controller
 {
 
-	public function __invoke(ServerRequestInterface $request, array $args): array
-	{
-		$requestBody = json_decode((string)$request->getBody());
+    public function __invoke(ServerRequestInterface $request, array $args): array
+    {
+        $target = $this->getJsonBodyDecoded($request);
 
-		$target = $requestBody;
+        $repository = new TargetRepository($this->db);
+        $result = $repository->insert((int)$target->projectId, $target->name, $target->kind);
 
-		$repository = new TargetRepository($this->db);
-		$result = $repository->insert((int)$target->projectId, $target->name, $target->kind);
-
-		return ['success' => $result];
-	}
+        return ['success' => $result];
+    }
 }

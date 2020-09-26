@@ -15,10 +15,9 @@ class CreateUserController extends Controller
 {
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
-        $requestBody = json_decode((string)$request->getBody());
+        $user = $this->getJsonBodyDecoded($request);
 
-        $user = $requestBody;
-        $user->password = password_hash($requestBody->password, PASSWORD_DEFAULT);
+        $user->password = password_hash($user->password, PASSWORD_DEFAULT);
 
         $repository = new UserRepository($this->db);
         $userId = $repository->create($user);
@@ -27,7 +26,7 @@ class CreateUserController extends Controller
 
         $this->auditAction($loggedInUserId, $userId);
 
-        if ((bool)($requestBody->sendEmailToUser)) {
+        if ((bool)($user->sendEmailToUser)) {
             $emailBody = $this->template->render('users/newAccount', [
                 'user' => (array)$user
             ]);

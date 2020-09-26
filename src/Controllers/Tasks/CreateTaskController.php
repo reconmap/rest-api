@@ -11,16 +11,14 @@ use Reconmap\Repositories\TaskRepository;
 class CreateTaskController extends Controller
 {
 
-	public function __invoke(ServerRequestInterface $request, array $args): array
-	{
-		$projectId = (int)$args['id'];
-		$requestBody = json_decode((string)$request->getBody());
+    public function __invoke(ServerRequestInterface $request, array $args): array
+    {
+        $projectId = (int)$args['id'];
+        $task = $this->getJsonBodyDecoded($request);
 
-		$target = $requestBody;
+        $repository = new TaskRepository($this->db);
+        $result = $repository->insert($projectId, $task->parser, $task->name, $task->description);
 
-		$repository = new TaskRepository($this->db);
-		$result = $repository->insert($projectId, $target->parser, $target->name, $target->description);
-
-		return ['success' => $result];
-	}
+        return ['success' => $result];
+    }
 }

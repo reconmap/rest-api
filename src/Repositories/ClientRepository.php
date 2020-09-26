@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
+use Reconmap\Models\Client;
+
 class ClientRepository extends MysqlRepository
 {
     public function findAll(): array
     {
         $rs = $this->db->query('SELECT * FROM client LIMIT 20');
-        $targets = $rs->fetch_all(MYSQLI_ASSOC);
-        return $targets;
+        return $rs->fetch_all(MYSQLI_ASSOC);
     }
 
     public function findById(int $id): array
@@ -36,10 +37,10 @@ class ClientRepository extends MysqlRepository
         return $success;
     }
 
-    public function insert(int $projectId, string $name, string $kind): int
+    public function insert(Client $client): int
     {
-        $stmt = $this->db->prepare('INSERT INTO client (project_id, name, kind) VALUES (?, ?, ?)');
-        $stmt->bind_param('iss', $projectId, $name, $kind);
+        $stmt = $this->db->prepare('INSERT INTO client (name, url, contact_name, contact_email, contact_phone) VALUES (?, ?, ?, ?, ?)');
+        $stmt->bind_param('sssss', $client->name, $client->url, $client->contactName, $client->contactEmail, $client->contactPhone);
         return $this->executeInsertStatement($stmt);
     }
 }

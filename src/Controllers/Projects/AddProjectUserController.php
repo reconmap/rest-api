@@ -11,16 +11,14 @@ use Reconmap\Repositories\ProjectUserRepository;
 class AddProjectUserController extends Controller
 {
 
-	public function __invoke(ServerRequestInterface $request, array $args): array
-	{
-		$projectId = (int)$args['id'];
-		$requestBody = json_decode((string)$request->getBody());
+    public function __invoke(ServerRequestInterface $request, array $args): array
+    {
+        $projectId = (int)$args['id'];
+        $userData = $this->getJsonBodyDecoded($request);
 
-		$userData = $requestBody;
+        $repository = new ProjectUserRepository($this->db);
+        $result = $repository->create($projectId, (int)$userData->userId);
 
-		$repository = new ProjectUserRepository($this->db);
-		$result = $repository->create($projectId, (int)$userData->userId);
-
-		return ['success' => $result];
-	}
+        return ['success' => $result];
+    }
 }
