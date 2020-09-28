@@ -8,9 +8,19 @@ class TaskRepository extends MysqlRepository
 {
     public function findAll(): array
     {
-        $rs = $this->db->query('SELECT * FROM task LIMIT 20');
-        $projects = $rs->fetch_all(MYSQLI_ASSOC);
-        return $projects;
+        $sql = <<<SQL
+SELECT
+    t.id, t.project_id, t.insert_ts, t.update_ts, t.parser, t.name, t.description, t.completed,
+    t.assignee_uid, u.name AS assignee_name
+    FROM
+    task t LEFT JOIN user u ON (u.id = t.assignee_uid)
+ORDER BY
+    t.insert_ts DESC
+LIMIT 20
+SQL;
+
+        $rs = $this->db->query($sql);
+        return $rs->fetch_all(MYSQLI_ASSOC);
     }
 
     public function findById(int $id): array
