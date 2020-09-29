@@ -30,7 +30,7 @@ abstract class Controller implements ContainerConsumer
         $this->container = $container;
     }
 
-    public function getJsonBodyDecoded(ServerRequestInterface $request): string
+    public function getJsonBodyDecoded(ServerRequestInterface $request): object
     {
         return json_decode((string)$request->getBody());
     }

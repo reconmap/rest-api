@@ -12,9 +12,10 @@ class ProjectsRouter
 
     public function mapRoutes(RouteCollectionInterface $router): void
     {
+        $router->map('POST', '/templates', ImportTemplateController::class);
         $router->map('GET', '/projects', GetProjectsController::class);
         $router->map('GET', '/projects/{id:number}', GetProjectController::class);
-        $router->map('POST', '/projects', ImportTemplateController::class);
+        $router->map('POST', '/projects', CreateProjectController::class);
         $router->map('POST', '/projects/{id:number}/clone', CloneProjectController::class);
         $router->map('GET', '/projects/{id:number}/tasks', GetProjectTasksController::class);
         $router->map('POST', '/projects/{id:number}/tasks', CreateTaskController::class);

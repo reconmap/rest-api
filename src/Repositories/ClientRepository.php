@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
-use Reconmap\Models\Client;
-
 class ClientRepository extends MysqlRepository
 {
     public function findAll(): array
@@ -37,7 +35,7 @@ class ClientRepository extends MysqlRepository
         return $success;
     }
 
-    public function insert(Client $client): int
+    public function insert(object $client): int
     {
         $stmt = $this->db->prepare('INSERT INTO client (name, url, contact_name, contact_email, contact_phone) VALUES (?, ?, ?, ?, ?)');
         $stmt->bind_param('sssss', $client->name, $client->url, $client->contactName, $client->contactEmail, $client->contactPhone);

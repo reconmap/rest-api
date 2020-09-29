@@ -6,8 +6,8 @@ namespace Reconmap\Models;
 
 class Project
 {
-
+    public ?int $clientId;
     public string $name;
     public ?string $description;
-    public bool $isTemplate;
+    public bool $isTemplate = false;
 }

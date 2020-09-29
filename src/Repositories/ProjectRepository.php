@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
-use Reconmap\Models\Project;
-
 class ProjectRepository extends MysqlRepository
 {
     public function findAll(): array
@@ -72,10 +70,10 @@ class ProjectRepository extends MysqlRepository
         ];
     }
 
-    public function insert(Project $project): int
+    public function insert(object $project): int
     {
-        $stmt = $this->db->prepare('INSERT INTO project (name, description, is_template) VALUES (?, ?, ?)');
-        $stmt->bind_param('ssi', $project->name, $project->description, $project->isTemplate);
+        $stmt = $this->db->prepare('INSERT INTO project (client_id, name, description, is_template) VALUES (?, ?, ?, ?)');
+        $stmt->bind_param('issi', $project->clientId, $project->name, $project->description, $project->isTemplate);
         return $this->executeInsertStatement($stmt);
     }
 
