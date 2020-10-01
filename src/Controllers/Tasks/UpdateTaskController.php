@@ -11,20 +11,20 @@ use Reconmap\Repositories\TaskRepository;
 class UpdateTaskController extends Controller
 {
 
-	public function __invoke(ServerRequestInterface $request, array $args): array
-	{
-		$id = (int)$args['id'];
+    public function __invoke(ServerRequestInterface $request, array $args): array
+    {
+        $id = (int)$args['id'];
 
-		$requestBody = json_decode((string)$request->getBody(), true);
-		$column = array_keys($requestBody)[0];
-		$value = array_values($requestBody)[0];
+        $requestBody = json_decode((string)$request->getBody(), true);
+        $column = array_keys($requestBody)[0];
+        $value = array_values($requestBody)[0];
 
-		$success = false;
-		if (in_array($column, ['completed'])) {
-			$repository = new TaskRepository($this->db);
-			$success = $repository->updateById($id, $column, $value);
-		}
+        $success = false;
+        if (in_array($column, ['completed', 'assignee_uid'])) {
+            $repository = new TaskRepository($this->db);
+            $success = $repository->updateById($id, $column, $value);
+        }
 
-		return ['success' => $success];
-	}
+        return ['success' => $success];
+    }
 }

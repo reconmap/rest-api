@@ -58,7 +58,7 @@ SQL;
         return $success;
     }
 
-    public function updateById(int $id, string $column, string $value): bool
+    public function updateById(int $id, string $column, ?string $value): bool
     {
         $stmt = $this->db->prepare('UPDATE task SET ' . $column . ' = ? WHERE id = ?');
         $stmt->bind_param('si', $value, $id);
