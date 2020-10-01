@@ -32,8 +32,7 @@ class CreateUserController extends Controller
             ]);
 
             /** @var Redis $redis */
-            $redis = $this->container->get(Redis::class);
-            $result = $redis->lPush("email:queue",
+            $result = $this->container->get(Redis::class)->lPush("email:queue",
                 json_encode([
                     'subject' => 'Account created',
                     'to' => ['email' => $user->email, 'name' => $user->name],
