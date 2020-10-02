@@ -15,6 +15,9 @@ Project planning, implementation and documentation for security professionals an
 
 A running demo is available for you to try here: https://demo.reconmap.org
 
+User: admin
+Password: admin123
+
 ## Requirements
 
 - Docker
