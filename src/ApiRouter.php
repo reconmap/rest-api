@@ -25,16 +25,20 @@ use Reconmap\Controllers\Vulnerabilities\VulnerabilitiesRouter;
 class ApiRouter extends Router
 {
 
+    private function setupStrategy(Container $container)
+    {
+        $responseFactory = new ResponseFactory;
+        $strategy = new \League\Route\Strategy\JsonStrategy($responseFactory);
+        $strategy->setContainer($container);
+        $this->setStrategy($strategy);
+    }
+
     public function mapRoutes(Container $container, Logger $logger): void
     {
         $authMiddleware = new AuthMiddleware($logger);
         $corsMiddleware = new CorsMiddleware($logger);
 
-        $responseFactory = new ResponseFactory;
-        $strategy = new \League\Route\Strategy\JsonStrategy($responseFactory);
-        $strategy->setContainer($container);
-
-        $this->setStrategy($strategy);
+        $this->setupStrategy($container);
 
         $this->map('OPTIONS', '/{any:.*}', function (ServerRequestInterface $request): ResponseInterface {
             $response = new \GuzzleHttp\Psr7\Response;
