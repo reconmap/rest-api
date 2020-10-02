@@ -27,13 +27,15 @@ class GenerateReportControllerTest extends DatabaseTestCase
 
     public function resetDataFolder(): void
     {
-        $files = glob(RECONMAP_APP_DIR . '/data/*'); // get all file names
-        foreach ($files as $file) {
-            if (is_file($file)) {
-                unlink($file);
+        if(is_dir(RECONMAP_APP_DIR . '/data')) {
+            $files = glob(RECONMAP_APP_DIR . '/data/*'); // get all file names
+            foreach ($files as $file) {
+                if (is_file($file)) {
+                    unlink($file);
+                }
             }
+            rmdir(RECONMAP_APP_DIR . '/data');
         }
-        rmdir(RECONMAP_APP_DIR . '/data');
         mkdir(RECONMAP_APP_DIR . '/data', 0777);
     }
 
