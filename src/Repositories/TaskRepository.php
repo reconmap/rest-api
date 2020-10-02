@@ -4,20 +4,14 @@ declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
+use Reconmap\Repositories\QueryBuilders\SelectQueryBuilder;
+
 class TaskRepository extends MysqlRepository
 {
     public function findAll(): array
     {
-        $sql = <<<SQL
-SELECT
-    t.id, t.project_id, t.insert_ts, t.update_ts, t.parser, t.name, t.description, t.completed,
-    t.assignee_uid, u.name AS assignee_name
-    FROM
-    task t LEFT JOIN user u ON (u.id = t.assignee_uid)
-ORDER BY
-    t.insert_ts DESC
-LIMIT 20
-SQL;
+        $selectQueryBuilder = $this->getBaseSelectQueryBuilder();
+        $sql = $selectQueryBuilder->toSql();
 
         $rs = $this->db->query($sql);
         return $rs->fetch_all(MYSQLI_ASSOC);
@@ -37,7 +31,11 @@ SQL;
 
     public function findByProjectId(int $projectId): array
     {
-        $stmt = $this->db->prepare('SELECT * FROM task WHERE project_id = ?');
+        $selectQueryBuilder = $this->getBaseSelectQueryBuilder();
+        $selectQueryBuilder->setWhere('project_id = ?');
+        $sql = $selectQueryBuilder->toSql();
+
+        $stmt = $this->db->prepare($sql);
         $stmt->bind_param('i', $projectId);
         $stmt->execute();
         $rs = $stmt->get_result();
@@ -74,5 +72,15 @@ SQL;
         $stmt = $this->db->prepare('INSERT INTO task (project_id, parser, name, description) VALUES (?, ?, ?, ?)');
         $stmt->bind_param('isss', $projectId, $parser, $name, $description);
         return $this->executeInsertStatement($stmt);
+    }
+
+    private function getBaseSelectQueryBuilder(): SelectQueryBuilder
+    {
+        $queryBuilder = new SelectQueryBuilder('task t');
+        $queryBuilder->setColumns('t.id, t.project_id, t.insert_ts, t.update_ts, t.parser, t.name, t.description, t.completed, t.assignee_uid, u.name AS assignee_name');
+        $queryBuilder->addJoin('LEFT JOIN user u ON (u.id = t.assignee_uid)');
+        $queryBuilder->setOrderBy('t.insert_ts DESC');
+        $queryBuilder->setLimit('20');
+        return $queryBuilder;
     }
 }

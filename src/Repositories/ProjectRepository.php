@@ -9,8 +9,7 @@ class ProjectRepository extends MysqlRepository
     public function findAll(): array
     {
         $rs = $this->db->query('SELECT * FROM project LIMIT 20');
-        $projects = $rs->fetch_all(MYSQLI_ASSOC);
-        return $projects;
+        return $rs->fetch_all(MYSQLI_ASSOC);
     }
 
     public function findById(int $id): array
@@ -81,6 +80,17 @@ class ProjectRepository extends MysqlRepository
     {
         $stmt = $this->db->prepare('DELETE FROM project WHERE id = ?');
         $stmt->bind_param('i', $id);
+        $result = $stmt->execute();
+        $success = $result && 1 === $stmt->affected_rows;
+        $stmt->close();
+
+        return $success;
+    }
+
+    public function updateById(int $id, string $column, ?string $value): bool
+    {
+        $stmt = $this->db->prepare('UPDATE project SET ' . $column . ' = ? WHERE id = ?');
+        $stmt->bind_param('si', $value, $id);
         $result = $stmt->execute();
         $success = $result && 1 === $stmt->affected_rows;
         $stmt->close();
