@@ -29,16 +29,25 @@ class UsersLoginController extends Controller
 		$response = new \GuzzleHttp\Psr7\Response;
 
 		if (is_null($user) || !password_verify($password, $user['password'])) {
-			return $response
-				->withStatus(403);
+			return $response->withStatus(403);
 		}
 
 		unset($user['password']); // DOT NOT leak password in the response.
 
 		$this->auditAction($user);
+		$jwt = $this->getJWTPayload($user);
+		
+		$user['access_token'] = JWT::encode($jwt, AuthMiddleware::JWT_KEY, 'HS256');
 
+		$response->getBody()->write(json_encode($user));
+		return $response->withHeader('Content-type', 'application/json');
+	}
+	
+	private function getJWTPayload(array $user) : array {
+		
 		$now = time();
-		$jwt = [
+		
+		return [
 			'iss' => 'reconmap.org',
 			'aud' => 'reconmap.com',
 			'iat' => $now,
@@ -49,11 +58,7 @@ class UsersLoginController extends Controller
 				'role' => $user['role']
 			]
 		];
-		$user['access_token'] = JWT::encode($jwt, AuthMiddleware::JWT_KEY, 'HS256');
-
-		$response->getBody()->write(json_encode($user));
-		return $response
-			->withHeader('Content-type', 'application/json');
+		
 	}
 
 	private function auditAction(array $user): void
