@@ -37,18 +37,7 @@ class UsersLoginController extends Controller
 
 		$this->auditAction($user);
 
-		$now = time();
-		$jwt = [
-			'iss' => 'reconmap.org',
-			'aud' => 'reconmap.com',
-			'iat' => $now,
-			'nbf' => $now,
-			'exp' => $now + (60 * 60), // 1 hour
-			'data' => [
-				'id' => $user['id'],
-				'role' => $user['role']
-			]
-		];
+		$jwt = $this->getArrJWT();
 		$user['access_token'] = JWT::encode($jwt, AuthMiddleware::JWT_KEY, 'HS256');
 
 		$response->getBody()->write(json_encode($user));
@@ -62,4 +51,19 @@ class UsersLoginController extends Controller
 		$auditRepository = new AuditLogRepository($this->db);
 		$auditRepository->insert($user['id'], $clientIp, AuditLogAction::USER_LOGGED_IN);
 	}
+
+	public function getArrJWT($user) {
+        $now = time();
+        return [
+            'iss' => 'reconmap.org',
+            'aud' => 'reconmap.com',
+            'iat' => $now,
+            'nbf' => $now,
+            'exp' => $now + (60 * 60), // 1 hour
+            'data' => [
+                'id' => $user['id'],
+                'role' => $user['role']
+            ]
+        ];
+    }
 }
