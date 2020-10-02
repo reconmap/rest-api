@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace Reconmap;
 
+use GuzzleHttp\Psr7\MessageTrait;
+use GuzzleHttp\Psr7\Response;
 use Laminas\Diactoros\ResponseFactory;
 use League\Container\Container;
 use League\Route\RouteGroup;
 use League\Route\Router;
+use League\Route\Strategy\JsonStrategy;
 use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\AuditLog\AuditLogRouter;
 use Reconmap\Controllers\Clients\ClientsRouter;
 use Reconmap\Controllers\Integrations\IntegrationsRouter;
@@ -25,44 +27,76 @@ use Reconmap\Controllers\Vulnerabilities\VulnerabilitiesRouter;
 class ApiRouter extends Router
 {
 
-    private function setupStrategy(Container $container)
+    /**
+     * @var array|class[]
+     */
+    private array $mapables = [
+        TasksRouter::class,
+        ClientsRouter::class,
+        UsersRouter::class,
+        ReportsRouter::class,
+        VulnerabilitiesRouter::class,
+        AuditLogRouter::class,
+        ProjectsRouter::class,
+        TargetsRouter::class,
+        IntegrationsRouter::class,
+    ];
+
+    /**
+     * @var Logger
+     */
+    private Logger $logger;
+
+    /**
+     * @var AuthMiddleware
+     */
+    private AuthMiddleware $authMiddleware;
+
+    /**
+     * @var CorsMiddleware
+     */
+    private CorsMiddleware $corsMiddleware;
+
+    /**
+     * @param Container $container
+     * @param Logger $logger
+     */
+    private function setupStrategy(Container $container, Logger $logger)
     {
         $responseFactory = new ResponseFactory;
-        $strategy = new \League\Route\Strategy\JsonStrategy($responseFactory);
+        $strategy = new JsonStrategy($responseFactory);
         $strategy->setContainer($container);
         $this->setStrategy($strategy);
+        $this->logger = $logger;
+        $this->authMiddleware = new AuthMiddleware($logger);
+        $this->corsMiddleware = new CorsMiddleware($logger);
     }
 
     public function mapRoutes(Container $container, Logger $logger): void
     {
-        $authMiddleware = new AuthMiddleware($logger);
-        $corsMiddleware = new CorsMiddleware($logger);
-
-        $this->setupStrategy($container);
-
-        $this->map('OPTIONS', '/{any:.*}', function (ServerRequestInterface $request): ResponseInterface {
-            $response = new \GuzzleHttp\Psr7\Response;
-            return $response
-                ->withStatus(200)
-                ->withHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,PATCH')
-                ->withHeader('Access-Control-Allow-Headers', 'Authorization')
-                ->withHeader('Access-Control-Allow-Origin', '*');
+        $this->setupStrategy($container, $logger);
+        $this->map('OPTIONS', '/{any:.*}', function (): MessageTrait {
+            return $this->getResponse();
         });
 
         $this->map('POST', '/users/login', UsersLoginController::class)
-            ->middleware($corsMiddleware);
+            ->middleware($this->corsMiddleware);
         $this->group('', function (RouteGroup $router): void {
-            (new TasksRouter)->mapRoutes($router);
-            (new ClientsRouter)->mapRoutes($router);
-            (new UsersRouter)->mapRoutes($router);
-            (new ReportsRouter)->mapRoutes($router);
-            (new VulnerabilitiesRouter)->mapRoutes($router);
-            (new AuditLogRouter)->mapRoutes($router);
-            (new ProjectsRouter)->mapRoutes($router);
-            (new TargetsRouter)->mapRoutes($router);
-            (new IntegrationsRouter)->mapRoutes($router);
-        })
-            ->middleware($corsMiddleware)
-            ->middleware($authMiddleware);
+            foreach ($this->mapables as $mappable) {
+                (new $mappable)->mapRoutes($router);
+            }
+        })->middlewares([$this->corsMiddleware, $this->authMiddleware]);
+    }
+
+    /**
+     * @return MessageTrait
+     */
+    private function getResponse(): MessageTrait
+    {
+        return (new Response)
+            ->withStatus(200)
+            ->withHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,PATCH')
+            ->withHeader('Access-Control-Allow-Headers', 'Authorization')
+            ->withHeader('Access-Control-Allow-Origin', '*');
     }
 }
