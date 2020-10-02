@@ -19,32 +19,47 @@ use Reconmap\Repositories\VulnerabilityRepository;
 
 class GenerateReportController extends Controller
 {
-
     public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
     {
         $id = (int)$args['id'];
         $params = $request->getQueryParams();
         $format = $params['format'] ?? 'html';
-
         $userId = $request->getAttribute('userId');
 
-        $repository = new ProjectRepository($this->db);
-        $project = $repository->findById($id);
+        $html = $this->createHtml($id);
 
-        $date = date('Y-m-d');
+        $reportId = (new ReportRepository($this->db))->insert($id, $userId, $format);
 
-        $taskRepository = new TaskRepository($this->db);
-        $tasks = $taskRepository->findByProjectId($id);
+        return $this->createResponse($reportId, $format, $html);
+    }
 
-        $usersRepository = new UserRepository($this->db);
-        $users = $usersRepository->findByProjectId($id);
 
-        $targetsRepository = new TargetRepository($this->db);
-        $targets = $targetsRepository->findByProjectId($id);
+    /**
+     * @param int $id
+     * @return string
+     */
+    public function createHtml(int $id): string
+    {
+        $vulnerabilities = (new VulnerabilityRepository($this->db))->findByProjectId($id);
+        return $this->template->render('projects/report', [
+            'project' => (new ProjectRepository($this->db))->findById($id),
+            'version' => '1.0',
+            'date' => date('Y-m-d'),
+            'users' => (new UserRepository($this->db))->findByProjectId($id),
+            'targets' => (new TargetRepository($this->db))->findByProjectId($id),
+            'tasks' => (new TaskRepository($this->db))->findByProjectId($id),
+            'vulnerabilities' => $vulnerabilities,
+            'findingsOverview' => $this->createFindingsOverview($vulnerabilities)
+        ]);
+    }
 
-        $vulnerabilityRepository = new VulnerabilityRepository($this->db);
-        $vulnerabilities = $vulnerabilityRepository->findByProjectId($id);
 
+    /**
+     * @param array $vulnerabilities
+     * @return array[]
+     */
+    public function createFindingsOverview(array $vulnerabilities): array
+    {
         $findingsOverview = array_map(function (string $severity) use ($vulnerabilities) {
             return [
                 'severity' => $severity,
@@ -56,49 +71,67 @@ class GenerateReportController extends Controller
         usort($findingsOverview, function ($a, $b) {
             return $b['count'] <=> $a['count'];
         });
+        return $findingsOverview;
+    }
 
-        $html = $this->template->render('projects/report', [
-            'project' => $project,
-            'version' => '1.0',
-            'date' => $date,
-            'users' => $users,
-            'targets' => $targets,
-            'tasks' => $tasks,
-            'vulnerabilities' => $vulnerabilities,
-            'findingsOverview' => $findingsOverview
-        ]);
 
-        $reportRepository = new ReportRepository($this->db);
-        $reportId = $reportRepository->insert($id, $userId, $format);
-
-        $response = new Response;
-
+    /**
+     * @param int $reportId
+     * @param string $format
+     * @param string $html
+     * @return Response
+     */
+    public function createResponse(int $reportId, string $format, string $html): Response
+    {
         $filename = sprintf("report-%d.%s", $reportId, $format);
 
         if ($format === 'html') {
-            file_put_contents(RECONMAP_APP_DIR . '/data/' . $filename, $html);
-
-            $response = new Response;
-            $response->getBody()->write($html);
-            return $response
-                ->withHeader('Content-type', 'text/html');
-        } else {
-            $dompdf = new Dompdf();
-            $dompdf->loadHtml($html);
-
-            $dompdf->setPaper('A4', 'landscape');
-            $dompdf->render();
-            file_put_contents(RECONMAP_APP_DIR . '/data/' . $filename, $dompdf->output());
-
-            $body = new CallbackStream(function () use ($dompdf) {
-                return $dompdf->output();
-            });
-            $fileName = 'report.pdf';
-            return $response
-                ->withBody($body)
-                ->withHeader('Access-Control-Expose-Headers', 'Content-Disposition')
-                ->withHeader('Content-Disposition', 'attachment; filename="' . $fileName . '";')
-                ->withHeader('Content-type', 'application/pdf');
+            return $this->createHtmlFormatResponse($filename, $html);
         }
+        return $this->createPdfFormatResponse($html, $filename);
+    }
+
+
+    /**
+     * @param string $filename
+     * @param string $html
+     * @return Response
+     */
+    public function createHtmlFormatResponse(string $filename, string $html): Response
+    {
+        file_put_contents(RECONMAP_APP_DIR . '/data/' . $filename, $html);
+
+        $response = new Response;
+        $response->getBody()->write($html);
+        return $response
+            ->withHeader('Content-type', 'text/html');
+    }
+
+
+    /**
+     * @param string $html
+     * @param string $filename
+     * @return Response
+     */
+    public function createPdfFormatResponse(string $html, string $filename): Response
+    {
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml($html);
+
+        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->render();
+        file_put_contents(RECONMAP_APP_DIR . '/data/' . $filename, $dompdf->output());
+
+        $body = new CallbackStream(function () use ($dompdf) {
+            return $dompdf->output();
+        });
+        $fileName = 'report.pdf';
+
+        $response = new Response;
+        return $response
+            ->withBody($body)
+            ->withHeader('Access-Control-Expose-Headers', 'Content-Disposition')
+            ->withHeader('Content-Disposition', 'attachment; filename="' . $fileName . '";')
+            ->withHeader('Content-type', 'application/pdf');
     }
 }
