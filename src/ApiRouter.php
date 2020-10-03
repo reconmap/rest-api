@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Reconmap;
 
-use GuzzleHttp\Psr7\MessageTrait;
 use GuzzleHttp\Psr7\Response;
 use Laminas\Diactoros\ResponseFactory;
 use League\Container\Container;
@@ -12,7 +11,6 @@ use League\Route\RouteGroup;
 use League\Route\Router;
 use League\Route\Strategy\JsonStrategy;
 use Monolog\Logger;
-use Psr\Http\Message\ResponseInterface;
 use Reconmap\Controllers\AuditLog\AuditLogRouter;
 use Reconmap\Controllers\Clients\ClientsRouter;
 use Reconmap\Controllers\Integrations\IntegrationsRouter;
@@ -30,7 +28,7 @@ class ApiRouter extends Router
     /**
      * @var array|class[]
      */
-    private array $mapables = [
+    private const ROUTER_CLASSES = [
         TasksRouter::class,
         ClientsRouter::class,
         UsersRouter::class,
@@ -75,23 +73,20 @@ class ApiRouter extends Router
     public function mapRoutes(Container $container, Logger $logger): void
     {
         $this->setupStrategy($container, $logger);
-        $this->map('OPTIONS', '/{any:.*}', function (): MessageTrait {
+        $this->map('OPTIONS', '/{any:.*}', function (): Response {
             return $this->getResponse();
         });
 
         $this->map('POST', '/users/login', UsersLoginController::class)
             ->middleware($this->corsMiddleware);
         $this->group('', function (RouteGroup $router): void {
-            foreach ($this->mapables as $mappable) {
+            foreach (self::ROUTER_CLASSES as $mappable) {
                 (new $mappable)->mapRoutes($router);
             }
         })->middlewares([$this->corsMiddleware, $this->authMiddleware]);
     }
 
-    /**
-     * @return MessageTrait
-     */
-    private function getResponse(): MessageTrait
+    private function getResponse(): Response
     {
         return (new Response)
             ->withStatus(200)
