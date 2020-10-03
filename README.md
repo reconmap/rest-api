@@ -48,6 +48,14 @@ If everything went ok you should be able to use curl or any other HTTP client (e
 $ curl http://localhost:8080
 ```
 
+Alternatively, you could run the Reconmap [frontend](https://github.com/Reconmap/web-frontend) against your local API with the following command:
+
+```sh
+$ docker run -it -d -p 3001:80 reconmap/web-frontend:dev
+```
+
+Then opening your browser at http://localhost:3001
+
 ## How to contribute
 
 **We are glad you are thinking about contributing to this project.** All help is hugely appreciated.
