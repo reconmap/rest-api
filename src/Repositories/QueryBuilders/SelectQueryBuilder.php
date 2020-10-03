@@ -10,7 +10,7 @@ class SelectQueryBuilder
     private string $from;
     private array $joins;
     private ?string $where = null;
-    private ?string $orderBy;
+    private ?string $orderBy = null;
     private ?string $limit = null;
 
     public function __construct(string $from)
