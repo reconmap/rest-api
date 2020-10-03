@@ -49,7 +49,7 @@ class GenerateReportController extends Controller
             'targets' => (new TargetRepository($this->db))->findByProjectId($id),
             'tasks' => (new TaskRepository($this->db))->findByProjectId($id),
             'vulnerabilities' => $vulnerabilities,
-            'findingsOverview' => $this->createFindingsOverview($vulnerabilities)
+            'findingsOverview' => $this->createFindingsOverview($vulnerabilities),
         ]);
     }
 
@@ -84,11 +84,15 @@ class GenerateReportController extends Controller
     public function createResponse(int $reportId, string $format, string $html): Response
     {
         $filename = sprintf("report-%d.%s", $reportId, $format);
+        $response = "";
 
         if ($format === 'html') {
-            return $this->createHtmlFormatResponse($filename, $html);
+            $response = $this->createHtmlFormatResponse($filename, $html);
+        } else {
+            $response = $this->createPdfFormatResponse($html, $filename);
         }
-        return $this->createPdfFormatResponse($html, $filename);
+
+        return $response;
     }
 
 
