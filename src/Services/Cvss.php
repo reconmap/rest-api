@@ -15,17 +15,24 @@ class Cvss
     {
         switch (true) {
             case $score == 0:
-                return 'none';
+                $severity = 'none';
+                break;
             case self::betweenValue($score, 0.1, 3.9):
-                return 'low';
+                $severity = 'low';
+                break;
             case self::betweenValue($score, 4.0, 6.9):
-                return 'medium';
+                $severity = 'medium';
+                break;
             case self::betweenValue($score, 7.0, 8.9):
-                return 'high';
+                $severity = 'high';
+                break;
             case $score >= 9.0:
-                return 'critical';
+                $severity = 'critical';
+                break;
             default:
                 throw new \InvalidArgumentException("Invalid CVSS score: $score");
         }
+        
+        return $severity;
     }
 }
