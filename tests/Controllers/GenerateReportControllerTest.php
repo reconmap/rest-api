@@ -14,6 +14,7 @@ use Reconmap\DatabaseTestCase;
 use Reconmap\Models\Project;
 use Reconmap\Repositories\ProjectRepository;
 use Reconmap\Repositories\UserRepository;
+use Reconmap\Services\Config;
 
 
 class GenerateReportControllerTest extends DatabaseTestCase
@@ -21,22 +22,7 @@ class GenerateReportControllerTest extends DatabaseTestCase
     public function setUp(): void
     {
         define('RECONMAP_APP_DIR', realpath(__DIR__ . '/../../'));
-        $this->resetDataFolder();
         parent::setUp();
-    }
-
-    public function resetDataFolder(): void
-    {
-        if(is_dir(RECONMAP_APP_DIR . '/data')) {
-            $files = glob(RECONMAP_APP_DIR . '/data/*'); // get all file names
-            foreach ($files as $file) {
-                if (is_file($file)) {
-                    unlink($file);
-                }
-            }
-            rmdir(RECONMAP_APP_DIR . '/data');
-        }
-        mkdir(RECONMAP_APP_DIR . '/data', 0777);
     }
 
     public function testGenerateResponseWithHtmlContentTypeIfFormatIsNotSet(): void
@@ -87,6 +73,7 @@ class GenerateReportControllerTest extends DatabaseTestCase
      */
     public function createGenerateReportController(mysqli $db): MockObject
     {
+        /** @var GenerateReportController $generateReportController */
         $generateReportController = $this->getMockBuilder(GenerateReportController::class)
             ->setConstructorArgs([
                     $this->createMock(Logger::class),
@@ -95,6 +82,9 @@ class GenerateReportControllerTest extends DatabaseTestCase
             )
             ->onlyMethods(['createHtml'])
             ->getMock();
+        $config = new Config();
+        $config->update('appDir', dirname(__DIR__));
+        $generateReportController->setConfig($config);
         $generateReportController->method('createHtml')
             ->willReturn('<html lang="en">this is an html report</html>');
 

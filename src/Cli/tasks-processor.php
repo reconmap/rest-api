@@ -20,7 +20,8 @@ use Reconmap\Tasks\TaskResultProcessor;
 $logger = new Logger('cron');
 $logger->pushHandler(new StreamHandler(RECONMAP_APP_DIR . '/logs/application.log', Logger::DEBUG));
 
-$config = new Config(RECONMAP_APP_DIR . '/config.json');
+$config = (new ConfigLoader())->loadFromFile(RECONMAP_APP_DIR . '/config.json');
+$config->update('appDir', RECONMAP_APP_DIR);
 
 $container = new League\Container\Container;
 $container->delegate(new League\Container\ReflectionContainer);

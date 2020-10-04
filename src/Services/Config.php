@@ -6,15 +6,24 @@ namespace Reconmap\Services;
 
 class Config
 {
+    private array $settings;
 
-    private $settings;
-
-    public function __construct(string $path)
+    public function __construct(array $settings = [])
     {
-        $this->settings = json_decode(file_get_contents($path), true);
+        $this->settings = $settings;
+    }
+
+    public function update(string $name, $value): void
+    {
+        $this->settings[$name] = $value;
     }
 
     public function getSettings(string $name): array
+    {
+        return $this->settings[$name];
+    }
+
+    public function getSetting(string $name)
     {
         return $this->settings[$name];
     }

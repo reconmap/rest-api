@@ -16,9 +16,18 @@ use Reconmap\Repositories\TargetRepository;
 use Reconmap\Repositories\TaskRepository;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Repositories\VulnerabilityRepository;
+use Reconmap\Services\Config;
+use Reconmap\Services\ConfigConsumer;
 
-class GenerateReportController extends Controller
+class GenerateReportController extends Controller implements ConfigConsumer
 {
+    private ?Config $config = null;
+
+    public function setConfig(Config $config): void
+    {
+        $this->config = $config;
+    }
+
     public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
     {
         $id = (int)$args['id'];
@@ -33,14 +42,15 @@ class GenerateReportController extends Controller
         return $this->createResponse($reportId, $format, $html);
     }
 
-
     /**
      * @param int $id
      * @return string
      */
     public function createHtml(int $id): string
     {
-        $vulnerabilities = (new VulnerabilityRepository($this->db))->findByProjectId($id);
+        $vulnerabilities = (new VulnerabilityRepository($this->db))
+            ->findByProjectId($id);
+
         return $this->template->render('projects/report', [
             'project' => (new ProjectRepository($this->db))->findById($id),
             'version' => '1.0',
@@ -52,7 +62,6 @@ class GenerateReportController extends Controller
             'findingsOverview' => $this->createFindingsOverview($vulnerabilities),
         ]);
     }
-
 
     /**
      * @param array $vulnerabilities
@@ -74,7 +83,6 @@ class GenerateReportController extends Controller
         return $findingsOverview;
     }
 
-
     /**
      * @param int $reportId
      * @param string $format
@@ -84,7 +92,6 @@ class GenerateReportController extends Controller
     public function createResponse(int $reportId, string $format, string $html): Response
     {
         $filename = sprintf("report-%d.%s", $reportId, $format);
-        $response = "";
 
         if ($format === 'html') {
             $response = $this->createHtmlFormatResponse($filename, $html);
@@ -95,7 +102,6 @@ class GenerateReportController extends Controller
         return $response;
     }
 
-
     /**
      * @param string $filename
      * @param string $html
@@ -103,7 +109,7 @@ class GenerateReportController extends Controller
      */
     public function createHtmlFormatResponse(string $filename, string $html): Response
     {
-        file_put_contents(RECONMAP_APP_DIR . '/data/' . $filename, $html);
+        file_put_contents($this->config->getSetting('appDir') . '/data/' . $filename, $html);
 
         $response = new Response;
         $response->getBody()->write($html);
@@ -124,7 +130,7 @@ class GenerateReportController extends Controller
 
         $dompdf->setPaper('A4', 'landscape');
         $dompdf->render();
-        file_put_contents(RECONMAP_APP_DIR . '/data/' . $filename, $dompdf->output());
+        file_put_contents($this->config->getSetting('appDir') . '/data/' . $filename, $dompdf->output());
 
         $body = new CallbackStream(function () use ($dompdf) {
             return $dompdf->output();

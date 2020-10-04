@@ -8,3 +8,4 @@ config.json
 .phpunit.result.cache
 clover.xml
 .idea
+tests/data/*
