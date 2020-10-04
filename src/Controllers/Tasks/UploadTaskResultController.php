@@ -6,51 +6,37 @@ namespace Reconmap\Controllers\Tasks;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Processors\ProcessorFactory;
-use Reconmap\Repositories\TaskRepository;
-use Reconmap\Repositories\TaskResultRepository;
-use Reconmap\Repositories\VulnerabilityRepository;
 
 class UploadTaskResultController extends Controller
 {
 
-	public function __invoke(ServerRequestInterface $request, array $args): array
-	{
-		$files = $request->getUploadedFiles();
-		$resultFile = $files['resultFile'];
-		/*
-		$resultFile->getClientFilename();
-		$resultFile->getSize();
-		$resultFile->getClientMediaType();
-		$resultFile->moveTo('path');
-		*/
-		$output = $resultFile->getStream()->getContents();
+    public function __invoke(ServerRequestInterface $request, array $args): array
+    {
+        $params = $request->getParsedBody();
+        $taskId = (int)$params['taskId'];
 
-		$params = $request->getParsedBody();
-		$taskId = (int)$params['taskId'];
+        $pathName = RECONMAP_APP_DIR . '/data/task-results/' . uniqid(gethostname());
 
-		$userId = $request->getAttribute('userId');
+        $files = $request->getUploadedFiles();
 
-		$taskRepo = new TaskRepository($this->db);
-		$task = $taskRepo->findById($taskId);
+        $resultFile = $files['resultFile'];
+        $resultFile->moveTo($pathName);
 
-		$repository = new TaskResultRepository($this->db);
-		$user = $repository->insert($taskId, $userId, $output);
+        $userId = $request->getAttribute('userId');
 
-		$targetId = null;
-		$vulnRepository = new VulnerabilityRepository($this->db);
+        /** @var Redis $redis */
+        $redis = $this->container->get(\Redis::class);
+        $result = $redis->lPush("tasks:queue",
+            json_encode([
+                'taskId' => $taskId,
+                'userId' => $userId,
+                'filePath' => $pathName
+            ])
+        );
+        if (false === $result) {
+            $this->logger->error('Item could not be pushed to the queue', ['queue' => 'tasks-results:queue']);
+        }
 
-		$path = $resultFile->getStream()->getMetadata()['uri'];
-		$processorFactory = new ProcessorFactory;
-		$processor = $processorFactory->createByTaskType($task['parser']);
-		if ($processor) {
-			$vulnerabilities = $processor->parseVulnerabilities($path);
-
-			foreach ($vulnerabilities as $vulnerability) {
-				$vulnRepository->insert($task['project_id'], $targetId, $userId, $vulnerability->summary, $vulnerability->description, 'medium');
-			}
-		}
-
-		return ['success' => true];
-	}
+        return ['success' => true];
+    }
 }

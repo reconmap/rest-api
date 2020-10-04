@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-define('RECONMAP_APP_DIR', realpath(__DIR__));
+define('RECONMAP_APP_DIR', dirname(__DIR__, 2));
 
 require RECONMAP_APP_DIR . '/vendor/autoload.php';
 
@@ -15,6 +15,7 @@ use Reconmap\QueueProcessor;
 use Reconmap\Services\Config;
 use Reconmap\Services\ConfigConsumer;
 use Reconmap\Services\ContainerConsumer;
+use Reconmap\Tasks\EmailTaskProcessor;
 
 $logger = new Logger('cron');
 $logger->pushHandler(new StreamHandler(RECONMAP_APP_DIR . '/logs/application.log', Logger::DEBUG));
@@ -49,9 +50,11 @@ $container->add(Engine::class, function () {
     return new Engine(RECONMAP_APP_DIR . '/resources/templates');
 });
 
+$emailTaskProcessor = new EmailTaskProcessor($config, $logger);
+
 /** @var QueueProcessor $queueProcessor */
 $queueProcessor = $container->get(QueueProcessor::class);
-$exitCode = $queueProcessor->run();
+$exitCode = $queueProcessor->run($emailTaskProcessor, 'email:queue');
 
 exit($exitCode);
 

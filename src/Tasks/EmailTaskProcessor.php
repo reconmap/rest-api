@@ -9,7 +9,7 @@ use Swift_Mailer;
 use Swift_Message;
 use Swift_SmtpTransport;
 
-class EmailTaskProcessor
+class EmailTaskProcessor implements ItemProcessor
 {
     private Config $config;
     private Logger $logger;
@@ -20,7 +20,7 @@ class EmailTaskProcessor
         $this->logger = $logger;
     }
 
-    public function sendMessage(object $message): void
+    public function process(object $message): void
     {
         $smtpSettings = $this->config->getSettings('smtp');
 

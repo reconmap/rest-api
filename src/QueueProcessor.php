@@ -5,7 +5,7 @@ namespace Reconmap;
 
 use Monolog\Logger;
 use Reconmap\Services\Config;
-use Reconmap\Tasks\EmailTaskProcessor;
+use Reconmap\Tasks\ItemProcessor;
 use Redis;
 
 class QueueProcessor
@@ -21,15 +21,15 @@ class QueueProcessor
         $this->logger = $logger;
     }
 
-    public function run(): int
+    public function run(ItemProcessor $itemProcessor, string $queueName): int
     {
-        $this->logger->debug('Running queue processor');
-        $emailTaskProcessor = new EmailTaskProcessor($this->config, $this->logger);
+        $processorClass = get_class($itemProcessor);
+        $this->logger->debug("Running queue processor", ['class' => $processorClass]);
 
-        while ($item = $this->redis->brPop('email:queue', 1)) {
-            $this->logger->debug('Pulling item from queue', ['item' => $item]);
-            $message = json_decode($item[1]);
-            $emailTaskProcessor->sendMessage($message);
+        while ($itemEncoded = $this->redis->brPop($queueName, 1)) {
+            $this->logger->debug('Pulling item from queue', ['item' => $itemEncoded]);
+            $item = json_decode($itemEncoded[1]);
+            $itemProcessor->process($item);
         }
 
         return ExitCode::EXIT_SUCCESS;

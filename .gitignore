@@ -1,9 +1,10 @@
 vendor
 logs/*
+data/task-results/*
+data/reports/*
 data-redis
 data-mysql
 config.json
-data/*
 .phpunit.result.cache
 clover.xml
 .idea
