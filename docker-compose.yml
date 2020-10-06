@@ -1,6 +1,7 @@
 version: '3.6'
 
 services:
+
   redis:
     container_name: reconmap-backend-redis
     image: redis:6.0
@@ -9,6 +10,7 @@ services:
       - 6379:6379
     volumes:
       - ./data-redis:/data
+
   db:
     container_name: reconmap-backend-db
     image: mysql:8.0
@@ -23,6 +25,7 @@ services:
       MYSQL_DATABASE: reconmap
       MYSQL_USER: reconmapper
       MYSQL_PASSWORD: reconmapped
+
   svc:
     container_name: reconmap-backend-api
     build:
@@ -32,4 +35,14 @@ services:
       - "$PWD:/var/www/webapp"
     ports:
       - 8080:80
+
+  jobs:
+    container_name: reconmap-job-processing-service
+    image: reconmap/job-processing-svc:dev
+    ports:
+      - 8765:8765
+    environment:
+      VALID_ORIGINS: http://localhost:3001
+      REDIS_HOST: redis://redis
+      REDIS_PASSWORD: REconDIS
 
