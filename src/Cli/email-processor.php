@@ -13,6 +13,7 @@ use Monolog\Logger;
 use Reconmap\DatabaseFactory;
 use Reconmap\QueueProcessor;
 use Reconmap\Services\Config;
+use Reconmap\Services\ConfigLoader;
 use Reconmap\Services\ConfigConsumer;
 use Reconmap\Services\ContainerConsumer;
 use Reconmap\Tasks\EmailTaskProcessor;

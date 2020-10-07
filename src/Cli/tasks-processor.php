@@ -13,6 +13,7 @@ use Monolog\Logger;
 use Reconmap\DatabaseFactory;
 use Reconmap\QueueProcessor;
 use Reconmap\Services\Config;
+use Reconmap\Services\ConfigLoader;
 use Reconmap\Services\ConfigConsumer;
 use Reconmap\Services\ContainerConsumer;
 use Reconmap\Tasks\TaskResultProcessor;
@@ -51,7 +52,7 @@ $container->add(Engine::class, function () {
     return new Engine(RECONMAP_APP_DIR . '/resources/templates');
 });
 
-$tasksProcessor = new TaskResultProcessor($config, $logger, $container->get(\mysqli::class));
+$tasksProcessor = new TaskResultProcessor($config, $logger, $container->get(\mysqli::class), $container->get(\Redis::class));
 
 /** @var QueueProcessor $queueProcessor */
 $queueProcessor = $container->get(QueueProcessor::class);
