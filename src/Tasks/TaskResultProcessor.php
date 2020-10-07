@@ -15,12 +15,14 @@ class TaskResultProcessor implements ItemProcessor
     private Config $config;
     private Logger $logger;
     private \mysqli $db;
+    private \Redis $redis;
 
-    public function __construct(Config $config, Logger $logger, \mysqli $db)
+    public function __construct(Config $config, Logger $logger, \mysqli $db, \Redis $redis)
     {
         $this->config = $config;
         $this->logger = $logger;
         $this->db = $db;
+        $this->redis = $redis;
     }
 
     public function process(object $item): void
@@ -46,5 +48,13 @@ class TaskResultProcessor implements ItemProcessor
                 $vulnRepository->insert($task['project_id'], $targetId, $item->userId, $vulnerability->summary, $vulnerability->description, 'medium');
             }
         }
+
+        $result = $this->redis->lPush("notifications:queue",
+            json_encode([
+                'title' => 'Task results processed.',
+                'detail' => date('h:i'),
+            ])
+        );
+
     }
 }
