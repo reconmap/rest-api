@@ -91,7 +91,7 @@ class ApiRouter extends Router
         return (new Response)
             ->withStatus(200)
             ->withHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,PATCH')
-            ->withHeader('Access-Control-Allow-Headers', 'Authorization')
+            ->withHeader('Access-Control-Allow-Headers', 'Authorization,Bulk-Operation')
             ->withHeader('Access-Control-Allow-Origin', '*');
     }
 }

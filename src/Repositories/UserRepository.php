@@ -9,8 +9,7 @@ class UserRepository extends MysqlRepository
     public function findAll(): array
     {
         $rs = $this->db->query('SELECT u.id, u.insert_ts, u.update_ts, u.name, u.email, u.role FROM user u LIMIT 20');
-        $projects = $rs->fetch_all(MYSQLI_ASSOC);
-        return $projects;
+        return $rs->fetch_all(MYSQLI_ASSOC);
     }
 
     public function findById(int $id): ?array
@@ -58,6 +57,22 @@ class UserRepository extends MysqlRepository
         $stmt->close();
 
         return $success;
+    }
+
+    public function deleteByIds(array $ids): int
+    {
+        $numSuccesses = 0;
+
+        $stmt = $this->db->prepare('DELETE FROM user WHERE id = ?');
+        $stmt->bind_param('i', $id);
+        foreach ($ids as $id) {
+            $result = $stmt->execute();
+            $success = $result && 1 === $stmt->affected_rows;
+            $numSuccesses += $success ? 1 : 0;
+        }
+        $stmt->close();
+
+        return $numSuccesses;
     }
 
     public function create(object $user): int

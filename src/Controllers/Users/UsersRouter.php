@@ -14,6 +14,7 @@ class UsersRouter
         $router->map('POST', '/users/logout', UsersLogoutController::class);
         $router->map('GET', '/users', GetUsersController::class);
         $router->map('POST', '/users', CreateUserController::class);
+        $router->map('PATCH', '/users', UpdateUsersController::class);
         $router->map('GET', '/users/{id:number}', GetUserController::class);
         $router->map('PATCH', '/users/{id:number}', UpdateUserController::class);
         $router->map('GET', '/users/{id:number}/activity', GetUserActivityController::class);
