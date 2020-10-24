@@ -11,7 +11,7 @@ use Reconmap\Repositories\ClientRepository;
 class GetClientController extends Controller
 {
 
-    public function __invoke(ServerRequestInterface $request, array $args): array
+    public function __invoke(ServerRequestInterface $request, array $args): object
     {
         $id = (int)$args['id'];
 

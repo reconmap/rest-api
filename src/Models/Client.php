@@ -12,4 +12,14 @@ class Client
     public ?string $contactName;
     public ?string $contactEmail;
     public ?string $contactPhone;
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
 }

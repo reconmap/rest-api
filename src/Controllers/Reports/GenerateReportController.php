@@ -10,6 +10,7 @@ use Laminas\Diactoros\CallbackStream;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
+use Reconmap\Repositories\ClientRepository;
 use Reconmap\Repositories\ProjectRepository;
 use Reconmap\Repositories\ReportRepository;
 use Reconmap\Repositories\TargetRepository;
@@ -48,13 +49,16 @@ class GenerateReportController extends Controller implements ConfigConsumer
      */
     public function createHtml(int $id): string
     {
+        $project = (new ProjectRepository($this->db))->findById($id);
+
         $vulnerabilities = (new VulnerabilityRepository($this->db))
             ->findByProjectId($id);
 
         return $this->template->render('projects/report', [
-            'project' => (new ProjectRepository($this->db))->findById($id),
+            'project' => $project,
             'version' => '1.0',
             'date' => date('Y-m-d'),
+            'client' => (new ClientRepository($this->db))->findById($project['client_id']),
             'users' => (new UserRepository($this->db))->findByProjectId($id),
             'targets' => (new TargetRepository($this->db))->findByProjectId($id),
             'tasks' => (new TaskRepository($this->db))->findByProjectId($id),

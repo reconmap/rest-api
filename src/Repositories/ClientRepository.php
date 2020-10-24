@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
+use Reconmap\Models\Client;
+
 class ClientRepository extends MysqlRepository
 {
     public function findAll(): array
@@ -12,13 +14,13 @@ class ClientRepository extends MysqlRepository
         return $rs->fetch_all(MYSQLI_ASSOC);
     }
 
-    public function findById(int $id): array
+    public function findById(int $id): Client
     {
         $stmt = $this->db->prepare('SELECT * FROM client WHERE id = ?');
         $stmt->bind_param('i', $id);
         $stmt->execute();
         $rs = $stmt->get_result();
-        $target = $rs->fetch_assoc();
+        $target = $rs->fetch_object(Client::class);
         $stmt->close();
 
         return $target;
