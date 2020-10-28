@@ -33,19 +33,20 @@
 <table>
     <thead>
     <tr>
+        <th>Date/Time</th>
         <th>Version</th>
-        <th>Date</th>
-        <th>Author</th>
         <th>Description</th>
     </tr>
     </thead>
     <tbody>
-    <tr>
-        <td><?= $version ?></td>
-        <td><?= $date ?></td>
-        <td>-</td>
-        <td>-</td>
-    </tr>
+    <?php /** @global array $versions */ ?>
+    <?php foreach ($versions as $version): ?>
+        <tr>
+            <td><?= $version['insert_ts'] ?></td>
+            <td><?= $version['name'] ?></td>
+            <td><?= $version['description'] ?></td>
+        </tr>
+    <?php endforeach ?>
     </tbody>
 </table>
 

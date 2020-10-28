@@ -13,6 +13,7 @@ use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\ClientRepository;
 use Reconmap\Repositories\ProjectRepository;
 use Reconmap\Repositories\ReportRepository;
+use Reconmap\Repositories\ReportVersionRepository;
 use Reconmap\Repositories\TargetRepository;
 use Reconmap\Repositories\TaskRepository;
 use Reconmap\Repositories\UserRepository;
@@ -44,24 +45,25 @@ class GenerateReportController extends Controller implements ConfigConsumer
     }
 
     /**
-     * @param int $id
+     * @param int $projectId
      * @return string
      */
-    public function createHtml(int $id): string
+    public function createHtml(int $projectId): string
     {
-        $project = (new ProjectRepository($this->db))->findById($id);
+        $project = (new ProjectRepository($this->db))->findById($projectId);
 
         $vulnerabilities = (new VulnerabilityRepository($this->db))
-            ->findByProjectId($id);
+            ->findByProjectId($projectId);
 
         return $this->template->render('projects/report', [
             'project' => $project,
             'version' => '1.0',
             'date' => date('Y-m-d'),
+            'versions' => (new ReportVersionRepository($this->db))->findByProjectId($projectId),
             'client' => (new ClientRepository($this->db))->findById($project['client_id']),
-            'users' => (new UserRepository($this->db))->findByProjectId($id),
-            'targets' => (new TargetRepository($this->db))->findByProjectId($id),
-            'tasks' => (new TaskRepository($this->db))->findByProjectId($id),
+            'users' => (new UserRepository($this->db))->findByProjectId($projectId),
+            'targets' => (new TargetRepository($this->db))->findByProjectId($projectId),
+            'tasks' => (new TaskRepository($this->db))->findByProjectId($projectId),
             'vulnerabilities' => $vulnerabilities,
             'findingsOverview' => $this->createFindingsOverview($vulnerabilities),
         ]);

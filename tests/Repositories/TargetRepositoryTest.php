@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
-use PHPUnit\Framework\TestCase;
+use Reconmap\DatabaseTestCase;
 
-class TargetRepositoryTest extends TestCase
+class TargetRepositoryTest extends DatabaseTestCase
 {
     private TargetRepository $subject;
 
     public function setUp(): void
     {
-        $db = new \mysqli('db', 'reconmapper', 'reconmapped', 'reconmap');
+        $db = $this->getDatabaseConnection();
         $this->subject = new TargetRepository($db);
     }
 
