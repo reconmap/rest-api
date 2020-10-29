@@ -55,11 +55,14 @@ class GenerateReportController extends Controller implements ConfigConsumer
         $vulnerabilities = (new VulnerabilityRepository($this->db))
             ->findByProjectId($projectId);
 
+        $versions = (new ReportVersionRepository($this->db))->findByProjectId($projectId);
+        $latestVersion = $versions[0];
+
         return $this->template->render('projects/report', [
             'project' => $project,
-            'version' => '1.0',
+            'version' => $latestVersion['name'],
             'date' => date('Y-m-d'),
-            'versions' => (new ReportVersionRepository($this->db))->findByProjectId($projectId),
+            'versions' => $versions,
             'client' => (new ClientRepository($this->db))->findById($project['client_id']),
             'users' => (new UserRepository($this->db))->findByProjectId($projectId),
             'targets' => (new TargetRepository($this->db))->findByProjectId($projectId),
