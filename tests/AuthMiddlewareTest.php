@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Reconmap;
 
+use League\Route\Http\Exception\ForbiddenException;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -38,6 +39,50 @@ class AuthMiddlewareTest extends TestCase
         $handler->expects($this->once())
             ->method('handle')
             ->with($request);
+
+        /** @var AuthMiddleware */
+        $middleware = $this->getMockBuilder(AuthMiddleware::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods([])
+            ->getMock();
+        $middleware->process($request, $handler);
+    }
+
+    public function testForbiddenIsReturnedWhenAuthIsMissing()
+    {
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->expects($this->once())
+            ->method('getHeader')
+            ->willReturn(null);
+
+        $handler = $this->createMock(RequestHandlerInterface::class);
+        $handler->expects($this->never())
+            ->method('handle');
+
+        $this->expectException(ForbiddenException::class);
+        $this->expectExceptionMessage("Missing 'Authorization' header");
+
+        /** @var AuthMiddleware */
+        $middleware = $this->getMockBuilder(AuthMiddleware::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods([])
+            ->getMock();
+        $middleware->process($request, $handler);
+    }
+
+    public function testForbiddenIsReturnedWhenAuthIsWrong()
+    {
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->expects($this->once())
+            ->method('getHeader')
+            ->willReturn(['Bear Polar']);
+
+        $handler = $this->createMock(RequestHandlerInterface::class);
+        $handler->expects($this->never())
+            ->method('handle');
+
+        $this->expectException(ForbiddenException::class);
+        $this->expectExceptionMessage("Invalid 'Bearer' token");
 
         /** @var AuthMiddleware */
         $middleware = $this->getMockBuilder(AuthMiddleware::class)

@@ -6,7 +6,9 @@ namespace Reconmap;
 
 use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
+use League\Route\Http\Exception\BadRequestException;
 use League\Route\Http\Exception\ForbiddenException;
+use League\Route\Http\Exception\UnauthorizedException;
 use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -25,31 +27,44 @@ class AuthMiddleware implements MiddlewareInterface
     // @todo replace with RSA keys
     const JWT_KEY = 'this is going to be replaced with asymmetric keys';
 
+    /**
+     * @param ServerRequestInterface $request
+     * @param RequestHandlerInterface $handler
+     * @return ResponseInterface
+     * @throws ForbiddenException
+     * @throws UnauthorizedException
+     * @throws BadRequestException
+     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
+        $authorizationHeader = $request->getHeader('Authorization');
+        if (empty($authorizationHeader)) {
+            throw new ForbiddenException("Missing 'Authorization' header");
+        }
+        $authHeaderParts = explode(' ', $authorizationHeader[0]);
+        if (count($authHeaderParts) !== 2 || strcasecmp($authHeaderParts[0], 'Bearer') !== 0) {
+            throw new ForbiddenException("Invalid 'Bearer' token");
+        }
+        $jwt = $authHeaderParts[1];
 
         try {
             $token = JWT::decode($jwt, self::JWT_KEY, ['HS256']);
 
             if ($token->iss !== 'reconmap.org') {
-                throw new ForbiddenException();
+                throw new ForbiddenException("Invalid JWT issuer");
             }
             if ($token->aud !== 'reconmap.com') {
-                throw new ForbiddenException();
+                throw new ForbiddenException("Invalid JWT audience");
             }
 
             $request = $request->withAttribute('userId', $token->data->id);
-            $response = $handler->handle($request);
-            return $response;
+            return $handler->handle($request);
         } catch (ForbiddenException | ExpiredException $e) {
             $this->logger->warning($e->getMessage());
-            return (new \GuzzleHttp\Psr7\Response)
-                ->withStatus(401);
+            throw new UnauthorizedException();
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
-            return (new \GuzzleHttp\Psr7\Response)
-                ->withStatus(500);
+            throw new BadRequestException();
         }
     }
 }
