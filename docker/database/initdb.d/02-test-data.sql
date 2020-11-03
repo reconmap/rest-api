@@ -9,7 +9,7 @@ VALUES (1, 'admin', '$2y$10$J/DF8J/Az8DiSEpXel18NOcN0qbYt5VSvKCc8oJFarXDtj7HkmCm
 
 TRUNCATE TABLE audit_log;
 INSERT INTO audit_log (user_id, client_ip, action)
-VALUES (1, INET_ATON('127.0.0.1'), 'Initialised system');
+VALUES (0, INET_ATON('127.0.0.1'), 'Initialised system');
 
 INSERT INTO client (id, name, url, contact_name, contact_email, contact_phone)
 VALUES (1, 'Insecure Co.', 'http://in.se.cure', 'John Doe', 'John.Doe@in.se.cure', '+99 123 245 389');
