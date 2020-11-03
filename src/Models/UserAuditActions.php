@@ -6,6 +6,7 @@ namespace Reconmap\Models;
 
 interface UserAuditActions
 {
+    public const USER_LOGIN_FAILED = 'Failed login';
     public const USER_LOGGED_IN = 'Logged in';
     public const USER_LOGGED_OUT = 'Logged out';
     public const USER_CREATED = 'Created user';
