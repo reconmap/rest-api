@@ -6,6 +6,7 @@ namespace Reconmap;
 
 use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
+use GuzzleHttp\Psr7\Response;
 use League\Route\Http\Exception\BadRequestException;
 use League\Route\Http\Exception\ForbiddenException;
 use League\Route\Http\Exception\UnauthorizedException;
@@ -61,10 +62,10 @@ class AuthMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         } catch (ForbiddenException | ExpiredException $e) {
             $this->logger->warning($e->getMessage());
-            throw new UnauthorizedException();
+            return (new Response)->withStatus(401);
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
-            throw new BadRequestException();
+            return (new Response)->withStatus(400);
         }
     }
 }
