@@ -83,7 +83,7 @@ class GenerateReportControllerTest extends DatabaseTestCase
             ->onlyMethods(['createHtml'])
             ->getMock();
         $config = new Config();
-        $config->update('appDir', dirname(__DIR__));
+        $config->update('appDir', dirname(__DIR__, 2));
         $generateReportController->setConfig($config);
         $generateReportController->method('createHtml')
             ->willReturn('<html lang="en">this is an html report</html>');
