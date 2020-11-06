@@ -5,6 +5,7 @@ namespace Reconmap\Tasks;
 
 use Monolog\Logger;
 use Reconmap\Services\Config;
+use Swift_Attachment;
 use Swift_Mailer;
 use Swift_Message;
 use Swift_SmtpTransport;
@@ -22,6 +23,8 @@ class EmailTaskProcessor implements ItemProcessor
 
     public function process(object $message): void
     {
+        $this->logger->debug('Processing email message');
+
         $smtpSettings = $this->config->getSettings('smtp');
 
         $transport = (new Swift_SmtpTransport($smtpSettings['host'], $smtpSettings['port'], 'tls'))
@@ -30,15 +33,24 @@ class EmailTaskProcessor implements ItemProcessor
 
         $mailer = new Swift_Mailer($transport);
 
-        $email = (new Swift_Message('[Reconmap] ' . $message->subject))
-            ->setFrom([$smtpSettings['fromEmail'] => $smtpSettings['fromName']])
-            ->setTo([$message->to->email => $message->to->name])
-            ->setBody($message->body);
+        try {
+            $email = (new Swift_Message('[Reconmap] ' . $message->subject))
+                ->setFrom([$smtpSettings['fromEmail'] => $smtpSettings['fromName']])
+                ->setTo($message->to)
+                ->setBody($message->body);
 
-        if (!$mailer->send($email, $errors)) {
-            $this->logger->error('Unable to send email', $errors);
-        } else {
-            $this->logger->debug('Email sent', ['to' => $message->to->email]);
+            if (!empty($message->attachmentPath)) {
+                $attachment = Swift_Attachment::fromPath($message->attachmentPath);
+                $email->attach($attachment);
+            }
+
+            if (!$mailer->send($email, $errors)) {
+                $this->logger->error('Unable to send email', $errors);
+            } else {
+                $this->logger->debug('Email sent', ['to' => $message->to->email]);
+            }
+        } catch (\Exception $e) {
+            $this->logger->error($e->getMessage(), $e->getTrace());
         }
     }
 }

@@ -13,6 +13,7 @@ class ReportsRouter
     {
         $router->map('GET', '/reports', GetReportsController::class);
         $router->map('GET', '/reports/{id:number}/download', DownloadReportController::class);
+        $router->map('POST', '/reports/{reportId:number}/send', SendReportController::class);
         $router->map('GET', '/projects/{id:number}/report', GenerateReportController::class);
         $router->map('DELETE', '/reports/{id:number}', DeleteReportController::class);
     }

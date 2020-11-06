@@ -29,6 +29,7 @@ class QueueProcessor
         while ($itemEncoded = $this->redis->brPop($queueName, 1)) {
             $this->logger->debug('Pulling item from queue', ['item' => $itemEncoded]);
             $item = json_decode($itemEncoded[1]);
+            $this->logger->debug('Item decoded', [$item]);
             $itemProcessor->process($item);
         }
 

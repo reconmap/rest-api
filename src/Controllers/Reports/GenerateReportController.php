@@ -118,7 +118,7 @@ class GenerateReportController extends Controller implements ConfigConsumer
      */
     public function createHtmlFormatResponse(string $filename, string $html): Response
     {
-        file_put_contents($this->config->getSetting('appDir') . '/data/' . $filename, $html);
+        file_put_contents($this->config->getSetting('appDir') . '/data/reports/' . $filename, $html);
 
         $response = new Response;
         $response->getBody()->write($html);
@@ -139,18 +139,18 @@ class GenerateReportController extends Controller implements ConfigConsumer
 
         $dompdf->setPaper('A4', 'landscape');
         $dompdf->render();
-        file_put_contents($this->config->getSetting('appDir') . '/data/' . $filename, $dompdf->output());
+        file_put_contents($this->config->getSetting('appDir') . '/data/reports/' . $filename, $dompdf->output());
 
         $body = new CallbackStream(function () use ($dompdf) {
             return $dompdf->output();
         });
-        $fileName = 'report.pdf';
+        $attachmentFileName = 'report.pdf';
 
         $response = new Response;
         return $response
             ->withBody($body)
             ->withHeader('Access-Control-Expose-Headers', 'Content-Disposition')
-            ->withHeader('Content-Disposition', 'attachment; filename="' . $fileName . '";')
+            ->withHeader('Content-Disposition', 'attachment; filename="' . $attachmentFileName . '";')
             ->withHeader('Content-type', 'application/pdf');
     }
 }
