@@ -11,7 +11,7 @@ build:
 
 .PHONY: tests
 tests: start
-	docker-compose run --rm -w /var/www/webapp --entrypoint ./run-tests.sh svc
+	docker-compose run --rm -w /var/www/webapp -e CURRENT_PLANET=Moon --entrypoint ./run-tests.sh svc
 
 .PHONY: security-tests
 security-tests:
@@ -25,7 +25,6 @@ db-reset:
 .PHONY: start
 start:
 	docker-compose up -d
-
 .PHONY: stop
 stop:
 	docker-compose stop
