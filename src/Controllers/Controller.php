@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace Reconmap\Controllers;
 
-use League\Plates\Engine;
 use Monolog\Logger;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Services\ContainerConsumer;
+use Reconmap\Services\TemplateEngine;
 
 abstract class Controller implements ContainerConsumer
 {
     protected Logger $logger;
     protected \mysqli $db;
-    protected Engine $template;
+    protected TemplateEngine $template;
     protected ?ContainerInterface $container;
 
-    public function __construct(Logger $logger, \mysqli $db, Engine $template)
+    public function __construct(Logger $logger, \mysqli $db, TemplateEngine $template)
     {
         $this->logger = $logger;
         $this->db = $db;

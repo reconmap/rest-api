@@ -27,4 +27,9 @@ class Config
     {
         return $this->settings[$name];
     }
+
+    public function getAppDir(): string
+    {
+        return $this->getSetting('appDir');
+    }
 }

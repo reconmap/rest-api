@@ -9,7 +9,6 @@ require RECONMAP_APP_DIR . '/vendor/autoload.php';
 use GuzzleHttp\Psr7\Response;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use League\Container\Container;
-use League\Plates\Engine;
 use League\Route\Http\Exception\NotFoundException;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -49,10 +48,6 @@ $container->add(\Redis::class, function () {
         throw new Exception('Unable to authenticate to Redis');
     }
     return $redis;
-});
-$container->add(Engine::class, function () {
-    $templates = new Engine(RECONMAP_APP_DIR . '/resources/templates');
-    return $templates;
 });
 
 $router = new ApiRouter();

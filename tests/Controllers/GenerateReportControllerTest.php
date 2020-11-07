@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Reconmap\Controllers;
 
 
-use League\Plates\Engine;
 use Monolog\Logger;
 use mysqli;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -15,6 +14,7 @@ use Reconmap\Models\Project;
 use Reconmap\Repositories\ProjectRepository;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\Config;
+use Reconmap\Services\TemplateEngine;
 
 
 class GenerateReportControllerTest extends DatabaseTestCase
@@ -78,7 +78,7 @@ class GenerateReportControllerTest extends DatabaseTestCase
             ->setConstructorArgs([
                     $this->createMock(Logger::class),
                     $db,
-                    $this->createMock(Engine::class)]
+                    $this->createMock(TemplateEngine::class)]
             )
             ->onlyMethods(['createHtml'])
             ->getMock();

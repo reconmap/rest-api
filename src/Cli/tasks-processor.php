@@ -7,14 +7,13 @@ define('RECONMAP_APP_DIR', dirname(__DIR__, 2));
 require RECONMAP_APP_DIR . '/vendor/autoload.php';
 
 use League\Container\Container;
-use League\Plates\Engine;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Reconmap\DatabaseFactory;
 use Reconmap\QueueProcessor;
 use Reconmap\Services\Config;
-use Reconmap\Services\ConfigLoader;
 use Reconmap\Services\ConfigConsumer;
+use Reconmap\Services\ConfigLoader;
 use Reconmap\Services\ContainerConsumer;
 use Reconmap\Tasks\TaskResultProcessor;
 
@@ -47,9 +46,6 @@ $container->add(\Redis::class, function () {
         throw new Exception('Unable to authenticate to Redis');
     }
     return $redis;
-});
-$container->add(Engine::class, function () {
-    return new Engine(RECONMAP_APP_DIR . '/resources/templates');
 });
 
 $tasksProcessor = new TaskResultProcessor($config, $logger, $container->get(\mysqli::class), $container->get(\Redis::class));

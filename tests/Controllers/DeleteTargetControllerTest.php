@@ -8,6 +8,7 @@ use League\Plates\Engine;
 use Monolog\Logger;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\DatabaseTestCase;
+use Reconmap\Services\TemplateEngine;
 
 class DeleteTargetControllerTest extends DatabaseTestCase
 {
@@ -17,7 +18,7 @@ class DeleteTargetControllerTest extends DatabaseTestCase
         /** @var Logger|MockObject */
         $logger = $this->createMock(Logger::class);
         /** @var Engine|MockObject */
-        $template = $this->createMock(Engine::class);
+        $template = $this->createMock(TemplateEngine::class);
         $db = $this->getDatabaseConnection();
 
         $request = $this->createMock(ServerRequestInterface::class);
