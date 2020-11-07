@@ -47,7 +47,7 @@ class EmailTaskProcessor implements ItemProcessor
             if (!$mailer->send($email, $errors)) {
                 $this->logger->error('Unable to send email', $errors);
             } else {
-                $this->logger->debug('Email sent', ['to' => $message->to->email]);
+                $this->logger->debug('Email sent', ['to' => $message->to]);
             }
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage(), $e->getTrace());
