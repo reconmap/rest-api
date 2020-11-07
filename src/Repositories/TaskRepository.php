@@ -77,8 +77,10 @@ class TaskRepository extends MysqlRepository
     private function getBaseSelectQueryBuilder(): SelectQueryBuilder
     {
         $queryBuilder = new SelectQueryBuilder('task t');
-        $queryBuilder->setColumns('t.id, t.project_id, t.insert_ts, t.update_ts, t.parser, t.name, t.description, t.completed, t.assignee_uid, u.name AS assignee_name');
+        $queryBuilder->setColumns('t.id, t.project_id, p.name AS project_name, t.insert_ts, t.update_ts, t.parser, t.name, t.description, t.completed, t.assignee_uid, u.name AS assignee_name');
         $queryBuilder->addJoin('LEFT JOIN user u ON (u.id = t.assignee_uid)');
+        $queryBuilder->addJoin('LEFT JOIN project p ON (p.id = t.project_id)');
+        $queryBuilder->setWhere('p.is_template IS FALSE');
         $queryBuilder->setOrderBy('t.insert_ts DESC');
         $queryBuilder->setLimit('20');
         return $queryBuilder;

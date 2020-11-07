@@ -10,8 +10,7 @@ use Reconmap\Repositories\TaskRepository;
 
 class GetTasksController extends Controller
 {
-
-    public function __invoke(ServerRequestInterface $request, array $args): array
+    public function __invoke(ServerRequestInterface $request): array
     {
         $repository = new TaskRepository($this->db);
         return $repository->findAll();

@@ -12,6 +12,7 @@ class TasksRouter
     public function mapRoutes(RouteCollectionInterface $router): void
     {
         $router->map('POST', '/tasks/results', UploadTaskResultController::class);
+        $router->map('POST', '/tasks', CreateTaskController::class);
         $router->map('GET', '/tasks', GetTasksController::class);
         $router->map('GET', '/tasks/{id:number}', GetTaskController::class);
         $router->map('PATCH', '/tasks/{id:number}', UpdateTaskController::class);
