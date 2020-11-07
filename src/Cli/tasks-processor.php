@@ -37,16 +37,6 @@ $container->add(Logger::class, function () use ($logger) {
 $container->add(Config::class, $config);
 $container->add(Container::class, $container);
 $container->add(\mysqli::class, DatabaseFactory::createConnection($config));
-$container->add(\Redis::class, function () {
-    $redis = new Redis();
-    if (false === $redis->connect('redis', 6379)) {
-        throw new Exception('Unable to connect to Redis');
-    }
-    if (false === $redis->auth(['default', 'REconDIS'])) {
-        throw new Exception('Unable to authenticate to Redis');
-    }
-    return $redis;
-});
 
 $tasksProcessor = new TaskResultProcessor($config, $logger, $container->get(\mysqli::class), $container->get(\Redis::class));
 

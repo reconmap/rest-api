@@ -7,7 +7,7 @@ namespace Reconmap\Controllers\Reports;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\ReportRepository;
-use Redis;
+use Reconmap\Services\RedisServer;
 
 class SendReportController extends Controller
 {
@@ -26,8 +26,8 @@ class SendReportController extends Controller
         $recipients = explode(',', $deliverySettings->recipients);
         $this->logger->debug('recipients', [$recipients]);
 
-        /** @var Redis $redis */
-        $redis = $this->container->get(Redis::class);
+        /** @var RedisServer $redis */
+        $redis = $this->container->get(RedisServer::class);
         $result = $redis->lPush("email:queue",
             json_encode([
                 'subject' => $deliverySettings->subject,

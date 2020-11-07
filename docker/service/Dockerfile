@@ -22,6 +22,7 @@ RUN apt-get install -y cron
 COPY crontab.txt /tmp/crontab
 RUN crontab /tmp/crontab
 
+RUN sed -i "s/;clear_env = no/clear_env = no/" /etc/php/7.4/fpm/pool.d/www.conf
 RUN rm /etc/nginx/sites-enabled/default
 COPY nginx/sites-enabled/* /etc/nginx/sites-enabled/
 

@@ -9,7 +9,7 @@ use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditLogAction;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\AuditLogService;
-use Redis;
+use Reconmap\Services\RedisServer;
 
 class CreateUserController extends Controller
 {
@@ -31,8 +31,8 @@ class CreateUserController extends Controller
                 'user' => (array)$user
             ]);
 
-            /** @var Redis $redis */
-            $redis = $this->container->get(Redis::class);
+            /** @var RedisServer $redis */
+            $redis = $this->container->get(RedisServer::class);
             $result = $redis->lPush("email:queue",
                 json_encode([
                     'subject' => 'Account created',

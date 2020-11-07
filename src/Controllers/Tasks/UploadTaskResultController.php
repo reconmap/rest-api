@@ -6,6 +6,7 @@ namespace Reconmap\Controllers\Tasks;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
+use Reconmap\Services\RedisServer;
 
 class UploadTaskResultController extends Controller
 {
@@ -24,8 +25,8 @@ class UploadTaskResultController extends Controller
 
         $userId = $request->getAttribute('userId');
 
-        /** @var Redis $redis */
-        $redis = $this->container->get(\Redis::class);
+        /** @var RedisServer $redis */
+        $redis = $this->container->get(RedisServer::class);
         $result = $redis->lPush("tasks:queue",
             json_encode([
                 'taskId' => $taskId,

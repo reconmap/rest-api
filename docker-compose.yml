@@ -35,6 +35,11 @@ services:
       - "$PWD:/var/www/webapp"
     ports:
       - 8080:80
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_USER: default
+      REDIS_PASSWORD: REconDIS
 
   jobs:
     container_name: reconmap-job-processing-service
