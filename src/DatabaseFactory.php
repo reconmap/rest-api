@@ -15,7 +15,6 @@ class DatabaseFactory
         $driver->report_mode = MYSQLI_REPORT_ALL ^ MYSQLI_REPORT_INDEX;
 
         $dbSettings = $config->getSettings('database');
-        $db = new \mysqli($dbSettings['host'], $dbSettings['username'], $dbSettings['password'], $dbSettings['name']);
-        return $db;
+        return new \mysqli($dbSettings['host'], $dbSettings['username'], $dbSettings['password'], $dbSettings['name']);
     }
 }
