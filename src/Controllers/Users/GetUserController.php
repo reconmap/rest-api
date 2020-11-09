@@ -11,13 +11,11 @@ use Reconmap\Repositories\UserRepository;
 class GetUserController extends Controller
 {
 
-	public function __invoke(ServerRequestInterface $request, array $args): array
-	{
-		$id = (int)$args['id'];
+    public function __invoke(ServerRequestInterface $request, array $args): array
+    {
+        $userId = (int)$args['userId'];
 
-		$repository = new UserRepository($this->db);
-		$user = $repository->findById($id);
-
-		return $user;
-	}
+        $repository = new UserRepository($this->db);
+        return $repository->findById($userId);
+    }
 }

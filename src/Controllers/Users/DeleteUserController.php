@@ -15,7 +15,7 @@ class DeleteUserController extends Controller
 
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
-        $userId = (int)$args['id'];
+        $userId = (int)$args['userId'];
         $loggedInUserId = $request->getAttribute('userId');
 
         $userRepository = new UserRepository($this->db);

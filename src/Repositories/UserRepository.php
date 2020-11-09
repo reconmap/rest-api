@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
+use Reconmap\Repositories\QueryBuilders\SelectQueryBuilder;
+
 class UserRepository extends MysqlRepository
 {
     public function findAll(): array
@@ -14,20 +16,11 @@ class UserRepository extends MysqlRepository
 
     public function findById(int $id): ?array
     {
-        $stmt = $this->db->prepare('SELECT u.id, u.insert_ts, u.update_ts, u.name, u.email, u.role, u.timezone FROM user u WHERE u.id = ?');
+        $queryBuilder = $this->getBaseSelectQueryBuilder();
+        $queryBuilder->setWhere('u.id = ?');
+
+        $stmt = $this->db->prepare($queryBuilder->toSql());
         $stmt->bind_param('i', $id);
-        $stmt->execute();
-        $rs = $stmt->get_result();
-        $project = $rs->fetch_assoc();
-        $stmt->close();
-
-        return $project;
-    }
-
-    public function findByUsernamePassword(string $username, string $password): array
-    {
-        $stmt = $this->db->prepare('SELECT u.id, u.insert_ts, u.update_ts, u.name, u.email, u.role FROM user u WHERE u.name = ? AND u.password = ?');
-        $stmt->bind_param('ss', $username, $password);
         $stmt->execute();
         $rs = $stmt->get_result();
         $user = $rs->fetch_assoc();
@@ -35,10 +28,13 @@ class UserRepository extends MysqlRepository
 
         return $user;
     }
-
+    
     public function findByUsername(string $username): ?array
     {
-        $stmt = $this->db->prepare('SELECT u.id, u.insert_ts, u.update_ts, u.name, u.email, u.password, u.role, u.timezone FROM user u WHERE u.name = ?');
+        $queryBuilder = $this->getBaseSelectQueryBuilder();
+        $queryBuilder->setWhere('u.name = ?');
+
+        $stmt = $this->db->prepare($queryBuilder->toSql());
         $stmt->bind_param('s', $username);
         $stmt->execute();
         $rs = $stmt->get_result();
@@ -113,5 +109,12 @@ class UserRepository extends MysqlRepository
         $stmt->close();
 
         return $success;
+    }
+
+    private function getBaseSelectQueryBuilder(): SelectQueryBuilder
+    {
+        $queryBuilder = new SelectQueryBuilder('user u');
+        $queryBuilder->setColumns('u.id, u.insert_ts, u.update_ts, u.name, u.email, u.password, u.role, u.timezone');
+        return $queryBuilder;
     }
 }

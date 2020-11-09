@@ -8,7 +8,6 @@ use League\Route\RouteCollectionInterface;
 
 class TasksRouter
 {
-
     public function mapRoutes(RouteCollectionInterface $router): void
     {
         $router->map('POST', '/tasks/results', UploadTaskResultController::class);

@@ -11,13 +11,11 @@ use Reconmap\Repositories\AuditLogRepository;
 class GetUserActivityController extends Controller
 {
 
-	public function __invoke(ServerRequestInterface $request, array $args): array
-	{
-		$id = (int)$args['id'];
+    public function __invoke(ServerRequestInterface $request, array $args): array
+    {
+        $userId = (int)$args['userId'];
 
-		$repository = new AuditLogRepository($this->db);
-		$results = $repository->findByUserId($id);
-
-		return $results;
-	}
+        $repository = new AuditLogRepository($this->db);
+        return $repository->findByUserId($userId);
+    }
 }

@@ -12,4 +12,6 @@ interface UserAuditActions
     public const USER_CREATED = 'Created user';
     public const USER_MODIFIED = 'Modified user';
     public const USER_DELETED = 'Deleted user';
+
+    public const USER_PASSWORD_CHANGED = 'Changed own password';
 }
