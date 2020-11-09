@@ -13,6 +13,7 @@ use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditLogAction;
 use Reconmap\Repositories\AuditLogRepository;
 use Reconmap\Repositories\UserRepository;
+use Reconmap\Services\JwtPayloadCreator;
 use Reconmap\Services\NetworkService;
 
 class UsersLoginController extends Controller
@@ -37,30 +38,14 @@ class UsersLoginController extends Controller
         unset($user['password']); // DO NOT leak password in the response.
 
         $this->auditAction($user);
-        $jwt = $this->getJWTPayload($user);
 
-        $user['access_token'] = JWT::encode($jwt, AuthMiddleware::JWT_KEY, 'HS256');
+        $jwtPayload = (new JwtPayloadCreator())
+            ->createFromUserArray($user);
+
+        $user['access_token'] = JWT::encode($jwtPayload, AuthMiddleware::JWT_KEY, 'HS256');
 
         $response->getBody()->write(json_encode($user));
         return $response->withHeader('Content-type', 'application/json');
-    }
-
-    private function getJWTPayload(array $user): array
-    {
-        $now = time();
-
-        return [
-            'iss' => 'reconmap.org',
-            'aud' => 'reconmap.com',
-            'iat' => $now,
-            'nbf' => $now,
-            'exp' => $now + (60 * 60), // 1 hour
-            'data' => [
-                'id' => $user['id'],
-                'role' => $user['role']
-            ]
-        ];
-
     }
 
     private function auditAction(array $user): void
