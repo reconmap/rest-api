@@ -11,11 +11,11 @@ use Reconmap\Repositories\AuditLogRepository;
 class GetAuditLogStatsController extends Controller
 {
 
-	public function __invoke(ServerRequestInterface $request): array
-	{
-		$repository = new AuditLogRepository($this->db);
-		$auditLog = $repository->findCountByDayStats();
+    public function __invoke(ServerRequestInterface $request): array
+    {
+        $repository = new AuditLogRepository($this->db);
+        $auditLog = $repository->findCountByDayStats();
 
-		return $auditLog;
-	}
+        return $auditLog;
+    }
 }

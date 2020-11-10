@@ -55,21 +55,6 @@ class ApiRouter extends Router
      */
     private CorsMiddleware $corsMiddleware;
 
-    /**
-     * @param Container $container
-     * @param Logger $logger
-     */
-    private function setupStrategy(Container $container, Logger $logger)
-    {
-        $responseFactory = new ResponseFactory;
-        $strategy = new JsonStrategy($responseFactory);
-        $strategy->setContainer($container);
-        $this->setStrategy($strategy);
-        $this->logger = $logger;
-        $this->authMiddleware = new AuthMiddleware($logger);
-        $this->corsMiddleware = new CorsMiddleware($logger);
-    }
-
     public function mapRoutes(Container $container, Logger $logger): void
     {
         $this->setupStrategy($container, $logger);
@@ -84,6 +69,21 @@ class ApiRouter extends Router
                 (new $mappable)->mapRoutes($router);
             }
         })->middlewares([$this->corsMiddleware, $this->authMiddleware]);
+    }
+
+    /**
+     * @param Container $container
+     * @param Logger $logger
+     */
+    private function setupStrategy(Container $container, Logger $logger)
+    {
+        $responseFactory = new ResponseFactory;
+        $strategy = new JsonStrategy($responseFactory);
+        $strategy->setContainer($container);
+        $this->setStrategy($strategy);
+        $this->logger = $logger;
+        $this->authMiddleware = new AuthMiddleware($logger);
+        $this->corsMiddleware = new CorsMiddleware($logger);
     }
 
     private function getResponse(): Response

@@ -48,17 +48,17 @@ class UsersLoginController extends Controller
         return $response->withHeader('Content-type', 'application/json');
     }
 
-    private function auditAction(array $user): void
-    {
-        $clientIp = (new NetworkService)->getClientIp();
-        $auditRepository = new AuditLogRepository($this->db);
-        $auditRepository->insert($user['id'], $clientIp, AuditLogAction::USER_LOGGED_IN);
-    }
-
     private function auditFailedLogin(?string $username): void
     {
         $clientIp = (new NetworkService)->getClientIp();
         $auditRepository = new AuditLogRepository($this->db);
         $auditRepository->insert(0, $clientIp, AuditLogAction::USER_LOGIN_FAILED, json_encode(['username' => $username]));
+    }
+
+    private function auditAction(array $user): void
+    {
+        $clientIp = (new NetworkService)->getClientIp();
+        $auditRepository = new AuditLogRepository($this->db);
+        $auditRepository->insert($user['id'], $clientIp, AuditLogAction::USER_LOGGED_IN);
     }
 }

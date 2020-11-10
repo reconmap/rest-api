@@ -11,13 +11,13 @@ use Reconmap\Repositories\TargetRepository;
 class DeleteTargetController extends Controller
 {
 
-	public function __invoke(ServerRequestInterface $request, array $args): array
-	{
-		$id = (int)$args['id'];
+    public function __invoke(ServerRequestInterface $request, array $args): array
+    {
+        $id = (int)$args['id'];
 
-		$repository = new TargetRepository($this->db);
-		$success = $repository->deleteById($id);
+        $repository = new TargetRepository($this->db);
+        $success = $repository->deleteById($id);
 
-		return ['success' => $success];
-	}
+        return ['success' => $success];
+    }
 }

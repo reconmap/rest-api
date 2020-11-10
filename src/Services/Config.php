@@ -23,13 +23,13 @@ class Config
         return $this->settings[$name];
     }
 
-    public function getSetting(string $name)
-    {
-        return $this->settings[$name];
-    }
-
     public function getAppDir(): string
     {
         return $this->getSetting('appDir');
+    }
+
+    public function getSetting(string $name)
+    {
+        return $this->settings[$name];
     }
 }

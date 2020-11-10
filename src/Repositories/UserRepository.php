@@ -28,7 +28,14 @@ class UserRepository extends MysqlRepository
 
         return $user;
     }
-    
+
+    private function getBaseSelectQueryBuilder(): SelectQueryBuilder
+    {
+        $queryBuilder = new SelectQueryBuilder('user u');
+        $queryBuilder->setColumns('u.id, u.insert_ts, u.update_ts, u.name, u.email, u.password, u.role, u.timezone');
+        return $queryBuilder;
+    }
+
     public function findByUsername(string $username): ?array
     {
         $queryBuilder = $this->getBaseSelectQueryBuilder();
@@ -109,12 +116,5 @@ class UserRepository extends MysqlRepository
         $stmt->close();
 
         return $success;
-    }
-
-    private function getBaseSelectQueryBuilder(): SelectQueryBuilder
-    {
-        $queryBuilder = new SelectQueryBuilder('user u');
-        $queryBuilder->setColumns('u.id, u.insert_ts, u.update_ts, u.name, u.email, u.password, u.role, u.timezone');
-        return $queryBuilder;
     }
 }

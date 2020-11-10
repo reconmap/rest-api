@@ -5,7 +5,8 @@ namespace Reconmap\Services;
 
 use Psr\Container\ContainerInterface;
 
-interface ContainerConsumer {
+interface ContainerConsumer
+{
 
     public function setContainer(ContainerInterface $container): void;
 }

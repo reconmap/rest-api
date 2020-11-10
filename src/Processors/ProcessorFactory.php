@@ -3,10 +3,12 @@ declare(strict_types=1);
 
 namespace Reconmap\Processors;
 
-class ProcessorFactory {
+class ProcessorFactory
+{
 
-    public function createByTaskType(string $type): VulnerabilityProcessor {
-        switch($type) {
+    public function createByTaskType(string $type): VulnerabilityProcessor
+    {
+        switch ($type) {
             case 'nmap':
                 return new NmapResultsProcessor();
             case 'sqlmap':

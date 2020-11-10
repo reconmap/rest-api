@@ -11,18 +11,18 @@ use Reconmap\Repositories\ProjectRepository;
 class GetProjectsController extends Controller
 {
 
-	public function __invoke(ServerRequestInterface $request): array
-	{
-		$orderRepository = new ProjectRepository($this->db);
+    public function __invoke(ServerRequestInterface $request): array
+    {
+        $orderRepository = new ProjectRepository($this->db);
 
-		$params = $request->getQueryParams();
+        $params = $request->getQueryParams();
 
-		if (isset($params['isTemplate'])) {
-			$projects = $orderRepository->findTemplateProjects((int)$params['isTemplate']);
-		} else {
-			$projects = $orderRepository->findTemplateProjects(0);
-		}
+        if (isset($params['isTemplate'])) {
+            $projects = $orderRepository->findTemplateProjects((int)$params['isTemplate']);
+        } else {
+            $projects = $orderRepository->findTemplateProjects(0);
+        }
 
-		return $projects;
-	}
+        return $projects;
+    }
 }

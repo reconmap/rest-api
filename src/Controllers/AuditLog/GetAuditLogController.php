@@ -13,21 +13,21 @@ use Reconmap\Repositories\AuditLogRepository;
 class GetAuditLogController extends Controller
 {
 
-	public function __invoke(ServerRequestInterface $request): ResponseInterface
-	{
-		$params = $request->getQueryParams();
-		$page = (int)$params['page'];
+    public function __invoke(ServerRequestInterface $request): ResponseInterface
+    {
+        $params = $request->getQueryParams();
+        $page = (int)$params['page'];
 
-		$repository = new AuditLogRepository($this->db);
-		$auditLog = $repository->findAll($page);
-		$count = $repository->countAll();
+        $repository = new AuditLogRepository($this->db);
+        $auditLog = $repository->findAll($page);
+        $count = $repository->countAll();
 
-		$pageCount = ceil($count / 20);
+        $pageCount = ceil($count / 20);
 
-		$response = new Response;
-		$response->getBody()->write(json_encode($auditLog));
-		return $response
-			->withHeader('Access-Control-Expose-Headers', 'X-Page-Count')
-			->withHeader('X-Page-Count', $pageCount);
-	}
+        $response = new Response;
+        $response->getBody()->write(json_encode($auditLog));
+        return $response
+            ->withHeader('Access-Control-Expose-Headers', 'X-Page-Count')
+            ->withHeader('X-Page-Count', $pageCount);
+    }
 }

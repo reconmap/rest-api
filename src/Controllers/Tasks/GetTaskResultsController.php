@@ -11,13 +11,13 @@ use Reconmap\Repositories\TaskResultRepository;
 class GetTaskResultsController extends Controller
 {
 
-	public function __invoke(ServerRequestInterface $request, array $args): array
-	{
-		$id = (int)$args['id'];
+    public function __invoke(ServerRequestInterface $request, array $args): array
+    {
+        $id = (int)$args['id'];
 
-		$repository = new TaskResultRepository($this->db);
-		$targets = $repository->findByTaskId($id);
+        $repository = new TaskResultRepository($this->db);
+        $targets = $repository->findByTaskId($id);
 
-		return $targets;
-	}
+        return $targets;
+    }
 }

@@ -11,13 +11,13 @@ use Reconmap\Repositories\ProjectRepository;
 class CloneProjectController extends Controller
 {
 
-	public function __invoke(ServerRequestInterface $request, array $args): array
-	{
-		$id = (int)$args['id'];
+    public function __invoke(ServerRequestInterface $request, array $args): array
+    {
+        $id = (int)$args['id'];
 
-		$repository = new ProjectRepository($this->db);
-		$project = $repository->createFromTemplate($id);
+        $repository = new ProjectRepository($this->db);
+        $project = $repository->createFromTemplate($id);
 
-		return $project;
-	}
+        return $project;
+    }
 }

@@ -7,5 +7,5 @@ Contributors can add themselves to the [credits](CREDITS) in the same pull reque
 ## Contributing guidelines
 
 - If you are contributing with code, make sure you have forked the project, and created a pull requests that contains amongst other things a description of your changes.
-- Code changes need to adhere to our coding standard. This is [PSR-12](https://www.php-fig.org/psr/psr-12/).
+- Code changes need to adhere to our PHP coding standard. This is [PSR-1](https://www.php-fig.org/psr/psr-1/) and [PSR-12](https://www.php-fig.org/psr/psr-12/). The [editor config file](.editorconfig) file, when used by your editor or IDE, should format your changes in adherence to these standards.
 - Ideally you should add unit test coverage (with PHPUnit) to your changes, but this is not mandatory for certain changes.

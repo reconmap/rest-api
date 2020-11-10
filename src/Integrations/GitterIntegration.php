@@ -31,18 +31,6 @@ class GitterIntegration implements Integration, ConfigConsumer, ActivityPublishe
         return 'https://gitter.im';
     }
 
-    public function hasConfiguration(): bool
-    {
-        $integrationsConfig = $this->config->getSettings('integrations');
-        return isset($integrationsConfig['gitter']);
-    }
-
-    public function getConfiguration(): array
-    {
-        $integrationsConfig = $this->config->getSettings('integrations');
-        return $integrationsConfig['gitter'];
-    }
-
     public function publishActivity(string $activity): void
     {
         if (!$this->hasConfiguration()) {
@@ -59,5 +47,17 @@ class GitterIntegration implements Integration, ConfigConsumer, ActivityPublishe
                 'html' => "<strong>New event on Reconmap:</strong> $activity"
             ]
         ]);
+    }
+
+    public function hasConfiguration(): bool
+    {
+        $integrationsConfig = $this->config->getSettings('integrations');
+        return isset($integrationsConfig['gitter']);
+    }
+
+    public function getConfiguration(): array
+    {
+        $integrationsConfig = $this->config->getSettings('integrations');
+        return $integrationsConfig['gitter'];
     }
 }

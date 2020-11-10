@@ -11,11 +11,11 @@ use Reconmap\Repositories\ReportRepository;
 class GetReportsController extends Controller
 {
 
-	public function __invoke(ServerRequestInterface $request): array
-	{
-		$repository = new ReportRepository($this->db);
-		$reports = $repository->findAll();
+    public function __invoke(ServerRequestInterface $request): array
+    {
+        $repository = new ReportRepository($this->db);
+        $reports = $repository->findAll();
 
-		return $reports;
-	}
+        return $reports;
+    }
 }

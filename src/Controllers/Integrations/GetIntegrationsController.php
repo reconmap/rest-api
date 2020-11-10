@@ -11,11 +11,11 @@ use Reconmap\Repositories\IntegrationsRepository;
 class GetIntegrationsController extends Controller
 {
 
-	public function __invoke(ServerRequestInterface $request): array
-	{
-		$repository = new IntegrationsRepository($this->container);
-		$integrations = $repository->findAll();
+    public function __invoke(ServerRequestInterface $request): array
+    {
+        $repository = new IntegrationsRepository($this->container);
+        $integrations = $repository->findAll();
 
-		return $integrations;
-	}
+        return $integrations;
+    }
 }

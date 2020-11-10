@@ -18,15 +18,15 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class AuthMiddleware implements MiddlewareInterface
 {
+    const JWT_KEY = 'this is going to be replaced with asymmetric keys';
     private Logger $logger;
+
+    // @todo replace with RSA keys
 
     public function __construct(Logger $logger)
     {
         $this->logger = $logger;
     }
-
-    // @todo replace with RSA keys
-    const JWT_KEY = 'this is going to be replaced with asymmetric keys';
 
     /**
      * @param ServerRequestInterface $request

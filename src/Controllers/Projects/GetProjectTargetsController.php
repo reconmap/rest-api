@@ -11,13 +11,13 @@ use Reconmap\Repositories\TargetRepository;
 class GetProjectTargetsController extends Controller
 {
 
-	public function __invoke(ServerRequestInterface $request, array $args): array
-	{
-		$id = (int)$args['id'];
+    public function __invoke(ServerRequestInterface $request, array $args): array
+    {
+        $id = (int)$args['id'];
 
-		$repository = new TargetRepository($this->db);
-		$targets = $repository->findByProjectId($id);
+        $repository = new TargetRepository($this->db);
+        $targets = $repository->findByProjectId($id);
 
-		return $targets;
-	}
+        return $targets;
+    }
 }

@@ -13,22 +13,22 @@ use Reconmap\Services\AuditLogService;
 class DeleteProjectController extends Controller
 {
 
-	public function __invoke(ServerRequestInterface $request, array $args): array
-	{
-		$projectId = (int)$args['id'];
+    public function __invoke(ServerRequestInterface $request, array $args): array
+    {
+        $projectId = (int)$args['id'];
 
-		$repository = new ProjectRepository($this->db);
-		$success = $repository->deleteById($projectId);
+        $repository = new ProjectRepository($this->db);
+        $success = $repository->deleteById($projectId);
 
-		$userId = $request->getAttribute('userId');
-		$this->auditAction($userId, $projectId);
+        $userId = $request->getAttribute('userId');
+        $this->auditAction($userId, $projectId);
 
-		return ['success' => $success];
-	}
+        return ['success' => $success];
+    }
 
-	private function auditAction(int $loggedInUserId, int $projectId): void
-	{
-		$auditLogService = new AuditLogService($this->db);
-		$auditLogService->insert($loggedInUserId, AuditLogAction::PROJECT_DELETED, ['type' => 'project', 'id' => $projectId]);
-	}
+    private function auditAction(int $loggedInUserId, int $projectId): void
+    {
+        $auditLogService = new AuditLogService($this->db);
+        $auditLogService->insert($loggedInUserId, AuditLogAction::PROJECT_DELETED, ['type' => 'project', 'id' => $projectId]);
+    }
 }

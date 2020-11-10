@@ -49,5 +49,5 @@ class ReportRepository extends MysqlRepository
         $stmt->close();
 
         return $success;
-    }    
+    }
 }

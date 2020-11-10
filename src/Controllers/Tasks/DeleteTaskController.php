@@ -13,22 +13,22 @@ use Reconmap\Services\ActivityPublisherService;
 class DeleteTaskController extends Controller
 {
 
-	public function __invoke(ServerRequestInterface $request, array $args): array
-	{
-		$taskId = (int)$args['id'];
+    public function __invoke(ServerRequestInterface $request, array $args): array
+    {
+        $taskId = (int)$args['id'];
 
-		$userRepository = new TaskRepository($this->db);
-		$success = $userRepository->deleteById($taskId);
+        $userRepository = new TaskRepository($this->db);
+        $success = $userRepository->deleteById($taskId);
 
-		$userId = $request->getAttribute('userId');
-		$this->auditAction($userId, $taskId);
+        $userId = $request->getAttribute('userId');
+        $this->auditAction($userId, $taskId);
 
-		return ['success' => $success];
-	}
+        return ['success' => $success];
+    }
 
-	private function auditAction(int $loggedInUserId, int $taskId): void
-	{
-		$activityPublisherService = $this->container->get(ActivityPublisherService::class);
-		$activityPublisherService->publish($loggedInUserId, AuditLogAction::TASK_DELETED, ['type' => 'task', 'id' => $taskId]);
-	}
+    private function auditAction(int $loggedInUserId, int $taskId): void
+    {
+        $activityPublisherService = $this->container->get(ActivityPublisherService::class);
+        $activityPublisherService->publish($loggedInUserId, AuditLogAction::TASK_DELETED, ['type' => 'task', 'id' => $taskId]);
+    }
 }

@@ -11,13 +11,13 @@ use Reconmap\Repositories\ProjectUserRepository;
 class DeleteProjectUserController extends Controller
 {
 
-	public function __invoke(ServerRequestInterface $request, array $args): array
-	{
-		$membershipId = (int)$args['membershipId'];
+    public function __invoke(ServerRequestInterface $request, array $args): array
+    {
+        $membershipId = (int)$args['membershipId'];
 
-		$repository = new ProjectUserRepository($this->db);
-		$result = $repository->deleteById($membershipId);
+        $repository = new ProjectUserRepository($this->db);
+        $result = $repository->deleteById($membershipId);
 
-		return ['success' => $result];
-	}
+        return ['success' => $result];
+    }
 }

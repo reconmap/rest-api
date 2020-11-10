@@ -6,11 +6,6 @@ namespace Reconmap\Services;
 
 class Cvss
 {
-    static private function betweenValue(float $value, float $start, float $end): bool
-    {
-        return $value >= $start && $value <= $end;
-    }
-
     static public function toSeverity(float $score): string
     {
         if ($score == 0) {
@@ -28,5 +23,10 @@ class Cvss
         }
 
         return $severity;
+    }
+
+    static private function betweenValue(float $value, float $start, float $end): bool
+    {
+        return $value >= $start && $value <= $end;
     }
 }

@@ -17,6 +17,18 @@ class TaskRepository extends MysqlRepository
         return $rs->fetch_all(MYSQLI_ASSOC);
     }
 
+    private function getBaseSelectQueryBuilder(): SelectQueryBuilder
+    {
+        $queryBuilder = new SelectQueryBuilder('task t');
+        $queryBuilder->setColumns('t.id, t.project_id, p.name AS project_name, t.insert_ts, t.update_ts, t.parser, t.name, t.description, t.completed, t.assignee_uid, u.name AS assignee_name');
+        $queryBuilder->addJoin('LEFT JOIN user u ON (u.id = t.assignee_uid)');
+        $queryBuilder->addJoin('LEFT JOIN project p ON (p.id = t.project_id)');
+        $queryBuilder->setWhere('p.is_template IS FALSE');
+        $queryBuilder->setOrderBy('t.insert_ts DESC');
+        $queryBuilder->setLimit('20');
+        return $queryBuilder;
+    }
+
     public function findById(int $id): array
     {
         $stmt = $this->db->prepare('SELECT * FROM task WHERE id = ?');
@@ -72,17 +84,5 @@ class TaskRepository extends MysqlRepository
         $stmt = $this->db->prepare('INSERT INTO task (project_id, parser, name, description) VALUES (?, ?, ?, ?)');
         $stmt->bind_param('isss', $projectId, $parser, $name, $description);
         return $this->executeInsertStatement($stmt);
-    }
-
-    private function getBaseSelectQueryBuilder(): SelectQueryBuilder
-    {
-        $queryBuilder = new SelectQueryBuilder('task t');
-        $queryBuilder->setColumns('t.id, t.project_id, p.name AS project_name, t.insert_ts, t.update_ts, t.parser, t.name, t.description, t.completed, t.assignee_uid, u.name AS assignee_name');
-        $queryBuilder->addJoin('LEFT JOIN user u ON (u.id = t.assignee_uid)');
-        $queryBuilder->addJoin('LEFT JOIN project p ON (p.id = t.project_id)');
-        $queryBuilder->setWhere('p.is_template IS FALSE');
-        $queryBuilder->setOrderBy('t.insert_ts DESC');
-        $queryBuilder->setLimit('20');
-        return $queryBuilder;
     }
 }
