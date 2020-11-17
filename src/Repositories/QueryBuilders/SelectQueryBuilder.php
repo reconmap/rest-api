@@ -1,10 +1,8 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Repositories\QueryBuilders;
 
-class SelectQueryBuilder
+class SelectQueryBuilder implements QueryBuilder
 {
     private string $columns;
     private string $from;

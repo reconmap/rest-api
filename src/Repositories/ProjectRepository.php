@@ -4,8 +4,16 @@ declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
+use Reconmap\Repositories\QueryBuilders\UpdateQueryBuilder;
+
 class ProjectRepository extends MysqlRepository
 {
+    public const UPDATABLE_COLUMNS_TYPES = [
+        'client_id' => 'i',
+        'name' => 's',
+        'description' => 's'
+    ];
+
     public function findAll(): array
     {
         $rs = $this->db->query('SELECT * FROM project LIMIT 20');
@@ -87,14 +95,34 @@ class ProjectRepository extends MysqlRepository
         return $success;
     }
 
-    public function updateById(int $id, string $column, ?string $value): bool
+    public function updateById(int $id, array $newColumnValues): bool
     {
-        $stmt = $this->db->prepare('UPDATE project SET ' . $column . ' = ? WHERE id = ?');
-        $stmt->bind_param('si', $value, $id);
+        $updateQueryBuilder = new UpdateQueryBuilder('project');
+        $updateQueryBuilder->setColumnValues(array_map(fn() => '?', $newColumnValues));
+        $updateQueryBuilder->setWhereConditions('id = ?');
+
+        $stmt = $this->db->prepare($updateQueryBuilder->toSql());
+        call_user_func_array([$stmt, 'bind_param'], [$this->generateParamTypes(array_keys($newColumnValues)) . 'i', ...$this->refValues($newColumnValues), &$id]);
         $result = $stmt->execute();
         $success = $result && 1 === $stmt->affected_rows;
         $stmt->close();
 
         return $success;
+    }
+
+    private function refValues(array $columnValues): array
+    {
+        $refs = [];
+        foreach ($columnValues as $key => $value) {
+            $refs[] = &$columnValues[$key];
+        }
+        return $refs;
+    }
+
+    private function generateParamTypes(array $columnNames): string
+    {
+        return array_reduce($columnNames, function (string $columnTypes, string $columnName) {
+            return $columnTypes . self::UPDATABLE_COLUMNS_TYPES[$columnName];
+        }, '');
     }
 }

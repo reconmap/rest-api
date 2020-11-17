@@ -10,19 +10,21 @@ use Reconmap\Repositories\ProjectRepository;
 
 class UpdateProjectController extends Controller
 {
-
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
         $projectId = (int)$args['projectId'];
 
         $requestBody = $this->getJsonBodyDecodedAsArray($request);
-        $column = array_keys($requestBody)[0];
-        $value = array_values($requestBody)[0];
+        $newColumnValues = array_filter(
+            $requestBody,
+            fn(string $key) => in_array($key, array_keys(ProjectRepository::UPDATABLE_COLUMNS_TYPES)),
+            ARRAY_FILTER_USE_KEY
+        );
 
         $success = false;
-        if (in_array($column, ['client_id'])) {
+        if (!empty($newColumnValues)) {
             $repository = new ProjectRepository($this->db);
-            $success = $repository->updateById($projectId, $column, $value);
+            $success = $repository->updateById($projectId, $newColumnValues);
         }
 
         return ['success' => $success];
