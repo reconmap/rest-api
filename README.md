@@ -48,10 +48,21 @@ If everything went ok you should be able to use curl or any other HTTP client (e
 $ curl http://localhost:8080
 ```
 
-Alternatively, you could run the Reconmap [frontend](https://github.com/Reconmap/web-frontend) against your local API with the following command:
+Alternatively, you could run the Reconmap [frontend](https://github.com/Reconmap/web-frontend) against your local API with the following commands:
 
 ```sh
-$ docker run -it -d -p 3001:80 reconmap/web-frontend:dev
+$ cat <<EOF > environment.js
+window.env = {
+	// URL to the Reconmap API including protocol and port but not trailing slash
+    REACT_APP_API_ENDPOINT: 'http://localhost:8080',
+
+	// URL to the Reconmap WebSocket API including protocol and port but not trailing slash
+    REACT_APP_WS_ENDPOINT: 'ws://localhost:8765'
+};
+EOF
+$ docker run --rm -d -p 3001:80 \
+	-v "$PWD/environment.js:/usr/share/nginx/html/environment.js" \
+	--name reconmap-web-frontend quay.io/reconmap/web-client:master
 ```
 
 Then opening your browser at http://localhost:3001
