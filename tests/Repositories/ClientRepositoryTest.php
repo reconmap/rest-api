@@ -21,4 +21,10 @@ class ClientRepositoryTest extends DatabaseTestCase
         $this->assertEquals(1, $client->getId());
         $this->assertEquals('Insecure Co.', $client->getName());
     }
+
+    public function testFindByInvalidIdReturnsNull()
+    {
+        $client = $this->subject->findById(590);
+        $this->assertNull($client);
+    }
 }

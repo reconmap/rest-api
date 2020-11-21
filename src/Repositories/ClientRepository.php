@@ -14,7 +14,7 @@ class ClientRepository extends MysqlRepository
         return $rs->fetch_all(MYSQLI_ASSOC);
     }
 
-    public function findById(int $id): Client
+    public function findById(int $id): ?Client
     {
         $stmt = $this->db->prepare('SELECT * FROM client WHERE id = ?');
         $stmt->bind_param('i', $id);
