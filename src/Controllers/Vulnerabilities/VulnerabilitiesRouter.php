@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Controllers\Vulnerabilities;
 
@@ -12,6 +10,7 @@ class VulnerabilitiesRouter
     public function mapRoutes(RouteCollectionInterface $router): void
     {
         $router->map('GET', '/vulnerabilities', GetVulnerabilitiesController::class);
+        $router->map('GET', '/vulnerabilities/categories', GetVulnerabilityCategoriesController::class);
         $router->map('POST', '/vulnerabilities', CreateVulnerabilityController::class);
         $router->map('GET', '/vulnerabilities/stats', GetVulnerabilitiesStatsController::class);
         $router->map('GET', '/vulnerabilities/{id:number}', GetVulnerabilityController::class);

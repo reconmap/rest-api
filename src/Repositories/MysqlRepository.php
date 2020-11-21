@@ -15,7 +15,11 @@ abstract class MysqlRepository
 
     public function executeInsertStatement(\mysqli_stmt $stmt): int
     {
-        $stmt->execute();
+        if (false === $stmt->execute()) {
+            $errorMessage = $stmt->error;
+            $stmt->close();
+            throw new \Exception('Unable to execute insert statement: ' . $errorMessage);
+        }
         $newId = $stmt->insert_id;
         $stmt->close();
 

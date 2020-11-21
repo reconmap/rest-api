@@ -19,7 +19,7 @@ class UserRepositoryTest extends DatabaseTestCase
     public function testFindAllReturnsAllRecords()
     {
         $users = $this->subject->findAll();
-        $this->assertCount(5, $users);
+        $this->assertCount(6, $users);
     }
 
     public function testFindByValidIdReturnsUser()

@@ -54,7 +54,7 @@ class GenerateReportControllerTest extends DatabaseTestCase
     {
         $project = new Project();
         $project->clientId = 1;
-        $project->name = 'a project';
+        $project->name = 'a project ' . time();
         $project->description = 'a description';
         $project->isTemplate = false;
         (new ProjectRepository($db))->insert($project);
@@ -63,7 +63,7 @@ class GenerateReportControllerTest extends DatabaseTestCase
             'name' => 'user name',
             'password' => 'password',
             'email' => 'email@email.com',
-            'role' => 'role'
+            'role' => 'creator'
         ]);
     }
 
