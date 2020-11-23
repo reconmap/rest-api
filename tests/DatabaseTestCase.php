@@ -11,7 +11,13 @@ abstract class DatabaseTestCase extends TestCase
 {
     public function getDatabaseConnection(): \mysqli
     {
-        $config = new Config(['database' => ['host' => 'db', 'username' => 'reconmapper', 'password' => 'reconmapped', 'name' => 'reconmap']]);
+		$databaseSettings = [
+			'host' => 'db',
+			'username' => 'reconmapper',
+			'password' => 'reconmapped',
+			'name' => 'reconmap_test'
+		];
+        $config = new Config(['database' => $databaseSettings]);
         return DatabaseFactory::createConnection($config);
     }
 }

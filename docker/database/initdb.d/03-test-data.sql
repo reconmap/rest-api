@@ -1,10 +1,7 @@
-TRUNCATE TABLE user;
 INSERT INTO user (id, name, password, email, role)
-VALUES (1, 'admin', '$2y$10$J/DF8J/Az8DiSEpXel18NOcN0qbYt5VSvKCc8oJFarXDtj7HkmCmK', 'admin@localhost', 'creator'),
-       (2, 'writer1', '$2y$10$J/DF8J/Az8DiSEpXel18NOcN0qbYt5VSvKCc8oJFarXDtj7HkmCmK', 'writer1@localhost', 'writer'),
+VALUES (2, 'writer1', '$2y$10$J/DF8J/Az8DiSEpXel18NOcN0qbYt5VSvKCc8oJFarXDtj7HkmCmK', 'writer1@localhost', 'writer'),
        (3, 'writer2', '$2y$10$J/DF8J/Az8DiSEpXel18NOcN0qbYt5VSvKCc8oJFarXDtj7HkmCmK', 'writer2@localhost', 'writer'),
-       (4, 'writer3', '$2y$10$J/DF8J/Az8DiSEpXel18NOcN0qbYt5VSvKCc8oJFarXDtj7HkmCmK', 'writer3admin@localhost',
-        'writer'),
+       (4, 'writer3', '$2y$10$J/DF8J/Az8DiSEpXel18NOcN0qbYt5VSvKCc8oJFarXDtj7HkmCmK', 'writer3admin@localhost', 'writer'),
        (5, 'reader', '$2y$10$J/DF8J/Az8DiSEpXel18NOcN0qbYt5VSvKCc8oJFarXDtj7HkmCmK', 'admin@localhost', 'reader');
 
 TRUNCATE TABLE audit_log;
@@ -62,20 +59,6 @@ VALUES (2, 1),
 INSERT INTO target (project_id, name, kind)
 VALUES (1, 'https://test.com', 'url'),
        (2, '127.0.0.1', 'hostname');
-
-INSERT INTO vulnerability_category (name, description)
-VALUES ('Access Controls', 'Related to authorization of users, and assessment of rights.'),
-       ('Auditing and Logging', 'Related to auditing of actions, or logging of problems.'),
-       ('Authentication', 'Related to the identification of users.'),
-       ('Configuration', 'Related to security configurations of servers, devices, or software.'),
-       ('Cryptography', 'Related to mathematical protections for data.'),
-       ('Data Exposure', 'Related to unintended exposure of sensitive information.'),
-       ('Data Validation', 'Related to improper reliance on the structure or values of data.'),
-       ('Denial of Service', 'Related to causing system failure.'),
-       ('Error Reporting', 'Related to the reporting of error conditions in a secure fashion.'),
-       ('Patching', 'Related to keeping software up to date.'),
-       ('Session Management', 'Related to the identification of authenticated users.'),
-       ('Timing', 'Related to race conditions, locking, or order of operations.');
 
 INSERT INTO vulnerability (project_id, target_id, reported_by_uid, category_id, summary, risk, cvss_score)
 VALUES (2, 1, 1, RAND() * (12 - 1) + 1, 'Domain about to expire', 'medium', 6.4),
@@ -197,3 +180,4 @@ VALUES (1, 'nmap', 'Run port scanner', 'nmap -oX out.xml -v -sS @@TARGET@@'),
 INSERT INTO task_result (task_id, submitted_by_uid, output)
 VALUES (1, 1, 'tcp/22: open, tcp/80: open'),
        (1, 2, 'Domain expires in 22 days');
+

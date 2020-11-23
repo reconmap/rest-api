@@ -1,5 +1,5 @@
-
-DOCKER_IMAGE=reconmap
+# Use bash or file wildcards won't work
+SHELL = bash
 
 .PHONY: prepare
 prepare: build
@@ -11,7 +11,13 @@ build:
 
 .PHONY: tests
 tests: start
+	docker container exec -i $(shell docker-compose ps -q db) mysql -uroot -preconmuppet -e "DROP DATABASE IF EXISTS reconmap_test"
+	docker container exec -i $(shell docker-compose ps -q db) mysql -uroot -preconmuppet -e "CREATE DATABASE reconmap_test"
+	docker container exec -i $(shell docker-compose ps -q db) mysql -uroot -preconmuppet -e "GRANT ALL PRIVILEGES ON reconmap_test.* TO 'reconmapper'@'%';"
+	echo Importing SQL files: $(wildcard docker/database/initdb.d/*.sql)
+	cat docker/database/initdb.d/{01,02,03}*.sql | docker container exec -i $(shell docker-compose ps -q db) mysql -uroot -preconmuppet reconmap_test
 	docker-compose run --rm -w /var/www/webapp -e CURRENT_PLANET=Moon --entrypoint ./run-tests.sh svc
+	docker container exec -i $(shell docker-compose ps -q db) mysql -uroot -preconmuppet -e "DROP DATABASE reconmap_test"
 
 .PHONY: security-tests
 security-tests:
@@ -20,11 +26,12 @@ security-tests:
 
 .PHONY: db-reset
 db-reset:
-	cat $(wildcard docker/database/initdb.d/*.sql) | docker container exec -i $(shell docker-compose ps -q db) mysql -uroot -preconmuppet reconmap
+	cat docker/database/initdb.d/{01,02}*.sql | docker container exec -i $(shell docker-compose ps -q db) mysql -uroot -preconmuppet reconmap
 	
 .PHONY: start
 start:
 	docker-compose up -d
+
 .PHONY: stop
 stop:
 	docker-compose stop
