@@ -43,14 +43,6 @@ clean: stop
 	docker-compose rm
 	rm -rf {data-mysql,data-redis} 
 
-.PHONY: runswagger
-runswagger:
-	docker run -p 80:8080 -e SWAGGER_JSON=/local/openapi.yaml -v $(PWD):/local swaggerapi/swagger-ui
-
-.PHONY: generateapidocs
-generateapidocs:
-	docker run --rm -v $(PWD):/local swaggerapi/swagger-codegen-cli-v3 generate -i /local/openapi.yaml -l dynamic-html -o /local/apidocs
-
 .PHONY: api-shell
 api-shell:
 	@docker-compose exec -w /var/www/webapp svc bash
