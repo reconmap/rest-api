@@ -26,7 +26,7 @@ Password: admin123
 
 ## Documentation
 
-The API specs have been documented using [OpenAPI](openapi.yaml). You can use the interactive [Swagger UI](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/Reconmap/api-backend/master/openapi.yaml) to play with it.
+The API specs have been documented using [OpenAPI](docs/openapi.yaml). You can use the interactive [Swagger UI](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/Reconmap/api-backend/master/docs/openapi.yaml) to play with it.
 
 ## Build instructions
 
