@@ -3,7 +3,7 @@ version: '3'
 services:
 
   redis:
-    container_name: reconmap-backend-redis
+    container_name: rmap-redis
     image: redis:6.0
     command: redis-server --requirepass REconDIS
     ports:
@@ -11,12 +11,12 @@ services:
     volumes:
       - ./data-redis:/data
 
-  db:
-    container_name: reconmap-backend-db
+  mysql:
+    container_name: rmap-mysql
     image: mysql:8.0
     volumes:
       - ./data-mysql:/var/lib/mysql
-      - ./docker/database/initdb.d:/docker-entrypoint-initdb.d
+      - ./docker/mysql/initdb.d:/docker-entrypoint-initdb.d
     restart: unless-stopped
     ports:
       - 3306:3306
@@ -26,10 +26,10 @@ services:
       MYSQL_USER: reconmapper
       MYSQL_PASSWORD: reconmapped
 
-  svc:
-    container_name: reconmap-backend-api
+  api:
+    container_name: rmap-api
     build:
-      context: docker/service
+      context: docker/api
       dockerfile: Dockerfile
     volumes:
       - "$PWD:/var/www/webapp"
@@ -41,9 +41,9 @@ services:
       REDIS_USER: default
       REDIS_PASSWORD: REconDIS
 
-  jobs:
-    container_name: reconmap-job-processing-service
-    image: reconmap/job-processing-svc:dev
+  wss:
+    container_name: rmap-wss
+    image: quay.io/reconmap/ws-server:latest
     ports:
       - 8765:8765
     environment:
