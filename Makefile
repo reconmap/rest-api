@@ -4,7 +4,7 @@ DB_CONTAINER = $(shell docker-compose ps -q mysql)
 
 .PHONY: prepare
 prepare: build
-	docker-compose run --rm -w /var/www/webapp --entrypoint composer svc install
+	docker-compose run --rm -w /var/www/webapp --entrypoint composer api install
 
 .PHONY: build
 build:
@@ -12,19 +12,19 @@ build:
 
 .PHONY: tests
 tests: start
-	docker-compose run --rm -w /var/www/webapp -e WAIT_HOSTS=$(DB_CONTAINER):3306 --entrypoint /usr/local/bin/wait svc
+	docker-compose run --rm -w /var/www/webapp -e WAIT_HOSTS=$(DB_CONTAINER):3306 --entrypoint /usr/local/bin/wait api
 	docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet -e "DROP DATABASE IF EXISTS reconmap_test"
 	docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet -e "CREATE DATABASE reconmap_test"
 	docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet -e "GRANT ALL PRIVILEGES ON reconmap_test.* TO 'reconmapper'@'%';"
 	echo Importing SQL files: $(wildcard docker/mysql/initdb.d/*.sql)
 	cat docker/mysql/initdb.d/{01,02,03}*.sql | docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet reconmap_test
-	docker-compose run --rm -w /var/www/webapp -e CURRENT_PLANET=Moon --entrypoint ./run-tests.sh svc
+	docker-compose run --rm -w /var/www/webapp -e CURRENT_PLANET=Moon --entrypoint ./run-tests.sh api
 	docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet -e "DROP DATABASE reconmap_test"
 
 .PHONY: security-tests
 security-tests:
-	docker-compose run --rm -w /var/www/webapp --entrypoint composer svc require sensiolabs/security-checker
-	docker-compose run --rm -w /var/www/webapp --entrypoint ./vendor/bin/security-checker svc security:check
+	docker-compose run --rm -w /var/www/webapp --entrypoint composer api require sensiolabs/security-checker
+	docker-compose run --rm -w /var/www/webapp --entrypoint ./vendor/bin/security-checker api security:check
 
 .PHONY: start
 start:
@@ -42,7 +42,7 @@ clean: stop
 
 .PHONY: api-shell
 api-shell:
-	@docker-compose exec -w /var/www/webapp svc bash
+	@docker-compose exec -w /var/www/webapp api bash
 
 # Database targets
 
