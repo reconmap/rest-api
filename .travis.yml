@@ -1,4 +1,5 @@
 env:
+  - DOCKER_COMPOSE_VERSION=1.26.2
   global:
     - CC_TEST_REPORTER_ID=bfe49936c2eff76912dd871c979208daf9ffa282cb5fde1812427bb99d6c683c
   
@@ -6,6 +7,10 @@ services:
   - docker
 
 before_install:
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
