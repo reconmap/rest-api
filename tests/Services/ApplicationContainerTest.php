@@ -8,6 +8,7 @@ use League\Container\Inflector\InflectorInterface;
 use League\Container\ReflectionContainer;
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
+use Reconmap\DatabaseTestCase;
 
 class ApplicationContainerTest extends TestCase
 {
@@ -18,7 +19,7 @@ class ApplicationContainerTest extends TestCase
         $config->expects($this->atLeastOnce())
             ->method('getSettings')
             ->with('database')
-            ->willReturn(['host' => 'db', 'username' => 'reconmapper', 'password' => 'reconmapped', 'name' => 'reconmap']);
+            ->willReturn(DatabaseTestCase::DATABASE_SETTINGS);
         $logger = $this->createMock(Logger::class);
 
         /** @var ApplicationContainer $container */

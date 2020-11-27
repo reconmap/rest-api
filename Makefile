@@ -1,6 +1,6 @@
 # Use bash or file wildcards won't work
 SHELL = bash
-DB_CONTAINER = $(shell docker-compose ps -q mysql)
+DB_CONTAINER=rmap-mysql
 
 .PHONY: prepare
 prepare: build

@@ -9,15 +9,16 @@ use Reconmap\Services\Config;
 
 abstract class DatabaseTestCase extends TestCase
 {
+	public const DATABASE_SETTINGS = [
+		'host' => 'rmap-mysql',
+		'username' => 'reconmapper',
+		'password' => 'reconmapped',
+		'name' => 'reconmap_test'
+	];
+
     public function getDatabaseConnection(): \mysqli
     {
-		$databaseSettings = [
-			'host' => 'db',
-			'username' => 'reconmapper',
-			'password' => 'reconmapped',
-			'name' => 'reconmap_test'
-		];
-        $config = new Config(['database' => $databaseSettings]);
+        $config = new Config(['database' => self::DATABASE_SETTINGS]);
         return DatabaseFactory::createConnection($config);
     }
 }
