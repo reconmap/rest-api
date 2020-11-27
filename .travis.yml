@@ -1,7 +1,7 @@
 env:
-  - DOCKER_COMPOSE_VERSION=1.26.2
   global:
     - CC_TEST_REPORTER_ID=bfe49936c2eff76912dd871c979208daf9ffa282cb5fde1812427bb99d6c683c
+    - DOCKER_COMPOSE_VERSION=1.26.2
   
 services:
   - docker
