@@ -11,7 +11,6 @@ class ProjectsRouter
 
     public function mapRoutes(RouteCollectionInterface $router): void
     {
-        $router->map('POST', '/templates', ImportTemplateController::class);
         $router->map('GET', '/projects', GetProjectsController::class);
         $router->map('GET', '/projects/{id:number}', GetProjectController::class);
         $router->map('PUT', '/projects/{projectId:number}', UpdateProjectController::class);

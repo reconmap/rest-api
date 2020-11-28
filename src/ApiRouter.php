@@ -13,7 +13,7 @@ use League\Route\Strategy\JsonStrategy;
 use Monolog\Logger;
 use Reconmap\Controllers\AuditLog\AuditLogRouter;
 use Reconmap\Controllers\Clients\ClientsRouter;
-use Reconmap\Controllers\Integrations\IntegrationsRouter;
+use Reconmap\Controllers\System\SystemRouter;
 use Reconmap\Controllers\Projects\ProjectsRouter;
 use Reconmap\Controllers\Reports\ReportsRouter;
 use Reconmap\Controllers\Targets\TargetsRouter;
@@ -37,7 +37,7 @@ class ApiRouter extends Router
         AuditLogRouter::class,
         ProjectsRouter::class,
         TargetsRouter::class,
-        IntegrationsRouter::class,
+        SystemRouter::class,
     ];
 
     /**

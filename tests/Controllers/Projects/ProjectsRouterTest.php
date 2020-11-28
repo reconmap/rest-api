@@ -11,7 +11,7 @@ class ProjectsRouterTest extends TestCase
     public function testAtLeastOneRouteIsMapped()
     {
         $routeCollectionMock = $this->createMock(RouteCollectionInterface::class);
-        $routeCollectionMock->expects($this->atLeast(13))
+        $routeCollectionMock->expects($this->atLeast(12))
             ->method('map');
 
         $router = new ProjectsRouter();

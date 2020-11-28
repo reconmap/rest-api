@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Reconmap\Controllers\Integrations;
+namespace Reconmap\Controllers\System;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Reconmap\Controllers\AuditLog;
 
+use GuzzleHttp\Psr7\Response;
 use Laminas\Diactoros\CallbackStream;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -22,8 +23,6 @@ class ExportAuditLogController extends Controller
 
         $fileName = 'reconmap-auditlog-' . date('Ymd-His') . '.csv';
 
-        $response = new \GuzzleHttp\Psr7\Response;
-
         $body = new CallbackStream(function () use ($auditLog) {
             $f = fopen('php://output', 'w');
             foreach ($auditLog as $log) {
@@ -34,6 +33,7 @@ class ExportAuditLogController extends Controller
         $userId = $request->getAttribute('userId');
         $this->auditAction($userId);
 
+        $response = new Response;
         return $response
             ->withBody($body)
             ->withHeader('Access-Control-Expose-Headers', 'Content-Disposition')

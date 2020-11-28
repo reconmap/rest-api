@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Reconmap\Controllers\Projects;
+namespace Reconmap\Controllers\System;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
@@ -13,19 +13,13 @@ use Reconmap\Repositories\ProjectUserRepository;
 use Reconmap\Repositories\TaskRepository;
 use Reconmap\Services\AuditLogService;
 
-class ImportTemplateController extends Controller
+class ImportDataController extends Controller
 {
 
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
         $files = $request->getUploadedFiles();
         $importFile = $files['importFile'];
-        /*
-        $resultFile->getClientFilename();
-        $resultFile->getSize();
-        $resultFile->getClientMediaType();
-        $resultFile->moveTo('path');
-        */
         $importXml = $importFile->getStream()->getContents();
 
         $userId = $request->getAttribute('userId');
