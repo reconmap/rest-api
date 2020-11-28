@@ -16,10 +16,10 @@ class ExportDataController extends Controller
 
     public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
     {
-        $userId = $request->getAttribute('userId');
-        $this->auditAction($userId);
-
         $entities = explode(',', $request->getQueryParams()['entities']);
+
+        $userId = $request->getAttribute('userId');
+        $this->auditAction($userId, $entities);
 
         $fileName = 'reconmap-data-' . date('Ymd-His') . '.xml';
 
@@ -28,7 +28,7 @@ class ExportDataController extends Controller
         $body = new CallbackStream(function () use ($xml, $entities) {
             $f = fopen('php://output', 'w');
 
-            $rootNode = $xml->createElement('reconmap-data');
+            $rootNode = $xml->createElement('reconmap');
 
             if (in_array('vulnerabilities', $entities)) {
                 $vulnerabilityRepository = new VulnerabilityRepository($this->db);
@@ -63,10 +63,10 @@ class ExportDataController extends Controller
             ->withAddedHeader('Content-Type', 'text/xml; charset=UTF-8');
     }
 
-    private function auditAction(int $loggedInUserId): void
+    private function auditAction(int $loggedInUserId, array $entities): void
     {
         $auditLogService = new AuditLogService($this->db);
-        $auditLogService->insert($loggedInUserId, AuditLogAction::DATA_EXPORTED);
+        $auditLogService->insert($loggedInUserId, AuditLogAction::DATA_EXPORTED, $entities);
     }
 }
 
