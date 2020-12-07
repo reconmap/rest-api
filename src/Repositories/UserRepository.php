@@ -96,7 +96,7 @@ class UserRepository extends MysqlRepository
         WHERE
             project_id = ?
         ORDER BY
-            u.name ASC
+            u.name
         SQL;
         $stmt = $this->db->prepare($sql);
         $stmt->bind_param('i', $projectId);

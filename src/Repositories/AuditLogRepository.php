@@ -67,7 +67,7 @@ class AuditLogRepository extends MysqlRepository
         SELECT DATE(insert_ts) AS log_date, COUNT(*) AS total
         FROM audit_log
         GROUP BY log_date
-        ORDER BY log_date ASC
+        ORDER BY log_date
         SQL;
 
         $rs = $this->db->query($sql);
