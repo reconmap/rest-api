@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Controllers\Reports;
 
@@ -10,12 +8,18 @@ use Reconmap\Repositories\ReportRepository;
 
 class GetReportsController extends Controller
 {
-
     public function __invoke(ServerRequestInterface $request): array
     {
-        $repository = new ReportRepository($this->db);
-        $reports = $repository->findAll();
+        $params = $request->getQueryParams();
 
-        return $reports;
+        $repository = new ReportRepository($this->db);
+
+        if (isset($params['projectId'])) {
+            $projectId = (int)$params['projectId'];
+
+            return $repository->findByProjectId($projectId);
+        } else {
+            return $repository->findAll();
+        }
     }
 }

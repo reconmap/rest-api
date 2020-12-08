@@ -21,7 +21,7 @@ class DeleteReportController extends Controller
 
         $filename = sprintf(RECONMAP_APP_DIR . "/data/reports/report-%d.%s", $id, $report['format']);
         if (unlink($filename) === false) {
-            $this->logger->warn("Unable to delete report file '$filename'");
+            $this->logger->warning("Unable to delete report file '$filename'");
         }
 
         return ['success' => $success];

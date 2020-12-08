@@ -1,3 +1,7 @@
+<?php
+/** @var array $users */
+/** @var array $targets */
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -40,11 +44,11 @@
     </thead>
     <tbody>
     <?php /** @global array $versions */ ?>
-    <?php foreach ($versions as $version): ?>
+    <?php foreach ($reports as $version): ?>
         <tr>
             <td><?= $version['insert_ts'] ?></td>
-            <td><?= $version['name'] ?></td>
-            <td><?= $version['description'] ?></td>
+            <td><?= $version['version_name'] ?></td>
+            <td><?= $version['version_description'] ?></td>
         </tr>
     <?php endforeach ?>
     </tbody>

@@ -48,11 +48,15 @@ api-shell:
 
 .PHONY: db-shell
 db-shell:
-	@docker-compose exec $(DB_CONTAINER) mysql --silent -uroot -preconmuppet reconmap
+	@docker-compose exec mysql mysql --silent -uroot -preconmuppet reconmap
 
 .PHONY: db-reset
 db-reset:
 	cat docker/mysql/initdb.d/{01,02}*.sql | docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet reconmap
+
+.PHONY: db-import
+db-import:
+	cat docker/mysql/initdb.d/{01,02,03}*.sql | docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet reconmap
 	
 .PHONY: redis-shell
 redis-shell:

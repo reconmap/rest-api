@@ -13,9 +13,9 @@ use League\Route\Strategy\JsonStrategy;
 use Monolog\Logger;
 use Reconmap\Controllers\AuditLog\AuditLogRouter;
 use Reconmap\Controllers\Clients\ClientsRouter;
-use Reconmap\Controllers\System\SystemRouter;
 use Reconmap\Controllers\Projects\ProjectsRouter;
 use Reconmap\Controllers\Reports\ReportsRouter;
+use Reconmap\Controllers\System\SystemRouter;
 use Reconmap\Controllers\Targets\TargetsRouter;
 use Reconmap\Controllers\Tasks\TasksRouter;
 use Reconmap\Controllers\Users\UsersLoginController;
@@ -91,7 +91,7 @@ class ApiRouter extends Router
         return (new Response)
             ->withStatus(200)
             ->withHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,PATCH')
-            ->withHeader('Access-Control-Allow-Headers', 'Authorization,Bulk-Operation')
+            ->withHeader('Access-Control-Allow-Headers', 'Authorization,Bulk-Operation,Content-Type')
             ->withHeader('Access-Control-Allow-Origin', '*');
     }
 }

@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
@@ -19,7 +17,7 @@ class UserRepositoryTest extends DatabaseTestCase
     public function testFindAllReturnsAllRecords()
     {
         $users = $this->subject->findAll();
-        $this->assertCount(6, $users);
+        $this->assertCount(5, $users);
     }
 
     public function testFindByValidIdReturnsUser()

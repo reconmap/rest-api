@@ -1,7 +1,8 @@
 INSERT INTO user (id, name, password, email, role)
 VALUES (2, 'writer1', '$2y$10$J/DF8J/Az8DiSEpXel18NOcN0qbYt5VSvKCc8oJFarXDtj7HkmCmK', 'writer1@localhost', 'writer'),
        (3, 'writer2', '$2y$10$J/DF8J/Az8DiSEpXel18NOcN0qbYt5VSvKCc8oJFarXDtj7HkmCmK', 'writer2@localhost', 'writer'),
-       (4, 'writer3', '$2y$10$J/DF8J/Az8DiSEpXel18NOcN0qbYt5VSvKCc8oJFarXDtj7HkmCmK', 'writer3admin@localhost', 'writer'),
+       (4, 'writer3', '$2y$10$J/DF8J/Az8DiSEpXel18NOcN0qbYt5VSvKCc8oJFarXDtj7HkmCmK', 'writer3admin@localhost',
+        'writer'),
        (5, 'reader', '$2y$10$J/DF8J/Az8DiSEpXel18NOcN0qbYt5VSvKCc8oJFarXDtj7HkmCmK', 'admin@localhost', 'reader');
 
 TRUNCATE TABLE audit_log;
@@ -47,10 +48,10 @@ INSERT INTO project (id, client_id, name, description, is_template)
 VALUES (1, NULL, 'Linux host template', 'Project template to show general linux host reconnaissance tasks', TRUE),
        (2, 1, 'Web server pentest project', 'Test project to show pentest tasks and reports', FALSE);
 
-INSERT INTO report_version (project_id, insert_ts, name, description)
-VALUES (2, CURRENT_TIMESTAMP, '1.0', 'Initial version'),
-       (2, DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 3 DAY), '1.1', 'Initial version after corrections'),
-       (2, DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 10 DAY), '1.2 reviewed', 'Report reviewed and sent to the client');
+INSERT INTO report (project_id, insert_ts, generated_by_uid, version_name, version_description)
+VALUES (2, CURRENT_TIMESTAMP, 1, '1.0', 'Initial version'),
+       (2, DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 3 DAY), 1, '1.1', 'Initial version after corrections'),
+       (2, DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 10 DAY), 1, '1.2 reviewed', 'Report reviewed and sent to the client');
 
 INSERT INTO project_user (project_id, user_id)
 VALUES (2, 1),

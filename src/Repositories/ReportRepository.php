@@ -4,18 +4,20 @@ declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
+use Reconmap\Models\Report;
+
 class ReportRepository extends MysqlRepository
 {
-    public function findById(int $id): array
+    public function findById(int $reportId): array
     {
         $stmt = $this->db->prepare('SELECT * FROM report WHERE id = ?');
-        $stmt->bind_param('i', $id);
+        $stmt->bind_param('i', $reportId);
         $stmt->execute();
         $rs = $stmt->get_result();
-        $project = $rs->fetch_assoc();
+        $report = $rs->fetch_assoc();
         $stmt->close();
 
-        return $project;
+        return $report;
     }
 
     public function findAll(): array
@@ -29,14 +31,13 @@ class ReportRepository extends MysqlRepository
             LIMIT 20
         SQL;
         $rs = $this->db->query($sql);
-        $projects = $rs->fetch_all(MYSQLI_ASSOC);
-        return $projects;
+        return $rs->fetch_all(MYSQLI_ASSOC);
     }
 
-    public function insert(int $projectId, int $userId, string $format): int
+    public function insert(Report $report): int
     {
-        $stmt = $this->db->prepare('INSERT INTO report (project_id, generated_by_uid, format) VALUES (?, ?, ?)');
-        $stmt->bind_param('iis', $projectId, $userId, $format);
+        $stmt = $this->db->prepare('INSERT INTO report (project_id, generated_by_uid, version_name, version_description) VALUES (?, ?, ?, ?)');
+        $stmt->bind_param('iiss', $report->projectId, $report->generatedByUid, $report->versionName, $report->versionDescription);
         return $this->executeInsertStatement($stmt);
     }
 
@@ -49,5 +50,17 @@ class ReportRepository extends MysqlRepository
         $stmt->close();
 
         return $success;
+    }
+
+    public function findByProjectId(int $projectId): array
+    {
+        $stmt = $this->db->prepare('SELECT * FROM report WHERE project_id = ? ORDER BY insert_ts DESC');
+        $stmt->bind_param('i', $projectId);
+        $stmt->execute();
+        $rs = $stmt->get_result();
+        $reports = $rs->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+
+        return $reports;
     }
 }

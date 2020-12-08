@@ -146,24 +146,12 @@ CREATE TABLE task_result
 DROP TABLE IF EXISTS report;
 CREATE TABLE report
 (
-    id               INT UNSIGNED         NOT NULL AUTO_INCREMENT,
-    project_id       INT UNSIGNED         NOT NULL REFERENCES project,
-    generated_by_uid INT UNSIGNED         NOT NULL REFERENCES user,
-    insert_ts        TIMESTAMP            NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    format           ENUM ('html', 'pdf') NOT NULL,
+    id                  INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    project_id          INT UNSIGNED NOT NULL REFERENCES project,
+    generated_by_uid    INT UNSIGNED NOT NULL REFERENCES user,
+    insert_ts           TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    version_name        VARCHAR(50)  NOT NULL COMMENT 'eg 1.0, 202103',
+    version_description VARCHAR(300) NOT NULL COMMENT 'eg Initial, Reviewed, In progress, Draft, Final',
 
     PRIMARY KEY (id)
-) ENGINE = InnoDB;
-
-DROP TABLE IF EXISTS report_version;
-CREATE TABLE report_version
-(
-    id          INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    project_id  INT UNSIGNED NOT NULL REFERENCES project,
-    insert_ts   TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    name        VARCHAR(50)  NOT NULL COMMENT 'eg 1.0, 202103, In progress, Draft, Final',
-    description VARCHAR(300) NOT NULL,
-
-    PRIMARY KEY (id),
-    UNIQUE (name)
 ) ENGINE = InnoDB;
