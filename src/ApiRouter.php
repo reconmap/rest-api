@@ -13,6 +13,7 @@ use League\Route\Strategy\JsonStrategy;
 use Monolog\Logger;
 use Reconmap\Controllers\AuditLog\AuditLogRouter;
 use Reconmap\Controllers\Clients\ClientsRouter;
+use Reconmap\Controllers\Organisations\OrganisationsRouter;
 use Reconmap\Controllers\Projects\ProjectsRouter;
 use Reconmap\Controllers\Reports\ReportsRouter;
 use Reconmap\Controllers\System\SystemRouter;
@@ -24,10 +25,6 @@ use Reconmap\Controllers\Vulnerabilities\VulnerabilitiesRouter;
 
 class ApiRouter extends Router
 {
-
-    /**
-     * @var array|class[]
-     */
     private const ROUTER_CLASSES = [
         TasksRouter::class,
         ClientsRouter::class,
@@ -38,21 +35,13 @@ class ApiRouter extends Router
         ProjectsRouter::class,
         TargetsRouter::class,
         SystemRouter::class,
+        OrganisationsRouter::class
     ];
 
-    /**
-     * @var Logger
-     */
     private Logger $logger;
 
-    /**
-     * @var AuthMiddleware
-     */
     private AuthMiddleware $authMiddleware;
 
-    /**
-     * @var CorsMiddleware
-     */
     private CorsMiddleware $corsMiddleware;
 
     public function mapRoutes(Container $container, Logger $logger): void
