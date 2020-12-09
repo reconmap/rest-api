@@ -3,6 +3,7 @@
 namespace Reconmap\Services;
 
 use Reconmap\Repositories\ClientRepository;
+use Reconmap\Repositories\OrganisationRepository;
 use Reconmap\Repositories\ProjectRepository;
 use Reconmap\Repositories\ReportRepository;
 use Reconmap\Repositories\TargetRepository;
@@ -33,8 +34,11 @@ class ReportGenerator
         $reports = (new ReportRepository($this->db))->findByProjectId($projectId);
         $latestVersion = $reports[0];
 
+        $organisation = (new OrganisationRepository($this->db))->findRootOrganisation();
+
         return $this->template->render('projects/report', [
             'project' => $project,
+            'org' => $organisation,
             'version' => $latestVersion['name'],
             'date' => date('Y-m-d'),
             'reports' => $reports,

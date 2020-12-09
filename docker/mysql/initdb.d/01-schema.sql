@@ -27,6 +27,22 @@ CREATE TABLE audit_log
     PRIMARY KEY (id)
 ) ENGINE = InnoDB;
 
+DROP TABLE IF EXISTS organisation;
+CREATE TABLE organisation
+(
+    id            INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    insert_ts     TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_ts     TIMESTAMP    NULL ON UPDATE CURRENT_TIMESTAMP,
+    name          VARCHAR(200) NOT NULL,
+    url           VARCHAR(255) NULL,
+    contact_name  VARCHAR(200) NULL,
+    contact_email VARCHAR(200) NULL,
+    contact_phone VARCHAR(200) NULL,
+
+    PRIMARY KEY (id),
+    UNIQUE KEY (name)
+) ENGINE = InnoDB;
+
 DROP TABLE IF EXISTS client;
 CREATE TABLE client
 (

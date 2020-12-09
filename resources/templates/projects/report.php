@@ -1,12 +1,12 @@
 <?php
-/** @var array $users */
-/** @var array $targets */
+/** @global \Reconmap\Models\Client $client */
+/** @global \Reconmap\Models\Organisation $org */
 ?>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8"/>
-    <meta name="author" content="Reconmap"/>
+    <meta name="author" content="<?= $org->name ?>"/>
 </head>
 
 <body>
@@ -21,7 +21,7 @@
         <dd><?= $date ?></dd>
     </dl>
     <p><em>Prepared for <a href="<?= $client->url ?>"><?= $client->name ?></a>.</em></p>
-    <p><em>Prepared by <a href="https://reconmap.org">Reconmap</a>.</em></p>
+    <p><em>Prepared by <a href="<?= $org->url ?>"><?= $org->name ?></a>.</em></p>
 
     <h3>CONTENT IS CONFIDENTIAL</h3>
 
@@ -66,7 +66,9 @@
 <h2><a name="pentesting-team">Pentesting team</a></h2>
 
 <ul>
-    <?php foreach ($users as $user) : ?>
+
+    <?php /** @var array $users */
+    foreach ($users as $user) : ?>
         <li><strong><?= $user['name'] ?></strong></li>
     <?php endforeach ?>
 </ul>
@@ -75,7 +77,9 @@
 <h2><a name="targets">Targets</a></h2>
 
 <ul>
-    <?php foreach ($targets as $target) : ?>
+    <?php
+    /** @var array $targets */
+    foreach ($targets as $target) : ?>
         <li><strong><?= $target['name'] ?></strong> (<?= $target['kind'] ?>)</li>
     <?php endforeach ?>
 </ul>
@@ -122,5 +126,4 @@
 </div>
 
 </body>
-
 </html>

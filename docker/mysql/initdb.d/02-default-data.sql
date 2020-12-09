@@ -21,3 +21,6 @@ VALUES ('Access Controls', 'Related to authorization of users, and assessment of
        ('Session Management', 'Related to the identification of authenticated users.'),
        ('Timing', 'Related to race conditions, locking, or order of operations.');
 
+TRUNCATE TABLE organisation;
+INSERT INTO organisation (name, url, contact_email)
+VALUES ('Reconmap default org', 'https://reconmap.org', 'no-reply@reconmap.org');
