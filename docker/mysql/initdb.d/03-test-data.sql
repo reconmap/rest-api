@@ -42,11 +42,18 @@ VALUES (1, INET_ATON('127.0.0.1'), 'Logged in'),
        (0, INET_ATON('127.0.0.1'), 'Initialised system');
 
 INSERT INTO client (id, name, url, contact_name, contact_email, contact_phone)
-VALUES (1, 'Insecure Co.', 'http://in.se.cure', 'John Doe', 'John.Doe@in.se.cure', '+99 123 245 389');
+VALUES (1, 'Insecure Co.', 'http://in.se.cure', 'John Doe', 'John.Doe@in.se.cure', '+99 123 245 389'),
+       (2, 'The OWASP Foundation', 'https://owasp.org', 'N/A', 'N/A', '+1 951-692-7703');
 
 INSERT INTO project (id, client_id, name, description, is_template)
 VALUES (1, NULL, 'Linux host template', 'Project template to show general linux host reconnaissance tasks', TRUE),
-       (2, 1, 'Web server pentest project', 'Test project to show pentest tasks and reports', FALSE);
+       (2, 1, 'Web server pentest project', 'Test project to show pentest tasks and reports', FALSE),
+       (3, 2, 'Juice Shop (test project)',
+        'OWASP Juice Shop is probably the most modern and sophisticated insecure web application! It can be used in security trainings, awareness demos, CTFs and as a guinea pig for security tools! Juice Shop encompasses vulnerabilities from the entire OWASP Top Ten along with many other security flaws found in real-world applications!',
+        FALSE),
+       (4, 2, 'WebGoat (test project)',
+        'WebGoat is a deliberately insecure application that allows interested developers just like you to test vulnerabilities commonly found in Java-based applications that use common and popular open source components.',
+        FALSE);
 
 INSERT INTO report (project_id, insert_ts, generated_by_uid, version_name, version_description)
 VALUES (2, CURRENT_TIMESTAMP, 1, '1.0', 'Initial version'),
