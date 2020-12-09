@@ -1,10 +1,10 @@
 FROM ubuntu:20.04
 
 ARG DEBIAN_FRONTEND=noninteractive
-RUN apt-get update
+
+RUN apt-get update && apt-get upgrade -y --fix-missing
 RUN apt-get install -y vim wget unzip
-RUN apt-get install -y php7.4 php7.4-cli php7.4-fpm
-RUN apt-get install -y php7.4-mysqlnd php7.4-dom php7.4-mbstring php7.4-intl php7.4-xdebug php7.4-curl
+RUN apt-get install -y php7.4 php7.4-cli php7.4-fpm php7.4-mysqlnd php7.4-dom php7.4-mbstring php7.4-intl php7.4-xdebug php7.4-curl
 RUN apt-get install -y nginx
 RUN apt-get install -y cron
 
