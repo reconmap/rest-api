@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Controllers\Tasks;
 
@@ -12,7 +10,16 @@ class GetTasksController extends Controller
 {
     public function __invoke(ServerRequestInterface $request): array
     {
+        $params = $request->getQueryParams();
+
         $repository = new TaskRepository($this->db);
-        return $repository->findAll();
+        if (isset($params['keywords'])) {
+            $keywords = $params['keywords'];
+            $tasks = $repository->findByKeywords($keywords);
+        } else {
+            $tasks = $repository->findAll();
+        }
+
+        return $tasks;
     }
 }

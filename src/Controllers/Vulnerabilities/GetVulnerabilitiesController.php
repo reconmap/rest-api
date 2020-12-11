@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Controllers\Vulnerabilities;
 
@@ -12,7 +10,6 @@ use Reconmap\Repositories\VulnerabilityRepository;
 
 class GetVulnerabilitiesController extends Controller
 {
-
     public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
         $params = $request->getQueryParams();

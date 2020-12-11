@@ -17,6 +17,21 @@ class TaskRepository extends MysqlRepository
         return $rs->fetch_all(MYSQLI_ASSOC);
     }
 
+    public function findByKeywords(string $keywords): array
+    {
+        $queryBuilder = $this->getBaseSelectQueryBuilder();
+        $queryBuilder->setWhere('t.name LIKE ? OR t.description LIKE ?');
+        $sql = $queryBuilder->toSql();
+
+        $keywordsLike = "%$keywords%";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bind_param('ss', $keywordsLike, $keywordsLike);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
     private function getBaseSelectQueryBuilder(): SelectQueryBuilder
     {
         $queryBuilder = new SelectQueryBuilder('task t');
