@@ -2,12 +2,14 @@
 
 namespace Reconmap\Controllers\System;
 
+use DomDocument;
 use GuzzleHttp\Psr7\Response;
 use Laminas\Diactoros\CallbackStream;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditLogAction;
+use Reconmap\Models\Converters\VulnerabilityXmlConverter;
 use Reconmap\Repositories\VulnerabilityRepository;
 use Reconmap\Services\AuditLogService;
 
@@ -23,36 +25,29 @@ class ExportDataController extends Controller
 
         $fileName = 'reconmap-data-' . date('Ymd-His') . '.xml';
 
-        $xml = new \DomDocument('1.0', 'UTF-8');
+        $xmlDoc = new DomDocument('1.0', 'UTF-8');
 
-        $body = new CallbackStream(function () use ($xml, $entities) {
+        $body = new CallbackStream(function () use ($xmlDoc, $entities) {
             $f = fopen('php://output', 'w');
 
-            $rootNode = $xml->createElement('reconmap');
+            $rootNode = $xmlDoc->createElement('reconmap');
 
             if (in_array('vulnerabilities', $entities)) {
+                $vulnerabilityConverter = new VulnerabilityXmlConverter();
                 $vulnerabilityRepository = new VulnerabilityRepository($this->db);
                 $vulnerabilities = $vulnerabilityRepository->findAll();
-                $vulnerabilitiesNode = $xml->createElement('vulnerabilities');
+                $vulnerabilitiesNode = $xmlDoc->createElement('vulnerabilities');
                 foreach ($vulnerabilities as $vulnerability) {
-                    $vulnerabilityNode = $xml->createElement('vulnerability');
-                    $vulnerabilityNode->setAttribute('summary', $vulnerability['summary']);
-
-                    $vulnerabilityDescriptionNode = $xml->createElement('description');
-                    if (isset($vulnerability['description'])) {
-                        $vulnerabilityDescriptionNode->appendChild($xml->createTextNode($vulnerability['description']));
-                    }
-                    $vulnerabilityNode->appendChild($vulnerabilityDescriptionNode);
-
-                    $vulnerabilitiesNode->appendChild($vulnerabilityNode);
+                    $vulnerabilityEl = $vulnerabilityConverter->toXml($xmlDoc, $vulnerability);
+                    $vulnerabilitiesNode->appendChild($vulnerabilityEl);
                 }
                 $rootNode->appendChild($vulnerabilitiesNode);
             }
 
-            $xml->appendChild($rootNode);
+            $xmlDoc->appendChild($rootNode);
 
-            $xml->formatOutput = true;
-            fwrite($f, $xml->saveXML());
+            $xmlDoc->formatOutput = true;
+            fwrite($f, $xmlDoc->saveXML());
         });
 
         $response = new Response;
