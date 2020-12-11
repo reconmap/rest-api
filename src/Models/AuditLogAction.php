@@ -23,4 +23,6 @@ class AuditLogAction implements UserAuditActions
 
     public const DATA_IMPORTED = 'Imported data';
     public const DATA_EXPORTED = 'Exported data';
+
+    public const ORGANISATION_UPDATED = 'Updated organisation';
 }
