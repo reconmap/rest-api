@@ -1,6 +1,6 @@
 {
 	"database": {
-		"host": "db",
+		"host": "rmap-mysql",
 		"username": "reconmapper",
 		"password": "reconmapped",
 		"name": "reconmap"
