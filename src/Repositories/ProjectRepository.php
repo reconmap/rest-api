@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
@@ -108,21 +106,5 @@ class ProjectRepository extends MysqlRepository
         $stmt->close();
 
         return $success;
-    }
-
-    private function refValues(array $columnValues): array
-    {
-        $refs = [];
-        foreach ($columnValues as $key => $value) {
-            $refs[] = &$columnValues[$key];
-        }
-        return $refs;
-    }
-
-    private function generateParamTypes(array $columnNames): string
-    {
-        return array_reduce($columnNames, function (string $columnTypes, string $columnName) {
-            return $columnTypes . self::UPDATABLE_COLUMNS_TYPES[$columnName];
-        }, '');
     }
 }

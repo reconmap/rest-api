@@ -1,12 +1,12 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Controllers\Projects;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
+use Reconmap\Models\AuditLogAction;
 use Reconmap\Repositories\ProjectRepository;
+use Reconmap\Services\ActivityPublisherService;
 
 class UpdateProjectController extends Controller
 {
@@ -25,8 +25,17 @@ class UpdateProjectController extends Controller
         if (!empty($newColumnValues)) {
             $repository = new ProjectRepository($this->db);
             $success = $repository->updateById($projectId, $newColumnValues);
+
+            $loggedInUserId = $request->getAttribute('userId');
+            $this->auditAction($loggedInUserId, $projectId);
         }
 
         return ['success' => $success];
+    }
+
+    private function auditAction(int $loggedInUserId, int $projectId): void
+    {
+        $activityPublisherService = $this->container->get(ActivityPublisherService::class);
+        $activityPublisherService->publish($loggedInUserId, AuditLogAction::PROJECT_MODIFIED, ['projectId' => $projectId]);
     }
 }

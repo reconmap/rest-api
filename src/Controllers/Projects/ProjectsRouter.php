@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Controllers\Projects;
 
@@ -8,7 +6,6 @@ use League\Route\RouteCollectionInterface;
 
 class ProjectsRouter
 {
-
     public function mapRoutes(RouteCollectionInterface $router): void
     {
         $router->map('GET', '/projects', GetProjectsController::class);
