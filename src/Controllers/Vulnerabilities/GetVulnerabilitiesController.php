@@ -19,6 +19,9 @@ class GetVulnerabilitiesController extends Controller
         if (isset($params['keywords'])) {
             $keywords = $params['keywords'];
             $vulnerabilities = $repository->findByKeywords($keywords);
+        } elseif (isset($params['targetId'])) {
+            $targetId = (int)$params['targetId'];
+            $vulnerabilities = $repository->findByTargetId($targetId);
         } else {
             $vulnerabilities = $repository->findAll($page);
         }

@@ -27,7 +27,7 @@ class TargetRepository extends MysqlRepository
 
     public function findByProjectId(int $projectId): array
     {
-        $stmt = $this->db->prepare('SELECT * FROM target WHERE project_id = ?');
+        $stmt = $this->db->prepare('SELECT t.*, (SELECT COUNT(*) FROM vulnerability WHERE target_id = t.id) AS num_vulnerabilities FROM target t WHERE t.project_id = ?');
         $stmt->bind_param('i', $projectId);
         $stmt->execute();
         $rs = $stmt->get_result();
