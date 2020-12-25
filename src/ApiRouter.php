@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap;
 
@@ -11,31 +9,34 @@ use League\Route\RouteGroup;
 use League\Route\Router;
 use League\Route\Strategy\JsonStrategy;
 use Monolog\Logger;
-use Reconmap\Controllers\AuditLog\AuditLogRouter;
-use Reconmap\Controllers\Clients\ClientsRouter;
-use Reconmap\Controllers\Organisations\OrganisationsRouter;
-use Reconmap\Controllers\Projects\ProjectsRouter;
-use Reconmap\Controllers\Reports\ReportsRouter;
-use Reconmap\Controllers\System\SystemRouter;
-use Reconmap\Controllers\Targets\TargetsRouter;
-use Reconmap\Controllers\Tasks\TasksRouter;
-use Reconmap\Controllers\Users\UsersLoginController;
-use Reconmap\Controllers\Users\UsersRouter;
-use Reconmap\Controllers\Vulnerabilities\VulnerabilitiesRouter;
+use Reconmap\{Controllers\AuditLog\AuditLogRouter,
+    Controllers\Clients\ClientsRouter,
+    Controllers\Notes\NotesRouter,
+    Controllers\Organisations\OrganisationsRouter,
+    Controllers\Projects\ProjectsRouter,
+    Controllers\Reports\ReportsRouter,
+    Controllers\System\SystemRouter,
+    Controllers\Targets\TargetsRouter,
+    Controllers\Tasks\TasksRouter,
+    Controllers\Users\UsersLoginController,
+    Controllers\Users\UsersRouter,
+    Controllers\Vulnerabilities\VulnerabilitiesRouter
+};
 
 class ApiRouter extends Router
 {
     private const ROUTER_CLASSES = [
-        TasksRouter::class,
-        ClientsRouter::class,
-        UsersRouter::class,
-        ReportsRouter::class,
-        VulnerabilitiesRouter::class,
         AuditLogRouter::class,
+        ClientsRouter::class,
+        NotesRouter::class,
+        OrganisationsRouter::class,
         ProjectsRouter::class,
-        TargetsRouter::class,
+        ReportsRouter::class,
         SystemRouter::class,
-        OrganisationsRouter::class
+        TargetsRouter::class,
+        TasksRouter::class,
+        UsersRouter::class,
+        VulnerabilitiesRouter::class,
     ];
 
     private Logger $logger;

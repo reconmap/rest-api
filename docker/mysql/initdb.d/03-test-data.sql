@@ -189,3 +189,6 @@ INSERT INTO task_result (task_id, submitted_by_uid, output)
 VALUES (1, 1, 'tcp/22: open, tcp/80: open'),
        (1, 2, 'Domain expires in 22 days');
 
+INSERT INTO note (user_id, parent_type, parent_id, visibility, content)
+VALUES (1, 'project', 3, 'private', 'Credentials are stored in the secret server'),
+       (1, 'project', 3, 'private', 'The client asked not to touch the servers during office hours.');
