@@ -1,5 +1,4 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Controllers\Projects;
 
@@ -11,7 +10,7 @@ class ProjectsRouterTest extends TestCase
     public function testAtLeastOneRouteIsMapped()
     {
         $routeCollectionMock = $this->createMock(RouteCollectionInterface::class);
-        $routeCollectionMock->expects($this->atLeast(12))
+        $routeCollectionMock->expects($this->atLeast(11))
             ->method('map');
 
         $router = new ProjectsRouter();

@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Controllers\Targets;
 
@@ -12,6 +10,7 @@ class TargetsRouter
     public function mapRoutes(RouteCollectionInterface $router): void
     {
         $router->map('POST', '/targets', CreateTargetController::class);
+        $router->map('GET', '/targets', GetTargetsController::class);
         $router->map('GET', '/targets/{id:number}', GetTargetController::class);
         $router->map('DELETE', '/targets/{id:number}', DeleteTargetController::class);
     }

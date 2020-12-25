@@ -14,7 +14,6 @@ class ProjectsRouter
         $router->map('POST', '/projects', CreateProjectController::class);
         $router->map('POST', '/projects/{id:number}/clone', CloneProjectController::class);
         $router->map('GET', '/projects/{id:number}/tasks', GetProjectTasksController::class);
-        $router->map('GET', '/projects/{id:number}/targets', GetProjectTargetsController::class);
         $router->map('GET', '/projects/{id:number}/users', GetProjectUsersController::class);
         $router->map('POST', '/projects/{id:number}/users', AddProjectUserController::class);
         $router->map('DELETE', '/projects/{projectId:number}/users/{membershipId:number}', DeleteProjectUserController::class);

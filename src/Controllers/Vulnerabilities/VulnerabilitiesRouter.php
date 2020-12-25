@@ -12,7 +12,7 @@ class VulnerabilitiesRouter
         $router->map('GET', '/vulnerabilities/categories', GetVulnerabilityCategoriesController::class);
         $router->map('POST', '/vulnerabilities', CreateVulnerabilityController::class);
         $router->map('GET', '/vulnerabilities/stats', GetVulnerabilitiesStatsController::class);
-        $router->map('GET', '/vulnerabilities/{id:number}', GetVulnerabilityController::class);
+        $router->map('GET', '/vulnerabilities/{vulnerabilityId:number}', GetVulnerabilityController::class);
         $router->map('PUT', '/vulnerabilities/{vulnerabilityId:number}', UpdateVulnerabilityController::class);
         $router->map('DELETE', '/vulnerabilities/{id:number}', DeleteVulnerabilityController::class);
     }
