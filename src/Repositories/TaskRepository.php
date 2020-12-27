@@ -1,9 +1,8 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
+use Reconmap\Models\Task;
 use Reconmap\Repositories\QueryBuilders\SelectQueryBuilder;
 
 class TaskRepository extends MysqlRepository
@@ -35,7 +34,7 @@ class TaskRepository extends MysqlRepository
     private function getBaseSelectQueryBuilder(): SelectQueryBuilder
     {
         $queryBuilder = new SelectQueryBuilder('task t');
-        $queryBuilder->setColumns('t.id, t.project_id, p.name AS project_name, t.insert_ts, t.update_ts, t.parser, t.name, t.description, t.completed, t.assignee_uid, u.name AS assignee_name');
+        $queryBuilder->setColumns('t.id, t.project_id, p.name AS project_name, t.insert_ts, t.update_ts, t.command, t.command_parser, t.name, t.description, t.completed, t.assignee_uid, u.name AS assignee_name');
         $queryBuilder->addJoin('LEFT JOIN user u ON (u.id = t.assignee_uid)');
         $queryBuilder->addJoin('LEFT JOIN project p ON (p.id = t.project_id)');
         $queryBuilder->setWhere('p.is_template IS FALSE');
@@ -94,10 +93,11 @@ class TaskRepository extends MysqlRepository
         return $success;
     }
 
-    public function insert(int $projectId, string $parser, string $name, string $description): int
+    public function insert(object $task): int
     {
-        $stmt = $this->db->prepare('INSERT INTO task (project_id, parser, name, description) VALUES (?, ?, ?, ?)');
-        $stmt->bind_param('isss', $projectId, $parser, $name, $description);
+        /** @var Task $task */
+        $stmt = $this->db->prepare('INSERT INTO task (project_id, name, description, command, command_parser) VALUES (?, ?, ?, ?, ?)');
+        $stmt->bind_param('issss', $task->project_id, $task->name, $task->description, $task->command, $task->command_parser);
         return $this->executeInsertStatement($stmt);
     }
 }

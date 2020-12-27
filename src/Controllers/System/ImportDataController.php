@@ -8,6 +8,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditLogAction;
 use Reconmap\Models\Project;
+use Reconmap\Models\Task;
 use Reconmap\Repositories\ProjectRepository;
 use Reconmap\Repositories\ProjectUserRepository;
 use Reconmap\Repositories\TaskRepository;
@@ -56,8 +57,13 @@ class ImportDataController extends Controller
 
             $projectsImported[] = $project;
 
-            foreach ($xmlProject->tasks->task as $task) {
-                $taskRepository->insert($projectId, 'none', (string)$task->name, (string)$task->description);
+            foreach ($xmlProject->tasks->task as $xmlTask) {
+                $task = new Task();
+                $task->project_id = $projectId;
+                $task->name = (string)$xmlTask->name;
+                $task->description = (string)$xmlTask->description;
+                $task->command_parser = null;
+                $taskRepository->insert($task);
             }
 
             return $project;
