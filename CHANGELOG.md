@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 -
 
-[Unreleased]: https://github.com/reconmap/application/compare/...
+[Unreleased]: https://github.com/Reconmap/api-backend/compare/0.7.5...master 
 
 ## [0.7.5]
 
@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Change application to no longer fail with the log file is not writable.
 
-[Unreleased]: https://github.com/reconmap/application/compare/...
+[0.7.5]: https://github.com/Reconmap/api-backend/compare/0.7.0...0.7.5
 
 
 ## [0.7.0]
@@ -28,6 +28,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Add basic functionality: clients, projects, tasks, vulnerabilities, ... 
 
-[Unreleased]: https://github.com/reconmap/application/compare/...
+[0.7.0]: https://github.com/reconmap/application/compare/0.0.1..0.7.0
 
 
