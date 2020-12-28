@@ -1,5 +1,4 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Tasks;
 
@@ -34,27 +33,28 @@ class TaskResultProcessor implements ItemProcessor
         $repository->insert($item->taskId, $item->userId, $output);
 
         $targetId = null;
-        $vulnRepository = new VulnerabilityRepository($this->db);
+        $vulnerabilityRepository = new VulnerabilityRepository($this->db);
 
         $taskRepo = new TaskRepository($this->db);
         $task = $taskRepo->findById($item->taskId);
 
         $processorFactory = new ProcessorFactory;
-        $processor = $processorFactory->createByTaskType($task['parser']);
+        $processor = $processorFactory->createByTaskType($task['command_parser']);
         if ($processor) {
             $vulnerabilities = $processor->parseVulnerabilities($path);
 
             foreach ($vulnerabilities as $vulnerability) {
-                $vulnRepository->insert($task['project_id'], $targetId, $item->userId, $vulnerability->summary, $vulnerability->description, 'medium');
+                $vulnerability->project_id = $task['project_id'];
+                $vulnerability->risk = 'medium';
+                $vulnerabilityRepository->insert($item->userId, $vulnerability);
             }
         }
 
-        $result = $this->redis->lPush("notifications:queue",
+        $this->redis->lPush("notifications:queue",
             json_encode([
                 'title' => 'Task results processed.',
                 'detail' => date('h:i'),
             ])
         );
-
     }
 }
