@@ -11,9 +11,10 @@ class GetNotesController extends Controller
     public function __invoke(ServerRequestInterface $request): array
     {
         $params = $request->getQueryParams();
-        $projectId = (int)$params['projectId'];
+        $parentType = $params['parentType'];
+        $parentId = (int)$params['parentId'];
 
         $repository = new NoteRepository($this->db);
-        return $repository->findByParentId('project', $projectId);
+        return $repository->findByParentId($parentType, $parentId);
     }
 }
