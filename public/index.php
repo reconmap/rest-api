@@ -16,7 +16,10 @@ use Reconmap\Services\ApplicationContainer;
 use Reconmap\Services\ConfigLoader;
 
 $logger = new Logger('http');
-$logger->pushHandler(new StreamHandler(RECONMAP_APP_DIR . '/logs/application.log', Logger::DEBUG));
+$applicationLogPath = RECONMAP_APP_DIR . '/logs/application.log';
+if(is_writable($applicationLogPath)) {
+	$logger->pushHandler(new StreamHandler($applicationLogPath, Logger::DEBUG));
+}
 
 $config = (new ConfigLoader())->loadFromFile(RECONMAP_APP_DIR . '/config.json');
 $config->update('appDir', RECONMAP_APP_DIR);
