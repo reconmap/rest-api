@@ -22,7 +22,7 @@ class GetAuditLogController extends Controller
         $auditLog = $repository->findAll($page);
         $count = $repository->countAll();
 
-        $pageCount = ceil($count / 20);
+        $pageCount = max(ceil($count / 20), 1);
 
         $response = new Response;
         $response->getBody()->write(json_encode($auditLog));
