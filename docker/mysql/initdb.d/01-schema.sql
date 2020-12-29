@@ -17,12 +17,13 @@ CREATE TABLE user
 DROP TABLE IF EXISTS audit_log;
 CREATE TABLE audit_log
 (
-    id        INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    insert_ts TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    user_id   INT UNSIGNED NOT NULL COMMENT 'User 0 is system' REFERENCES user,
-    client_ip INT UNSIGNED NOT NULL COMMENT 'IPv4 IP',
-    action    VARCHAR(200) NOT NULL,
-    object    JSON,
+    id         INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    insert_ts  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    user_id    INT UNSIGNED NOT NULL COMMENT 'User 0 is system' REFERENCES user,
+    user_agent VARCHAR(250) NULL,
+    client_ip  INT UNSIGNED NOT NULL COMMENT 'IPv4 IP',
+    action     VARCHAR(200) NOT NULL,
+    object     JSON,
 
     PRIMARY KEY (id)
 ) ENGINE = InnoDB;

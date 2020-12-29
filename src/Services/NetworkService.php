@@ -1,12 +1,9 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Services;
 
 class NetworkService
 {
-
     public function getClientIp(): string
     {
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {

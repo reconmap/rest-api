@@ -23,6 +23,7 @@ class ActivityPublisherService
     {
         $this->auditLogService->insert($loggedInUserId, $action, $object);
 
+        /** @var ActivityPublisher $integrations */
         $integrations = $this->integrationsRepository->findByInterface(ActivityPublisher::class);
         foreach ($integrations as $integration) {
             $integration->publishActivity($action);

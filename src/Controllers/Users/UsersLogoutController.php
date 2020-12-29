@@ -1,15 +1,13 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Controllers\Users;
 
+use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditLogAction;
-use Reconmap\Repositories\AuditLogRepository;
-use Reconmap\Services\NetworkService;
+use Reconmap\Services\AuditLogService;
 
 class UsersLogoutController extends Controller
 {
@@ -18,12 +16,10 @@ class UsersLogoutController extends Controller
     {
         $userId = $request->getAttribute('userId');
 
-        $clientIp = (new NetworkService)->getClientIp();
-        $auditRepository = new AuditLogRepository($this->db);
-        $auditRepository->insert($userId, $clientIp, AuditLogAction::USER_LOGGED_OUT);
+        $auditLogService = new AuditLogService($this->db);
+        $auditLogService->insert($userId, AuditLogAction::USER_LOGGED_OUT);
 
-        $response = new \GuzzleHttp\Psr7\Response;
-
+        $response = new Response;
         return $response
             ->withStatus(403)
             ->withHeader('Access-Control-Allow-Methods', 'GET,POST,PUT')

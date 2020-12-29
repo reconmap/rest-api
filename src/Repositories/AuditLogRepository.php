@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
@@ -9,7 +7,7 @@ class AuditLogRepository extends MysqlRepository
     public function findAll(int $page = 0): array
     {
         $sql = <<<SQL
-        SELECT al.insert_ts, INET_NTOA(al.client_ip) AS client_ip, al.action, al.object,
+        SELECT al.insert_ts, al.user_agent, INET_NTOA(al.client_ip) AS client_ip, al.action, al.object,
         u.id AS user_id,
         u.name AS user_name,
         COALESCE(u.role, 'system') AS user_role
@@ -47,7 +45,8 @@ class AuditLogRepository extends MysqlRepository
     public function findByUserId(int $userId): array
     {
         $sql = <<<SQL
-        SELECT al.insert_ts, INET_NTOA(al.client_ip) AS client_ip, al.action, u.id AS user_id, u.name, u.role
+        SELECT al.insert_ts, al.user_agent, INET_NTOA(al.client_ip) AS client_ip, al.action,
+               u.id AS user_id, u.name, u.role
         FROM audit_log al
         INNER JOIN user u ON (u.id = al.user_id)
         WHERE al.user_id = ?
@@ -74,10 +73,10 @@ class AuditLogRepository extends MysqlRepository
         return $rs->fetch_all(MYSQLI_ASSOC);
     }
 
-    public function insert(int $userId, string $clientIp, string $action, ?string $object = null): int
+    public function insert(int $userId, ?string $userAgent, string $clientIp, string $action, ?string $object = null): int
     {
-        $stmt = $this->db->prepare('INSERT INTO audit_log (user_id, client_ip, action, object) VALUES (?, INET_ATON(?), ?, ?)');
-        $stmt->bind_param('isss', $userId, $clientIp, $action, $object);
+        $stmt = $this->db->prepare('INSERT INTO audit_log (user_id, user_agent, client_ip, action, object) VALUES (?, ?, INET_ATON(?), ?, ?)');
+        $stmt->bind_param('issss', $userId, $userAgent, $clientIp, $action, $object);
         return $this->executeInsertStatement($stmt);
     }
 }

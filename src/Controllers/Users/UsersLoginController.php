@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Controllers\Users;
 
@@ -11,10 +9,9 @@ use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\AuthMiddleware;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditLogAction;
-use Reconmap\Repositories\AuditLogRepository;
 use Reconmap\Repositories\UserRepository;
+use Reconmap\Services\AuditLogService;
 use Reconmap\Services\JwtPayloadCreator;
-use Reconmap\Services\NetworkService;
 
 class UsersLoginController extends Controller
 {
@@ -31,13 +28,13 @@ class UsersLoginController extends Controller
         $response = new Response;
 
         if (is_null($user) || !password_verify($password, $user['password'])) {
-            $this->auditFailedLogin($username);
+            $this->audit(0, AuditLogAction::USER_LOGIN_FAILED, ['username' => $username]);
             return $response->withStatus(403);
         }
 
         unset($user['password']); // DO NOT leak password in the response.
 
-        $this->auditAction($user);
+        $this->audit($user['id'], AuditLogAction::USER_LOGGED_IN);
 
         $jwtPayload = (new JwtPayloadCreator())
             ->createFromUserArray($user);
@@ -48,17 +45,9 @@ class UsersLoginController extends Controller
         return $response->withHeader('Content-type', 'application/json');
     }
 
-    private function auditFailedLogin(?string $username): void
+    private function audit(int $userId, string $action, ?array $object = null): void
     {
-        $clientIp = (new NetworkService)->getClientIp();
-        $auditRepository = new AuditLogRepository($this->db);
-        $auditRepository->insert(0, $clientIp, AuditLogAction::USER_LOGIN_FAILED, json_encode(['username' => $username]));
-    }
-
-    private function auditAction(array $user): void
-    {
-        $clientIp = (new NetworkService)->getClientIp();
-        $auditRepository = new AuditLogRepository($this->db);
-        $auditRepository->insert($user['id'], $clientIp, AuditLogAction::USER_LOGGED_IN);
+        $auditLogService = new AuditLogService($this->db);
+        $auditLogService->insert($userId, $action, $object);
     }
 }

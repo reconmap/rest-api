@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Controllers\Users;
 
@@ -28,6 +26,7 @@ class DeleteUserController extends Controller
 
     private function auditAction(int $loggedInUserId, int $userId): void
     {
+        /** @var ActivityPublisherService $activityPublisherService */
         $activityPublisherService = $this->container->get(ActivityPublisherService::class);
         $activityPublisherService->publish($loggedInUserId, AuditLogAction::USER_DELETED, ['id' => $userId]);
     }
