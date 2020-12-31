@@ -62,7 +62,7 @@ class ProjectRepository extends MysqlRepository
         $projectId = $this->executeInsertStatement($stmt);
 
         $tasksSql = <<<SQL
-        INSERT INTO task (project_id, parser, name, description) SELECT ?, parser, name, description FROM task WHERE project_id = ?
+        INSERT INTO task (project_id, command, command_parser, name, description) SELECT ?, command, command_parser, name, description FROM task WHERE project_id = ?
         SQL;
         $stmt = $this->db->prepare($tasksSql);
         $stmt->bind_param('ii', $projectId, $templateId);
