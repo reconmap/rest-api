@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Controllers\Clients;
 
@@ -11,7 +9,6 @@ use Reconmap\Repositories\ClientRepository;
 
 class CreateClientController extends Controller
 {
-
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
         /** @var Client $client */

@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Controllers\Clients;
 
@@ -10,10 +8,9 @@ use Reconmap\Repositories\ClientRepository;
 
 class GetClientController extends Controller
 {
-
     public function __invoke(ServerRequestInterface $request, array $args): object
     {
-        $id = (int)$args['id'];
+        $id = (int)$args['clientId'];
 
         $repository = new ClientRepository($this->db);
         return $repository->findById($id);
