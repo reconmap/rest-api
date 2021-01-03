@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Controllers\Tasks;
 
@@ -13,11 +11,9 @@ class GetTaskController extends Controller
 
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
-        $id = (int)$args['id'];
+        $id = (int)$args['taskId'];
 
         $repository = new TaskRepository($this->db);
-        $task = $repository->findById($id);
-
-        return $task;
+        return $repository->findById($id);
     }
 }

@@ -4,9 +4,20 @@ namespace Reconmap\Repositories;
 
 use Reconmap\Models\Task;
 use Reconmap\Repositories\QueryBuilders\SelectQueryBuilder;
+use Reconmap\Repositories\QueryBuilders\UpdateQueryBuilder;
 
 class TaskRepository extends MysqlRepository
 {
+    public const UPDATABLE_COLUMNS_TYPES = [
+        'project_id' => 'i',
+        'name' => 's',
+        'description' => 's',
+        'command' => 's',
+        'command_parser' => 's',
+        'assignee_uid' => 'i',
+        'completed' => 'i'
+    ];
+
     public function findAll(): array
     {
         $selectQueryBuilder = $this->getBaseSelectQueryBuilder();
@@ -82,10 +93,14 @@ class TaskRepository extends MysqlRepository
         return $success;
     }
 
-    public function updateById(int $id, string $column, ?string $value): bool
+    public function updateById(int $id, array $newColumnValues): bool
     {
-        $stmt = $this->db->prepare('UPDATE task SET ' . $column . ' = ? WHERE id = ?');
-        $stmt->bind_param('si', $value, $id);
+        $updateQueryBuilder = new UpdateQueryBuilder('task');
+        $updateQueryBuilder->setColumnValues(array_map(fn() => '?', $newColumnValues));
+        $updateQueryBuilder->setWhereConditions('id = ?');
+
+        $stmt = $this->db->prepare($updateQueryBuilder->toSql());
+        call_user_func_array([$stmt, 'bind_param'], [$this->generateParamTypes(array_keys($newColumnValues)) . 'i', ...$this->refValues($newColumnValues), &$id]);
         $result = $stmt->execute();
         $success = $result && 1 === $stmt->affected_rows;
         $stmt->close();

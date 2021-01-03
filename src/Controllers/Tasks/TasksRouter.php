@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Controllers\Tasks;
 
@@ -13,9 +11,9 @@ class TasksRouter
         $router->map('POST', '/tasks/results', UploadTaskResultController::class);
         $router->map('POST', '/tasks', CreateTaskController::class);
         $router->map('GET', '/tasks', GetTasksController::class);
-        $router->map('GET', '/tasks/{id:number}', GetTaskController::class);
-        $router->map('PATCH', '/tasks/{id:number}', UpdateTaskController::class);
-        $router->map('DELETE', '/tasks/{id:number}', DeleteTaskController::class);
-        $router->map('GET', '/tasks/{id:number}/results', GetTaskResultsController::class);
+        $router->map('GET', '/tasks/{taskId:number}', GetTaskController::class);
+        $router->map('PATCH', '/tasks/{taskId:number}', UpdateTaskController::class);
+        $router->map('DELETE', '/tasks/{taskId:number}', DeleteTaskController::class);
+        $router->map('GET', '/tasks/{taskId:number}/results', GetTaskResultsController::class);
     }
 }

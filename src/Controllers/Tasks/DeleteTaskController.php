@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Controllers\Tasks;
 
@@ -15,7 +13,7 @@ class DeleteTaskController extends Controller
 
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
-        $taskId = (int)$args['id'];
+        $taskId = (int)$args['taskId'];
 
         $userRepository = new TaskRepository($this->db);
         $success = $userRepository->deleteById($taskId);
