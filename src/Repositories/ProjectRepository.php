@@ -9,7 +9,10 @@ class ProjectRepository extends MysqlRepository
     public const UPDATABLE_COLUMNS_TYPES = [
         'client_id' => 'i',
         'name' => 's',
-        'description' => 's'
+        'description' => 's',
+        'engagement_type' => 's',
+        'engagement_start_date' => 's',
+        'engagement_end_date' => 's',
     ];
 
     public function findAll(): array
@@ -55,7 +58,7 @@ class ProjectRepository extends MysqlRepository
         $this->db->begin_transaction();
 
         $projectSql = <<<SQL
-        INSERT INTO project (name, description) SELECT CONCAT(name, ' - ', CURRENT_TIMESTAMP()), description FROM project WHERE id = ?
+        INSERT INTO project (name, description, engagement_type, engagement_start_date, engagement_end_date) SELECT CONCAT(name, ' - ', CURRENT_TIMESTAMP()), description, engagement_type, engagement_start_date, engagement_end_date FROM project WHERE id = ?
         SQL;
         $stmt = $this->db->prepare($projectSql);
         $stmt->bind_param('i', $templateId);
@@ -77,8 +80,8 @@ class ProjectRepository extends MysqlRepository
 
     public function insert(object $project): int
     {
-        $stmt = $this->db->prepare('INSERT INTO project (client_id, name, description, is_template) VALUES (?, ?, ?, ?)');
-        $stmt->bind_param('issi', $project->clientId, $project->name, $project->description, $project->isTemplate);
+        $stmt = $this->db->prepare('INSERT INTO project (client_id, name, description, is_template, engagement_type, engagement_start_date, engagement_end_date) VALUES (?, ?, ?, ?, ?, ?, ?)');
+        $stmt->bind_param('issi', $project->clientId, $project->name, $project->description, $project->isTemplate, $project->engagement_type, $project->engagement_start_date, $project->engagement_end_date);
         return $this->executeInsertStatement($stmt);
     }
 

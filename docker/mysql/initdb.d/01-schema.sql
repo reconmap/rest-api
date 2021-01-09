@@ -63,13 +63,16 @@ CREATE TABLE client
 DROP TABLE IF EXISTS project;
 CREATE TABLE project
 (
-    id          INT UNSIGNED  NOT NULL AUTO_INCREMENT,
-    insert_ts   TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    update_ts   TIMESTAMP     NULL ON UPDATE CURRENT_TIMESTAMP,
-    client_id   INT UNSIGNED  NULL COMMENT 'Null when project is template' REFERENCES client,
-    is_template BOOLEAN       NOT NULL DEFAULT FALSE,
-    name        VARCHAR(200)  NOT NULL,
-    description VARCHAR(2000) NULL,
+    id                    INT UNSIGNED                             NOT NULL AUTO_INCREMENT,
+    insert_ts             TIMESTAMP                                NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_ts             TIMESTAMP                                NULL ON UPDATE CURRENT_TIMESTAMP,
+    client_id             INT UNSIGNED                             NULL COMMENT 'Null when project is template' REFERENCES client,
+    is_template           BOOLEAN                                  NOT NULL DEFAULT FALSE,
+    name                  VARCHAR(200)                             NOT NULL,
+    description           VARCHAR(2000)                            NULL,
+    engagement_type       ENUM ('blackbox', 'whitebox', 'greybox') NULL,
+    engagement_start_date DATE,
+    engagement_end_date   DATE,
 
     PRIMARY KEY (id),
     UNIQUE KEY (name)
