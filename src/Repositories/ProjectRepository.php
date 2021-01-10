@@ -81,7 +81,7 @@ class ProjectRepository extends MysqlRepository
     public function insert(object $project): int
     {
         $stmt = $this->db->prepare('INSERT INTO project (client_id, name, description, is_template, engagement_type, engagement_start_date, engagement_end_date) VALUES (?, ?, ?, ?, ?, ?, ?)');
-        $stmt->bind_param('issi', $project->clientId, $project->name, $project->description, $project->isTemplate, $project->engagement_type, $project->engagement_start_date, $project->engagement_end_date);
+        $stmt->bind_param('ississs', $project->clientId, $project->name, $project->description, $project->isTemplate, $project->engagement_type, $project->engagement_start_date, $project->engagement_end_date);
         return $this->executeInsertStatement($stmt);
     }
 
