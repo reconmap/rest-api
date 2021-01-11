@@ -1,7 +1,7 @@
 openapi: 3.0.3
 
 info:
-  version: 0.7.5
+  version: 0.8.0
   title: Reconmap API
 
 servers:
@@ -540,3 +540,4 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Organisation'
+

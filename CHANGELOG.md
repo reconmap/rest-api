@@ -6,10 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
--
+## [0.8.0]
 
-[Unreleased]: https://github.com/Reconmap/api-backend/compare/0.7.5...master 
+### Added
+- Add rules of engagement to projects
+- Add delete button to user page
+- Add edit task page
+- Add collapsable sidebar navigation
+
+### Changed
+- Record user agent in audit log
+
+### Fixed
+- Fix problem with minimum number of pages in paginator
+- Fix link to import project templates
 
 ## [0.7.5]
 
@@ -20,14 +30,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Change application to no longer fail with the log file is not writable.
 
-[0.7.5]: https://github.com/Reconmap/api-backend/compare/0.7.0...0.7.5
-
-
 ## [0.7.0]
 
 ### Added
 - Add basic functionality: clients, projects, tasks, vulnerabilities, ... 
 
+[Unreleased]: https://github.com/Reconmap/api-backend/compare/0.8.0...master 
+[0.8.0]: https://github.com/Reconmap/api-backend/compare/0.7.5...0.8.0
+[0.7.5]: https://github.com/Reconmap/api-backend/compare/0.7.0...0.7.5
 [0.7.0]: https://github.com/reconmap/application/compare/0.0.1..0.7.0
-
 
