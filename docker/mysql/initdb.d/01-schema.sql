@@ -1,17 +1,19 @@
 DROP TABLE IF EXISTS user;
 CREATE TABLE user
 (
-    id        INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    insert_ts TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    update_ts TIMESTAMP    NULL ON UPDATE CURRENT_TIMESTAMP,
-    timezone  VARCHAR(200) NOT NULL DEFAULT 'UTC',
-    name      VARCHAR(80)  NOT NULL COMMENT 'Username, not full name',
-    password  VARCHAR(255) NOT NULL COMMENT 'Hashed password',
-    email     VARCHAR(200) NOT NULL,
+    id        INT UNSIGNED  NOT NULL AUTO_INCREMENT,
+    insert_ts TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_ts TIMESTAMP     NULL ON UPDATE CURRENT_TIMESTAMP,
+    timezone  VARCHAR(200)  NOT NULL DEFAULT 'UTC',
+    full_name VARCHAR(200)  NOT NULL,
+    short_bio VARCHAR(1000) NULL,
+    email     VARCHAR(200)  NOT NULL,
     role      ENUM ('creator', 'writer', 'reader'),
+    username  VARCHAR(80)   NOT NULL,
+    password  VARCHAR(255)  NOT NULL COMMENT 'Hashed password',
 
     PRIMARY KEY (id),
-    UNIQUE KEY (name)
+    UNIQUE KEY (username)
 ) ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS audit_log;

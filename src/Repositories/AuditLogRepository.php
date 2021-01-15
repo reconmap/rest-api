@@ -9,7 +9,7 @@ class AuditLogRepository extends MysqlRepository
         $sql = <<<SQL
         SELECT al.insert_ts, al.user_agent, INET_NTOA(al.client_ip) AS client_ip, al.action, al.object,
         u.id AS user_id,
-        u.name AS user_name,
+        u.username AS user_name,
         COALESCE(u.role, 'system') AS user_role
         FROM audit_log al
         LEFT JOIN user u ON (u.id = al.user_id)
@@ -46,7 +46,7 @@ class AuditLogRepository extends MysqlRepository
     {
         $sql = <<<SQL
         SELECT al.insert_ts, al.user_agent, INET_NTOA(al.client_ip) AS client_ip, al.action,
-               u.id AS user_id, u.name, u.role
+               u.id AS user_id, u.username, u.role
         FROM audit_log al
         INNER JOIN user u ON (u.id = al.user_id)
         WHERE al.user_id = ?

@@ -1,12 +1,12 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Controllers\Users;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
+use Reconmap\Models\AuditLogAction;
 use Reconmap\Repositories\UserRepository;
+use Reconmap\Services\ActivityPublisherService;
 
 class UpdateUserController extends Controller
 {
@@ -16,15 +16,27 @@ class UpdateUserController extends Controller
         $userId = (int)$args['userId'];
 
         $requestBody = $this->getJsonBodyDecodedAsArray($request);
-        $column = array_keys($requestBody)[0];
-        $value = array_values($requestBody)[0];
+        $newColumnValues = array_filter(
+            $requestBody,
+            fn(string $key) => in_array($key, array_keys(UserRepository::UPDATABLE_COLUMNS_TYPES)),
+            ARRAY_FILTER_USE_KEY
+        );
 
         $success = false;
-        if (in_array($column, ['timezone'])) {
+        if (!empty($newColumnValues)) {
             $repository = new UserRepository($this->db);
-            $success = $repository->updateById($userId, $column, $value);
+            $success = $repository->updateById($userId, $newColumnValues);
+
+            $loggedInUserId = $request->getAttribute('userId');
+            $this->auditAction($loggedInUserId, $userId);
         }
 
         return ['success' => $success];
+    }
+
+    private function auditAction(int $loggedInUserId, int $userId): void
+    {
+        $activityPublisherService = $this->container->get(ActivityPublisherService::class);
+        $activityPublisherService->publish($loggedInUserId, AuditLogAction::USER_MODIFIED, ['userId' => $userId]);
     }
 }

@@ -1,16 +1,25 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
 use Reconmap\Repositories\QueryBuilders\SelectQueryBuilder;
+use Reconmap\Repositories\QueryBuilders\UpdateQueryBuilder;
 
 class UserRepository extends MysqlRepository
 {
+    public const UPDATABLE_COLUMNS_TYPES = [
+        'full_name' => 's',
+        'short_bio' => 's',
+        'email' => 's',
+        'role' => 's',
+        'username' => 's',
+        'password' => 's',
+        'timezone' => 's'
+    ];
+
     public function findAll(): array
     {
-        $rs = $this->db->query('SELECT u.id, u.insert_ts, u.update_ts, u.name, u.email, u.role FROM user u LIMIT 20');
+        $rs = $this->db->query('SELECT u.id, u.insert_ts, u.update_ts, u.full_name, u.username, u.email, u.role FROM user u LIMIT 20');
         return $rs->fetch_all(MYSQLI_ASSOC);
     }
 
@@ -32,14 +41,14 @@ class UserRepository extends MysqlRepository
     private function getBaseSelectQueryBuilder(): SelectQueryBuilder
     {
         $queryBuilder = new SelectQueryBuilder('user u');
-        $queryBuilder->setColumns('u.id, u.insert_ts, u.update_ts, u.name, u.email, u.password, u.role, u.timezone');
+        $queryBuilder->setColumns('u.id, u.insert_ts, u.update_ts, u.full_name, u.short_bio, u.username, u.email, u.password, u.role, u.timezone');
         return $queryBuilder;
     }
 
     public function findByUsername(string $username): ?array
     {
         $queryBuilder = $this->getBaseSelectQueryBuilder();
-        $queryBuilder->setWhere('u.name = ?');
+        $queryBuilder->setWhere('u.username = ?');
 
         $stmt = $this->db->prepare($queryBuilder->toSql());
         $stmt->bind_param('s', $username);
@@ -80,7 +89,7 @@ class UserRepository extends MysqlRepository
 
     public function create(object $user): int
     {
-        $stmt = $this->db->prepare('INSERT INTO user (name, password, email, role) VALUES (?, ?, ?, ?)');
+        $stmt = $this->db->prepare('INSERT INTO user (username, password, email, role) VALUES (?, ?, ?, ?)');
         $stmt->bind_param('ssss', $user->name, $user->password, $user->email, $user->role);
         return $this->executeInsertStatement($stmt);
     }
@@ -90,13 +99,13 @@ class UserRepository extends MysqlRepository
         $sql = <<<SQL
         SELECT
             pu.id AS membership_id,
-            u.id, u.insert_ts, u.update_ts, u.name, u.email, u.role
+            u.id, u.insert_ts, u.update_ts, u.full_name, u.short_bio, u.username, u.email, u.role
         FROM
             user u INNER JOIN project_user pu ON (pu.user_id = u.id)
         WHERE
             project_id = ?
         ORDER BY
-            u.name
+            u.username
         SQL;
         $stmt = $this->db->prepare($sql);
         $stmt->bind_param('i', $projectId);
@@ -107,10 +116,14 @@ class UserRepository extends MysqlRepository
         return $users;
     }
 
-    public function updateById(int $id, string $column, string $value): bool
+    public function updateById(int $id, array $newColumnValues): bool
     {
-        $stmt = $this->db->prepare('UPDATE user SET ' . $column . ' = ? WHERE id = ?');
-        $stmt->bind_param('si', $value, $id);
+        $updateQueryBuilder = new UpdateQueryBuilder('user');
+        $updateQueryBuilder->setColumnValues(array_map(fn() => '?', $newColumnValues));
+        $updateQueryBuilder->setWhereConditions('id = ?');
+
+        $stmt = $this->db->prepare($updateQueryBuilder->toSql());
+        call_user_func_array([$stmt, 'bind_param'], [$this->generateParamTypes(array_keys($newColumnValues)) . 'i', ...$this->refValues($newColumnValues), &$id]);
         $result = $stmt->execute();
         $success = $result && 1 === $stmt->affected_rows;
         $stmt->close();

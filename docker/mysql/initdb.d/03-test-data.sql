@@ -1,9 +1,13 @@
-INSERT INTO user (id, name, password, email, role)
-VALUES (2, 'writer1', '$2y$10$J/DF8J/Az8DiSEpXel18NOcN0qbYt5VSvKCc8oJFarXDtj7HkmCmK', 'writer1@localhost', 'writer'),
-       (3, 'writer2', '$2y$10$J/DF8J/Az8DiSEpXel18NOcN0qbYt5VSvKCc8oJFarXDtj7HkmCmK', 'writer2@localhost', 'writer'),
-       (4, 'writer3', '$2y$10$J/DF8J/Az8DiSEpXel18NOcN0qbYt5VSvKCc8oJFarXDtj7HkmCmK', 'writer3admin@localhost',
+INSERT INTO user (id, full_name, username, password, email, role)
+VALUES (2, 'Writer Uno', 'writer1', '$2y$10$J/DF8J/Az8DiSEpXel18NOcN0qbYt5VSvKCc8oJFarXDtj7HkmCmK', 'writer1@localhost',
         'writer'),
-       (5, 'reader', '$2y$10$J/DF8J/Az8DiSEpXel18NOcN0qbYt5VSvKCc8oJFarXDtj7HkmCmK', 'admin@localhost', 'reader');
+       (3, 'Writer Dos', 'writer2', '$2y$10$J/DF8J/Az8DiSEpXel18NOcN0qbYt5VSvKCc8oJFarXDtj7HkmCmK', 'writer2@localhost',
+        'writer'),
+       (4, 'Writer Tres', 'writer3', '$2y$10$J/DF8J/Az8DiSEpXel18NOcN0qbYt5VSvKCc8oJFarXDtj7HkmCmK',
+        'writer3admin@localhost',
+        'writer'),
+       (5, 'Reader', 'reader', '$2y$10$J/DF8J/Az8DiSEpXel18NOcN0qbYt5VSvKCc8oJFarXDtj7HkmCmK', 'admin@localhost',
+        'reader');
 
 TRUNCATE TABLE audit_log;
 INSERT INTO audit_log (user_id, client_ip, action)
@@ -49,29 +53,32 @@ INSERT INTO project (id, client_id, name, description, is_template)
 VALUES (1, NULL, 'Linux host template', 'Project template to show general linux host reconnaissance tasks', TRUE),
        (2, 1, 'Web server pentest project', 'Test project to show pentest tasks and reports', FALSE),
        (3, 2, 'Juice Shop (test project)',
-        'OWASP Juice Shop is probably the most modern and sophisticated insecure web application! It can be used in security trainings, awareness demos, CTFs and as a guinea pig for security tools! Juice Shop encompasses vulnerabilities from the entire OWASP Top Ten along with many other security flaws found in real-world applications!',
+        'OWASP Juice Shop is probably the most modern and sophisticated insecure web application! It can be used in security trainings,
+        awareness demos,
+        CTFs and as a guinea pig for security tools! Juice Shop encompasses vulnerabilities from the entire OWASP Top Ten along with many other security flaws found in real -world applications!',
         FALSE),
-       (4, 2, 'WebGoat (test project)',
-        'WebGoat is a deliberately insecure application that allows interested developers just like you to test vulnerabilities commonly found in Java-based applications that use common and popular open source components.',
+       (4, 2, ' WebGoat (test project)',
+        ' WebGoat is a deliberately insecure application that allows interested developers just like you to test vulnerabilities commonly found in Java-based applications that use common and popular open source components.',
         FALSE);
 
 INSERT INTO report (project_id, insert_ts, generated_by_uid, version_name, version_description)
-VALUES (2, CURRENT_TIMESTAMP, 1, '1.0', 'Initial version'),
-       (2, DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 3 DAY), 1, '1.1', 'Initial version after corrections'),
-       (2, DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 10 DAY), 1, '1.2 reviewed', 'Report reviewed and sent to the client');
+VALUES (2, CURRENT_TIMESTAMP, 1, '1.0', ' Initial version '),
+       (2, DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 3 DAY), 1, '1.1', ' Initial version after corrections '),
+       (2, DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 10 DAY), 1, '1.2 reviewed ',
+        ' Report reviewed and sent to the client ');
 
 INSERT INTO project_user (project_id, user_id)
 VALUES (2, 1),
        (2, 2);
 
 INSERT INTO target (project_id, name, kind)
-VALUES (1, 'https://test.com', 'url'),
-       (2, '127.0.0.1', 'hostname');
+VALUES (1, ' https://test.com ', 'url'),
+       (2, '127.0.0.1', 'hostname ');
 
 INSERT INTO vulnerability (project_id, target_id, reported_by_uid, category_id, summary, risk, cvss_score)
-VALUES (2, 1, 1, RAND() * (12 - 1) + 1, 'Domain about to expire', 'medium', 6.4),
-       (2, 2, 1, RAND() * (12 - 1) + 1, 'Open port (tcp/22)', 'medium', 6.6),
-       (2, 2, 1, RAND() * (12 - 1) + 1, 'Test vulnerability #0', 'medium', 6.8),
+VALUES (2, 1, 1, RAND() * (12 - 1) + 1, ' Domain about to expire ', 'medium', 6.4),
+       (2, 2, 1, RAND() * (12 - 1) + 1, ' Open port (tcp/22)', 'medium', 6.6),
+       (2, 2, 1, RAND() * (12 - 1) + 1, ' Test vulnerability #0', 'medium', 6.8),
        (2, 2, 1, RAND() * (12 - 1) + 1, 'Test vulnerability #1', 'medium', 4.7),
        (2, 2, 1, RAND() * (12 - 1) + 1, 'Test vulnerability #2', 'medium', 6.6),
        (2, 2, 1, RAND() * (12 - 1) + 1, 'Test vulnerability #3', 'low', 2.5),

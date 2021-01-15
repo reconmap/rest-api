@@ -69,7 +69,7 @@
 
     <?php /** @var array $users */
     foreach ($users as $user) : ?>
-        <li><strong><?= $user['name'] ?></strong></li>
+        <li><strong><?= $user['full_name'] ?></strong> <?= $user['short_bio'] ?></li>
     <?php endforeach ?>
 </ul>
 

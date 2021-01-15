@@ -1,6 +1,7 @@
 TRUNCATE TABLE user;
-INSERT INTO user (id, name, password, email, role)
-VALUES (1, 'admin', '$2y$10$J/DF8J/Az8DiSEpXel18NOcN0qbYt5VSvKCc8oJFarXDtj7HkmCmK', 'admin@localhost', 'creator');
+INSERT INTO user (id, full_name, username, password, email, role)
+VALUES (1, 'Administrator', 'admin', '$2y$10$J/DF8J/Az8DiSEpXel18NOcN0qbYt5VSvKCc8oJFarXDtj7HkmCmK', 'admin@localhost',
+        'creator');
 
 TRUNCATE TABLE audit_log;
 INSERT INTO audit_log (user_id, client_ip, action)

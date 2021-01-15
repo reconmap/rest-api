@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Controllers\Projects;
 
@@ -16,8 +14,6 @@ class GetProjectUsersController extends Controller
         $id = (int)$args['id'];
 
         $repository = new UserRepository($this->db);
-        $targets = $repository->findByProjectId($id);
-
-        return $targets;
+        return $repository->findByProjectId($id);
     }
 }

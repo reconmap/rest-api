@@ -23,7 +23,7 @@ class UserRepositoryTest extends DatabaseTestCase
     public function testFindByValidIdReturnsUser()
     {
         $user = $this->subject->findById(4);
-        $this->assertEquals('writer3', $user['name']);
+        $this->assertEquals('writer3', $user['username']);
     }
 
     public function testFindByUsernameReturnsUser()

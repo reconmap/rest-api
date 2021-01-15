@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Reconmap\Processors;
@@ -6,7 +7,7 @@ namespace Reconmap\Processors;
 class ProcessorFactory
 {
 
-    public function createByTaskType(string $type): VulnerabilityProcessor
+    public function createByTaskType(string $type): ?VulnerabilityProcessor
     {
         switch ($type) {
             case 'nmap':
