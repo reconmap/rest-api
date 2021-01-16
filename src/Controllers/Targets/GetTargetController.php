@@ -11,9 +11,9 @@ class GetTargetController extends Controller
 
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
-        $id = (int)$args['id'];
+        $targetId = (int)$args['targetId'];
 
         $repository = new TargetRepository($this->db);
-        return $repository->findById($id);
+        return $repository->findById($targetId);
     }
 }

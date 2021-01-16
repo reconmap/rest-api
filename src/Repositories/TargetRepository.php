@@ -9,8 +9,7 @@ class TargetRepository extends MysqlRepository
     public function findAll(): array
     {
         $rs = $this->db->query('SELECT * FROM target LIMIT 20');
-        $targets = $rs->fetch_all(MYSQLI_ASSOC);
-        return $targets;
+        return $rs->fetch_all(MYSQLI_ASSOC);
     }
 
     public function findById(int $id): array

@@ -2,7 +2,13 @@
 
 namespace Reconmap\Models;
 
-class AuditLogAction implements UserAuditActions, ProjectLogActions, VulnerabilityLogActions, ClientAuditActions, TaskAuditActions
+class AuditLogAction implements
+    UserAuditActions,
+    ProjectLogActions,
+    VulnerabilityLogActions,
+    ClientAuditActions,
+    TaskAuditActions,
+    TargetAuditActions
 {
     public const AUDIT_LOG_EXPORTED = 'Exported audit log';
 
