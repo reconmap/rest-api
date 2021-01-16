@@ -140,16 +140,16 @@ CREATE TABLE vulnerability
 DROP TABLE IF EXISTS task;
 CREATE TABLE task
 (
-    id             INT UNSIGNED  NOT NULL AUTO_INCREMENT,
-    project_id     INT UNSIGNED  NOT NULL REFERENCES project,
-    assignee_uid   INT UNSIGNED  NULL REFERENCES user,
-    insert_ts      TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    update_ts      TIMESTAMP     NULL ON UPDATE CURRENT_TIMESTAMP,
-    name           VARCHAR(200)  NOT NULL,
-    description    VARCHAR(2000) NULL,
-    completed      BOOLEAN       NOT NULL DEFAULT FALSE,
-    command        VARCHAR(300)  NULL,
-    command_parser VARCHAR(50)   NULL,
+    id             INT UNSIGNED                   NOT NULL AUTO_INCREMENT,
+    project_id     INT UNSIGNED                   NOT NULL REFERENCES project,
+    assignee_uid   INT UNSIGNED                   NULL REFERENCES user,
+    insert_ts      TIMESTAMP                      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_ts      TIMESTAMP                      NULL ON UPDATE CURRENT_TIMESTAMP,
+    name           VARCHAR(200)                   NOT NULL,
+    description    VARCHAR(2000)                  NULL,
+    status         ENUM ('todo', 'doing', 'done') NOT NULL DEFAULT 'todo',
+    command        VARCHAR(300)                   NULL,
+    command_parser VARCHAR(50)                    NULL,
 
     PRIMARY KEY (id)
 ) ENGINE = InnoDB;

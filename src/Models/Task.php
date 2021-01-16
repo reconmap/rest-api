@@ -11,7 +11,7 @@ class Task
     public ?string $update_ts;
     public string $name;
     public ?string $description;
-    public boolean $completed;
+    public string $status;
     public ?string $command;
     public ?string $command_parser;
 }
