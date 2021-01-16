@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Controllers\Targets;
 
@@ -22,7 +20,13 @@ class DeleteTargetControllerTest extends DatabaseTestCase
         $db = $this->getDatabaseConnection();
 
         $request = $this->createMock(ServerRequestInterface::class);
-        $args = ['id' => 0];
+        $request
+            ->expects($this->once())
+            ->method('getAttribute')
+            ->willReturn(1);
+        $args = ['targetId' => 0];
+
+        $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
 
         $controller = new DeleteTargetController($logger, $db, $template);
         $response = $controller($request, $args);
