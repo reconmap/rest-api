@@ -1,5 +1,11 @@
 # Use bash or file wildcards won't work
-SHELL = bash
+SHELL := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.ONESHELL:
+.DELETE_ON_ERROR:
+MAKEFLAGS += --warn-undefined-variables
+MAKEFLAGS += --no-builtin-rules
+
 DB_CONTAINER=rmap-mysql
 
 .PHONY: prepare
