@@ -154,14 +154,17 @@ CREATE TABLE task
     PRIMARY KEY (id)
 ) ENGINE = InnoDB;
 
-DROP TABLE IF EXISTS task_result;
-CREATE TABLE task_result
+DROP TABLE IF EXISTS command_output;
+CREATE TABLE command_output
 (
     id               INT UNSIGNED   NOT NULL AUTO_INCREMENT,
     task_id          INT UNSIGNED   NOT NULL REFERENCES task,
     submitted_by_uid INT UNSIGNED   NOT NULL REFERENCES user,
     insert_ts        TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    output           VARCHAR(10000) NOT NULL,
+    file_name        VARCHAR(200)   NOT NULL,
+    file_size        INT UNSIGNED   NOT NULL,
+    file_mimetype    VARCHAR(200)   NULL,
+    file_content     VARCHAR(10000) NOT NULL,
 
     PRIMARY KEY (id)
 ) ENGINE = InnoDB;

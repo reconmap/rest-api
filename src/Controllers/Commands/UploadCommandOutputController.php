@@ -1,14 +1,14 @@
-<?php
+<?php declare(strict_types=1);
 
-declare(strict_types=1);
-
-namespace Reconmap\Controllers\Tasks;
+namespace Reconmap\Controllers\Commands;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
+use Reconmap\Models\CommandOutput;
+use Reconmap\Repositories\CommandOutputRepository;
 use Reconmap\Services\RedisServer;
 
-class UploadTaskResultController extends Controller
+class UploadCommandOutputController extends Controller
 {
 
     public function __invoke(ServerRequestInterface $request, array $args): array
@@ -21,9 +21,22 @@ class UploadTaskResultController extends Controller
         $files = $request->getUploadedFiles();
 
         $resultFile = $files['resultFile'];
-        $resultFile->moveTo($pathName);
+        if ($resultFile->getError() === UPLOAD_ERR_OK) {
+            $resultFile->moveTo($pathName);
+        }
 
         $userId = $request->getAttribute('userId');
+
+        $commandOutput = new CommandOutput();
+        $commandOutput->task_id = $taskId;
+        $commandOutput->submitted_by_uid = $userId;
+        $commandOutput->file_name = $resultFile->getClientFilename();
+        $commandOutput->file_content = file_get_contents($pathName);
+        $commandOutput->file_size = filesize($pathName);
+        $commandOutput->file_mimetype = mime_content_type($pathName);
+
+        $repository = new CommandOutputRepository($this->db);
+        $repository->insert($commandOutput);
 
         /** @var RedisServer $redis */
         $redis = $this->container->get(RedisServer::class);

@@ -5,7 +5,6 @@ namespace Reconmap\Tasks;
 use Monolog\Logger;
 use Reconmap\Processors\ProcessorFactory;
 use Reconmap\Repositories\TaskRepository;
-use Reconmap\Repositories\TaskResultRepository;
 use Reconmap\Repositories\VulnerabilityRepository;
 use Reconmap\Services\Config;
 
@@ -27,10 +26,6 @@ class TaskResultProcessor implements ItemProcessor
     public function process(object $item): void
     {
         $path = $item->filePath;
-        $output = file_get_contents($path);
-
-        $repository = new TaskResultRepository($this->db);
-        $repository->insert($item->taskId, $item->userId, $output);
 
         $targetId = null;
         $vulnerabilityRepository = new VulnerabilityRepository($this->db);

@@ -147,9 +147,9 @@ VALUES (1, 'Run port scanner', 'Use nmap to detect all open ports', 'nmap -oX ou
        (2, 'Check domain expiration date', 'Use whois or other tools to check when the domain expiration is.',
         'whois @@TARGET@@', NULL);
 
-INSERT INTO task_result (task_id, submitted_by_uid, output)
-VALUES (1, 1, 'tcp/22: open, tcp/80: open'),
-       (1, 2, 'Domain expires in 22 days');
+INSERT INTO command_output (task_id, submitted_by_uid, file_name, file_content, file_size)
+VALUES (1, 1, 'nmap-output.xml', 'tcp/22: open, tcp/80: open', 5421),
+       (1, 2, 'domain-scan.txt', 'Domain expires in 22 days', 204);
 
 INSERT INTO note (user_id, parent_type, parent_id, visibility, content)
 VALUES (1, 'project', 3, 'private', 'Credentials are stored in the secret server'),

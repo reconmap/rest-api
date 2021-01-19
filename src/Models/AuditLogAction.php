@@ -19,4 +19,6 @@ class AuditLogAction implements
     public const DATA_EXPORTED = 'Exported data';
 
     public const ORGANISATION_UPDATED = 'Updated organisation';
+
+    public const COMMAND_OUTPUT_DELETED = 'Deleted command output';
 }

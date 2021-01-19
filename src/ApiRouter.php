@@ -11,6 +11,7 @@ use League\Route\Strategy\JsonStrategy;
 use Monolog\Logger;
 use Reconmap\{Controllers\AuditLog\AuditLogRouter,
     Controllers\Clients\ClientsRouter,
+    Controllers\Commands\CommandsRouter,
     Controllers\Notes\NotesRouter,
     Controllers\Organisations\OrganisationsRouter,
     Controllers\Projects\ProjectsRouter,
@@ -27,6 +28,7 @@ class ApiRouter extends Router
 {
     private const ROUTER_CLASSES = [
         AuditLogRouter::class,
+        CommandsRouter::class,
         ClientsRouter::class,
         NotesRouter::class,
         OrganisationsRouter::class,
