@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Controllers\Commands;
 
@@ -8,6 +10,7 @@ class CommandsRouter
 {
     public function mapRoutes(RouteCollectionInterface $router): void
     {
+        $router->map('GET', '/commands/{commandId:number}', GetCommandController::class);
         $router->map('GET', '/commands/outputs', GetCommandOutputsController::class);
         $router->map('DELETE', '/commands/outputs/{outputId:number}', DeleteCommandOutputController::class);
         $router->map('POST', '/commands/outputs', UploadCommandOutputController::class);

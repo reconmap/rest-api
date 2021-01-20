@@ -12,8 +12,7 @@ class TaskRepository extends MysqlRepository
         'project_id' => 'i',
         'name' => 's',
         'description' => 's',
-        'command' => 's',
-        'command_parser' => 's',
+        'command_id' => 'i',
         'assignee_uid' => 'i',
         'status' => 's'
     ];
@@ -45,9 +44,14 @@ class TaskRepository extends MysqlRepository
     private function getBaseSelectQueryBuilder(): SelectQueryBuilder
     {
         $queryBuilder = new SelectQueryBuilder('task t');
-        $queryBuilder->setColumns('t.id, t.project_id, p.name AS project_name, t.insert_ts, t.update_ts, t.command, t.command_parser, t.name, t.description, t.status, t.assignee_uid, u.username AS assignee_name');
+        $queryBuilder->setColumns('
+            t.id, t.project_id, p.name AS project_name, t.insert_ts, t.update_ts, t.name, t.description, t.status, t.assignee_uid,
+            u.username AS assignee_name,
+            t.command_id, c.short_name AS command_short_name, c.docker_image AS command_docker_image, c.container_args AS command_container_args
+        ');
         $queryBuilder->addJoin('LEFT JOIN user u ON (u.id = t.assignee_uid)');
         $queryBuilder->addJoin('LEFT JOIN project p ON (p.id = t.project_id)');
+        $queryBuilder->addJoin('LEFT JOIN command c ON (c.id = t.command_id)');
         $queryBuilder->setWhere('p.is_template IS FALSE');
         $queryBuilder->setOrderBy('t.insert_ts DESC');
         $queryBuilder->setLimit('20');
@@ -56,7 +60,11 @@ class TaskRepository extends MysqlRepository
 
     public function findById(int $id): array
     {
-        $stmt = $this->db->prepare('SELECT * FROM task WHERE id = ?');
+        $queryBuilder = $this->getBaseSelectQueryBuilder();
+        $queryBuilder->setWhere('t.id = ?');
+        $sql = $queryBuilder->toSql();
+
+        $stmt = $this->db->prepare($sql);
         $stmt->bind_param('i', $id);
         $stmt->execute();
         $rs = $stmt->get_result();
@@ -111,8 +119,8 @@ class TaskRepository extends MysqlRepository
     public function insert(object $task): int
     {
         /** @var Task $task */
-        $stmt = $this->db->prepare('INSERT INTO task (project_id, name, description, command, command_parser) VALUES (?, ?, ?, ?, ?)');
-        $stmt->bind_param('issss', $task->project_id, $task->name, $task->description, $task->command, $task->command_parser);
+        $stmt = $this->db->prepare('INSERT INTO task (project_id, name, description) VALUES (?, ?, ?, ?)');
+        $stmt->bind_param('isss', $task->project_id, $task->name, $task->description);
         return $this->executeInsertStatement($stmt);
     }
 }

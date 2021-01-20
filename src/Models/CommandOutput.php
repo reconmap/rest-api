@@ -5,7 +5,7 @@ namespace Reconmap\Models;
 class CommandOutput
 {
     public ?int $id = null;
-    public int $task_id;
+    public int $command_id;
     public int $submitted_by_uid;
     public string $file_name;
     public int $file_size;

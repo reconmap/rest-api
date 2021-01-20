@@ -8,8 +8,8 @@ class CommandOutputRepository extends MysqlRepository
 {
     public function insert(CommandOutput $commandOutput): int
     {
-        $stmt = $this->db->prepare('INSERT INTO command_output (task_id, submitted_by_uid, file_name, file_content, file_size, file_mimetype) VALUES (?, ?, ?, ?, ?, ?)');
-        $stmt->bind_param('iissis', $commandOutput->task_id, $commandOutput->submitted_by_uid, $commandOutput->file_name, $commandOutput->file_content, $commandOutput->file_size, $commandOutput->file_mimetype);
+        $stmt = $this->db->prepare('INSERT INTO command_output (command_id, submitted_by_uid, file_name, file_content, file_size, file_mimetype) VALUES (?, ?, ?, ?, ?, ?)');
+        $stmt->bind_param('iissis', $commandOutput->command_id, $commandOutput->submitted_by_uid, $commandOutput->file_name, $commandOutput->file_content, $commandOutput->file_size, $commandOutput->file_mimetype);
         return $this->executeInsertStatement($stmt);
     }
 
@@ -20,10 +20,10 @@ SELECT
     co.*,
     u.full_name AS submitter_name
 FROM
-     command_output co
+    command_output co
+    INNER JOIN task t ON (t.id = ?)
     INNER JOIN user u ON (u.id = co.submitted_by_uid)
-WHERE
-      co.task_id = ?
+    WHERE co.command_id = t.command_id
 SQL;
 
         $stmt = $this->db->prepare($sql);

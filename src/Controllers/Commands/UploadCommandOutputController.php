@@ -28,7 +28,7 @@ class UploadCommandOutputController extends Controller
         $userId = $request->getAttribute('userId');
 
         $commandOutput = new CommandOutput();
-        $commandOutput->task_id = $taskId;
+        $commandOutput->command_id = 2;
         $commandOutput->submitted_by_uid = $userId;
         $commandOutput->file_name = $resultFile->getClientFilename();
         $commandOutput->file_content = file_get_contents($pathName);
