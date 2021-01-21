@@ -2,6 +2,7 @@
 
 namespace Reconmap\Repositories;
 
+use Reconmap\Repositories\QueryBuilders\SelectQueryBuilder;
 use Reconmap\Repositories\QueryBuilders\UpdateQueryBuilder;
 
 class ProjectRepository extends MysqlRepository
@@ -17,13 +18,27 @@ class ProjectRepository extends MysqlRepository
 
     public function findAll(): array
     {
-        $rs = $this->db->query('SELECT * FROM project LIMIT 20');
+        $queryBuilder = $this->getBaseSelectQueryBuilder();
+        $queryBuilder->setLimit('20');
+
+        $rs = $this->db->query($queryBuilder->toSql());
         return $rs->fetch_all(MYSQLI_ASSOC);
     }
 
-    public function findById(int $id): array
+    public function findById(int $id): ?array
     {
-        $stmt = $this->db->prepare('SELECT * FROM project WHERE id = ?');
+        $sql = <<<SQL
+SELECT
+       p.*,
+       c.name AS client_name
+FROM
+     project p
+    LEFT JOIN client c ON (c.id = p.client_id)
+WHERE
+      p.id = ?
+SQL;
+
+        $stmt = $this->db->prepare($sql);
         $stmt->bind_param('i', $id);
         $stmt->execute();
         $rs = $stmt->get_result();
@@ -65,7 +80,7 @@ class ProjectRepository extends MysqlRepository
         $projectId = $this->executeInsertStatement($stmt);
 
         $tasksSql = <<<SQL
-        INSERT INTO task (project_id, command, command_parser, name, description) SELECT ?, command, command_parser, name, description FROM task WHERE project_id = ?
+        INSERT INTO task (project_id, creator_uid, command_id, name, description) SELECT ?, creator_uid, command_id, name, description FROM task WHERE project_id = ?
         SQL;
         $stmt = $this->db->prepare($tasksSql);
         $stmt->bind_param('ii', $projectId, $templateId);
@@ -109,5 +124,11 @@ class ProjectRepository extends MysqlRepository
         $stmt->close();
 
         return $success;
+    }
+
+    private function getBaseSelectQueryBuilder(): SelectQueryBuilder
+    {
+        $queryBuilder = new SelectQueryBuilder('project p');
+        return $queryBuilder;
     }
 }

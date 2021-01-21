@@ -46,10 +46,12 @@ class TaskRepository extends MysqlRepository
         $queryBuilder = new SelectQueryBuilder('task t');
         $queryBuilder->setColumns('
             t.id, t.project_id, p.name AS project_name, t.insert_ts, t.update_ts, t.name, t.description, t.status, t.assignee_uid,
-            u.username AS assignee_name,
+            creator.full_name AS creator_full_name,
+            assignee.full_name AS assignee_full_name,
             t.command_id, c.short_name AS command_short_name, c.docker_image AS command_docker_image, c.container_args AS command_container_args
         ');
-        $queryBuilder->addJoin('LEFT JOIN user u ON (u.id = t.assignee_uid)');
+        $queryBuilder->addJoin('INNER JOIN user creator ON (creator.id = t.creator_uid)');
+        $queryBuilder->addJoin('LEFT JOIN user assignee ON (assignee.id = t.assignee_uid)');
         $queryBuilder->addJoin('LEFT JOIN project p ON (p.id = t.project_id)');
         $queryBuilder->addJoin('LEFT JOIN command c ON (c.id = t.command_id)');
         $queryBuilder->setWhere('p.is_template IS FALSE');

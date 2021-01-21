@@ -26,7 +26,7 @@ CREATE TABLE audit_log
     user_agent VARCHAR(250) NULL,
     client_ip  INT UNSIGNED NOT NULL COMMENT 'IPv4 IP',
     action     VARCHAR(200) NOT NULL,
-    object     JSON,
+    object     JSON         NULL,
     PRIMARY KEY (id)
 ) ENGINE = InnoDB;
 
@@ -53,6 +53,7 @@ CREATE TABLE client
     id            INT UNSIGNED NOT NULL AUTO_INCREMENT,
     insert_ts     TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_ts     TIMESTAMP    NULL ON UPDATE CURRENT_TIMESTAMP,
+    creator_uid   INT UNSIGNED NOT NULL REFERENCES user,
     name          VARCHAR(80)  NOT NULL COMMENT 'eg Company name',
     url           VARCHAR(255) NULL,
     contact_name  VARCHAR(200) NOT NULL,
@@ -69,6 +70,7 @@ CREATE TABLE project
     id                    INT UNSIGNED                             NOT NULL AUTO_INCREMENT,
     insert_ts             TIMESTAMP                                NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_ts             TIMESTAMP                                NULL ON UPDATE CURRENT_TIMESTAMP,
+    -- creator_uid           INT UNSIGNED                             NOT NULL REFERENCES user,
     client_id             INT UNSIGNED                             NULL COMMENT 'Null when project is template' REFERENCES client,
     is_template           BOOLEAN                                  NOT NULL DEFAULT FALSE,
     name                  VARCHAR(200)                             NOT NULL,
@@ -127,19 +129,19 @@ DROP TABLE IF EXISTS vulnerability;
 
 CREATE TABLE vulnerability
 (
-    id              INT UNSIGNED                                       NOT NULL AUTO_INCREMENT,
-    project_id      INT UNSIGNED                                       NOT NULL REFERENCES project,
-    target_id       INT UNSIGNED                                       NULL REFERENCES target,
-    reported_by_uid INT UNSIGNED                                       NOT NULL REFERENCES user,
-    category_id     INT UNSIGNED                                       NULL REFERENCES vulnerability_category,
-    insert_ts       TIMESTAMP                                          NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    update_ts       TIMESTAMP                                          NULL ON UPDATE CURRENT_TIMESTAMP,
-    summary         VARCHAR(200)                                       NOT NULL,
-    description     VARCHAR(2000)                                      NULL,
-    risk            ENUM ('none', 'low', 'medium', 'high', 'critical') NOT NULL,
-    cvss_score      DECIMAL(2, 1)                                      NULL,
-    cvss_vector     VARCHAR(80)                                        NULL,
-    status          ENUM ('open', 'closed')                            NOT NULL DEFAULT 'open',
+    id          INT UNSIGNED                                       NOT NULL AUTO_INCREMENT,
+    project_id  INT UNSIGNED                                       NOT NULL REFERENCES project,
+    target_id   INT UNSIGNED                                       NULL REFERENCES target,
+    creator_uid INT UNSIGNED                                       NOT NULL REFERENCES user,
+    category_id INT UNSIGNED                                       NULL REFERENCES vulnerability_category,
+    insert_ts   TIMESTAMP                                          NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_ts   TIMESTAMP                                          NULL ON UPDATE CURRENT_TIMESTAMP,
+    summary     VARCHAR(200)                                       NOT NULL,
+    description VARCHAR(2000)                                      NULL,
+    risk        ENUM ('none', 'low', 'medium', 'high', 'critical') NOT NULL,
+    cvss_score  DECIMAL(2, 1)                                      NULL,
+    cvss_vector VARCHAR(80)                                        NULL,
+    status      ENUM ('open', 'closed')                            NOT NULL DEFAULT 'open',
     PRIMARY KEY (id)
 ) ENGINE = InnoDB;
 
@@ -149,6 +151,7 @@ CREATE TABLE task
 (
     id           INT UNSIGNED                   NOT NULL AUTO_INCREMENT,
     project_id   INT UNSIGNED                   NOT NULL REFERENCES project,
+    creator_uid  INT UNSIGNED                   NOT NULL REFERENCES user,
     assignee_uid INT UNSIGNED                   NULL REFERENCES user,
     insert_ts    TIMESTAMP                      NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_ts    TIMESTAMP                      NULL ON UPDATE CURRENT_TIMESTAMP,

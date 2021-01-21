@@ -23,7 +23,17 @@ class ClientRepository extends MysqlRepository
 
     public function findById(int $id): ?Client
     {
-        $stmt = $this->db->prepare('SELECT * FROM client WHERE id = ?');
+        $sql = <<<SQL
+SELECT
+       c.*,
+       u.full_name AS creator_full_name
+FROM
+     client c
+    INNER JOIN user u ON (u.id = c.creator_uid)
+WHERE c.id = ?
+SQL;
+
+        $stmt = $this->db->prepare($sql);
         $stmt->bind_param('i', $id);
         $stmt->execute();
         $rs = $stmt->get_result();

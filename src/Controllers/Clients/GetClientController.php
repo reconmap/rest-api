@@ -10,9 +10,9 @@ class GetClientController extends Controller
 {
     public function __invoke(ServerRequestInterface $request, array $args): object
     {
-        $id = (int)$args['clientId'];
+        $clientId = (int)$args['clientId'];
 
         $repository = new ClientRepository($this->db);
-        return $repository->findById($id);
+        return $repository->findById($clientId);
     }
 }

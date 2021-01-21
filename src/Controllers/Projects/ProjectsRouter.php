@@ -9,7 +9,7 @@ class ProjectsRouter
     public function mapRoutes(RouteCollectionInterface $router): void
     {
         $router->map('GET', '/projects', GetProjectsController::class);
-        $router->map('GET', '/projects/{id:number}', GetProjectController::class);
+        $router->map('GET', '/projects/{projectId:number}', GetProjectController::class);
         $router->map('PUT', '/projects/{projectId:number}', UpdateProjectController::class);
         $router->map('POST', '/projects', CreateProjectController::class);
         $router->map('POST', '/projects/{id:number}/clone', CloneProjectController::class);
