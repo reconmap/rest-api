@@ -13,6 +13,7 @@ class CreateClientController extends Controller
     {
         /** @var Client $client */
         $client = $this->getJsonBodyDecoded($request);
+        $client->creator_uid = $request->getAttribute('userId');
 
         $repository = new ClientRepository($this->db);
         $result = $repository->insert($client);
