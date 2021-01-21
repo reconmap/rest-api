@@ -13,6 +13,7 @@ class CreateTaskController extends Controller
     {
         /** @var Task $task */
         $task = $this->getJsonBodyDecoded($request);
+        $task->creator_uid = $request->getAttribute('userId');
 
         $repository = new TaskRepository($this->db);
         $result = $repository->insert($task);

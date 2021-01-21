@@ -6,6 +6,7 @@ class Task
 {
     public ?int $id;
     public ?int $project_id;
+    public ?int $creator_uid;
     public ?int $assignee_uid;
     public ?string $insert_ts;
     public ?string $update_ts;

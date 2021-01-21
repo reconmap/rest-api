@@ -121,8 +121,8 @@ class TaskRepository extends MysqlRepository
     public function insert(object $task): int
     {
         /** @var Task $task */
-        $stmt = $this->db->prepare('INSERT INTO task (project_id, name, description) VALUES (?, ?, ?, ?)');
-        $stmt->bind_param('isss', $task->project_id, $task->name, $task->description);
+        $stmt = $this->db->prepare('INSERT INTO task (creator_uid, project_id, name, description) VALUES (?, ?, ?, ?)');
+        $stmt->bind_param('iiss', $task->creator_uid, $task->project_id, $task->name, $task->description);
         return $this->executeInsertStatement($stmt);
     }
 }
