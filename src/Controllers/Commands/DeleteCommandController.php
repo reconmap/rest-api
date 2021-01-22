@@ -6,14 +6,15 @@ use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\CommandRepository;
 
-class GetCommandController extends Controller
+class DeleteCommandController extends Controller
 {
-
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
         $commandId = (int)$args['commandId'];
 
         $repository = new CommandRepository($this->db);
-        return $repository->findById($commandId);
+        $success = $repository->deleteById($commandId);
+
+        return ['success' => $success];
     }
 }
