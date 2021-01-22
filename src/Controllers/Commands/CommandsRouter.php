@@ -13,6 +13,7 @@ class CommandsRouter
         $router->map('GET', '/commands/{commandId:number}', GetCommandController::class);
         $router->map('DELETE', '/commands/{commandId:number}', DeleteCommandController::class);
         $router->map('GET', '/commands/outputs', GetCommandOutputsController::class);
+        $router->map('POST', '/commands', CreateCommandController::class);
         $router->map('GET', '/commands', GetCommandsController::class);
         $router->map('DELETE', '/commands/outputs/{outputId:number}', DeleteCommandOutputController::class);
         $router->map('POST', '/commands/outputs', UploadCommandOutputController::class);

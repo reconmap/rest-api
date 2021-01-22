@@ -43,4 +43,11 @@ class CommandRepository extends MysqlRepository
 
         return $success;
     }
+
+    public function insert(object $command): int
+    {
+        $stmt = $this->db->prepare('INSERT INTO command (creator_uid, short_name, description, docker_image, container_args) VALUES (?, ?, ?, ?, ?)');
+        $stmt->bind_param('issss', $command->creator_uid, $command->short_name, $command->description, $command->docker_image, $command->container_args);
+        return $this->executeInsertStatement($stmt);
+    }
 }

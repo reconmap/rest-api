@@ -167,7 +167,7 @@ DROP TABLE IF EXISTS command;
 CREATE TABLE command
 (
     id             INT UNSIGNED  NOT NULL AUTO_INCREMENT,
-    created_by_uid INT UNSIGNED  NOT NULL REFERENCES user,
+    creator_uid    INT UNSIGNED  NOT NULL REFERENCES user,
     insert_ts      TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_ts      TIMESTAMP     NULL ON UPDATE CURRENT_TIMESTAMP,
     short_name     VARCHAR(200)  NOT NULL,

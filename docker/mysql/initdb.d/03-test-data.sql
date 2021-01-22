@@ -508,7 +508,7 @@ VALUES (2,
 UPDATE vulnerability
 SET cvss_vector = 'CVSS:3.0/AV:P/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:H';
 
-INSERT INTO command (created_by_uid, short_name, description, docker_image, container_args)
+INSERT INTO command (creator_uid, short_name, description, docker_image, container_args)
 VALUES (1, 'goohost',
         'Extracts hosts/subdomains, IP or emails for a specific domain with Google search.',
         'reconmap/pentest-container-tools-goohost',
