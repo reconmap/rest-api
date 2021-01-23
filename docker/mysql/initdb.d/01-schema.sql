@@ -70,7 +70,7 @@ CREATE TABLE project
     id                    INT UNSIGNED                             NOT NULL AUTO_INCREMENT,
     insert_ts             TIMESTAMP                                NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_ts             TIMESTAMP                                NULL ON UPDATE CURRENT_TIMESTAMP,
-    -- creator_uid           INT UNSIGNED                             NOT NULL REFERENCES user,
+    creator_uid           INT UNSIGNED                             NOT NULL REFERENCES user,
     client_id             INT UNSIGNED                             NULL COMMENT 'Null when project is template' REFERENCES client,
     is_template           BOOLEAN                                  NOT NULL DEFAULT FALSE,
     name                  VARCHAR(200)                             NOT NULL,

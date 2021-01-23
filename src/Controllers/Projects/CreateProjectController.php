@@ -13,6 +13,7 @@ class CreateProjectController extends Controller
     {
         /** @var Project $project */
         $project = $this->getJsonBodyDecoded($request);
+        $project->creator_uid = $request->getAttribute('userId');
         $project->isTemplate = false;
 
         $repository = new ProjectRepository($this->db);

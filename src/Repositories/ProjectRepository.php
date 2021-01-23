@@ -30,9 +30,11 @@ class ProjectRepository extends MysqlRepository
         $sql = <<<SQL
 SELECT
        p.*,
-       c.name AS client_name
+       c.name AS client_name,
+       u.full_name AS creator_full_name
 FROM
-     project p
+    project p
+    INNER JOIN user u ON (u.id = p.creator_uid)
     LEFT JOIN client c ON (c.id = p.client_id)
 WHERE
       p.id = ?
@@ -68,15 +70,15 @@ SQL;
         return $projects;
     }
 
-    public function createFromTemplate(int $templateId): array
+    public function createFromTemplate(int $templateId, int $userId): array
     {
         $this->db->begin_transaction();
 
         $projectSql = <<<SQL
-        INSERT INTO project (name, description, engagement_type, engagement_start_date, engagement_end_date) SELECT CONCAT(name, ' - ', CURRENT_TIMESTAMP()), description, engagement_type, engagement_start_date, engagement_end_date FROM project WHERE id = ?
+        INSERT INTO project (creator_uid, name, description, engagement_type, engagement_start_date, engagement_end_date) SELECT ?, CONCAT(name, ' - ', CURRENT_TIMESTAMP()), description, engagement_type, engagement_start_date, engagement_end_date FROM project WHERE id = ?
         SQL;
         $stmt = $this->db->prepare($projectSql);
-        $stmt->bind_param('i', $templateId);
+        $stmt->bind_param('ii', $userId, $templateId);
         $projectId = $this->executeInsertStatement($stmt);
 
         $tasksSql = <<<SQL
@@ -95,8 +97,8 @@ SQL;
 
     public function insert(object $project): int
     {
-        $stmt = $this->db->prepare('INSERT INTO project (client_id, name, description, is_template, engagement_type, engagement_start_date, engagement_end_date) VALUES (?, ?, ?, ?, ?, ?, ?)');
-        $stmt->bind_param('ississs', $project->clientId, $project->name, $project->description, $project->isTemplate, $project->engagement_type, $project->engagement_start_date, $project->engagement_end_date);
+        $stmt = $this->db->prepare('INSERT INTO project (creator_uid, client_id, name, description, is_template, engagement_type, engagement_start_date, engagement_end_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
+        $stmt->bind_param('iississs', $project->creator_uid, $project->clientId, $project->name, $project->description, $project->isTemplate, $project->engagement_type, $project->engagement_start_date, $project->engagement_end_date);
         return $this->executeInsertStatement($stmt);
     }
 

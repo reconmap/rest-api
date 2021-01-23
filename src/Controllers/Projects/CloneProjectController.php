@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Controllers\Projects;
 
@@ -13,11 +11,10 @@ class CloneProjectController extends Controller
 
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
-        $id = (int)$args['id'];
+        $projectTemplateId = (int)$args['id'];
+        $userId = $request->getAttribute('userId');
 
         $repository = new ProjectRepository($this->db);
-        $project = $repository->createFromTemplate($id);
-
-        return $project;
+        return $repository->createFromTemplate($projectTemplateId, $userId);
     }
 }
