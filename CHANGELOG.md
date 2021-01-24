@@ -50,7 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add basic functionality: clients, projects, tasks, vulnerabilities, ... 
 
 [Unreleased]: https://github.com/Reconmap/api-backend/compare/0.8.5...master 
-[0.8.5]: https://github.com/Reconmap/api-backend/compare/0.8.0...0.8.55555
+[0.8.5]: https://github.com/Reconmap/api-backend/compare/0.8.0...0.8.5
 [0.8.0]: https://github.com/Reconmap/api-backend/compare/0.7.5...0.8.0
 [0.7.5]: https://github.com/Reconmap/api-backend/compare/0.7.0...0.7.5
 [0.7.0]: https://github.com/reconmap/application/compare/0.0.1..0.7.0
