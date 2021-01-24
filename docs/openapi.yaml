@@ -3,7 +3,7 @@ openapi: 3.0.3
 info:
   title: Reconmap API
   description: Reconmap API documentation
-  version: 0.8.0
+  version: 0.8.5
 
 servers:
   - url: 'http://localhost:3000'
