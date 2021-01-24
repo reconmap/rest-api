@@ -1,8 +1,9 @@
 openapi: 3.0.3
 
 info:
-  version: 0.8.0
   title: Reconmap API
+  description: Reconmap API documentation
+  version: 0.8.0
 
 servers:
   - url: 'http://localhost:3000'
@@ -56,6 +57,23 @@ components:
           type: string
         contactPhone:
           type: string
+
+    Command:
+      type: object
+      required:
+        - short_name
+        - docker_image
+        - container_args
+      properties:
+        id:
+          type: integer
+        short_name:
+          type: string
+        docker_image:
+          type: string
+        container_args:
+          type: string
+
     User:
       type: object
       required:
@@ -95,7 +113,7 @@ security:
 
 paths:
 
-### Audit log ###
+  ### Audit log ###
 
   /auditlog:
     get:
@@ -107,7 +125,7 @@ paths:
         '200':
           description: OK
 
-### Clients ###
+  ### Clients ###
 
   /clients:
     post:
@@ -180,7 +198,7 @@ paths:
         '200':
           description: OK
 
-### Projects ###
+  ### Projects ###
 
   /projects:
     get:
@@ -225,7 +243,7 @@ paths:
         '200':
           description: Succesfully deleted
 
-### Reports ###
+  ### Reports ###
 
   /reports:
     get:
@@ -237,7 +255,7 @@ paths:
         '200':
           description: OK
 
-### Targets ###
+  ### Targets ###
 
   /targets:
     post:
@@ -297,7 +315,7 @@ paths:
         '200':
           description: Succesfully deleted
 
-### Tasks ###
+  ### Tasks ###
 
   /tasks:
     get:
@@ -342,7 +360,7 @@ paths:
         '200':
           description: Succesfully deleted
 
-### Users ###
+  ### Users ###
 
   /users/login:
     post:
@@ -461,7 +479,7 @@ paths:
         '200':
           description: Succesfully deleted
 
-### Vulnerabilities ###
+  ### Vulnerabilities ###
 
   /vulnerabilities:
     get:
@@ -506,7 +524,7 @@ paths:
         '200':
           description: Succesfully deleted
 
-### Organisations ###
+  ### Organisations ###
 
   /organisations/root:
     put:
@@ -541,3 +559,63 @@ paths:
               schema:
                 $ref: '#/components/schemas/Organisation'
 
+  /commands:
+    post:
+      tags:
+        - Commands
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Command'
+      responses:
+        '200':
+          description: Command succesfully created response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Command'
+    get:
+      tags:
+        - Commands
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+  '/commands/{id}':
+    get:
+      tags:
+        - Commands
+      parameters:
+        - name: id
+          in: path
+          description: Command ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: Succesfully retrieved
+    delete:
+      tags:
+        - Commands
+      parameters:
+        - name: id
+          in: path
+          description: Command ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: Succesfully deleted

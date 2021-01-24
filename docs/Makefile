@@ -7,5 +7,8 @@ runswagger:
 
 .PHONY: generateapidocs
 generateapidocs:
-	docker run --rm -v $(PWD):/local swaggerapi/swagger-codegen-cli-v3 generate -i /local/openapi.yaml -l dynamic-html -o /local/apidocs
+	docker run --rm -v $(PWD):/local openapitools/openapi-generator-cli generate -i /local/openapi.yaml -g dynamic-html -o /local/apidocs
 
+.PHONY: servedocs
+servedocs:
+	cd apidocs/docs && python3 -m http.server

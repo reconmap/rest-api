@@ -1,0 +1,621 @@
+openapi: 3.0.3
+
+info:
+  title: Reconmap API
+  description: Reconmap API documentation
+  version: 0.8.0
+
+servers:
+  - url: 'http://localhost:3000'
+  - url: 'https://api.reconmap.org'
+
+components:
+
+  securitySchemes:
+
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+
+    Organisation:
+      type: object
+      required:
+        - name
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        url:
+          type: string
+        contactName:
+          type: string
+        contactEmail:
+          type: string
+        contactPhone:
+          type: string
+
+    Client:
+      type: object
+      required:
+        - name
+        - contactName
+        - contactEmail
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        url:
+          type: string
+        contactName:
+          type: string
+        contactEmail:
+          type: string
+        contactPhone:
+          type: string
+
+    Command:
+      type: object
+      required:
+        - short_name
+        - docker_image
+        - container_args
+      properties:
+        id:
+          type: integer
+        short_name:
+          type: string
+        docker_image:
+          type: string
+        container_args:
+          type: string
+
+    User:
+      type: object
+      required:
+        - name
+        - password
+        - email
+        - role
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        password:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+    Target:
+      type: object
+      required:
+        - projectId
+        - name
+        - kind
+      properties:
+        id:
+          type: integer
+        projectId:
+          type: integer
+        name:
+          type: string
+        kind:
+          type: string
+
+security:
+  - BearerAuth: [ ]
+
+paths:
+
+  ### Audit log ###
+
+  /auditlog:
+    get:
+      tags:
+        - Audit log
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+
+  ### Clients ###
+
+  /clients:
+    post:
+      tags:
+        - Clients
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Client'
+      responses:
+        '200':
+          description: Client succesfully created response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+    get:
+      tags:
+        - Clients
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+  '/clients/{id}':
+    get:
+      tags:
+        - Clients
+      parameters:
+        - name: id
+          in: path
+          description: Client ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: Succesfully retrieved
+    delete:
+      tags:
+        - Clients
+      parameters:
+        - name: id
+          in: path
+          description: Client ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: Succesfully deleted
+
+  /integrations:
+    get:
+      tags:
+        - Integrations
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+
+  ### Projects ###
+
+  /projects:
+    get:
+      tags:
+        - Projects
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+  '/projects/{id}':
+    get:
+      tags:
+        - Projects
+      parameters:
+        - name: id
+          in: path
+          description: Project ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: Succesfully retrieved
+    delete:
+      tags:
+        - Projects
+      parameters:
+        - name: id
+          in: path
+          description: Project ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: Succesfully deleted
+
+  ### Reports ###
+
+  /reports:
+    get:
+      tags:
+        - Reports
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+
+  ### Targets ###
+
+  /targets:
+    post:
+      tags:
+        - Targets
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Target'
+      responses:
+        '200':
+          description: User succesfully created response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                  password:
+                    type: string
+  '/targets/{id}':
+    get:
+      tags:
+        - Targets
+      parameters:
+        - name: id
+          in: path
+          description: Target ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: Succesfully retrieved
+    delete:
+      tags:
+        - Targets
+      parameters:
+        - name: id
+          in: path
+          description: Target ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: Succesfully deleted
+
+  ### Tasks ###
+
+  /tasks:
+    get:
+      tags:
+        - Tasks
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+  '/tasks/{id}':
+    get:
+      tags:
+        - Tasks
+      parameters:
+        - name: id
+          in: path
+          description: Task ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: Succesfully retrieved
+    delete:
+      tags:
+        - Tasks
+      parameters:
+        - name: id
+          in: path
+          description: Task ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: Succesfully deleted
+
+  ### Users ###
+
+  /users/login:
+    post:
+      tags:
+        - Users
+      security: [ ]
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+              required:
+                - username
+                - password
+      responses:
+        '200':
+          description: Succesful login response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+        '403':
+          description: Unsuccesful login response
+  /users:
+    get:
+      tags:
+        - Users
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: Succesful login response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                  password:
+                    type: string
+    post:
+      tags:
+        - Users
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: User succesfully created response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                  password:
+                    type: string
+  '/users/{id}':
+    get:
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: Succesful login response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                  password:
+                    type: string
+    delete:
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: Succesfully deleted
+
+  ### Vulnerabilities ###
+
+  /vulnerabilities:
+    get:
+      tags:
+        - Vulnerabilities
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+  '/vulnerabilities/{id}':
+    get:
+      tags:
+        - Vulnerabilities
+      parameters:
+        - name: id
+          in: path
+          description: Vulnerability ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: Succesfully retrieved
+    delete:
+      tags:
+        - Vulnerabilities
+      parameters:
+        - name: id
+          in: path
+          description: Vulnerability ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: Succesfully deleted
+
+  ### Organisations ###
+
+  /organisations/root:
+    put:
+      description: "Updates the root organisation"
+      tags:
+        - Organisations
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Organisation'
+      responses:
+        '200':
+          description: Organisation succesfully created response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organisation'
+    get:
+      tags:
+        - Organisations
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organisation'
+
+  /commands:
+    post:
+      tags:
+        - Commands
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Command'
+      responses:
+        '200':
+          description: Command succesfully created response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Command'
+    get:
+      tags:
+        - Commands
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+  '/commands/{id}':
+    get:
+      tags:
+        - Commands
+      parameters:
+        - name: id
+          in: path
+          description: Command ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: Succesfully retrieved
+    delete:
+      tags:
+        - Commands
+      parameters:
+        - name: id
+          in: path
+          description: Command ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: Succesfully deleted
