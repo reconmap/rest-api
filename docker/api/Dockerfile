@@ -19,13 +19,27 @@ ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.7.3/wait
 RUN chmod +x /usr/local/bin/wait
 
 RUN apt-get install -y cron
-COPY crontab.txt /tmp/crontab
+COPY docker/api/crontab.txt /tmp/crontab
 RUN crontab /tmp/crontab
 
 RUN sed -i "s/;clear_env = no/clear_env = no/" /etc/php/7.4/fpm/pool.d/www.conf
 RUN rm /etc/nginx/sites-enabled/default
-COPY nginx/sites-enabled/* /etc/nginx/sites-enabled/
+COPY docker/api/nginx/sites-enabled/* /etc/nginx/sites-enabled/
 
-COPY entrypoint.sh /entrypoint
+WORKDIR /var/www/webapp
+COPY composer.json /var/www/webapp
+COPY composer.lock /var/www/webapp
+RUN composer install
+
+RUN mkdir -p data/attachments && chown www-data data/attachments
+RUN mkdir -p data/reports && chown www-data data/reports
+RUN mkdir logs && chown www-data logs
+
+COPY public /var/www/webapp/public
+COPY resources /var/www/webapp/resources
+COPY src /var/www/webapp/src
+VOLUME /var/www/webapp
+
+COPY docker/api/entrypoint.sh /entrypoint
 ENTRYPOINT ["/entrypoint"]
 CMD nginx -g 'daemon off;' && bash
