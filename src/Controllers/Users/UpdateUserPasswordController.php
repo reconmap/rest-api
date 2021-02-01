@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Controllers\Users;
 
@@ -36,7 +34,7 @@ class UpdateUserPasswordController extends Controller
 
         $hashedPassword = password_hash($requestBody->newPassword, PASSWORD_DEFAULT);
 
-        $success = $userRepository->updateById($userId, 'password', $hashedPassword);
+        $success = $userRepository->updateById($userId, ['password' => $hashedPassword]);
 
         $this->auditAction($loggedInUserId);
 
