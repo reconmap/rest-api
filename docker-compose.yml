@@ -13,7 +13,10 @@ services:
 
   mysql:
     container_name: rmap-mysql
-    image: mysql:8.0
+    image: quay.io/reconmap/rest-api-db:latest
+    build:
+      context: ./
+      dockerfile: docker/mysql/Dockerfile
     volumes:
       - ./data-mysql:/var/lib/mysql
       - ./docker/mysql/initdb.d:/docker-entrypoint-initdb.d
@@ -27,11 +30,14 @@ services:
 
   api:
     container_name: rmap-api
+    image: quay.io/reconmap/rest-api:latest
     build:
-      context: docker/api
-      dockerfile: Dockerfile
+      context: ./
+      dockerfile: docker/api/Dockerfile
     volumes:
-      - "$PWD:/var/www/webapp"
+      - "./config.json:/var/www/webapp/config.json"
+      - "./logs/:/var/www/webapp/logs/"
+      - "./data/:/var/www/webapp/data/"
     ports:
       - 8080:80
     environment:
