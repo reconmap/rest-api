@@ -6,11 +6,11 @@ use Firebase\JWT\JWT;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Reconmap\AuthMiddleware;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditLogAction;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\AuditLogService;
+use Reconmap\Services\Config;
 use Reconmap\Services\JwtPayloadCreator;
 
 class UsersLoginController extends Controller
@@ -36,10 +36,14 @@ class UsersLoginController extends Controller
 
         $this->audit($user['id'], AuditLogAction::USER_LOGGED_IN);
 
-        $jwtPayload = (new JwtPayloadCreator())
+        $config = $this->container->get(Config::class);
+
+        $jwtPayload = (new JwtPayloadCreator($config))
             ->createFromUserArray($user);
 
-        $user['access_token'] = JWT::encode($jwtPayload, AuthMiddleware::JWT_KEY, 'HS256');
+        $jwtConfig = $config->getSettings('jwt');
+
+        $user['access_token'] = JWT::encode($jwtPayload, $jwtConfig['key'], 'HS256');
 
         $response->getBody()->write(json_encode($user));
         return $response->withHeader('Content-type', 'application/json');

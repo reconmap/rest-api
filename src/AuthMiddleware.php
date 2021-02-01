@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap;
 
@@ -15,17 +13,25 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Reconmap\Services\Config;
+use Reconmap\Services\ConfigConsumer;
 
-class AuthMiddleware implements MiddlewareInterface
+class AuthMiddleware implements MiddlewareInterface, ConfigConsumer
 {
-    const JWT_KEY = 'this is going to be replaced with asymmetric keys';
     private Logger $logger;
-
-    // @todo replace with RSA keys
+    private Config $config;
 
     public function __construct(Logger $logger)
     {
         $this->logger = $logger;
+    }
+
+    /**
+     * @param Config $config
+     */
+    public function setConfig(Config $config): void
+    {
+        $this->config = $config;
     }
 
     /**
@@ -48,13 +54,15 @@ class AuthMiddleware implements MiddlewareInterface
         }
         $jwt = $authHeaderParts[1];
 
-        try {
-            $token = JWT::decode($jwt, self::JWT_KEY, ['HS256']);
+        $jwtConfig = $this->config->getSettings('jwt');
 
-            if ($token->iss !== 'reconmap.org') {
+        try {
+            $token = JWT::decode($jwt, $jwtConfig['key'], ['HS256']);
+
+            if ($token->iss !== $jwtConfig['issuer']) {
                 throw new ForbiddenException("Invalid JWT issuer");
             }
-            if ($token->aud !== 'reconmap.com') {
+            if ($token->aud !== $jwtConfig['audience']) {
                 throw new ForbiddenException("Invalid JWT audience");
             }
 

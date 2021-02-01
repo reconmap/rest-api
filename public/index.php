@@ -17,8 +17,8 @@ use Reconmap\Services\ConfigLoader;
 
 $logger = new Logger('http');
 $applicationLogPath = RECONMAP_APP_DIR . '/logs/application.log';
-if(is_writable($applicationLogPath)) {
-	$logger->pushHandler(new StreamHandler($applicationLogPath, Logger::DEBUG));
+if (is_writable($applicationLogPath)) {
+    $logger->pushHandler(new StreamHandler($applicationLogPath, Logger::DEBUG));
 }
 
 $config = (new ConfigLoader())->loadFromFile(RECONMAP_APP_DIR . '/config.json');

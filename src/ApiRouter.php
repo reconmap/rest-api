@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap;
 
@@ -11,8 +9,7 @@ use League\Route\RouteGroup;
 use League\Route\Router;
 use League\Route\Strategy\JsonStrategy;
 use Monolog\Logger;
-use Reconmap\{
-    Controllers\AuditLog\AuditLogRouter,
+use Reconmap\{Controllers\AuditLog\AuditLogRouter,
     Controllers\Clients\ClientsRouter,
     Controllers\Commands\CommandsRouter,
     Controllers\Notes\NotesRouter,
@@ -24,7 +21,8 @@ use Reconmap\{
     Controllers\Tasks\TasksRouter,
     Controllers\Users\UsersLoginController,
     Controllers\Users\UsersRouter,
-    Controllers\Vulnerabilities\VulnerabilitiesRouter
+    Controllers\Vulnerabilities\VulnerabilitiesRouter,
+    Services\Config
 };
 use Reconmap\Controllers\Attachments\AttachmentsRouter;
 
@@ -52,9 +50,12 @@ class ApiRouter extends Router
 
     private CorsMiddleware $corsMiddleware;
 
+    private Container $container;
+
     public function mapRoutes(Container $container, Logger $logger): void
     {
         $this->setupStrategy($container, $logger);
+
         $this->map('OPTIONS', '/{any:.*}', function (): Response {
             return $this->getResponse();
         });
@@ -74,21 +75,29 @@ class ApiRouter extends Router
      */
     private function setupStrategy(Container $container, Logger $logger)
     {
+        $this->container = $container;
+        $this->logger = $logger;
+
         $responseFactory = new ResponseFactory;
         $strategy = new JsonStrategy($responseFactory);
         $strategy->setContainer($container);
         $this->setStrategy($strategy);
         $this->logger = $logger;
-        $this->authMiddleware = new AuthMiddleware($logger);
+        $this->authMiddleware = $container->get(AuthMiddleware::class);
         $this->corsMiddleware = new CorsMiddleware($logger);
     }
 
     private function getResponse(): Response
     {
+        /** @var Config $config */
+        $config = $this->container->get(Config::class);
+        $corsConfig = $config->getSettings('cors');
+        $allowedOrigins = implode(',', $corsConfig['allowedOrigins']);
+
         return (new Response)
             ->withStatus(200)
             ->withHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,PATCH')
             ->withHeader('Access-Control-Allow-Headers', 'Authorization,Bulk-Operation,Content-Type')
-            ->withHeader('Access-Control-Allow-Origin', '*');
+            ->withHeader('Access-Control-Allow-Origin', $allowedOrigins);
     }
 }
