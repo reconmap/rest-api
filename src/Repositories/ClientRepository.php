@@ -37,10 +37,10 @@ SQL;
         $stmt->bind_param('i', $id);
         $stmt->execute();
         $rs = $stmt->get_result();
-        $target = $rs->fetch_object(Client::class);
+        $client = $rs->fetch_object(Client::class);
         $stmt->close();
 
-        return $target;
+        return $client;
     }
 
     public function deleteById(int $id): bool

@@ -20,6 +20,22 @@ components:
 
   schemas:
 
+    Attachment:
+      type: object
+      required:
+        - client_file_name
+      properties:
+        id:
+          type: integer
+        client_file_name:
+          type: string
+        file_size:
+          type: integer
+        file_mimetype:
+          type: string
+        file_hash:
+          type: string
+
     Organisation:
       type: object
       required:
@@ -125,7 +141,66 @@ paths:
         '200':
           description: OK
 
-  ### Clients ###
+  /attachments:
+    post:
+      tags:
+        - Attachments
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Attachment'
+      responses:
+        '200':
+          description: Attachment succesfully created response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Attachment'
+    get:
+      tags:
+        - Attachments
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+  '/attachments/{id}':
+    get:
+      tags:
+        - Attachments
+      parameters:
+        - name: id
+          in: path
+          description: Attachment ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: Succesfully retrieved
+    delete:
+      tags:
+        - Attachments
+      parameters:
+        - name: id
+          in: path
+          description: Attachment ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: Succesfully deleted
 
   /clients:
     post:

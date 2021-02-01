@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap;
 
@@ -9,7 +11,8 @@ use League\Route\RouteGroup;
 use League\Route\Router;
 use League\Route\Strategy\JsonStrategy;
 use Monolog\Logger;
-use Reconmap\{Controllers\AuditLog\AuditLogRouter,
+use Reconmap\{
+    Controllers\AuditLog\AuditLogRouter,
     Controllers\Clients\ClientsRouter,
     Controllers\Commands\CommandsRouter,
     Controllers\Notes\NotesRouter,
@@ -23,10 +26,12 @@ use Reconmap\{Controllers\AuditLog\AuditLogRouter,
     Controllers\Users\UsersRouter,
     Controllers\Vulnerabilities\VulnerabilitiesRouter
 };
+use Reconmap\Controllers\Attachments\AttachmentsRouter;
 
 class ApiRouter extends Router
 {
     private const ROUTER_CLASSES = [
+        AttachmentsRouter::class,
         AuditLogRouter::class,
         CommandsRouter::class,
         ClientsRouter::class,
