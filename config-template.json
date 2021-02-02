@@ -1,4 +1,14 @@
 {
+	"jwt": {
+		"issuer": "reconmap.org",
+		"audience": "reconmap.com",
+		"key": "One long key of your own"
+	},
+	"cors": {
+		"allowedOrigins": [
+			"http://localhost:3001"
+		]
+	},
 	"database": {
 		"host": "rmap-mysql",
 		"username": "reconmapper",
