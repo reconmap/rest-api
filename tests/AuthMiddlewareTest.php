@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Reconmap;
 
 use League\Route\Http\Exception\ForbiddenException;
+use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Reconmap\Services\Config;
 
 class AuthMiddlewareTest extends TestCase
 {
@@ -40,11 +42,19 @@ class AuthMiddlewareTest extends TestCase
             ->method('handle')
             ->with($request);
 
+        $config = new Config([
+            'jwt' => [
+                'issuer' => 'reconmap.org',
+                'audience' => 'reconmap.com',
+                'key' => 'this is going to be replaced with asymmetric keys'
+            ]
+        ]);
+
+        $mockLogger = $this->createMock(Logger::class);
+
         /** @var AuthMiddleware */
-        $middleware = $this->getMockBuilder(AuthMiddleware::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods([])
-            ->getMock();
+        $middleware = new AuthMiddleware($mockLogger);
+        $middleware->setConfig($config);
         $middleware->process($request, $handler);
     }
 

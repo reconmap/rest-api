@@ -9,14 +9,21 @@ class JwtPayloadCreatorTest extends TestCase
 {
     public function testJwtBodyContainsBasicProperties()
     {
+        $config = new Config([
+            'jwt' => [
+                'issuer' => 'me',
+                'audience' => 'all of you'
+            ]
+        ]);
+
         $now = time();
         $user = ['id' => 104, 'role' => 'superadmin'];
 
-        $subject = new JwtPayloadCreator();
+        $subject = new JwtPayloadCreator($config);
         $payload = $subject->createFromUserArray($user);
 
-        $this->assertEquals('reconmap.org', $payload['iss']);
-        $this->assertEquals('reconmap.com', $payload['aud']);
+        $this->assertEquals('me', $payload['iss']);
+        $this->assertEquals('all of you', $payload['aud']);
         $this->assertEquals($user, $payload['data']);
         $this->assertTrue($payload['iat'] >= $now);
         $this->assertTrue($payload['nbf'] === $payload['iat']);

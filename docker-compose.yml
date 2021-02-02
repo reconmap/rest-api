@@ -38,6 +38,9 @@ services:
       - "./config.json:/var/www/webapp/config.json"
       - "./logs/:/var/www/webapp/logs/"
       - "./data/:/var/www/webapp/data/"
+      - "./run-tests.sh:/var/www/webapp/run-tests.sh"
+      - "./tests/:/var/www/webapp/tests/"
+      - "./phpunit.xml.dist:/var/www/webapp/phpunit.xml.dist"
     ports:
       - 8080:80
     environment:
