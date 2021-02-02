@@ -32,8 +32,7 @@ tests: start
 
 .PHONY: security-tests
 security-tests:
-	docker-compose run --rm -w /var/www/webapp --entrypoint composer api require sensiolabs/security-checker
-	docker-compose run --rm -w /var/www/webapp --entrypoint ./vendor/bin/security-checker api security:check
+	docker-compose run --rm -w /var/www/webapp --entrypoint bash api -c "wget https://github.com/fabpot/local-php-security-checker/releases/download/v1.0.0/local-php-security-checker_1.0.0_linux_amd64 -O security-checker && chmod +x security-checker && ./security-checker"
 
 .PHONY: start
 start:
