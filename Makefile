@@ -11,6 +11,12 @@ DB_CONTAINER=rmap-mysql
 DOCKER_IMAGE_NAME = quay.io/reconmap/rest-api
 DOCKER_DEFAULT_TAG = $(DOCKER_IMAGE_NAME)
 
+ifdef TRAVIS_BRANCH
+GIT_BRANCH_NAME = $(TRAVIS_BRANCH)
+else
+GIT_BRANCH_NAME = $(shell git rev-parse --abbrev-ref HEAD)
+endif
+
 .PHONY: prepare
 prepare: build
 	docker-compose run --rm -w /var/www/webapp --entrypoint composer api install
