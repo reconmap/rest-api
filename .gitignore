@@ -9,3 +9,4 @@ config.json
 clover.xml
 .idea
 tests/data/*
+environment.js

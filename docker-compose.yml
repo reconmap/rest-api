@@ -36,10 +36,11 @@ services:
       dockerfile: docker/api/Dockerfile
     volumes:
       - "./config.json:/var/www/webapp/config.json"
-      - "./logs/:/var/www/webapp/logs/"
-      - "./data/:/var/www/webapp/data/"
+      - "./logs:/var/www/webapp/logs"
+      - "./data:/var/www/webapp/data"
       - "./run-tests.sh:/var/www/webapp/run-tests.sh"
-      - "./tests/:/var/www/webapp/tests/"
+      - "./src:/var/www/webapp/src"
+      - "./tests:/var/www/webapp/tests"
       - "./phpunit.xml.dist:/var/www/webapp/phpunit.xml.dist"
     ports:
       - 8080:80

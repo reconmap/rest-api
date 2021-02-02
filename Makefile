@@ -8,13 +8,16 @@ MAKEFLAGS += --no-builtin-rules
 
 DB_CONTAINER=rmap-mysql
 
+DOCKER_IMAGE_NAME = quay.io/reconmap/rest-api
+DOCKER_DEFAULT_TAG = $(DOCKER_IMAGE_NAME)
+
 .PHONY: prepare
 prepare: build
 	docker-compose run --rm -w /var/www/webapp --entrypoint composer api install
 
 .PHONY: build
 build:
-	docker-compose build
+	docker-compose build --no-cache
 
 .PHONY: tests
 tests: start
@@ -49,6 +52,11 @@ clean: stop
 .PHONY: api-shell
 api-shell:
 	@docker-compose exec -w /var/www/webapp api bash
+
+.PHONY: push
+push:
+	docker push $(DOCKER_IMAGE_NAME):$(GIT_BRANCH_NAME)
+	docker push $(DOCKER_IMAGE_NAME):latest
 
 # Database targets
 

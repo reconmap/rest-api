@@ -62,7 +62,7 @@ window.env = {
 EOF
 $ docker run --rm -d -p 3001:80 \
 	-v "$PWD/environment.js:/usr/share/nginx/html/environment.js" \
-	--name reconmap-web-frontend quay.io/reconmap/web-client:master
+	--name reconmap-web-client quay.io/reconmap/web-client:master
 ```
 
 Then opening your browser at http://localhost:3001

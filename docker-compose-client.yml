@@ -1,17 +1,12 @@
-version: '3'
+version: '3.7'
 
 services:
 
   react:
-    container_name: rmap-react
+    container_name: rmap-web-client
     image: quay.io/reconmap/web-client:master
     volumes:
-      - ./docker/mysql/initdb.d:/docker-entrypoint-initdb.d
+      - ./environment.js:/usr/share/nginx/html/environment.js
     ports:
-      - 3001:3001
-    environment:
-      MYSQL_ROOT_PASSWORD: reconmuppet
-      MYSQL_DATABASE: reconmap
-      MYSQL_USER: reconmapper
-      MYSQL_PASSWORD: reconmapped
+      - 3001:80
 
