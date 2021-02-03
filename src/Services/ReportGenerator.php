@@ -34,6 +34,8 @@ class ReportGenerator
         $reports = (new ReportRepository($this->db))->findByProjectId($projectId);
         $latestVersion = $reports[0];
 
+        $parsedown = new \Parsedown();
+
         $organisation = (new OrganisationRepository($this->db))->findRootOrganisation();
 
         return $this->template->render('projects/report', [
@@ -42,7 +44,8 @@ class ReportGenerator
             'version' => $latestVersion['name'],
             'date' => date('Y-m-d'),
             'reports' => $reports,
-            'client' => (new ClientRepository($this->db))->findById($project['client_id']),
+            'markdownParser' => $parsedown,
+            'client' => $project['client_id'] ? (new ClientRepository($this->db))->findById($project['client_id']) : null,
             'users' => (new UserRepository($this->db))->findByProjectId($projectId),
             'targets' => (new TargetRepository($this->db))->findByProjectId($projectId),
             'tasks' => (new TaskRepository($this->db))->findByProjectId($projectId),

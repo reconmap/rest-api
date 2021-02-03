@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Controllers\Reports;
 
@@ -19,9 +17,11 @@ class DeleteReportController extends Controller
         $report = $repository->findById($id);
         $success = $repository->deleteById($id);
 
-        $filename = sprintf(RECONMAP_APP_DIR . "/data/reports/report-%d.%s", $id, $report['format']);
-        if (unlink($filename) === false) {
-            $this->logger->warning("Unable to delete report file '$filename'");
+        $files = glob(sprintf(RECONMAP_APP_DIR . "/data/reports/report-%d.*", $id));
+        foreach ($files as $filename) {
+            if (unlink($filename) === false) {
+                $this->logger->warning("Unable to delete report file '$filename'");
+            }
         }
 
         return ['success' => $success];

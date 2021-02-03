@@ -16,8 +16,9 @@ use Reconmap\Services\ApplicationContainer;
 use Reconmap\Services\ConfigLoader;
 
 $logger = new Logger('http');
+$logsDirectory = RECONMAP_APP_DIR . '/logs';
 $applicationLogPath = RECONMAP_APP_DIR . '/logs/application.log';
-if (is_writable($applicationLogPath)) {
+if (is_writable($logsDirectory)) {
     $logger->pushHandler(new StreamHandler($applicationLogPath, Logger::DEBUG));
 }
 

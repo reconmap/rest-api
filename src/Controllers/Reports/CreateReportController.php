@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Reconmap\Controllers\Reports;
 
 use Dompdf\Dompdf;
+use HeadlessChromium\BrowserFactory;
+use HeadlessChromium\Page;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\Report;
@@ -57,13 +59,35 @@ class CreateReportController extends Controller implements ConfigConsumer
 
     private function savePdfToDisk(string $html, string $filePath)
     {
-        $dompdf = new Dompdf();
-        $dompdf->loadHtml($html);
+        $browser = null;
 
-        $dompdf->setPaper('A4', 'landscape');
-        $dompdf->render();
+        try {
+            $browserFactory = new BrowserFactory('/opt/google/chrome/chrome');
+            $browser = $browserFactory->createBrowser(['noSandbox' => true]);
 
-        file_put_contents($filePath . '.pdf', $dompdf->output());
+            $htmlPath = $filePath . '.html';
+            file_put_contents($htmlPath, $html);
+
+            $page = $browser->createPage();
+            $navigation = $page->navigate('file://' . $htmlPath);
+            $navigation->waitForNavigation(Page::LOAD, 30000);
+
+            $options = [
+                'displayHeaderFooter' => true,
+                'printBackground' => true,
+                'headerTemplate' => '<div style="font-size: 10px; border-bottom: 1px solid gray; padding: 2px; width: 100%; display: flex;"><span class="date" style="flex: 50%;"></span><span style="flex: 50%; align-self: flex-end; text-transform: uppercase; text-align: right;">Content is confidential, do not redistribute</span></div>',
+                'footerTemplate' => '<div style="font-size: 10px; text-align: center; border-top: 1px solid gray; padding: 2px; width: 100%;">Page <span class="pageNumber"></span> of <span class="totalPages"></span></div>',
+                'pageRanges' => '2-4'
+            ];
+            $pdf = $page->pdf($options);
+            $pdf->saveToFile($filePath . '.pdf');
+
+        } catch (\Exception $e) {
+            $this->logger->error($e->getMessage());
+        } finally {
+            if ($browser)
+                $browser->close();
+        }
     }
 
 }
