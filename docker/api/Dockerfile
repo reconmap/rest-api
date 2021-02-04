@@ -15,9 +15,10 @@ RUN apt-get update && apt-get install -y php7.4-dev php-pear && \
 
 RUN wget --no-verbose https://getcomposer.org/installer -O - -q | php -- --install-dir=/usr/local/bin/ --filename=composer --quiet
 
-RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
-RUN sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
-RUN apt-get update && apt-get install -y google-chrome-stable
+RUN apt-get install -y fontconfig xfonts-base xfonts-75dpi libxrender1 libxext6
+RUN wget -q https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.focal_amd64.deb && \
+	dpkg -i wkhtmltox_0.12.6-1.focal_amd64.deb && \
+	rm wkhtmltox_0.12.6-1.focal_amd64.deb
 
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.7.3/wait /usr/local/bin/wait
 RUN chmod +x /usr/local/bin/wait

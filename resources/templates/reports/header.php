@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <style type="text/css">
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 15px;
+        }
+
+        div {
+            padding: 5px;
+            text-align: center;
+            border-bottom: 2px solid #D44C46;
+            font-size: 10px;
+            background-color: #1B202B;
+            color: white;
+        }
+
+        .column {
+            float: left;
+            width: 50%;
+        }
+
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        .date {
+            text-align: left;
+        }
+
+        .text {
+            text-transform: uppercase;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+<div class="row">
+    <span class="column date"><?= $date ?></span>
+    <span class="column text">Content is confidential, do not redistribute</span>
+</div>
+</body>
+</html>

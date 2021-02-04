@@ -24,7 +24,7 @@ class ReportGenerator
         $this->template = $template;
     }
 
-    public function generate(int $projectId): string
+    public function generate(int $projectId): array
     {
         $project = (new ProjectRepository($this->db))->findById($projectId);
 
@@ -38,7 +38,7 @@ class ReportGenerator
 
         $organisation = (new OrganisationRepository($this->db))->findRootOrganisation();
 
-        return $this->template->render('projects/report', [
+        $vars = [
             'project' => $project,
             'org' => $organisation,
             'version' => $latestVersion['name'],
@@ -51,7 +51,20 @@ class ReportGenerator
             'tasks' => (new TaskRepository($this->db))->findByProjectId($projectId),
             'vulnerabilities' => $vulnerabilities,
             'findingsOverview' => $this->createFindingsOverview($vulnerabilities),
-        ]);
+        ];
+
+        $cover = $this->template->render('reports/cover', $vars);
+        $header = $this->template->render('reports/header', $vars);
+        $footer = $this->template->render('reports/footer', $vars);
+
+        $body = $this->template->render('reports/body', $vars);
+
+        return [
+            'cover' => $cover,
+            'header' => $header,
+            'footer' => $footer,
+            'body' => $body,
+        ];
     }
 
     private function createFindingsOverview(array $vulnerabilities): array

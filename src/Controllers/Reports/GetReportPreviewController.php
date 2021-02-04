@@ -30,7 +30,7 @@ class GetReportPreviewController extends Controller implements ConfigConsumer
         $html = $reportGenerator->generate($projectId);
 
         $response = new Response;
-        $response->getBody()->write($html);
+        $response->getBody()->write($html['body']);
         return $response
             ->withHeader('Content-type', 'text/html');
     }

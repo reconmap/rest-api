@@ -7,6 +7,7 @@ namespace Reconmap\Controllers\Reports;
 use Dompdf\Dompdf;
 use HeadlessChromium\BrowserFactory;
 use HeadlessChromium\Page;
+use Knp\Snappy\Pdf;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\Report;
@@ -52,42 +53,36 @@ class CreateReportController extends Controller implements ConfigConsumer
         return [true];
     }
 
-    private function saveHtmlToDisk(string $html, string $filePath)
+    private function saveHtmlToDisk(array $html, string $filePath)
     {
-        file_put_contents($filePath . '.html', $html);
+        file_put_contents($filePath . '.html', $html['body']);
     }
 
-    private function savePdfToDisk(string $html, string $filePath)
+    private function savePdfToDisk(array $html, string $filePath)
     {
-        $browser = null;
+        $pdf = new Pdf('/usr/local/bin/wkhtmltopdf');
+        $pdf->setLogger($this->logger);
 
-        try {
-            $browserFactory = new BrowserFactory('/opt/google/chrome/chrome');
-            $browser = $browserFactory->createBrowser(['noSandbox' => true]);
+        $pdf->setOption('no-background', false);
 
-            $htmlPath = $filePath . '.html';
-            file_put_contents($htmlPath, $html);
+        // Table of contents and outline
+        $pdf->setOption('toc', true);
+        $pdf->setOption('xsl-style-sheet', RECONMAP_APP_DIR . '/resources/templates/reports/toc.xsl');
+        $pdf->setOption('outline-depth', 2);
 
-            $page = $browser->createPage();
-            $navigation = $page->navigate('file://' . $htmlPath);
-            $navigation->waitForNavigation(Page::LOAD, 30000);
+        // Margins and paddings
+        $pdf->setOption('header-spacing', 15);
+        $pdf->setOption('footer-spacing', 15);
+        $pdf->setOption('margin-left', 0);
+        $pdf->setOption('margin-right', 0);
+        // $pdf->setOption('margin-top', 0); # This breaks the whole layout
+        $pdf->setOption('margin-bottom', 5);
 
-            $options = [
-                'displayHeaderFooter' => true,
-                'printBackground' => true,
-                'headerTemplate' => '<div style="font-size: 10px; border-bottom: 1px solid gray; padding: 2px; width: 100%; display: flex;"><span class="date" style="flex: 50%;"></span><span style="flex: 50%; align-self: flex-end; text-transform: uppercase; text-align: right;">Content is confidential, do not redistribute</span></div>',
-                'footerTemplate' => '<div style="font-size: 10px; text-align: center; border-top: 1px solid gray; padding: 2px; width: 100%;">Page <span class="pageNumber"></span> of <span class="totalPages"></span></div>',
-                'pageRanges' => '2-4'
-            ];
-            $pdf = $page->pdf($options);
-            $pdf->saveToFile($filePath . '.pdf');
+        // Content
+        $pdf->setOption('cover', $html['cover']);
+        $pdf->setOption('header-html', $html['header']);
+        $pdf->setOption('footer-html', $html['footer']);
 
-        } catch (\Exception $e) {
-            $this->logger->error($e->getMessage());
-        } finally {
-            if ($browser)
-                $browser->close();
-        }
+        $pdf->generateFromHtml($html['body'], $filePath . '.pdf');
     }
-
 }

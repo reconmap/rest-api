@@ -5,9 +5,7 @@ namespace Reconmap;
 use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
 use GuzzleHttp\Psr7\Response;
-use League\Route\Http\Exception\BadRequestException;
 use League\Route\Http\Exception\ForbiddenException;
-use League\Route\Http\Exception\UnauthorizedException;
 use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -39,20 +37,10 @@ class AuthMiddleware implements MiddlewareInterface, ConfigConsumer
      * @param RequestHandlerInterface $handler
      * @return ResponseInterface
      * @throws ForbiddenException
-     * @throws UnauthorizedException
-     * @throws BadRequestException
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $authorizationHeader = $request->getHeader('Authorization');
-        if (empty($authorizationHeader)) {
-            throw new ForbiddenException("Missing 'Authorization' header");
-        }
-        $authHeaderParts = explode(' ', $authorizationHeader[0]);
-        if (count($authHeaderParts) !== 2 || strcasecmp($authHeaderParts[0], 'Bearer') !== 0) {
-            throw new ForbiddenException("Invalid 'Bearer' token");
-        }
-        $jwt = $authHeaderParts[1];
+        $jwt = $this->getToken($request);
 
         $jwtConfig = $this->config->getSettings('jwt');
 
@@ -75,5 +63,27 @@ class AuthMiddleware implements MiddlewareInterface, ConfigConsumer
             $this->logger->error($e->getMessage());
             return (new Response)->withStatus(400);
         }
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     * @return string
+     * @throws ForbiddenException
+     */
+    private function getToken(ServerRequestInterface $request): string
+    {
+        $params = $request->getQueryParams();
+        if (isset($params['accessToken'])) {
+            return $params['accessToken'];
+        }
+        $authorizationHeader = $request->getHeader('Authorization');
+        if (empty($authorizationHeader)) {
+            throw new ForbiddenException("Missing 'Authorization' header");
+        }
+        $authHeaderParts = explode(' ', $authorizationHeader[0]);
+        if (count($authHeaderParts) !== 2 || strcasecmp($authHeaderParts[0], 'Bearer') !== 0) {
+            throw new ForbiddenException("Invalid 'Bearer' token");
+        }
+        return $authHeaderParts[1];
     }
 }
