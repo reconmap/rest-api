@@ -3,6 +3,7 @@ SHELL := bash
 .SHELLFLAGS := -eu -o pipefail -c
 .ONESHELL:
 .DELETE_ON_ERROR:
+.DEFAULT_GOAL := prepare
 MAKEFLAGS += --warn-undefined-variables
 MAKEFLAGS += --no-builtin-rules
 
@@ -17,8 +18,12 @@ else
 GIT_BRANCH_NAME = $(shell git rev-parse --abbrev-ref HEAD)
 endif
 
+.PHONY: prepare-config
+prepare-config:
+	[ -f config.json ] || cp config-template.json config.json
+
 .PHONY: prepare
-prepare: build
+prepare: prepare-config build
 	docker-compose run --rm -w /var/www/webapp --entrypoint composer api install
 
 .PHONY: build
@@ -52,7 +57,7 @@ stop:
 clean: stop
 	docker-compose down -v --remove-orphans
 	docker-compose rm
-	rm -rf {data-mysql,data-redis} 
+	rm -rf {data-mysql,data-redis}
 
 .PHONY: api-shell
 api-shell:
@@ -77,11 +82,11 @@ db-reset:
 .PHONY: db-import
 db-import:
 	cat docker/mysql/initdb.d/{01,02,03}*.sql | docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet reconmap
-	
+
 .PHONY: db-migrate
 db-migrate:
 	cat database/migrations/changes$(MIGRATE_FROM_VERSION)-$(MIGRATE_TO_VERSION).sql | docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet reconmap
-	
+
 .PHONY: redis-shell
 redis-shell:
 	@docker-compose exec redis redis-cli
