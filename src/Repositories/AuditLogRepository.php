@@ -2,25 +2,19 @@
 
 namespace Reconmap\Repositories;
 
+use Reconmap\Repositories\QueryBuilders\SelectQueryBuilder;
+
 class AuditLogRepository extends MysqlRepository
 {
     public function findAll(int $page = 0): array
     {
-        $sql = <<<SQL
-        SELECT al.insert_ts, al.user_agent, INET_NTOA(al.client_ip) AS client_ip, al.action, al.object,
-        u.id AS user_id,
-        u.username AS user_name,
-        COALESCE(u.role, 'system') AS user_role
-        FROM audit_log al
-        LEFT JOIN user u ON (u.id = al.user_id)
-        ORDER BY al.insert_ts DESC
-        LIMIT ?, ?
-        SQL;
+        $queryBuilder = $this->getBaseSelectQueryBuilder();
+        $queryBuilder->setLimit('?, ?');
 
         $limitPerPage = 20;
         $limitOffset = $page * $limitPerPage;
 
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->db->prepare($queryBuilder->toSql());
         $stmt->bind_param('ii', $limitOffset, $limitPerPage);
         $stmt->execute();
         $rs = $stmt->get_result();
@@ -44,16 +38,11 @@ class AuditLogRepository extends MysqlRepository
 
     public function findByUserId(int $userId): array
     {
-        $sql = <<<SQL
-        SELECT al.insert_ts, al.user_agent, INET_NTOA(al.client_ip) AS client_ip, al.action,
-               u.id AS user_id, u.username, u.role
-        FROM audit_log al
-        INNER JOIN user u ON (u.id = al.user_id)
-        WHERE al.user_id = ?
-        ORDER BY al.insert_ts DESC
-        SQL;
+        $queryBuilder = $this->getBaseSelectQueryBuilder();
+        $queryBuilder->setWhere('al.user_id = ?');
+        $queryBuilder->setLimit('10');
 
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->db->prepare($queryBuilder->toSql());
         $stmt->bind_param('i', $userId);
         $stmt->execute();
         $rs = $stmt->get_result();
@@ -78,5 +67,15 @@ class AuditLogRepository extends MysqlRepository
         $stmt = $this->db->prepare('INSERT INTO audit_log (user_id, user_agent, client_ip, action, object) VALUES (?, ?, INET_ATON(?), ?, ?)');
         $stmt->bind_param('issss', $userId, $userAgent, $clientIp, $action, $object);
         return $this->executeInsertStatement($stmt);
+    }
+
+    private function getBaseSelectQueryBuilder(): SelectQueryBuilder
+    {
+        $queryBuilder = new SelectQueryBuilder('audit_log al');
+        $queryBuilder->setColumns('al.insert_ts, al.user_agent, INET_NTOA(al.client_ip) AS client_ip, al.action, al.object,
+               u.id AS user_id, u.username AS user_name, COALESCE(u.role, \'system\') AS user_role');
+        $queryBuilder->addJoin('INNER JOIN user u ON (u.id = al.user_id)');
+        $queryBuilder->setOrderBy('al.insert_ts DESC');
+        return $queryBuilder;
     }
 }
