@@ -22,7 +22,15 @@ if (is_writable($logsDirectory)) {
     $logger->pushHandler(new StreamHandler($applicationLogPath, Logger::DEBUG));
 }
 
-$config = (new ConfigLoader())->loadFromFile(RECONMAP_APP_DIR . '/config.json');
+$configFilePath = RECONMAP_APP_DIR . '/config.json';
+if (!file_exists($configFilePath) || !is_readable($configFilePath)) {
+    $errorMessage = 'Missing or unreadable API configuration file (config.json)';
+    $logger->error($errorMessage);
+    header($errorMessage, true, 503);
+    echo $errorMessage, PHP_EOL;
+    exit;
+}
+$config = (new ConfigLoader())->loadFromFile($configFilePath);
 $config->update('appDir', RECONMAP_APP_DIR);
 
 $container = new ApplicationContainer($config, $logger);
