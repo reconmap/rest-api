@@ -41,6 +41,7 @@ services:
       - "./composer.json:/var/www/webapp/composer.json"
       - "./composer.lock:/var/www/webapp/composer.lock"
       - "./vendor:/var/www/webapp/vendor"
+      - "./public:/var/www/webapp/public"
       - "./src:/var/www/webapp/src"
       - "./resources:/var/www/webapp/resources"
       - "./tests:/var/www/webapp/tests"
