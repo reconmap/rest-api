@@ -89,8 +89,8 @@ class UserRepository extends MysqlRepository
 
     public function create(object $user): int
     {
-        $stmt = $this->db->prepare('INSERT INTO user (username, password, email, role) VALUES (?, ?, ?, ?)');
-        $stmt->bind_param('ssss', $user->name, $user->password, $user->email, $user->role);
+        $stmt = $this->db->prepare('INSERT INTO user (full_name, username, password, email, role) VALUES (?, ?, ?, ?, ?)');
+        $stmt->bind_param('sssss', $user->full_name, $user->username, $user->password, $user->email, $user->role);
         return $this->executeInsertStatement($stmt);
     }
 
