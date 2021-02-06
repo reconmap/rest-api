@@ -69,38 +69,43 @@
 <h3><?= $project['name'] ?></h3>
 <p><?= $project['description'] ?></p>
 
-<h2>Version control</h2>
+<?php if ($optionalSections->revisions): ?>
+    <h2>Version control</h2>
 
-<table>
-    <thead>
-    <tr>
-        <th>Date/Time</th>
-        <th>Version</th>
-        <th>Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    <?php /** @global array $versions */ ?>
-    <?php foreach ($reports as $version): ?>
+    <table>
+        <thead>
         <tr>
-            <td><?= $version['insert_ts'] ?></td>
-            <td><?= $version['version_name'] ?></td>
-            <td><?= $version['version_description'] ?></td>
+            <th>Date/Time</th>
+            <th>Version</th>
+            <th>Description</th>
         </tr>
-    <?php endforeach ?>
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+        <?php /** @global array $versions */ ?>
+        <?php foreach ($reports as $version): ?>
+            <tr>
+                <td><?= $version['insert_ts'] ?></td>
+                <td><?= $version['version_name'] ?></td>
+                <td><?= $version['version_description'] ?></td>
+            </tr>
+        <?php endforeach ?>
+        </tbody>
+    </table>
+<?php endif ?>
 
 <div style="break-after:page"></div>
-<h2><a name="pentesting-team">Pentesting team</a></h2>
 
-<ul>
+<?php if ($optionalSections->bios): ?>
+    <h2><a name="pentesting-team">Pentesting team</a></h2>
 
-    <?php /** @var array $users */
-    foreach ($users as $user) : ?>
-        <li><strong><?= $user['full_name'] ?></strong> <?= $user['short_bio'] ?></li>
-    <?php endforeach ?>
-</ul>
+    <ul>
+
+        <?php /** @var array $users */
+        foreach ($users as $user) : ?>
+            <li><strong><?= $user['full_name'] ?></strong> <?= $user['short_bio'] ?></li>
+        <?php endforeach ?>
+    </ul>
+<?php endif ?>
 
 <div style="break-after:page"></div>
 <h2><a name="targets">Targets</a></h2>
@@ -114,24 +119,26 @@
 </ul>
 
 <div style="break-after:page"></div>
-<h2><a name="findings-overview">Findings overview</a></h2>
+<?php if ($optionalSections->overview): ?>
+    <h2><a name="findings-overview">Findings overview</a></h2>
 
-<table>
-    <thead>
-    <tr>
-        <th>Severity</th>
-        <th>Count</th>
-    </tr>
-    </thead>
-    <tbody>
-    <?php foreach ($findingsOverview as $findingOverview): ?>
+    <table>
+        <thead>
         <tr>
-            <td><?= $findingOverview['severity'] ?></td>
-            <td><?= $findingOverview['count'] ?></td>
+            <th>Severity</th>
+            <th>Count</th>
         </tr>
-    <?php endforeach ?>
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+        <?php foreach ($findingsOverview as $findingOverview): ?>
+            <tr>
+                <td><?= $findingOverview['severity'] ?></td>
+                <td><?= $findingOverview['count'] ?></td>
+            </tr>
+        <?php endforeach ?>
+        </tbody>
+    </table>
+<?php endif ?>
 
 <div style="break-after:page"></div>
 <h2>Vulnerabilities</h2>

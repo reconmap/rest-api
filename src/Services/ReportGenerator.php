@@ -5,6 +5,7 @@ namespace Reconmap\Services;
 use Reconmap\Repositories\ClientRepository;
 use Reconmap\Repositories\OrganisationRepository;
 use Reconmap\Repositories\ProjectRepository;
+use Reconmap\Repositories\ReportConfigurationRepository;
 use Reconmap\Repositories\ReportRepository;
 use Reconmap\Repositories\TargetRepository;
 use Reconmap\Repositories\TaskRepository;
@@ -28,23 +29,27 @@ class ReportGenerator
     {
         $project = (new ProjectRepository($this->db))->findById($projectId);
 
+        $configurationRepository = new ReportConfigurationRepository($this->db);
+        $configuration = $configurationRepository->findByProjectId($projectId);
+
         $vulnerabilities = (new VulnerabilityRepository($this->db))
             ->findByProjectId($projectId);
 
         $reports = (new ReportRepository($this->db))->findByProjectId($projectId);
         $latestVersion = $reports[0];
 
-        $parsedown = new \Parsedown();
+        $markdownParser = new \Parsedown();
 
         $organisation = (new OrganisationRepository($this->db))->findRootOrganisation();
 
         $vars = [
+            'optionalSections' => json_decode($configuration->optional_sections),
             'project' => $project,
             'org' => $organisation,
             'version' => $latestVersion['name'],
             'date' => date('Y-m-d'),
             'reports' => $reports,
-            'markdownParser' => $parsedown,
+            'markdownParser' => $markdownParser,
             'client' => $project['client_id'] ? (new ClientRepository($this->db))->findById($project['client_id']) : null,
             'users' => (new UserRepository($this->db))->findByProjectId($projectId),
             'targets' => (new TargetRepository($this->db))->findByProjectId($projectId),
@@ -53,18 +58,21 @@ class ReportGenerator
             'findingsOverview' => $this->createFindingsOverview($vulnerabilities),
         ];
 
-        $cover = $this->template->render('reports/cover', $vars);
-        $header = $this->template->render('reports/header', $vars);
-        $footer = $this->template->render('reports/footer', $vars);
-
-        $body = $this->template->render('reports/body', $vars);
-
-        return [
-            'cover' => $cover,
-            'header' => $header,
-            'footer' => $footer,
-            'body' => $body,
+        $components = [
+            'body' => $this->template->render('reports/body', $vars)
         ];
+
+        if ($configuration->optional_sections->custom_cover) {
+            $components['cover'] = $this->template->render('reports/cover', $vars);
+        }
+        if ($configuration->optional_sections->custom_header) {
+            $components['header'] = $this->template->render('reports/header', $vars);
+        }
+        if ($configuration->optional_sections->custom_footer) {
+            $components['footer'] = $this->template->render('reports/footer', $vars);
+        }
+
+        return $components;
     }
 
     private function createFindingsOverview(array $vulnerabilities): array

@@ -11,6 +11,8 @@ use Knp\Snappy\Pdf;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\Report;
+use Reconmap\Models\ReportConfiguration;
+use Reconmap\Repositories\ReportConfigurationRepository;
 use Reconmap\Repositories\ReportRepository;
 use Reconmap\Services\Config;
 use Reconmap\Services\ConfigConsumer;
@@ -43,12 +45,15 @@ class CreateReportController extends Controller implements ConfigConsumer
         $reportGenerator = new ReportGenerator($this->config, $this->db, $this->template);
         $html = $reportGenerator->generate($projectId, $reportId);
 
+        $reportConfiguration = new ReportConfigurationRepository($this->db);
+        $config = $reportConfiguration->findByProjectId($projectId);
+
         $basePath = $this->config->getSetting('appDir') . '/data/reports/';
         $baseFileName = sprintf('report-%d-%d', $projectId, $reportId);
         $filePath = $basePath . $baseFileName;
 
         $this->saveHtmlToDisk($html, $filePath);
-        $this->savePdfToDisk($html, $filePath);
+        $this->savePdfToDisk($html, $filePath, $config);
 
         return [true];
     }
@@ -58,7 +63,7 @@ class CreateReportController extends Controller implements ConfigConsumer
         file_put_contents($filePath . '.html', $html['body']);
     }
 
-    private function savePdfToDisk(array $html, string $filePath)
+    private function savePdfToDisk(array $html, string $filePath, ReportConfiguration $config)
     {
         $pdf = new Pdf('/usr/local/bin/wkhtmltopdf');
         $pdf->setLogger($this->logger);
@@ -66,8 +71,10 @@ class CreateReportController extends Controller implements ConfigConsumer
         $pdf->setOption('no-background', false);
 
         // Table of contents and outline
-        $pdf->setOption('toc', true);
-        $pdf->setOption('xsl-style-sheet', RECONMAP_APP_DIR . '/resources/templates/reports/toc.xsl');
+        if ($config->showToc()) {
+            $pdf->setOption('toc', true);
+            $pdf->setOption('xsl-style-sheet', RECONMAP_APP_DIR . '/resources/templates/reports/toc.xsl');
+        }
         $pdf->setOption('outline-depth', 2);
 
         // Margins and paddings
@@ -80,8 +87,12 @@ class CreateReportController extends Controller implements ConfigConsumer
 
         // Content
         $pdf->setOption('cover', $html['cover']);
-        $pdf->setOption('header-html', $html['header']);
-        $pdf->setOption('footer-html', $html['footer']);
+        if ($config->showHeader()) {
+            $pdf->setOption('header-html', $html['header']);
+        }
+        if ($config->showFooter()) {
+            $pdf->setOption('footer-html', $html['footer']);
+        }
 
         $pdf->generateFromHtml($html['body'], $filePath . '.pdf');
     }

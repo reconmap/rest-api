@@ -206,6 +206,21 @@ CREATE TABLE report
     PRIMARY KEY (id)
 ) ENGINE = InnoDB;
 
+DROP TABLE IF EXISTS report_configuration;
+
+CREATE TABLE report_configuration
+(
+    id                INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    project_id        INT UNSIGNED NOT NULL REFERENCES project,
+    optional_sections JSON         NOT NULL,
+    custom_cover      TEXT         NULL,
+    custom_header     TEXT         NULL,
+    custom_footer     TEXT         NULL,
+
+    PRIMARY KEY (id),
+    UNIQUE (project_id)
+) ENGINE = InnoDB;
+
 DROP TABLE IF EXISTS note;
 
 CREATE TABLE note
