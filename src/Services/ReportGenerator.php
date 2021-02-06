@@ -43,7 +43,7 @@ class ReportGenerator
         $organisation = (new OrganisationRepository($this->db))->findRootOrganisation();
 
         $vars = [
-            'optionalSections' => json_decode($configuration->optional_sections),
+            'configuration' => $configuration,
             'project' => $project,
             'org' => $organisation,
             'version' => $latestVersion['name'],
@@ -62,14 +62,20 @@ class ReportGenerator
             'body' => $this->template->render('reports/body', $vars)
         ];
 
-        if ($configuration->optional_sections->custom_cover) {
+        if ($configuration->include_cover === 'default') {
             $components['cover'] = $this->template->render('reports/cover', $vars);
+        } elseif ($configuration->include_cover === 'custom') {
+            $components['cover'] = $this->template->renderString($configuration->custom_cover, $vars);
         }
-        if ($configuration->optional_sections->custom_header) {
+        if ($configuration->include_header === 'default') {
             $components['header'] = $this->template->render('reports/header', $vars);
+        } elseif ($configuration->include_header === 'custom') {
+            $components['header'] = $this->template->renderString($configuration->custom_header, $vars);
         }
-        if ($configuration->optional_sections->custom_footer) {
+        if ($configuration->include_footer === 'default') {
             $components['footer'] = $this->template->render('reports/footer', $vars);
+        } elseif ($configuration->include_footer === 'custom') {
+            $components['footer'] = $this->template->renderString($configuration->custom_footer, $vars);
         }
 
         return $components;

@@ -16,7 +16,6 @@ class ReplaceReportConfigurationController extends Controller
         /** @var ReportConfiguration $reportConfiguration */
         $reportConfiguration = $this->getJsonBodyDecoded($request);
         $reportConfiguration->project_id = $projectId;
-        $reportConfiguration->optional_sections = json_encode($reportConfiguration->optional_sections);
 
         $repository = new ReportConfigurationRepository($this->db);
         $result = $repository->insert($reportConfiguration);

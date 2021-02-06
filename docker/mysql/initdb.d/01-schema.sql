@@ -210,12 +210,18 @@ DROP TABLE IF EXISTS report_configuration;
 
 CREATE TABLE report_configuration
 (
-    id                INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    project_id        INT UNSIGNED NOT NULL REFERENCES project,
-    optional_sections JSON         NOT NULL,
-    custom_cover      TEXT         NULL,
-    custom_header     TEXT         NULL,
-    custom_footer     TEXT         NULL,
+    id                        INT UNSIGNED                       NOT NULL AUTO_INCREMENT,
+    project_id                INT UNSIGNED                       NOT NULL REFERENCES project,
+    include_toc               BOOL                               NOT NULL DEFAULT TRUE,
+    include_revisions_table   BOOL                               NOT NULL DEFAULT TRUE,
+    include_team_bios         BOOL                               NOT NULL DEFAULT TRUE,
+    include_findings_overview BOOL                               NOT NULL DEFAULT TRUE,
+    include_cover             ENUM ('default', 'none', 'custom') NOT NULL DEFAULT 'default',
+    include_header            ENUM ('default', 'none', 'custom') NOT NULL DEFAULT 'default',
+    include_footer            ENUM ('default', 'none', 'custom') NOT NULL DEFAULT 'default',
+    custom_cover              TEXT                               NULL,
+    custom_header             TEXT                               NULL,
+    custom_footer             TEXT                               NULL,
 
     PRIMARY KEY (id),
     UNIQUE (project_id)

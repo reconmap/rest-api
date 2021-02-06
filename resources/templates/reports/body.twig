@@ -1,12 +1,8 @@
-<?php
-/** @global \Reconmap\Models\Client $client */
-/** @global \Reconmap\Models\Organisation $org */
-?>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8"/>
-    <meta name="author" content="<?= $org->name ?>"/>
+    <meta name="author" content="{{ org.name }}"/>
     <style type="text/css">
         body {
             padding: 100px;
@@ -66,10 +62,10 @@
 
 <div style="break-after:page"></div>
 
-<h3><?= $project['name'] ?></h3>
-<p><?= $project['description'] ?></p>
+<h3>{{ project.name }}</h3>
+<p>{{ project.description }}</p>
 
-<?php if ($optionalSections->revisions): ?>
+{% if configuration.include_revisions_table %}
     <h2>Version control</h2>
 
     <table>
@@ -81,45 +77,41 @@
         </tr>
         </thead>
         <tbody>
-        <?php /** @global array $versions */ ?>
-        <?php foreach ($reports as $version): ?>
+        {% for version in reports %}
             <tr>
-                <td><?= $version['insert_ts'] ?></td>
-                <td><?= $version['version_name'] ?></td>
-                <td><?= $version['version_description'] ?></td>
+                <td>{{ version.insert_ts }}</td>
+                <td>{{ version.version_name }}</td>
+                <td>{{ version.version_description }}</td>
             </tr>
-        <?php endforeach ?>
+        {% endfor %}
         </tbody>
     </table>
-<?php endif ?>
+{% endif %}
 
 <div style="break-after:page"></div>
 
-<?php if ($optionalSections->bios): ?>
+{% if configuration.include_team_bios %}
     <h2><a name="pentesting-team">Pentesting team</a></h2>
 
     <ul>
-
-        <?php /** @var array $users */
-        foreach ($users as $user) : ?>
-            <li><strong><?= $user['full_name'] ?></strong> <?= $user['short_bio'] ?></li>
-        <?php endforeach ?>
+        {% for user in users %}
+            <li><strong>{{ user.full_name }}</strong> {{ user.short_bio }}</li>
+        {% endfor %}
     </ul>
-<?php endif ?>
+{% endif %}
 
 <div style="break-after:page"></div>
 <h2><a name="targets">Targets</a></h2>
 
 <ul>
-    <?php
-    /** @var array $targets */
-    foreach ($targets as $target) : ?>
-        <li><strong><?= $target['name'] ?></strong> (<?= $target['kind'] ?>)</li>
-    <?php endforeach ?>
+    {% for target in targets %}
+        <li><strong>{{ target.name }}</strong> ({{ target.kind }})</li>
+    {% endfor %}
 </ul>
 
 <div style="break-after:page"></div>
-<?php if ($optionalSections->overview): ?>
+
+{% if configuration.include_findings_overview %}
     <h2><a name="findings-overview">Findings overview</a></h2>
 
     <table>
@@ -130,43 +122,43 @@
         </tr>
         </thead>
         <tbody>
-        <?php foreach ($findingsOverview as $findingOverview): ?>
+        {% for item in findingsOverview %}
             <tr>
-                <td><?= $findingOverview['severity'] ?></td>
-                <td><?= $findingOverview['count'] ?></td>
+                <td>{{ item.severity }}</td>
+                <td>{{ item.count }}</td>
             </tr>
-        <?php endforeach ?>
+        {% endfor %}
         </tbody>
     </table>
-<?php endif ?>
+{% endif %}
 
 <div style="break-after:page"></div>
 <h2>Vulnerabilities</h2>
 
 <div>
-    <?php foreach ($vulnerabilities as $vuln) : ?>
-        <h3><?= $vuln['summary'] ?></h3>
+    {% for vulnerability in vulnerabilities %}
+        <h3>{{ vulnerability.summary }}</h3>
 
         <table>
             <tbody>
             <tr>
                 <td>Severity</td>
-                <td class="risk-<?= $vuln['risk'] ?>"><?= ucfirst($vuln['risk']) ?></td>
+                <td class="risk-{{ vulnerability.risk }}">{{ vulnerability.risk|capitalize }}</td>
             </tr>
             <tr>
                 <td>Category</td>
-                <td><?= $vuln['category_name'] ?></td>
+                <td>{{ vulnerability.category_name }}</td>
             </tr>
             <tr>
                 <td>CVSS score</td>
                 <td>
-                    <a href="https://www.first.org/cvss/calculator/3.0#CVSS:3.0/AV:P/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:H"><?= $vuln['cvss_score'] ?></a>
+                    <a href="https://www.first.org/cvss/calculator/3.0#{{ vulnerability.cvss_vector }}">{{ vulnerability.cvss_score }}</a>
                 </td>
             </tr>
             </tbody>
         </table>
-        <p><?= $markdownParser->text($vuln['description']) ?></p>
-    <?php endforeach ?>
+        <p>{{ markdownParser.text(vulnerability.description)|raw }}</p>
+    {% endfor %}
 </div>
 
 </body>

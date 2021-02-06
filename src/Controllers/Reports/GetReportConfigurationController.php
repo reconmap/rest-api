@@ -4,7 +4,6 @@ namespace Reconmap\Controllers\Reports;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Models\ReportConfiguration;
 use Reconmap\Repositories\ReportConfigurationRepository;
 
 class GetReportConfigurationController extends Controller
@@ -14,11 +13,6 @@ class GetReportConfigurationController extends Controller
         $projectId = (int)$args['projectId'];
 
         $repository = new ReportConfigurationRepository($this->db);
-        $config = $repository->findByProjectId($projectId);
-        if (is_null($config)) {
-            $config = new ReportConfiguration();
-        }
-
-        return $config;
+        return $repository->findByProjectId($projectId);
     }
 }

@@ -71,7 +71,7 @@ class CreateReportController extends Controller implements ConfigConsumer
         $pdf->setOption('no-background', false);
 
         // Table of contents and outline
-        if ($config->showToc()) {
+        if ($config->include_toc) {
             $pdf->setOption('toc', true);
             $pdf->setOption('xsl-style-sheet', RECONMAP_APP_DIR . '/resources/templates/reports/toc.xsl');
         }
@@ -86,11 +86,13 @@ class CreateReportController extends Controller implements ConfigConsumer
         $pdf->setOption('margin-bottom', 5);
 
         // Content
-        $pdf->setOption('cover', $html['cover']);
-        if ($config->showHeader()) {
+        if ($config->include_cover !== 'none') {
+            $pdf->setOption('cover', $html['cover']);
+        }
+        if ($config->include_header !== 'none') {
             $pdf->setOption('header-html', $html['header']);
         }
-        if ($config->showFooter()) {
+        if ($config->include_footer !== 'none') {
             $pdf->setOption('footer-html', $html['footer']);
         }
 

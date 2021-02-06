@@ -1,5 +1,4 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Services;
 
@@ -13,7 +12,6 @@ class TemplateEngineTest extends TestCase
         $config->update('appDir', '.');
 
         $engine = new TemplateEngine($config);
-        $this->assertEquals('php', $engine->getFileExtension());
-        $this->assertEquals('./resources/templates', $engine->getDirectory());
+        $this->assertEquals('./resources/templates', $engine->getTemplatesDirectory());
     }
 }
