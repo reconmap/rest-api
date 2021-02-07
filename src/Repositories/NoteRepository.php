@@ -16,10 +16,10 @@ class NoteRepository extends MysqlRepository
         return $notes;
     }
 
-    public function deleteById(int $id): bool
+    public function deleteById(int $noteId): bool
     {
         $stmt = $this->db->prepare('DELETE FROM note WHERE id = ?');
-        $stmt->bind_param('i', $id);
+        $stmt->bind_param('i', $noteId);
         $result = $stmt->execute();
         $success = $result && 1 === $stmt->affected_rows;
         $stmt->close();

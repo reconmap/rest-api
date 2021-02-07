@@ -10,17 +10,24 @@ use Reconmap\Services\TemplateEngine;
 
 abstract class Controller implements ContainerConsumer
 {
-    protected Logger $logger;
-    protected \mysqli $db;
-    protected TemplateEngine $template;
-    protected ?ContainerInterface $container;
+    protected ?Logger $logger = null;
+    protected ?\mysqli $db = null;
+    protected ?TemplateEngine $template = null;
+    protected ?ContainerInterface $container = null;
 
-    public function __construct(Logger $logger, \mysqli $db, TemplateEngine $template)
+    public function setLogger(Logger $logger): void
     {
         $this->logger = $logger;
+    }
+
+    public function setDb(\mysqli $db): void
+    {
         $this->db = $db;
+    }
+
+    public function setTemplate(TemplateEngine $template): void
+    {
         $this->template = $template;
-        $this->container = null;
     }
 
     public function setContainer(ContainerInterface $container): void

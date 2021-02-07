@@ -8,12 +8,18 @@ use Reconmap\Repositories\NoteRepository;
 
 class DeleteNoteController extends Controller
 {
+    private NoteRepository $repository;
+
+    public function __construct(NoteRepository $repository)
+    {
+        $this->repository = $repository;
+    }
+
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
         $noteId = (int)$args['noteId'];
 
-        $repository = new NoteRepository($this->db);
-        $success = $repository->deleteById($noteId);
+        $success = $this->repository->deleteById($noteId);
 
         return ['success' => $success];
     }

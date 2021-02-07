@@ -2,20 +2,16 @@
 
 namespace Reconmap\Controllers\Notes;
 
-use Monolog\Logger;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\NoteRepository;
-use Reconmap\Services\TemplateEngine;
 
 class GetNotesController extends Controller
 {
     private NoteRepository $repository;
 
-    public function __construct(Logger $logger, \mysqli $db, TemplateEngine $template, NoteRepository $repository)
+    public function __construct(NoteRepository $repository)
     {
-        parent::__construct($logger, $db, $template);
-
         $this->repository = $repository;
     }
 
