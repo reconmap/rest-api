@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Controllers\System;
 
@@ -48,6 +46,7 @@ class ImportDataController extends Controller
 
         try {
             $project = new Project;
+            $project->creator_uid = $userId;
             $project->name = (string)$xmlProject->name;
             $project->description = (string)$xmlProject->description;
             $project->isTemplate = (bool)$xmlProject['template'];
@@ -59,6 +58,7 @@ class ImportDataController extends Controller
 
             foreach ($xmlProject->tasks->task as $xmlTask) {
                 $task = new Task();
+                $task->creator_uid = $userId;
                 $task->project_id = $projectId;
                 $task->name = (string)$xmlTask->name;
                 $task->description = (string)$xmlTask->description;
