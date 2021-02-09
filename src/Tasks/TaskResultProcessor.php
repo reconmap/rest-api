@@ -7,6 +7,7 @@ use Reconmap\Processors\ProcessorFactory;
 use Reconmap\Repositories\TaskRepository;
 use Reconmap\Repositories\VulnerabilityRepository;
 use Reconmap\Services\Config;
+use Reconmap\Services\RedisServer;
 
 class TaskResultProcessor implements ItemProcessor
 {
@@ -15,7 +16,7 @@ class TaskResultProcessor implements ItemProcessor
     private \mysqli $db;
     private \Redis $redis;
 
-    public function __construct(Config $config, Logger $logger, \mysqli $db, \Redis $redis)
+    public function __construct(Config $config, Logger $logger, \mysqli $db, RedisServer $redis)
     {
         $this->config = $config;
         $this->logger = $logger;
@@ -34,15 +35,18 @@ class TaskResultProcessor implements ItemProcessor
         $task = $taskRepo->findById($item->taskId);
 
         $processorFactory = new ProcessorFactory;
-        $processor = $processorFactory->createByTaskType($task['command_parser']);
+        $processor = $processorFactory->createByTaskType($task['command_short_name']);
         if ($processor) {
             $vulnerabilities = $processor->parseVulnerabilities($path);
+            $this->logger->debug('Vulnerabilities found', $vulnerabilities);
 
             foreach ($vulnerabilities as $vulnerability) {
                 $vulnerability->project_id = $task['project_id'];
                 $vulnerability->risk = 'medium';
                 $vulnerabilityRepository->insert($item->userId, $vulnerability);
             }
+        } else {
+            $this->logger->warning("Task type has no processor: ${task['command_short_name']}");
         }
 
         $this->redis->lPush("notifications:queue",
