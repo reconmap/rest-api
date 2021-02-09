@@ -1,5 +1,10 @@
 SET @admin_user_id = 1;
 
+UPDATE user
+SET full_name = 'Jane Doe',
+    short_bio = 'CEO and CTO of Amazing Pentest Company Limited'
+WHERE id = @admin_user_id;
+
 INSERT INTO user (id, full_name, username, password, email, role)
 VALUES (2,
         'Writer Uno',

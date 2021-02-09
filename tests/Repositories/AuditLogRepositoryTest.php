@@ -15,7 +15,7 @@ class AuditLogRepositoryTest extends DatabaseTestCase
 
     public function testFindByInvalidUserId()
     {
-        $logs = $this->subject->findByUserId(0);
+        $logs = $this->subject->findByUserId(-1);
         $this->assertEmpty($logs);
     }
 

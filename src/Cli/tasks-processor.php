@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 define('RECONMAP_APP_DIR', dirname(__DIR__, 2));
 
@@ -21,11 +19,10 @@ $config->update('appDir', RECONMAP_APP_DIR);
 
 $container = new ApplicationContainer($config, $logger);
 
-$tasksProcessor = new TaskResultProcessor($config, $logger, $container->get(\mysqli::class), $container->get(\Redis::class));
+$tasksProcessor = $container->get(TaskResultProcessor::class);
 
 /** @var QueueProcessor $queueProcessor */
 $queueProcessor = $container->get(QueueProcessor::class);
 $exitCode = $queueProcessor->run($tasksProcessor, 'tasks:queue');
 
 exit($exitCode);
-

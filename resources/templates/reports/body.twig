@@ -65,7 +65,7 @@
 <h3>{{ project.name }}</h3>
 <p>{{ project.description }}</p>
 
-{% if configuration.include_revisions_table %}
+{% if configuration.include_revisions_table and reports %}
     <h2>Version control</h2>
 
     <table>
@@ -90,24 +90,34 @@
 
 <div style="break-after:page"></div>
 
-{% if configuration.include_team_bios %}
+{% if configuration.include_team_bios and users %}
     <h2><a name="pentesting-team">Pentesting team</a></h2>
 
-    <ul>
+    <table>
+        <tbody>
         {% for user in users %}
-            <li><strong>{{ user.full_name }}</strong> {{ user.short_bio }}</li>
+            <td style="border: 0; width: 60px;"><img style="width: 50px;"
+                                                     src="https://www.gravatar.com/avatar/46d229b033af06a191ff2267bca9ae56?s=200&d=robohash"/>
+            </td>
+            <td style="border: 0;">
+                <h3>{{ user.full_name }}</h3>
+                <p>{{ user.short_bio }}</p>
+            </td>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+
+{% if targets %}
+    <div style="break-after:page"></div>
+    <h2><a name="targets">Targets</a></h2>
+
+    <ul>
+        {% for target in targets %}
+            <li><strong>{{ target.name }}</strong> ({{ target.kind }})</li>
         {% endfor %}
     </ul>
 {% endif %}
-
-<div style="break-after:page"></div>
-<h2><a name="targets">Targets</a></h2>
-
-<ul>
-    {% for target in targets %}
-        <li><strong>{{ target.name }}</strong> ({{ target.kind }})</li>
-    {% endfor %}
-</ul>
 
 <div style="break-after:page"></div>
 
@@ -124,7 +134,7 @@
         <tbody>
         {% for item in findingsOverview %}
             <tr>
-                <td>{{ item.severity }}</td>
+                <td class="risk-{{ item.severity }}">{{ item.severity|capitalize }}</td>
                 <td>{{ item.count }}</td>
             </tr>
         {% endfor %}
@@ -147,12 +157,15 @@
             </tr>
             <tr>
                 <td>Category</td>
-                <td>{{ vulnerability.category_name }}</td>
+                <td>{{ vulnerability.category_name ?? '(undefined)' }}</td>
             </tr>
             <tr>
                 <td>CVSS score</td>
-                <td>
-                    <a href="https://www.first.org/cvss/calculator/3.0#{{ vulnerability.cvss_vector }}">{{ vulnerability.cvss_score }}</a>
+                <td>{% if vulnerability.cvss_vector %}
+                        <a href="https://www.first.org/cvss/calculator/3.0#{{ vulnerability.cvss_vector }}">{{ vulnerability.cvss_score }}</a>
+                    {% else %}
+                        (undefined)
+                    {% endif %}
                 </td>
             </tr>
             </tbody>

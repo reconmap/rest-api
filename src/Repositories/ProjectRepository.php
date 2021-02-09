@@ -88,6 +88,9 @@ SQL;
         $stmt->bind_param('ii', $projectId, $templateId);
         $this->executeInsertStatement($stmt);
 
+        $repository = new ProjectUserRepository($this->db);
+        $result = $repository->create($projectId, $userId);
+
         $this->db->commit();
 
         return [

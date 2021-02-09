@@ -74,7 +74,7 @@ class AuditLogRepository extends MysqlRepository
         $queryBuilder = new SelectQueryBuilder('audit_log al');
         $queryBuilder->setColumns('al.insert_ts, al.user_agent, INET_NTOA(al.client_ip) AS client_ip, al.action, al.object,
                u.id AS user_id, u.username AS user_name, COALESCE(u.role, \'system\') AS user_role');
-        $queryBuilder->addJoin('INNER JOIN user u ON (u.id = al.user_id)');
+        $queryBuilder->addJoin('LEFT JOIN user u ON (u.id = al.user_id)');
         $queryBuilder->setOrderBy('al.insert_ts DESC');
         return $queryBuilder;
     }

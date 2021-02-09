@@ -16,8 +16,8 @@ class NmapResultsProcessor implements VulnerabilityProcessor
             if ((string)$port->state['state'] == 'open') {
                 $portNumber = (int)$port['portid'];
                 $vulnerability = new Vulnerability;
-                $vulnerability->summary = "Open port";
-                $vulnerability->description = "Port '$portNumber' is open";
+                $vulnerability->summary = "Port $portNumber has been left open.";
+                $vulnerability->description = "The port $portNumber is open and could be used by an attacker to get into your system. Unless you need this port open consider shutting the service down or restricting access using a firewall.";
                 $vulnerabilities[] = $vulnerability;
             }
         }
