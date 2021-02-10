@@ -6,16 +6,19 @@
         html, body {
             margin: 0;
             padding: 0;
-            height: 15px;
         }
 
         div {
-            padding: 5px;
+            margin-bottom: 5mm;
+            margin-left: 31.7mm;
+            margin-right: 31.7mm;
+            padding-top: 15mm;
+            padding-bottom: 5mm;
             text-align: center;
-            border-bottom: 2px solid #D44C46;
-            font-size: 10px;
-            background-color: #1B202B;
-            color: white;
+            border-bottom: 2px solid #e56e6a;
+            font-size: 9pt;
+            background-color: white;
+            color: #1b202b;
         }
 
         .column {
@@ -40,9 +43,14 @@
     </style>
 </head>
 <body>
-<div class="row">
-    <span class="column date">{{ date }}</span>
-    <span class="column text">Content is confidential, do not redistribute</span>
-</div>
+    <div class="row">
+        <span class="column date">
+        <img src='https://raw.githubusercontent.com/Reconmap/web-client/master/public/logo.png' width='16' height='16' alt='logo' 
+            style="vertical-align:top; margin-right: 5px; "
+        />
+        {{ date }}
+        </span>
+        <span class="column text">Content is confidential, do not redistribute</span>
+    </div>
 </body>
 </html>
