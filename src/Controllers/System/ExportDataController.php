@@ -2,54 +2,59 @@
 
 namespace Reconmap\Controllers\System;
 
-use DomDocument;
-use DOMElement;
 use GuzzleHttp\Psr7\Response;
 use Laminas\Diactoros\CallbackStream;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditLogAction;
-use Reconmap\Models\Converters\ProjectXmlConverter;
-use Reconmap\Models\Converters\TaskXmlConverter;
-use Reconmap\Models\Converters\VulnerabilityXmlConverter;
+use Reconmap\Repositories\ClientRepository;
+use Reconmap\Repositories\CommandRepository;
+use Reconmap\Repositories\ProjectRepository;
 use Reconmap\Repositories\TaskRepository;
+use Reconmap\Repositories\UserRepository;
 use Reconmap\Repositories\VulnerabilityRepository;
 use Reconmap\Services\AuditLogService;
 
 class ExportDataController extends Controller
 {
+    private AuditLogService $auditLogService;
 
-    public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
+    public function __construct(AuditLogService $auditLogService)
+    {
+        $this->auditLogService = $auditLogService;
+    }
+
+    public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
         $entities = explode(',', $request->getQueryParams()['entities']);
 
         $userId = $request->getAttribute('userId');
         $this->auditAction($userId, $entities);
 
-        $fileName = 'reconmap-data-' . date('Ymd-His') . '.xml';
+        $fileName = 'reconmap-data-' . date('Ymd-His') . '.json';
 
-        $xmlDoc = new DomDocument('1.0', 'UTF-8');
+        $exportables = [
+            'clients' => [],
+            'commands' => [],
+            'projects' => [],
+            'tasks' => [],
+            'users' => [],
+            'vulnerabilities' => []
+        ];
 
-        $body = new CallbackStream(function () use ($xmlDoc, $entities) {
-            $f = fopen('php://output', 'w');
+        $body = new CallbackStream(function () use ($exportables, $entities) {
+            $data = [];
 
-            $rootNode = $xmlDoc->createElement('reconmap');
+            $outputStream = fopen('php://output', 'w');
 
-            if (in_array('vulnerabilities', $entities)) {
-                $rootNode->appendChild($this->addVulnerabilities($xmlDoc));
+            foreach ($exportables as $exportableKey => $exportable) {
+                if (in_array($exportableKey, $entities)) {
+                    $data[$exportableKey] = call_user_func([$this, 'export' . $exportableKey]);
+                }
             }
-            if (in_array('tasks', $entities)) {
-                $rootNode->appendChild($this->addTasks($xmlDoc));
-            }
-            if (in_array('projects', $entities)) {
-                $rootNode->appendChild($this->addProjects($xmlDoc));
-            }
 
-            $xmlDoc->appendChild($rootNode);
-
-            $xmlDoc->formatOutput = true;
-            fwrite($f, $xmlDoc->saveXML());
+            fwrite($outputStream, json_encode($data));
         });
 
         $response = new Response;
@@ -57,52 +62,47 @@ class ExportDataController extends Controller
             ->withBody($body)
             ->withHeader('Access-Control-Expose-Headers', 'Content-Disposition')
             ->withHeader('Content-Disposition', 'attachment; filename="' . $fileName . '";')
-            ->withAddedHeader('Content-Type', 'text/xml; charset=UTF-8');
+            ->withAddedHeader('Content-Type', 'application/json; charset=UTF-8');
     }
 
-    private function addVulnerabilities(DomDocument $xmlDoc): DOMElement
+    private function exportClients(): array
     {
-        $vulnerabilityConverter = new VulnerabilityXmlConverter();
-        $vulnerabilityRepository = new VulnerabilityRepository($this->db);
-        $vulnerabilities = $vulnerabilityRepository->findAll();
-        $vulnerabilitiesNode = $xmlDoc->createElement('vulnerabilities');
-        foreach ($vulnerabilities as $vulnerability) {
-            $vulnerabilityEl = $vulnerabilityConverter->toXml($xmlDoc, $vulnerability);
-            $vulnerabilitiesNode->appendChild($vulnerabilityEl);
-        }
-        return $vulnerabilitiesNode;
+        $clientRepository = new ClientRepository($this->db);
+        return $clientRepository->findAll();
     }
 
-    private function addTasks(DomDocument $xmlDoc): DOMElement
+    private function exportCommands(): array
     {
-        $taskConverter = new TaskXmlConverter();
+        $commandRepository = new CommandRepository($this->db);
+        return $commandRepository->findAll();
+    }
+
+    private function exportProjects(): array
+    {
+        $projectRepository = new ProjectRepository($this->db);
+        return $projectRepository->findAll();
+    }
+
+    private function exportTasks(): array
+    {
         $taskRepository = new TaskRepository($this->db);
-        $tasks = $taskRepository->findAll();
-        $tasksEl = $xmlDoc->createElement('tasks');
-        foreach ($tasks as $task) {
-            $taskEl = $taskConverter->toXml($xmlDoc, $task);
-            $tasksEl->appendChild($taskEl);
-        }
-        return $tasksEl;
+        return $taskRepository->findAll();
     }
 
-    private function addProjects(DomDocument $xmlDoc): DOMElement
+    private function exportUsers(): array
     {
-        $projectConverter = new ProjectXmlConverter();
-        $projectRepository = new TaskRepository($this->db);
-        $projects = $projectRepository->findAll();
-        $projectsEl = $xmlDoc->createElement('projects');
-        foreach ($projects as $project) {
-            $projectEl = $projectConverter->toXml($xmlDoc, $project);
-            $projectsEl->appendChild($projectEl);
-        }
-        return $projectsEl;
+        $userRepository = new UserRepository($this->db);
+        return $userRepository->findAll();
+    }
+
+    private function exportVulnerabilities(): array
+    {
+        $vulnerabilityRepository = new VulnerabilityRepository($this->db);
+        return $vulnerabilityRepository->findAll();
     }
 
     private function auditAction(int $loggedInUserId, array $entities): void
     {
-        $auditLogService = new AuditLogService($this->db);
-        $auditLogService->insert($loggedInUserId, AuditLogAction::DATA_EXPORTED, $entities);
+        $this->auditLogService->insert($loggedInUserId, AuditLogAction::DATA_EXPORTED, $entities);
     }
 }
-
