@@ -8,14 +8,19 @@ use Reconmap\Repositories\AttachmentRepository;
 
 class GetAttachmentsController extends Controller
 {
+    private AttachmentRepository $repository;
 
-    public function __invoke(ServerRequestInterface $request, array $args): array
+    public function __construct(AttachmentRepository $repository)
+    {
+        $this->repository = $repository;
+    }
+
+    public function __invoke(ServerRequestInterface $request): array
     {
         $params = $request->getQueryParams();
         $parentType = $params['parentType'];
         $parentId = (int)$params['parentId'];
 
-        $repository = new AttachmentRepository($this->db);
-        return $repository->findByParentId($parentType, $parentId);
+        return $this->repository->findByParentId($parentType, $parentId);
     }
 }

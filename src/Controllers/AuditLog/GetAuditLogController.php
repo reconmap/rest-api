@@ -10,14 +10,20 @@ use Reconmap\Repositories\AuditLogRepository;
 
 class GetAuditLogController extends Controller
 {
+    private AuditLogRepository $repository;
+
+    public function __construct(AuditLogRepository $repository)
+    {
+        $this->repository = $repository;
+    }
+
     public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
         $params = $request->getQueryParams();
         $page = (int)$params['page'];
 
-        $repository = new AuditLogRepository($this->db);
-        $auditLog = $repository->findAll($page);
-        $count = $repository->countAll();
+        $auditLog = $this->repository->findAll($page);
+        $count = $this->repository->countAll();
 
         $pageCount = max(ceil($count / 20), 1);
 

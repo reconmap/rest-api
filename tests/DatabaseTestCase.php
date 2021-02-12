@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap;
 
@@ -9,12 +7,12 @@ use Reconmap\Services\Config;
 
 abstract class DatabaseTestCase extends TestCase
 {
-	public const DATABASE_SETTINGS = [
-		'host' => 'rmap-mysql',
-		'username' => 'reconmapper',
-		'password' => 'reconmapped',
-		'name' => 'reconmap_test'
-	];
+    public const DATABASE_SETTINGS = [
+        'host' => 'rmap-mysql',
+        'username' => 'reconmapper',
+        'password' => 'reconmapped',
+        'name' => 'reconmap_test'
+    ];
 
     public function getDatabaseConnection(): \mysqli
     {
