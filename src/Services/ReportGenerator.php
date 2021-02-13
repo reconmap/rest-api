@@ -51,12 +51,18 @@ class ReportGenerator
             'reports' => $reports,
             'markdownParser' => $markdownParser,
             'client' => $project['client_id'] ? (new ClientRepository($this->db))->findById($project['client_id']) : null,
-            'users' => (new UserRepository($this->db))->findByProjectId($projectId),
             'targets' => (new TargetRepository($this->db))->findByProjectId($projectId),
             'tasks' => (new TaskRepository($this->db))->findByProjectId($projectId),
             'vulnerabilities' => $vulnerabilities,
             'findingsOverview' => $this->createFindingsOverview($vulnerabilities),
         ];
+
+        $users = (new UserRepository($this->db))->findByProjectId($projectId);
+        foreach ($users as &$user) {
+            $user['email_md5'] = md5($user['email']);
+        }
+        $vars['users'] = $users;
+
 
         $components = [
             'body' => $this->template->render('reports/body', $vars)
