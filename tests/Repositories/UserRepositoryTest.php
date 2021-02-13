@@ -17,19 +17,19 @@ class UserRepositoryTest extends DatabaseTestCase
     public function testFindAllReturnsAllRecords()
     {
         $users = $this->subject->findAll();
-        $this->assertCount(5, $users);
+        $this->assertCount(4, $users);
     }
 
     public function testFindByValidIdReturnsUser()
     {
         $user = $this->subject->findById(4);
-        $this->assertEquals('writer3', $user['username']);
+        $this->assertEquals('cust', $user['username']);
     }
 
     public function testFindByUsernameReturnsUser()
     {
         $user = $this->subject->findByUsername('admin');
-        $this->assertEquals('creator', $user['role']);
+        $this->assertEquals('administrator', $user['role']);
     }
 
     public function testFindByInvalidIdReturnsNull()

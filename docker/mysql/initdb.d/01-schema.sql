@@ -9,7 +9,7 @@ CREATE TABLE user
     full_name VARCHAR(200)  NOT NULL,
     short_bio VARCHAR(1000) NULL,
     email     VARCHAR(200)  NOT NULL,
-    role      ENUM ('creator', 'writer', 'reader'),
+    role      ENUM ('administrator', 'superuser', 'user', 'client'),
     username  VARCHAR(80)   NOT NULL,
     password  VARCHAR(255)  NOT NULL COMMENT 'Hashed password',
     PRIMARY KEY (id),
