@@ -15,33 +15,36 @@
             margin-left: 31.7mm;
             margin-right: 31.7mm;
             font-size: 9pt;
-
+            text-align: center;
         }
 
         * {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
         }
+
+        dl, dt, dd {
+            margin-left: 0;
+            padding-left: 0;
+        }
     </style>
 </head>
 
 <body>
-<div style="text-align: center;">
-    <h2>Security report</h2>
+<h2>Security report</h2>
 
-    <img
-            src="https://camo.githubusercontent.com/ec1ac125f3b29483c6610c7aa548af7acf17f141029db31a7cbc2d32eb2e9d50/68747470733a2f2f7061737465616c6c2e6f72672f6d656469612f342f372f34373830633330373233663930636664353665633064303536353535623765362e706e67"/>
-    <dl>
-        <dt>Version</dt>
-        <dd>{{ version }}</dd>
+<img
+        src="https://camo.githubusercontent.com/ec1ac125f3b29483c6610c7aa548af7acf17f141029db31a7cbc2d32eb2e9d50/68747470733a2f2f7061737465616c6c2e6f72672f6d656469612f342f372f34373830633330373233663930636664353665633064303536353535623765362e706e67"/>
 
-        <dt>Date</dt>
-        <dd>{{ date }}</dd>
-    </dl>
-    <p><em>Prepared for <a href="{{ client.url }}">{{ client.name }}</a>.</em></p>
-    <p><em>Prepared by <a href="{{ org.url }}">{{ org.name }}</a>.</em></p>
+<dl>
+    <dt>Date</dt>
+    <dd>{{ date }}</dd>
 
-    <h3>CONTENT IS CONFIDENTIAL</h3>
+    <dt>Version</dt>
+    <dd>{{ version }}</dd>
+</dl>
+<p><em>Prepared for <a href="{{ client.url }}">{{ client.name }}</a>.</em></p>
+<p><em>Prepared by <a href="{{ org.url }}">{{ org.name }}</a>.</em></p>
 
-</div>
+<h3>CONTENT IS CONFIDENTIAL</h3>
 </body>
 </html>

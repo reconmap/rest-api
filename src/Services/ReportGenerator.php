@@ -46,7 +46,7 @@ class ReportGenerator
             'configuration' => $configuration,
             'project' => $project,
             'org' => $organisation,
-            'version' => $latestVersion['name'],
+            'version' => $latestVersion['version_name'],
             'date' => date('Y-m-d'),
             'reports' => $reports,
             'markdownParser' => $markdownParser,

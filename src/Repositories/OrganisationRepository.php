@@ -8,7 +8,7 @@ class OrganisationRepository extends MysqlRepository
 {
     private static int $rootOrganisationId = 1;
 
-    public function findRootOrganisation(): Organisation
+    public function findRootOrganisation(): ?Organisation
     {
         $stmt = $this->db->prepare('SELECT * FROM organisation WHERE id = ?');
         $stmt->bind_param('i', self::$rootOrganisationId);
