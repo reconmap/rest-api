@@ -79,7 +79,7 @@ components:
       required:
         - short_name
         - docker_image
-        - container_args
+        - arguments
       properties:
         id:
           type: integer
@@ -87,7 +87,7 @@ components:
           type: string
         docker_image:
           type: string
-        container_args:
+        arguments:
           type: string
 
     User:

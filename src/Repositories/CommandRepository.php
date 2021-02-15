@@ -11,7 +11,9 @@ class CommandRepository extends MysqlRepository
         'short_name' => 's',
         'description' => 's',
         'docker_image' => 's',
-        'container_args' => 's',
+        'executable_type' => 's',
+        'executable_path' => 's',
+        'arguments' => 's',
         'configuration' => 's'
     ];
 
@@ -65,8 +67,8 @@ SQL;
 
     public function insert(object $command): int
     {
-        $stmt = $this->db->prepare('INSERT INTO command (creator_uid, short_name, description, docker_image, container_args) VALUES (?, ?, ?, ?, ?)');
-        $stmt->bind_param('issss', $command->creator_uid, $command->short_name, $command->description, $command->docker_image, $command->container_args);
+        $stmt = $this->db->prepare('INSERT INTO command (creator_uid, short_name, description, docker_image, arguments, executable_type, executable_path) VALUES (?, ?, ?, ?, ?, ?, ?)');
+        $stmt->bind_param('issssss', $command->creator_uid, $command->short_name, $command->description, $command->docker_image, $command->arguments, $command->executable_type, $command->executable_path);
         return $this->executeInsertStatement($stmt);
     }
 

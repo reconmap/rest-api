@@ -166,15 +166,17 @@ DROP TABLE IF EXISTS command;
 
 CREATE TABLE command
 (
-    id             INT UNSIGNED  NOT NULL AUTO_INCREMENT,
-    creator_uid    INT UNSIGNED  NOT NULL REFERENCES user,
-    insert_ts      TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    update_ts      TIMESTAMP     NULL ON UPDATE CURRENT_TIMESTAMP,
-    short_name     VARCHAR(200)  NOT NULL,
-    description    VARCHAR(2000) NULL,
-    docker_image   VARCHAR(300)  NULL,
-    container_args VARCHAR(240)  NULL,
-    configuration  JSON          NULL,
+    id              INT UNSIGNED           NOT NULL AUTO_INCREMENT,
+    creator_uid     INT UNSIGNED           NOT NULL REFERENCES user,
+    insert_ts       TIMESTAMP              NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_ts       TIMESTAMP              NULL ON UPDATE CURRENT_TIMESTAMP,
+    short_name      VARCHAR(200)           NOT NULL,
+    description     VARCHAR(2000)          NULL,
+    executable_type ENUM ('custom','rmap') NOT NULL DEFAULT 'custom',
+    executable_path VARCHAR(255)           NULL,
+    docker_image    VARCHAR(300)           NULL,
+    arguments       VARCHAR(240)           NULL,
+    configuration   JSON                   NULL,
     PRIMARY KEY (id)
 ) ENGINE = InnoDB;
 

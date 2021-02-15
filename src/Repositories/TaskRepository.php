@@ -55,7 +55,7 @@ class TaskRepository extends MysqlRepository
             t.id, t.project_id, p.name AS project_name, t.insert_ts, t.update_ts, t.name, t.description, t.status,
             t.creator_uid, creator.full_name AS creator_full_name,
             t.assignee_uid, assignee.full_name AS assignee_full_name,
-            t.command_id, c.short_name AS command_short_name, c.docker_image AS command_docker_image, c.container_args AS command_container_args
+            t.command_id, c.short_name AS command_short_name, c.docker_image AS command_docker_image, c.arguments AS command_container_args
         ');
         $queryBuilder->addJoin('INNER JOIN user creator ON (creator.id = t.creator_uid)');
         $queryBuilder->addJoin('LEFT JOIN user assignee ON (assignee.id = t.assignee_uid)');
