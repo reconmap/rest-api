@@ -17,9 +17,15 @@ class TaskRepository extends MysqlRepository
         'status' => 's'
     ];
 
-    public function findAll(): array
+    public function findAll(bool $excludeTemplateTasks = true, ?string $limit = '20'): array
     {
         $selectQueryBuilder = $this->getBaseSelectQueryBuilder();
+        if ($excludeTemplateTasks) {
+            $selectQueryBuilder->setWhere('p.is_template IS FALSE');
+        }
+        if (!is_null($limit)) {
+            $selectQueryBuilder->setLimit($limit);
+        }
         $sql = $selectQueryBuilder->toSql();
 
         $rs = $this->db->query($sql);
@@ -29,6 +35,7 @@ class TaskRepository extends MysqlRepository
     public function findByKeywords(string $keywords): array
     {
         $queryBuilder = $this->getBaseSelectQueryBuilder();
+        $queryBuilder->setLimit('20');
         $queryBuilder->setWhere('t.name LIKE ? OR t.description LIKE ?');
         $sql = $queryBuilder->toSql();
 
@@ -54,9 +61,7 @@ class TaskRepository extends MysqlRepository
         $queryBuilder->addJoin('LEFT JOIN user assignee ON (assignee.id = t.assignee_uid)');
         $queryBuilder->addJoin('LEFT JOIN project p ON (p.id = t.project_id)');
         $queryBuilder->addJoin('LEFT JOIN command c ON (c.id = t.command_id)');
-        $queryBuilder->setWhere('p.is_template IS FALSE');
         $queryBuilder->setOrderBy('t.insert_ts DESC');
-        $queryBuilder->setLimit('20');
         return $queryBuilder;
     }
 
@@ -80,6 +85,7 @@ class TaskRepository extends MysqlRepository
     {
         $selectQueryBuilder = $this->getBaseSelectQueryBuilder();
         $selectQueryBuilder->setWhere('project_id = ?');
+        $selectQueryBuilder->setLimit('20');
         $sql = $selectQueryBuilder->toSql();
 
         $stmt = $this->db->prepare($sql);

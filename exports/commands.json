@@ -1,0 +1,103 @@
+{
+  "commands": [
+    {
+      "id": 21,
+      "creator_uid": 1,
+      "insert_ts": "2021-02-14 23:07:18",
+      "update_ts": null,
+      "short_name": "goohost",
+      "description": "Extracts hosts\/subdomains, IP or emails for a specific domain with Google search.",
+      "docker_image": "reconmap\/pentest-container-tools-goohost",
+      "container_args": "-t {{{Domain|||nmap.org}}}",
+      "configuration": null
+    },
+    {
+      "id": 22,
+      "creator_uid": 1,
+      "insert_ts": "2021-02-14 23:07:18",
+      "update_ts": null,
+      "short_name": "nmap",
+      "description": "Scans all reserved TCP ports on the machine",
+      "docker_image": "instrumentisto\/nmap",
+      "container_args": "-v {{{Host|||scanme.nmap.org}}} -oX nmap-output.xml",
+      "configuration": null
+    },
+    {
+      "id": 23,
+      "creator_uid": 1,
+      "insert_ts": "2021-02-14 23:07:18",
+      "update_ts": null,
+      "short_name": "whois",
+      "description": "Retrieves information about domain",
+      "docker_image": "zeitgeist\/docker-whois",
+      "container_args": "{{{Domain|||nmap.org}}}",
+      "configuration": null
+    },
+    {
+      "id": 24,
+      "creator_uid": 1,
+      "insert_ts": "2021-02-14 23:07:18",
+      "update_ts": "2021-02-15 10:00:59",
+      "short_name": "sqlmap",
+      "description": " Automatic SQL injection and database takeover tool.",
+      "docker_image": "googlesky\/sqlmap",
+      "container_args": "-u {{{Host|||localhost}}} --method POST --data \"{{{Data|||username=foo&password=bar}}}\" -p username --level 5 --dbms=mysql -v 1 --tables",
+      "configuration": null
+    },
+    {
+      "id": 25,
+      "creator_uid": 1,
+      "insert_ts": "2021-02-14 23:07:18",
+      "update_ts": "2021-02-15 09:59:47",
+      "short_name": "wpscan",
+      "description": " WPScan WordPress security scanner. Written for security professionals and blog maintainers to test the security of their WordPress websites. ",
+      "docker_image": "wpscanteam\/wpscan",
+      "container_args": "--url {{{Wordpress URL|||wordpress_url}}}",
+      "configuration": null
+    },
+    {
+      "id": 26,
+      "creator_uid": 1,
+      "insert_ts": "2021-02-15 10:02:39",
+      "update_ts": null,
+      "short_name": "dirbuster",
+      "description": "Brute force directories and files names on web\/application servers.",
+      "docker_image": "hypnza\/dirbuster",
+      "container_args": "-u {{{URL|||url}}}",
+      "configuration": null
+    },
+    {
+      "id": 27,
+      "creator_uid": 1,
+      "insert_ts": "2021-02-15 10:08:00",
+      "update_ts": null,
+      "short_name": "johntheripper",
+      "description": "Password cracking tool",
+      "docker_image": "obscuritylabs\/johntheripper",
+      "container_args": "-v ${PWD}:\/root obscuritylabs\/johntheripper --format=NT \/root\/hash",
+      "configuration": null
+    },
+    {
+      "id": 28,
+      "creator_uid": 1,
+      "insert_ts": "2021-02-15 10:09:37",
+      "update_ts": null,
+      "short_name": "metasploit-framework",
+      "description": "Provides information about security vulnerabilities and aids in penetration testing and IDS signature development",
+      "docker_image": "metasploitframework\/metasploit-framework",
+      "container_args": "-p 443:443 -v ${PWD}:\/root\/.msf4  metasploitframework\/metasploit-framework",
+      "configuration": null
+    },
+    {
+      "id": 29,
+      "creator_uid": 1,
+      "insert_ts": "2021-02-15 10:10:22",
+      "update_ts": null,
+      "short_name": "bcsecurity\/empire",
+      "description": "Empire is a PowerShell and Python 3.x post-exploitation framework. ",
+      "docker_image": "bcsecurity\/empire",
+      "container_args": "-p 443:443 -v ${PWD}:\/root\/empire bcsecurity\/empire",
+      "configuration": null
+    }
+  ]
+}

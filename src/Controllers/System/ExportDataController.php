@@ -86,7 +86,7 @@ class ExportDataController extends Controller
     private function exportTasks(): array
     {
         $taskRepository = new TaskRepository($this->db);
-        return $taskRepository->findAll();
+        return $taskRepository->findAll(false, null);
     }
 
     private function exportUsers(): array

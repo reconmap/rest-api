@@ -515,10 +515,13 @@ INSERT INTO command (creator_uid, short_name, description, docker_image, contain
 VALUES (1, 'goohost',
         'Extracts hosts/subdomains, IP or emails for a specific domain with Google search.',
         'reconmap/pentest-container-tools-goohost',
-        '-t {{{Domain|||nmap.org}}}'),
+        '-t {{{Domain|||nmap.org}}}')
+        ,
        (2, 'nmap', 'Scans all reserved TCP ports on the machine', 'instrumentisto/nmap',
-        '-v {{{Host|||scanme.nmap.org}}} -oX nmap-output.xml'),
-       (3, 'whois', 'Retrieves information about domain', 'zeitgeist/docker-whois', '{{{Domain|||nmap.org}}}'),
+        '-v {{{Host|||scanme.nmap.org}}} -oX nmap-output.xml')
+        ,
+       (3, 'whois', 'Retrieves information about domain', 'zeitgeist/docker-whois', '{{{Domain|||nmap.org}}}')
+        ,
        (4, 'sqlmap', 'Runs SQL map scan', 'paoloo/sqlmap',
         '-u {{{Host|||localhost}}} --method POST --data "{{{Data|||username=foo&password=bar}}}" -p username --level 5 --dbms=mysql -v 1 --tables');
 
