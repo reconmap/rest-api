@@ -68,6 +68,7 @@ push:
 	docker tag $(DOCKER_IMAGE_NAME):latest $(DOCKER_IMAGE_NAME):$(GIT_BRANCH_NAME)
 	docker push $(DOCKER_IMAGE_NAME):$(GIT_BRANCH_NAME)
 	docker push $(DOCKER_IMAGE_NAME):latest
+	docker-compose push mysql
 
 # Database targets
 
