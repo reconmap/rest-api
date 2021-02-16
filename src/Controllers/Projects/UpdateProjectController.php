@@ -4,6 +4,7 @@ namespace Reconmap\Controllers\Projects;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
+use Reconmap\Database\NullColumnReplacer;
 use Reconmap\Models\AuditLogAction;
 use Reconmap\Repositories\ProjectRepository;
 use Reconmap\Services\ActivityPublisherService;
@@ -23,8 +24,9 @@ class UpdateProjectController extends Controller
 
         $success = false;
         if (!empty($newColumnValues)) {
+            NullColumnReplacer::replaceEmptyWithNulls(['engagement_start_date', 'engagement_end_date'], $newColumnValues);
+
             $repository = new ProjectRepository($this->db);
-            $this->replaceEmptyWithNulls(['engagement_start_date', 'engagement_end_date'], $newColumnValues);
             $success = $repository->updateById($projectId, $newColumnValues);
 
             $loggedInUserId = $request->getAttribute('userId');
@@ -38,14 +40,5 @@ class UpdateProjectController extends Controller
     {
         $activityPublisherService = $this->container->get(ActivityPublisherService::class);
         $activityPublisherService->publish($loggedInUserId, AuditLogAction::PROJECT_MODIFIED, ['projectId' => $projectId]);
-    }
-
-    private function replaceEmptyWithNulls(array $columns, array &$columnValues): void
-    {
-        foreach ($columns as $column) {
-            if (array_key_exists($column, $columnValues) && $columnValues[$column] === '') {
-                $columnValues[$column] = null;
-            }
-        }
     }
 }

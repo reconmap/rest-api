@@ -10,9 +10,10 @@ class Task
     public ?int $assignee_uid;
     public ?string $insert_ts;
     public ?string $update_ts;
-    public string $name;
+    public string $summary;
     public ?string $description;
     public string $status;
+    public ?string $due_date;
     public ?string $command;
     public ?string $command_parser;
 }

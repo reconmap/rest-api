@@ -10,11 +10,12 @@ class TaskRepository extends MysqlRepository
 {
     public const UPDATABLE_COLUMNS_TYPES = [
         'project_id' => 'i',
-        'name' => 's',
+        'summary' => 's',
         'description' => 's',
         'command_id' => 'i',
         'assignee_uid' => 'i',
-        'status' => 's'
+        'status' => 's',
+        'due_date' => 's'
     ];
 
     public function findAll(bool $excludeTemplateTasks = true, ?string $limit = '20'): array
@@ -52,7 +53,7 @@ class TaskRepository extends MysqlRepository
     {
         $queryBuilder = new SelectQueryBuilder('task t');
         $queryBuilder->setColumns('
-            t.id, t.project_id, p.name AS project_name, t.insert_ts, t.update_ts, t.name, t.description, t.status,
+            t.id, t.project_id, p.name AS project_name, t.insert_ts, t.update_ts, t.summary, t.description, t.status, t.due_date,
             t.creator_uid, creator.full_name AS creator_full_name,
             t.assignee_uid, assignee.full_name AS assignee_full_name,
             t.command_id, c.short_name AS command_short_name, c.docker_image AS command_docker_image, c.arguments AS command_container_args
@@ -127,8 +128,8 @@ class TaskRepository extends MysqlRepository
     public function insert(object $task): int
     {
         /** @var Task $task */
-        $stmt = $this->db->prepare('INSERT INTO task (creator_uid, project_id, name, description) VALUES (?, ?, ?, ?)');
-        $stmt->bind_param('iiss', $task->creator_uid, $task->project_id, $task->name, $task->description);
+        $stmt = $this->db->prepare('INSERT INTO task (creator_uid, project_id, summary, description, due_date) VALUES (?, ?, ?, ?, ?)');
+        $stmt->bind_param('iisss', $task->creator_uid, $task->project_id, $task->summary, $task->description, $task->due_date);
         return $this->executeInsertStatement($stmt);
     }
 }

@@ -526,7 +526,7 @@ VALUES (1, 'goohost',
         '-u {{{Host|||localhost}}} --method POST --data "{{{Data|||username=foo&password=bar}}}" -p username --level 5 --dbms=mysql -v 1 --tables',
         'rmap');
 
-INSERT INTO task (creator_uid, project_id, name, description, command_id)
+INSERT INTO task (creator_uid, project_id, summary, description, command_id)
 VALUES (@admin_user_id, 1,
         'Run port scanner',
         'Use nmap to detect all open ports',

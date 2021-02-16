@@ -85,7 +85,7 @@ class ImportDataController extends Controller
                     $task = new Task();
                     $task->creator_uid = $userId;
                     $task->project_id = $projectId;
-                    $task->name = $jsonTask->name;
+                    $task->summary = $jsonTask->summary;
                     $task->description = $jsonTask->description;
                     $taskRepository->insert($task);
                 }

@@ -4,6 +4,7 @@ namespace Reconmap\Controllers\Tasks;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
+use Reconmap\Database\NullColumnReplacer;
 use Reconmap\Models\AuditLogAction;
 use Reconmap\Repositories\TaskRepository;
 use Reconmap\Services\ActivityPublisherService;
@@ -23,6 +24,8 @@ class UpdateTaskController extends Controller
 
         $success = false;
         if (!empty($newColumnValues)) {
+            NullColumnReplacer::replaceEmptyWithNulls(['due_date'], $newColumnValues);
+
             $repository = new TaskRepository($this->db);
             $success = $repository->updateById($taskId, $newColumnValues);
 
