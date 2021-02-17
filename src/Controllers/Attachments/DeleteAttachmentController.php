@@ -34,6 +34,6 @@ class DeleteAttachmentController extends Controller
     private function auditAction(int $loggedInUserId, int $attachmentId): void
     {
         $activityPublisherService = $this->container->get(ActivityPublisherService::class);
-        $activityPublisherService->publish($loggedInUserId, AuditLogAction::COMMAND_OUTPUT_DELETED, ['type' => 'attachment', 'id' => $attachmentId]);
+        $activityPublisherService->publish($loggedInUserId, AuditLogAction::ATTACHMENT_DELETED, ['id' => $attachmentId]);
     }
 }

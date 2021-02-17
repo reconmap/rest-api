@@ -4,8 +4,8 @@ namespace Reconmap\Controllers\Commands;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Models\CommandOutput;
-use Reconmap\Repositories\CommandOutputRepository;
+use Reconmap\Models\Attachment;
+use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Services\RedisServer;
 
 class UploadCommandOutputController extends Controller
@@ -16,7 +16,8 @@ class UploadCommandOutputController extends Controller
         $params = $request->getParsedBody();
         $taskId = (int)$params['taskId'];
 
-        $pathName = RECONMAP_APP_DIR . '/data/task-results/' . uniqid(gethostname());
+        $fileName = uniqid(gethostname());
+        $pathName = RECONMAP_APP_DIR . '/data/attachments/' . $fileName;
 
         $files = $request->getUploadedFiles();
 
@@ -27,16 +28,18 @@ class UploadCommandOutputController extends Controller
 
         $userId = $request->getAttribute('userId');
 
-        $commandOutput = new CommandOutput();
-        $commandOutput->command_id = 2;
-        $commandOutput->submitted_by_uid = $userId;
-        $commandOutput->file_name = $resultFile->getClientFilename();
-        $commandOutput->file_content = file_get_contents($pathName);
-        $commandOutput->file_size = filesize($pathName);
-        $commandOutput->file_mimetype = mime_content_type($pathName);
+        $attachment = new Attachment();
+        $attachment->parent_type = 'command';
+        $attachment->parent_id = $taskId;
+        $attachment->submitter_uid = $userId;
+        $attachment->file_name = $fileName;
+        $attachment->client_file_name = $resultFile->getClientFilename();
+        $attachment->file_hash = hash_file('md5', $pathName);
+        $attachment->file_size = filesize($pathName);
+        $attachment->file_mimetype = mime_content_type($pathName);
 
-        $repository = new CommandOutputRepository($this->db);
-        $repository->insert($commandOutput);
+        $repository = new AttachmentRepository($this->db);
+        $repository->insert($attachment);
 
         /** @var RedisServer $redis */
         $redis = $this->container->get(RedisServer::class);

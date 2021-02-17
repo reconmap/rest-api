@@ -547,22 +547,6 @@ VALUES (@admin_user_id, 1,
         'Check domain expiration date',
         'Use whois or other tools to check when the domain expiration is.', 3);
 
-INSERT INTO command_output (command_id,
-                            submitted_by_uid,
-                            file_name,
-                            file_content,
-                            file_size)
-VALUES (1,
-        1,
-        'nmap-output.xml',
-        'tcp/22: open, tcp/80: open',
-        5421),
-       (1,
-        2,
-        'domain-scan.txt',
-        'Domain expires in 22 days',
-        204);
-
 INSERT INTO note (user_id,
                   parent_type,
                   parent_id,

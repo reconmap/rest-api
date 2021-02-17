@@ -22,7 +22,6 @@ class AuditLogAction implements
 
     public const ORGANISATION_UPDATED = 'Updated organisation';
 
-    public const COMMAND_OUTPUT_DELETED = 'Deleted command output';
-
+    public const ATTACHMENT_DELETED = 'Deleted attachment';
     public const ATTACHMENT_DOWNLOADED = 'Downloaded attachment';
 }

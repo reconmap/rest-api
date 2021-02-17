@@ -181,21 +181,6 @@ CREATE TABLE command
     PRIMARY KEY (id)
 ) ENGINE = InnoDB;
 
-DROP TABLE IF EXISTS command_output;
-
-CREATE TABLE command_output
-(
-    id               INT UNSIGNED   NOT NULL AUTO_INCREMENT,
-    command_id       INT UNSIGNED   NOT NULL REFERENCES command,
-    submitted_by_uid INT UNSIGNED   NOT NULL REFERENCES user,
-    insert_ts        TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    file_name        VARCHAR(200)   NOT NULL,
-    file_size        INT UNSIGNED   NOT NULL,
-    file_mimetype    VARCHAR(200)   NULL,
-    file_content     VARCHAR(10000) NOT NULL,
-    PRIMARY KEY (id)
-) ENGINE = InnoDB;
-
 DROP TABLE IF EXISTS report;
 
 CREATE TABLE report
