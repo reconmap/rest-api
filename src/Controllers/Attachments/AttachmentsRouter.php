@@ -9,6 +9,7 @@ class AttachmentsRouter
     public function mapRoutes(RouteCollectionInterface $router): void
     {
         $router->map('GET', '/attachments', GetAttachmentsController::class);
+        $router->map('GET', '/attachments/{attachmentId:number}', DownloadAttachmentController::class);
         $router->map('POST', '/attachments', UploadAttachmentController::class);
         $router->map('DELETE', '/attachments/{attachmentId:number}', DeleteAttachmentController::class);
     }

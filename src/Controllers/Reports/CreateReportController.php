@@ -1,17 +1,15 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Controllers\Reports;
 
-use Dompdf\Dompdf;
-use HeadlessChromium\BrowserFactory;
-use HeadlessChromium\Page;
 use Knp\Snappy\Pdf;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
+use Reconmap\Models\Attachment;
 use Reconmap\Models\Report;
 use Reconmap\Models\ReportConfiguration;
+use Reconmap\Repositories\AttachmentRepository;
+use Reconmap\Repositories\ProjectRepository;
 use Reconmap\Repositories\ReportConfigurationRepository;
 use Reconmap\Repositories\ReportRepository;
 use Reconmap\Services\Config;
@@ -33,37 +31,61 @@ class CreateReportController extends Controller implements ConfigConsumer
         $projectId = (int)$params['projectId'];
         $userId = $request->getAttribute('userId');
 
+        $versionName = $params['name'];
+
         $report = new Report();
         $report->generatedByUid = $userId;
         $report->projectId = $projectId;
-        $report->versionName = $params['name'];
+        $report->versionName = $versionName;
         $report->versionDescription = $params['description'];
+
+        $projectRepository = new ProjectRepository($this->db);
+        $project = $projectRepository->findById($projectId);
 
         $reportRepository = new ReportRepository($this->db);
         $reportId = $reportRepository->insert($report);
 
         $reportGenerator = new ReportGenerator($this->config, $this->db, $this->template);
-        $html = $reportGenerator->generate($projectId, $reportId);
+        $reportSections = $reportGenerator->generate($projectId, $reportId);
 
         $reportConfiguration = new ReportConfigurationRepository($this->db);
         $config = $reportConfiguration->findByProjectId($projectId);
 
-        $basePath = $this->config->getSetting('appDir') . '/data/reports/';
-        $baseFileName = sprintf('report-%d-%d', $projectId, $reportId);
-        $filePath = $basePath . $baseFileName;
+        $basePath = $this->config->getSetting('appDir') . '/data/attachments/';
 
-        $this->saveHtmlToDisk($html, $filePath);
-        $this->savePdfToDisk($html, $filePath, $config);
+        $attachment = new Attachment();
+        $attachment->parent_type = 'report';
+        $attachment->parent_id = $reportId;
+        $attachment->submitter_uid = $userId;
 
-        return [true];
+        $attachmentIds = [];
+
+        $repository = new AttachmentRepository($this->db);
+        $attachmentIds[] = $repository->insert($this->generateHtmlReportAndAttachment($project, $attachment, $reportSections, $basePath, $versionName));
+        $attachmentIds[] = $repository->insert($this->generatePdfReportAndAttachment($project, $attachment, $reportSections, $basePath, $config, $versionName));
+
+        return $attachmentIds;
     }
 
-    private function saveHtmlToDisk(array $html, string $filePath)
+    private function generateHtmlReportAndAttachment(array $project, Attachment $attachment, array $reportSections, string $basePath, string $versionName): Attachment
     {
-        file_put_contents($filePath . '.html', $html['body']);
+        $projectName = str_replace(' ', '_', strtolower($project['name']));
+        $clientFileName = "reconmap-{$projectName}-v{$versionName}.html";
+
+        $fileName = uniqid(gethostname());
+        $filePath = $basePath . $fileName;
+        file_put_contents($filePath, $reportSections['body']);
+
+        $attachment->file_name = $fileName;
+        $attachment->file_mimetype = 'text/html';
+        $attachment->file_hash = hash_file('md5', $filePath);
+        $attachment->file_size = filesize($filePath);
+        $attachment->client_file_name = $clientFileName;
+
+        return $attachment;
     }
 
-    private function savePdfToDisk(array $html, string $filePath, ReportConfiguration $config)
+    private function generatePdfReportAndAttachment(array $project, Attachment $attachment, array $reportSections, string $basePath, ReportConfiguration $config, string $versionName): Attachment
     {
         $pdf = new Pdf('/usr/local/bin/wkhtmltopdf');
         $pdf->setLogger($this->logger);
@@ -87,15 +109,29 @@ class CreateReportController extends Controller implements ConfigConsumer
 
         // Content
         if ($config->include_cover !== 'none') {
-            $pdf->setOption('cover', $html['cover']);
+            $pdf->setOption('cover', $reportSections['cover']);
         }
         if ($config->include_header !== 'none') {
-            $pdf->setOption('header-html', $html['header']);
+            $pdf->setOption('header-html', $reportSections['header']);
         }
         if ($config->include_footer !== 'none') {
-            $pdf->setOption('footer-html', $html['footer']);
+            $pdf->setOption('footer-html', $reportSections['footer']);
         }
 
-        $pdf->generateFromHtml($html['body'], $filePath . '.pdf');
+        $fileName = uniqid(gethostname());
+        $filePath = $basePath . $fileName;
+
+        $pdf->generateFromHtml($reportSections['body'], $filePath);
+
+        $projectName = str_replace(' ', '_', strtolower($project['name']));
+        $clientFileName = "reconmap-{$projectName}-v{$versionName}.pdf";
+
+        $attachment->file_name = $fileName;
+        $attachment->file_mimetype = 'application/pdf';
+        $attachment->file_hash = hash_file('md5', $filePath);
+        $attachment->file_size = filesize($filePath);
+        $attachment->client_file_name = $clientFileName;
+
+        return $attachment;
     }
 }

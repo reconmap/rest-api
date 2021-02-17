@@ -11,7 +11,6 @@ class ReportsRouter
     {
         $router->map('GET', '/reports', GetReportsController::class);
         $router->map('GET', '/reports/preview', GetReportPreviewController::class);
-        $router->map('GET', '/reports/{id:number}', GetReportController::class);
         $router->map('GET', '/reports/{projectId:number}/configuration', GetReportConfigurationController::class);
         $router->map('PUT', '/reports/{projectId:number}/configuration', ReplaceReportConfigurationController::class);
         $router->map('POST', '/reports/{reportId:number}/send', SendReportController::class);

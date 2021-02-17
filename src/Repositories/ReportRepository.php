@@ -52,7 +52,20 @@ class ReportRepository extends MysqlRepository
 
     public function findByProjectId(int $projectId): array
     {
-        $stmt = $this->db->prepare('SELECT * FROM report WHERE project_id = ? ORDER BY insert_ts DESC');
+        $sql = <<<SQL
+SELECT
+       r.*,
+       (SELECT id FROM attachment WHERE parent_type = 'report' AND parent_id = r.id AND file_mimetype = 'text/html') AS html_attachment_id,
+       (SELECT id FROM attachment WHERE parent_type = 'report' AND parent_id = r.id AND file_mimetype = 'application/pdf') AS pdf_attachment_id
+
+FROM
+     report r
+WHERE
+      r.project_id = ?
+ORDER BY r.insert_ts DESC
+SQL;
+
+        $stmt = $this->db->prepare($sql);
         $stmt->bind_param('i', $projectId);
         $stmt->execute();
         $rs = $stmt->get_result();
