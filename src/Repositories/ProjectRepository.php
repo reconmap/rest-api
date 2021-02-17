@@ -82,7 +82,7 @@ SQL;
         $projectId = $this->executeInsertStatement($stmt);
 
         $tasksSql = <<<SQL
-        INSERT INTO task (project_id, creator_uid, command_id, name, description) SELECT ?, creator_uid, command_id, name, description FROM task WHERE project_id = ?
+        INSERT INTO task (project_id, creator_uid, command_id, summary, description) SELECT ?, creator_uid, command_id, summary, description FROM task WHERE project_id = ?
         SQL;
         $stmt = $this->db->prepare($tasksSql);
         $stmt->bind_param('ii', $projectId, $templateId);
