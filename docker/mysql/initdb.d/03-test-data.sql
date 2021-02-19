@@ -25,42 +25,12 @@ VALUES (2,
         'cust@localhost',
         'client');
 
-TRUNCATE TABLE audit_log;
-
 INSERT INTO audit_log (user_id, client_ip, action)
 VALUES (1, INET_ATON('127.0.0.1'), 'Logged in'),
        (1, INET_ATON('127.0.0.1'), 'Logged in'),
        (1, INET_ATON('127.0.0.1'), 'Logged in'),
        (1, INET_ATON('127.0.0.1'), 'Logged in'),
-       (1, INET_ATON('127.0.0.1'), 'Logged in'),
-       (1, INET_ATON('127.0.0.1'), 'Logged in'),
-       (1, INET_ATON('127.0.0.1'), 'Logged in'),
-       (1, INET_ATON('127.0.0.1'), 'Logged in'),
-       (1, INET_ATON('127.0.0.1'), 'Logged in'),
-       (1, INET_ATON('127.0.0.1'), 'Logged in'),
-       (1, INET_ATON('127.0.0.1'), 'Logged in'),
-       (1, INET_ATON('127.0.0.1'), 'Logged in'),
-       (1, INET_ATON('127.0.0.1'), 'Logged in'),
-       (1, INET_ATON('127.0.0.1'), 'Logged in'),
-       (1, INET_ATON('127.0.0.1'), 'Logged in'),
-       (1, INET_ATON('127.0.0.1'), 'Logged in'),
-       (1, INET_ATON('127.0.0.1'), 'Logged in'),
-       (1, INET_ATON('127.0.0.1'), 'Logged in'),
-       (1, INET_ATON('127.0.0.1'), 'Logged in'),
-       (1, INET_ATON('127.0.0.1'), 'Logged in'),
-       (1, INET_ATON('127.0.0.1'), 'Logged in'),
-       (1, INET_ATON('127.0.0.1'), 'Logged in'),
-       (1, INET_ATON('127.0.0.1'), 'Logged in'),
-       (1, INET_ATON('127.0.0.1'), 'Logged in'),
-       (1, INET_ATON('127.0.0.1'), 'Logged in'),
-       (1, INET_ATON('127.0.0.1'), 'Logged in'),
-       (1, INET_ATON('127.0.0.1'), 'Logged in'),
-       (1, INET_ATON('127.0.0.1'), 'Logged in'),
-       (1, INET_ATON('127.0.0.1'), 'Logged in'),
-       (1, INET_ATON('127.0.0.1'), 'Logged in'),
-       (1, INET_ATON('127.0.0.1'), 'Logged in'),
-       (1, INET_ATON('127.0.0.1'), 'Logged in'),
-       (0, INET_ATON('127.0.0.1'), 'Initialised system');
+       (1, INET_ATON('127.0.0.1'), 'Logged in');
 
 INSERT INTO client (id, creator_uid, name, url, contact_name, contact_email, contact_phone)
 VALUES (1,
