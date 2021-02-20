@@ -10,7 +10,7 @@
         "ext-intl": "*",
         "ext-mbstring": "*",
         "monolog/monolog": "^2.1",
-        "league/route": "^4.5",
+        "league/route": "^5.0",
         "league/container": "^3.3",
         "guzzlehttp/guzzle": "^7.2",
         "guzzlehttp/psr7": "^1.7",

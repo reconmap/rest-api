@@ -2,12 +2,10 @@
 
 namespace Reconmap;
 
-use GuzzleHttp\Psr7\Response;
 use Laminas\Diactoros\ResponseFactory;
 use League\Container\Container;
 use League\Route\RouteGroup;
 use League\Route\Router;
-use League\Route\Strategy\JsonStrategy;
 use Monolog\Logger;
 use Reconmap\{Controllers\AuditLog\AuditLogRouter,
     Controllers\Clients\ClientsRouter,
@@ -52,22 +50,7 @@ class ApiRouter extends Router
 
     private Container $container;
 
-    public function mapRoutes(Container $container, Logger $logger): void
-    {
-        $this->setupStrategy($container, $logger);
-
-        $this->map('OPTIONS', '/{any:.*}', function (): Response {
-            return $this->getResponse();
-        });
-
-        $this->map('POST', '/users/login', UsersLoginController::class)
-            ->middleware($this->corsMiddleware);
-        $this->group('', function (RouteGroup $router): void {
-            foreach (self::ROUTER_CLASSES as $mappable) {
-                (new $mappable)->mapRoutes($router);
-            }
-        })->middlewares([$this->corsMiddleware, $this->authMiddleware]);
-    }
+    private Config $config;
 
     /**
      * @param Container $container
@@ -77,27 +60,31 @@ class ApiRouter extends Router
     {
         $this->container = $container;
         $this->logger = $logger;
+        $this->config = $this->container->get(Config::class);
 
         $responseFactory = new ResponseFactory;
-        $strategy = new JsonStrategy($responseFactory);
+
+        $strategy = new ApiStrategy($responseFactory);
+        $strategy->setConfig($this->config);
         $strategy->setContainer($container);
+
         $this->setStrategy($strategy);
-        $this->logger = $logger;
+
         $this->authMiddleware = $container->get(AuthMiddleware::class);
-        $this->corsMiddleware = new CorsMiddleware($logger);
+        $this->corsMiddleware = $container->get(CorsMiddleware::class);
     }
 
-    private function getResponse(): Response
+    public function mapRoutes(Container $container, Logger $logger): void
     {
-        /** @var Config $config */
-        $config = $this->container->get(Config::class);
-        $corsConfig = $config->getSettings('cors');
-        $allowedOrigins = implode(',', $corsConfig['allowedOrigins']);
+        $this->setupStrategy($container, $logger);
 
-        return (new Response)
-            ->withStatus(200)
-            ->withHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,PATCH')
-            ->withHeader('Access-Control-Allow-Headers', 'Authorization,Bulk-Operation,Content-Type')
-            ->withHeader('Access-Control-Allow-Origin', $allowedOrigins);
+        $this->map('POST', '/users/login', UsersLoginController::class)
+            ->middleware($this->corsMiddleware);
+
+        $this->group('', function (RouteGroup $router): void {
+            foreach (self::ROUTER_CLASSES as $mappable) {
+                (new $mappable)->mapRoutes($router);
+            }
+        })->middlewares([$this->corsMiddleware, $this->authMiddleware]);
     }
 }

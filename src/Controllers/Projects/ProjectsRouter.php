@@ -10,6 +10,7 @@ class ProjectsRouter
     {
         $router->map('GET', '/projects', GetProjectsController::class);
         $router->map('GET', '/projects/{projectId:number}', GetProjectController::class);
+        $router->map('DELETE', '/projects/{projectId:number}', DeleteProjectController::class);
         $router->map('PUT', '/projects/{projectId:number}', UpdateProjectController::class);
         $router->map('POST', '/projects', CreateProjectController::class);
         $router->map('POST', '/projects/{id:number}/clone', CloneProjectController::class);
@@ -18,6 +19,5 @@ class ProjectsRouter
         $router->map('POST', '/projects/{id:number}/users', AddProjectUserController::class);
         $router->map('DELETE', '/projects/{projectId:number}/users/{membershipId:number}', DeleteProjectUserController::class);
         $router->map('GET', '/projects/{id:number}/vulnerabilities', GetProjectVulnerabilitiesController::class);
-        $router->map('DELETE', '/projects/{id:number}', DeleteProjectController::class);
     }
 }

@@ -13,7 +13,7 @@ class DeleteProjectController extends Controller
 
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
-        $projectId = (int)$args['id'];
+        $projectId = (int)$args['projectId'];
 
         $repository = new ProjectRepository($this->db);
         $success = $repository->deleteById($projectId);
