@@ -57,12 +57,6 @@ SQL;
 
     public function deleteById(int $id): bool
     {
-        $stmt = $this->db->prepare('DELETE FROM attachment WHERE id = ?');
-        $stmt->bind_param('i', $id);
-        $result = $stmt->execute();
-        $success = $result && 1 === $stmt->affected_rows;
-        $stmt->close();
-
-        return $success;
+        return $this->deleteByTableId('attachment', $id);
     }
 }

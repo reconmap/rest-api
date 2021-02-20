@@ -101,13 +101,7 @@ class TaskRepository extends MysqlRepository
 
     public function deleteById(int $id): bool
     {
-        $stmt = $this->db->prepare('DELETE FROM task WHERE id = ?');
-        $stmt->bind_param('i', $id);
-        $result = $stmt->execute();
-        $success = $result && 1 === $stmt->affected_rows;
-        $stmt->close();
-
-        return $success;
+        return $this->deleteByTableId('task', $id);
     }
 
     public function updateById(int $id, array $newColumnValues): bool
@@ -128,8 +122,8 @@ class TaskRepository extends MysqlRepository
     public function insert(object $task): int
     {
         /** @var Task $task */
-        $stmt = $this->db->prepare('INSERT INTO task (creator_uid, project_id, summary, description, due_date) VALUES (?, ?, ?, ?, ?)');
-        $stmt->bind_param('iisss', $task->creator_uid, $task->project_id, $task->summary, $task->description, $task->due_date);
+        $stmt = $this->db->prepare('INSERT INTO task (creator_uid, project_id, summary, description, due_date, command_id) VALUES (?, ?, ?, ?, ?, ?)');
+        $stmt->bind_param('iisssi', $task->creator_uid, $task->project_id, $task->summary, $task->description, $task->due_date, $task->command_id);
         return $this->executeInsertStatement($stmt);
     }
 }

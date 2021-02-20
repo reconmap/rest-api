@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
+use Reconmap\Repositories\QueryBuilders\DeleteQueryBuilder;
+
 abstract class MysqlRepository
 {
     protected \mysqli $db;
@@ -40,5 +42,17 @@ abstract class MysqlRepository
         return array_reduce($columnNames, function (string $columnTypes, string $columnName) {
             return $columnTypes . static::UPDATABLE_COLUMNS_TYPES[$columnName];
         }, '');
+    }
+
+    protected function deleteByTableId(string $tableName, int $id): bool
+    {
+        $deleteQueryBuilder = new DeleteQueryBuilder($tableName);
+        $stmt = $this->db->prepare($deleteQueryBuilder->toSql());
+        $stmt->bind_param('i', $id);
+        $result = $stmt->execute();
+        $success = $result && 1 === $stmt->affected_rows;
+        $stmt->close();
+
+        return $success;
     }
 }

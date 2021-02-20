@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
@@ -38,13 +36,7 @@ class TargetRepository extends MysqlRepository
 
     public function deleteById(int $id): bool
     {
-        $stmt = $this->db->prepare('DELETE FROM target WHERE id = ?');
-        $stmt->bind_param('i', $id);
-        $result = $stmt->execute();
-        $success = $result && 1 === $stmt->affected_rows;
-        $stmt->close();
-
-        return $success;
+        return $this->deleteByTableId('target', $id);
     }
 
     public function insert(int $projectId, string $name, string $kind): int

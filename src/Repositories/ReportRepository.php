@@ -41,13 +41,7 @@ class ReportRepository extends MysqlRepository
 
     public function deleteById(int $id): bool
     {
-        $stmt = $this->db->prepare('DELETE FROM report WHERE id = ?');
-        $stmt->bind_param('i', $id);
-        $result = $stmt->execute();
-        $success = $result && 1 === $stmt->affected_rows;
-        $stmt->close();
-
-        return $success;
+        return $this->deleteByTableId('report', $id);
     }
 
     public function findByProjectId(int $projectId): array
