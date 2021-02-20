@@ -26,7 +26,6 @@ class CorsMiddleware implements MiddlewareInterface
         $allowedOrigins = implode(',', $corsConfig['allowedOrigins']);
 
         return $response
-            ->withStatus(200)
             ->withHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,PATCH')
             ->withHeader('Access-Control-Allow-Headers', 'Authorization,Bulk-Operation,Content-Type')
             ->withHeader('Access-Control-Allow-Origin', $allowedOrigins);
