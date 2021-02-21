@@ -14,7 +14,8 @@ class CommandRepository extends MysqlRepository
         'executable_type' => 's',
         'executable_path' => 's',
         'arguments' => 's',
-        'configuration' => 's'
+        'configuration' => 's',
+        'output_filename' => 's'
     ];
 
     public function findById(int $id): ?array
@@ -61,8 +62,8 @@ SQL;
 
     public function insert(object $command): int
     {
-        $stmt = $this->db->prepare('INSERT INTO command (creator_uid, short_name, description, docker_image, arguments, executable_type, executable_path) VALUES (?, ?, ?, ?, ?, ?, ?)');
-        $stmt->bind_param('issssss', $command->creator_uid, $command->short_name, $command->description, $command->docker_image, $command->arguments, $command->executable_type, $command->executable_path);
+        $stmt = $this->db->prepare('INSERT INTO command (creator_uid, short_name, description, docker_image, arguments, executable_type, executable_path, output_filename) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
+        $stmt->bind_param('isssssss', $command->creator_uid, $command->short_name, $command->description, $command->docker_image, $command->arguments, $command->executable_type, $command->executable_path, $command->output_filename);
         return $this->executeInsertStatement($stmt);
     }
 

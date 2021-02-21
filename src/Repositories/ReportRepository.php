@@ -51,12 +51,12 @@ SELECT
        r.*,
        (SELECT id FROM attachment WHERE parent_type = 'report' AND parent_id = r.id AND file_mimetype = 'text/html') AS html_attachment_id,
        (SELECT id FROM attachment WHERE parent_type = 'report' AND parent_id = r.id AND file_mimetype = 'application/pdf') AS pdf_attachment_id
-
 FROM
-     report r
+    report r
 WHERE
-      r.project_id = ?
-ORDER BY r.insert_ts DESC
+    r.project_id = ?
+ORDER BY
+    r.insert_ts DESC
 SQL;
 
         $stmt = $this->db->prepare($sql);

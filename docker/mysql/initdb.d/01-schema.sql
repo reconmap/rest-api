@@ -178,6 +178,7 @@ CREATE TABLE command
     docker_image    VARCHAR(300)           NULL,
     arguments       VARCHAR(240)           NULL,
     configuration   JSON                   NULL,
+    output_filename VARCHAR(100)           NULL,
     PRIMARY KEY (id)
 ) ENGINE = InnoDB;
 

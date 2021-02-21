@@ -1,76 +1,173 @@
 {
   "commands": [
     {
-      "id": 21,
+      "id": 5,
+      "creator_uid": 1,
+      "insert_ts": "2021-02-20 17:35:52",
+      "update_ts": null,
       "short_name": "goohost",
       "description": "Extracts hosts\/subdomains, IP or emails for a specific domain with Google search.",
+      "executable_type": "rmap",
+      "executable_path": null,
       "docker_image": "reconmap\/pentest-container-tools-goohost",
       "arguments": "-t {{{Domain|||nmap.org}}}",
-      "executable_type": "rmap"
+      "configuration": null
     },
     {
-      "id": 22,
+      "id": 6,
+      "creator_uid": 1,
+      "insert_ts": "2021-02-20 17:35:52",
+      "update_ts": null,
       "short_name": "nmap",
       "description": "Scans all reserved TCP ports on the machine",
+      "executable_type": "rmap",
+      "executable_path": null,
       "docker_image": "instrumentisto\/nmap",
       "arguments": "-v {{{Host|||scanme.nmap.org}}} -oX nmap-output.xml",
-      "executable_type": "rmap"
+      "configuration": null
     },
     {
-      "id": 23,
+      "id": 7,
+      "creator_uid": 1,
+      "insert_ts": "2021-02-20 17:35:52",
+      "update_ts": null,
       "short_name": "whois",
       "description": "Retrieves information about domain",
+      "executable_type": "rmap",
+      "executable_path": null,
       "docker_image": "zeitgeist\/docker-whois",
       "arguments": "{{{Domain|||nmap.org}}}",
-      "executable_type": "rmap"
+      "configuration": null
     },
     {
-      "id": 24,
+      "id": 8,
+      "creator_uid": 1,
+      "insert_ts": "2021-02-20 17:35:52",
+      "update_ts": null,
       "short_name": "sqlmap",
       "description": " Automatic SQL injection and database takeover tool.",
+      "executable_type": "rmap",
+      "executable_path": null,
       "docker_image": "googlesky\/sqlmap",
       "arguments": "-u {{{Host|||localhost}}} --method POST --data \"{{{Data|||username=foo&password=bar}}}\" -p username --level 5 --dbms=mysql -v 1 --tables",
-      "executable_type": "rmap"
+      "configuration": null
     },
     {
-      "id": 25,
+      "id": 9,
+      "creator_uid": 1,
+      "insert_ts": "2021-02-20 17:35:52",
+      "update_ts": null,
       "short_name": "wpscan",
       "description": " WPScan WordPress security scanner. Written for security professionals and blog maintainers to test the security of their WordPress websites. ",
+      "executable_type": "rmap",
+      "executable_path": null,
       "docker_image": "wpscanteam\/wpscan",
       "arguments": "--url {{{Wordpress URL|||wordpress_url}}}",
-      "executable_type": "rmap"
+      "configuration": null
     },
     {
-      "id": 26,
+      "id": 10,
+      "creator_uid": 1,
+      "insert_ts": "2021-02-20 17:35:52",
+      "update_ts": null,
       "short_name": "dirbuster",
       "description": "Brute force directories and files names on web\/application servers.",
+      "executable_type": "rmap",
+      "executable_path": null,
       "docker_image": "hypnza\/dirbuster",
       "arguments": "-u {{{URL|||url}}}",
-      "executable_type": "rmap"
+      "configuration": null
     },
     {
-      "id": 27,
+      "id": 11,
+      "creator_uid": 1,
+      "insert_ts": "2021-02-20 17:35:52",
+      "update_ts": null,
       "short_name": "johntheripper",
       "description": "Password cracking tool",
+      "executable_type": "rmap",
+      "executable_path": null,
       "docker_image": "obscuritylabs\/johntheripper",
       "arguments": "-v ${PWD}:\/root obscuritylabs\/johntheripper --format=NT \/root\/hash",
-      "executable_type": "rmap"
+      "configuration": null
     },
     {
-      "id": 28,
+      "id": 12,
+      "creator_uid": 1,
+      "insert_ts": "2021-02-20 17:35:52",
+      "update_ts": null,
       "short_name": "metasploit-framework",
       "description": "Provides information about security vulnerabilities and aids in penetration testing and IDS signature development",
+      "executable_type": "rmap",
+      "executable_path": null,
       "docker_image": "metasploitframework\/metasploit-framework",
       "arguments": "-p 443:443 -v ${PWD}:\/root\/.msf4  metasploitframework\/metasploit-framework",
-      "executable_type": "rmap"
+      "configuration": null
     },
     {
-      "id": 29,
+      "id": 13,
+      "creator_uid": 1,
+      "insert_ts": "2021-02-20 17:35:52",
+      "update_ts": null,
       "short_name": "bcsecurity\/empire",
       "description": "Empire is a PowerShell and Python 3.x post-exploitation framework. ",
+      "executable_type": "rmap",
+      "executable_path": null,
       "docker_image": "bcsecurity\/empire",
       "arguments": "-p 443:443 -v ${PWD}:\/root\/empire bcsecurity\/empire",
-      "executable_type": "rmap"
+      "configuration": null
+    },
+    {
+      "id": 14,
+      "creator_uid": 1,
+      "insert_ts": "2021-02-20 17:36:34",
+      "update_ts": "2021-02-20 17:36:42",
+      "short_name": "netstat-services",
+      "description": "List services, their current state, and their corresponding ports, run the command.",
+      "executable_type": "custom",
+      "executable_path": "netstat",
+      "docker_image": null,
+      "arguments": "-pnlt",
+      "configuration": null
+    },
+    {
+      "id": 15,
+      "creator_uid": 1,
+      "insert_ts": "2021-02-20 17:43:10",
+      "update_ts": null,
+      "short_name": "watch-ports",
+      "description": "Watch TCP, UDP open ports in real time with socket summary. ",
+      "executable_type": "custom",
+      "executable_path": "watch",
+      "docker_image": null,
+      "arguments": "ss -stplu",
+      "configuration": null
+    },
+    {
+      "id": 16,
+      "creator_uid": 1,
+      "insert_ts": "2021-02-20 17:47:33",
+      "update_ts": "2021-02-20 17:48:13",
+      "short_name": "ipcalc",
+      "description": "Generate network addresses\/CIDR and so on.",
+      "executable_type": "custom",
+      "executable_path": "ipcalc",
+      "docker_image": null,
+      "arguments": "{{{CIDR|||192.168.0.135}}}",
+      "configuration": null
+    },
+    {
+      "id": 17,
+      "creator_uid": 1,
+      "insert_ts": "2021-02-20 19:04:50",
+      "update_ts": "2021-02-20 19:54:43",
+      "short_name": "dnsrecon",
+      "description": "DNS Enumeration",
+      "executable_type": "rmap",
+      "executable_path": null,
+      "docker_image": "quay.io\/reconmap\/dnsrecon",
+      "arguments": "-d {{{Domain|||reconmap.com}}} -D \/app\/subdomains-top1mil-5000.txt -t std --xml \/reconmap\/output.xml",
+      "configuration": null
     }
   ]
 }

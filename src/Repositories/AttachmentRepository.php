@@ -43,6 +43,8 @@ FROM
     attachment a
     INNER JOIN user u ON (u.id = a.submitter_uid)
     WHERE a.parent_type = ? AND a.parent_id = ?
+ORDER BY
+    a.insert_ts DESC
 SQL;
 
         $stmt = $this->db->prepare($sql);
