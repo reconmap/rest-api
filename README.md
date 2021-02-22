@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/Reconmap/api-backend.svg?branch=master)](https://travis-ci.com/Reconmap/api-backend) [![Maintainability](https://api.codeclimate.com/v1/badges/a54653799e277bab4e77/maintainability)](https://codeclimate.com/github/Reconmap/api-backend/maintainability) [![Gitter](https://badges.gitter.im/reconmap/community.svg)](https://gitter.im/reconmap/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Build Status](https://travis-ci.com/Reconmap/rest-api.svg?branch=master)](https://travis-ci.com/Reconmap/rest-api) [![Maintainability](https://api.codeclimate.com/v1/badges/a54653799e277bab4e77/maintainability)](https://codeclimate.com/github/Reconmap/rest-api/maintainability) [![Gitter](https://badges.gitter.im/reconmap/community.svg)](https://gitter.im/reconmap/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 ![Reconmap devices](https://pasteall.org/media/2/0/204759e8714dc1def4209d10b3370c4d.png)
 
