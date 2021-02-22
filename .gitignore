@@ -1,7 +1,6 @@
 vendor
 logs/*
-data/task-results/*
-data/reports/*
+data/attachments/*
 data-redis
 data-mysql
 config.json

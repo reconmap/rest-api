@@ -30,6 +30,7 @@ RUN chmod +x /usr/local/bin/wait
 RUN apt-get install -y cron
 COPY docker/api/crontab.txt /tmp/crontab
 RUN crontab /tmp/crontab
+RUN printenv | grep "REDIS_" >> /etc/environment
 
 RUN sed -i "s/;clear_env = no/clear_env = no/" /etc/php/8.0/fpm/pool.d/www.conf
 RUN rm /etc/nginx/sites-enabled/default
@@ -41,7 +42,6 @@ COPY composer.lock /var/www/webapp
 RUN composer install
 
 RUN mkdir -p data/attachments && chown www-data data/attachments
-RUN mkdir -p data/reports && chown www-data data/reports
 RUN mkdir logs && chown www-data logs && chmod a+w logs
 
 COPY public /var/www/webapp/public
