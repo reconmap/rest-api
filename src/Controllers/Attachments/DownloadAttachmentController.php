@@ -9,10 +9,15 @@ use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditLogAction;
 use Reconmap\Repositories\AttachmentRepository;
+use Reconmap\Services\AttachmentFilePath;
 use Reconmap\Services\AuditLogService;
 
 class DownloadAttachmentController extends Controller
 {
+    public function __construct(private AttachmentFilePath $attachmentFilePathService)
+    {
+
+    }
 
     public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
     {
@@ -23,7 +28,7 @@ class DownloadAttachmentController extends Controller
 
         $userId = $request->getAttribute('userId');
 
-        $pathName = RECONMAP_APP_DIR . '/data/attachments/' . $attachment->file_name;
+        $pathName = $this->attachmentFilePathService->generateFilePathFromAttachment((array)$attachment);
 
         $response = new Response;
 

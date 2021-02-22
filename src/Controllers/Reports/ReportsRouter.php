@@ -15,6 +15,6 @@ class ReportsRouter
         $router->map('PUT', '/reports/{projectId:number}/configuration', ReplaceReportConfigurationController::class);
         $router->map('POST', '/reports/{reportId:number}/send', SendReportController::class);
         $router->map('POST', '/reports', CreateReportController::class);
-        $router->map('DELETE', '/reports/{id:number}', DeleteReportController::class);
+        $router->map('DELETE', '/reports/{reportId:number}', DeleteReportController::class);
     }
 }

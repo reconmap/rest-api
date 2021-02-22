@@ -1,26 +1,34 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Controllers\Reports;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Repositories\ReportRepository;
+use Reconmap\Repositories\AttachmentRepository;
+use Reconmap\Services\AttachmentFilePath;
 use Reconmap\Services\RedisServer;
 
 class SendReportController extends Controller
 {
+    public function __construct(private AttachmentFilePath $attachmentFilePathService)
+    {
+    }
+
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
-        $reportId = (int)$args['reportId'];
-
-        $repository = new ReportRepository($this->db);
-        $report = $repository->findById($reportId);
-
-        $filename = sprintf(RECONMAP_APP_DIR . "/data/reports/report-%d.%s", $reportId, $report['format']);
-
         $deliverySettings = $this->getJsonBodyDecoded($request);
+        $reportId = intval($deliverySettings->report_id);
+
+        $attachmentRepository = new AttachmentRepository($this->db);
+        $attachments = $attachmentRepository->findByParentId('report', $reportId, 'application/pdf');
+
+        if (count($attachments) === 0) {
+            $this->logger->warning("Unable to find PDF for report $reportId");
+        }
+
+        $attachment = $attachments[0];
+
+        $attachmentFilePath = $this->attachmentFilePathService->generateFilePathFromAttachment($attachment);
 
         $emailBody = $deliverySettings->body;
         $recipients = explode(',', $deliverySettings->recipients);
@@ -33,7 +41,7 @@ class SendReportController extends Controller
                 'subject' => $deliverySettings->subject,
                 'to' => $recipients,
                 'body' => $emailBody,
-                'attachmentPath' => $filename
+                'attachmentPath' => $attachmentFilePath
             ])
         );
         if (false === $result) {

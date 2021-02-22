@@ -7,10 +7,15 @@ use Psr\Http\Message\UploadedFileInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\Attachment;
 use Reconmap\Repositories\AttachmentRepository;
+use Reconmap\Services\AttachmentFilePath;
 
 class UploadAttachmentController extends Controller
 {
     private AttachmentRepository $attachmentRepository;
+
+    public function __construct(private AttachmentFilePath $attachmentFilePathService)
+    {
+    }
 
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
@@ -34,8 +39,8 @@ class UploadAttachmentController extends Controller
 
     private function uploadAttachment(UploadedFileInterface $uploadedFile, string $parentType, int $parentId, int $userId)
     {
-        $fileName = uniqid(gethostname());
-        $pathName = RECONMAP_APP_DIR . '/data/attachments/' . $fileName;
+        $fileName = $this->attachmentFilePathService->generateFileName();
+        $pathName = $this->attachmentFilePathService->generateFilePath($fileName);
 
         if ($uploadedFile->getError() === UPLOAD_ERR_OK) {
             $uploadedFile->moveTo($pathName);

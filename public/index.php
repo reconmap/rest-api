@@ -1,10 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
-declare(strict_types=1);
+$applicationDir = realpath('../');
 
-define('RECONMAP_APP_DIR', realpath('../'));
-
-require RECONMAP_APP_DIR . '/vendor/autoload.php';
+require $applicationDir . '/vendor/autoload.php';
 
 use GuzzleHttp\Psr7\Response;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
@@ -16,13 +14,13 @@ use Reconmap\Services\ApplicationContainer;
 use Reconmap\Services\ConfigLoader;
 
 $logger = new Logger('http');
-$logsDirectory = RECONMAP_APP_DIR . '/logs';
-$applicationLogPath = RECONMAP_APP_DIR . '/logs/application.log';
+$logsDirectory = $applicationDir . '/logs';
 if (is_writable($logsDirectory)) {
+    $applicationLogPath = $applicationDir . '/logs/application.log';
     $logger->pushHandler(new StreamHandler($applicationLogPath, Logger::DEBUG));
 }
 
-$configFilePath = RECONMAP_APP_DIR . '/config.json';
+$configFilePath = $applicationDir . '/config.json';
 if (!file_exists($configFilePath) || !is_readable($configFilePath)) {
     $errorMessage = 'Missing or unreadable API configuration file (config.json)';
     $logger->error($errorMessage);
@@ -31,7 +29,7 @@ if (!file_exists($configFilePath) || !is_readable($configFilePath)) {
     exit;
 }
 $config = (new ConfigLoader())->loadFromFile($configFilePath);
-$config->update('appDir', RECONMAP_APP_DIR);
+$config->update('appDir', $applicationDir);
 
 $container = new ApplicationContainer($config, $logger);
 

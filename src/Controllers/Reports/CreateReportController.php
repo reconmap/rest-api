@@ -12,6 +12,7 @@ use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Repositories\ProjectRepository;
 use Reconmap\Repositories\ReportConfigurationRepository;
 use Reconmap\Repositories\ReportRepository;
+use Reconmap\Services\AttachmentFilePath;
 use Reconmap\Services\Config;
 use Reconmap\Services\ConfigConsumer;
 use Reconmap\Services\ReportGenerator;
@@ -19,6 +20,10 @@ use Reconmap\Services\ReportGenerator;
 class CreateReportController extends Controller implements ConfigConsumer
 {
     private ?Config $config = null;
+
+    public function __construct(private AttachmentFilePath $attachmentFilePathService)
+    {
+    }
 
     public function setConfig(Config $config): void
     {
@@ -51,7 +56,7 @@ class CreateReportController extends Controller implements ConfigConsumer
         $reportConfiguration = new ReportConfigurationRepository($this->db);
         $config = $reportConfiguration->findByProjectId($projectId);
 
-        $basePath = $this->config->getSetting('appDir') . '/data/attachments/';
+        $basePath = $this->attachmentFilePathService->generateBasePath();
 
         $attachment = new Attachment();
         $attachment->parent_type = 'report';
@@ -88,14 +93,14 @@ class CreateReportController extends Controller implements ConfigConsumer
     private function generatePdfReportAndAttachment(array $project, Attachment $attachment, array $reportSections, string $basePath, ReportConfiguration $config, string $versionName): Attachment
     {
         $pdf = new Pdf('/usr/local/bin/wkhtmltopdf');
-        $pdf->setLogger($this->logger);
+        // @todo Create own logger $pdf->setLogger($this->logger);
 
         $pdf->setOption('no-background', false);
 
         // Table of contents and outline
         if ($config->include_toc) {
             $pdf->setOption('toc', true);
-            $pdf->setOption('xsl-style-sheet', RECONMAP_APP_DIR . '/resources/templates/reports/toc.xsl');
+            $pdf->setOption('xsl-style-sheet', $this->config->getAppDir() . '/resources/templates/reports/toc.xsl');
         }
         $pdf->setOption('outline-depth', 2);
 

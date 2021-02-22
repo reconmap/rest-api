@@ -6,18 +6,22 @@ use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\Attachment;
 use Reconmap\Repositories\AttachmentRepository;
+use Reconmap\Services\AttachmentFilePath;
 use Reconmap\Services\RedisServer;
 
 class UploadCommandOutputController extends Controller
 {
+    public function __construct(private AttachmentFilePath $attachmentFilePathService)
+    {
+    }
 
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
         $params = $request->getParsedBody();
         $taskId = (int)$params['taskId'];
 
-        $fileName = uniqid(gethostname());
-        $pathName = RECONMAP_APP_DIR . '/data/attachments/' . $fileName;
+        $fileName = $this->attachmentFilePathService->generateFileName();
+        $pathName = $this->attachmentFilePathService->generateFilePath($fileName);
 
         $files = $request->getUploadedFiles();
 

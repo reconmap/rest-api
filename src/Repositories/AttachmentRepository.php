@@ -3,6 +3,7 @@
 namespace Reconmap\Repositories;
 
 use Reconmap\Models\Attachment;
+use Reconmap\Repositories\QueryBuilders\SelectQueryBuilder;
 
 class AttachmentRepository extends MysqlRepository
 {
@@ -33,22 +34,24 @@ SQL;
         return $attachment;
     }
 
-    public function findByParentId(string $parentType, int $parentId): array
+    public function findByParentId(string $parentType, int $parentId, string $mimeType = null): array
     {
-        $sql = <<<SQL
-SELECT
-    a.*,
-    u.full_name AS submitter_name
-FROM
-    attachment a
-    INNER JOIN user u ON (u.id = a.submitter_uid)
-    WHERE a.parent_type = ? AND a.parent_id = ?
-ORDER BY
-    a.insert_ts DESC
-SQL;
+        $queryBuilder = new SelectQueryBuilder('attachment a');
+        $queryBuilder->setColumns('a.*, u.full_name AS submitter_name');
+        $queryBuilder->addJoin('INNER JOIN user u ON (u.id = a.submitter_uid)');
+        $queryBuilder->setOrderBy('a.insert_ts DESC');
+        $queryBuilder->setWhere('a.parent_type = ? AND a.parent_id = ?');
+        if ($mimeType) {
+            $queryBuilder->setWhere('AND a.file_mimetype = ?');
+        }
 
-        $stmt = $this->db->prepare($sql);
-        $stmt->bind_param('si', $parentType, $parentId);
+        $stmt = $this->db->prepare($queryBuilder->toSql());
+
+        if ($mimeType) {
+            $stmt->bind_param('sis', $parentType, $parentId, $mimeType);
+        } else {
+            $stmt->bind_param('si', $parentType, $parentId);
+        }
         $stmt->execute();
         $rs = $stmt->get_result();
         $attachments = $rs->fetch_all(MYSQLI_ASSOC);

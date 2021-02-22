@@ -7,15 +7,16 @@ class SelectQueryBuilder implements QueryBuilder
     private string $columns;
     private string $from;
     private array $joins;
-    private ?string $where = null;
+    private array $where;
     private ?string $orderBy = null;
-    private ?string $limit = null;
+    private string|int|null $limit = null;
 
     public function __construct(string $from)
     {
         $this->columns = '*';
         $this->joins = [];
         $this->from = $from;
+        $this->where = [];
     }
 
     public function setColumns(string $columns): void
@@ -25,7 +26,7 @@ class SelectQueryBuilder implements QueryBuilder
 
     public function setWhere(string $where): void
     {
-        $this->where = $where;
+        $this->where[] = $where;
     }
 
     public function addJoin(string $join): void
@@ -38,7 +39,7 @@ class SelectQueryBuilder implements QueryBuilder
         $this->orderBy = $orderBy;
     }
 
-    public function setLimit(string $limit): void
+    public function setLimit(string|int $limit): void
     {
         $this->limit = $limit;
     }
@@ -49,8 +50,8 @@ class SelectQueryBuilder implements QueryBuilder
         if (!empty($this->joins)) {
             $sql .= ' ' . implode(' ', $this->joins);
         }
-        if ($this->where) {
-            $sql .= ' WHERE ' . $this->where;
+        if (count($this->where)) {
+            $sql .= ' WHERE ' . implode(' ', $this->where);
         }
         if ($this->orderBy) {
             $sql .= ' ORDER BY ' . $this->orderBy;

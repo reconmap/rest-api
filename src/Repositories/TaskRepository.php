@@ -18,7 +18,7 @@ class TaskRepository extends MysqlRepository
         'due_date' => 's'
     ];
 
-    public function findAll(bool $excludeTemplateTasks = true, ?string $limit = '20'): array
+    public function findAll(bool $excludeTemplateTasks = true, ?int $limit = 20): array
     {
         $selectQueryBuilder = $this->getBaseSelectQueryBuilder();
         if ($excludeTemplateTasks) {

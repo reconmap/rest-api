@@ -1,10 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
-declare(strict_types=1);
+$applicationDir = dirname(__DIR__, 2);
 
-define('RECONMAP_APP_DIR', dirname(__DIR__, 2));
-
-require RECONMAP_APP_DIR . '/vendor/autoload.php';
+require $applicationDir . '/vendor/autoload.php';
 
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -14,10 +12,10 @@ use Reconmap\Services\ConfigLoader;
 use Reconmap\Tasks\EmailTaskProcessor;
 
 $logger = new Logger('cron');
-$logger->pushHandler(new StreamHandler(RECONMAP_APP_DIR . '/logs/application.log', Logger::DEBUG));
+$logger->pushHandler(new StreamHandler($applicationDir . '/logs/application.log', Logger::DEBUG));
 
-$config = (new ConfigLoader())->loadFromFile(RECONMAP_APP_DIR . '/config.json');
-$config->update('appDir', RECONMAP_APP_DIR);
+$config = (new ConfigLoader())->loadFromFile($applicationDir . '/config.json');
+$config->update('appDir', $applicationDir);
 
 $container = new ApplicationContainer($config, $logger);
 

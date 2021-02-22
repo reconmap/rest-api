@@ -7,9 +7,13 @@ use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditLogAction;
 use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Services\ActivityPublisherService;
+use Reconmap\Services\AttachmentFilePath;
 
 class DeleteAttachmentController extends Controller
 {
+    public function __construct(private AttachmentFilePath $attachmentFilePathService)
+    {
+    }
 
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
@@ -18,7 +22,7 @@ class DeleteAttachmentController extends Controller
         $repository = new AttachmentRepository($this->db);
         $attachment = $repository->findById($attachmentId);
 
-        $pathName = RECONMAP_APP_DIR . '/data/attachments/' . $attachment->file_name;
+        $pathName = $this->attachmentFilePathService->generateFilePathFromAttachment((array)$attachment);
         if (unlink($pathName) === false) {
             $this->logger->warning('Unable to delete: ' . $pathName);
         }

@@ -40,9 +40,10 @@ SQL;
         return $command;
     }
 
-    public function findAll(): array
+    public function findAll(int $limit = 20): array
     {
         $selectQueryBuilder = $this->getBaseSelectQueryBuilder();
+        $selectQueryBuilder->setLimit($limit);
         $sql = $selectQueryBuilder->toSql();
 
         $rs = $this->db->query($sql);

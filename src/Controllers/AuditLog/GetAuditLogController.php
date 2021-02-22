@@ -10,6 +10,8 @@ use Reconmap\Repositories\AuditLogRepository;
 
 class GetAuditLogController extends Controller
 {
+    private const PAGE_LIMIT = 20;
+
     private AuditLogRepository $repository;
 
     public function __construct(AuditLogRepository $repository)
@@ -21,11 +23,12 @@ class GetAuditLogController extends Controller
     {
         $params = $request->getQueryParams();
         $page = (int)$params['page'];
+        $limit = isset($params['limit']) ? intval($params['limit']) : self::PAGE_LIMIT;
 
-        $auditLog = $this->repository->findAll($page);
+        $auditLog = $this->repository->findAll($page, $limit);
         $count = $this->repository->countAll();
 
-        $pageCount = max(ceil($count / 20), 1);
+        $pageCount = max(ceil($count / self::PAGE_LIMIT), 1);
 
         $response = new Response;
         $response->getBody()->write(json_encode($auditLog));

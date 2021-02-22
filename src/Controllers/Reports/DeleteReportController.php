@@ -4,23 +4,30 @@ namespace Reconmap\Controllers\Reports;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
+use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Repositories\ReportRepository;
+use Reconmap\Services\AttachmentFilePath;
 
 class DeleteReportController extends Controller
 {
+    public function __construct(private AttachmentFilePath $attachmentFilePathService)
+    {
+    }
 
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
-        $id = (int)$args['id'];
+        $reportId = (int)$args['reportId'];
 
         $repository = new ReportRepository($this->db);
-        $report = $repository->findById($id);
-        $success = $repository->deleteById($id);
+        $success = $repository->deleteById($reportId);
 
-        $files = glob(sprintf(RECONMAP_APP_DIR . "/data/reports/report-%d.*", $id));
-        foreach ($files as $filename) {
-            if (unlink($filename) === false) {
-                $this->logger->warning("Unable to delete report file '$filename'");
+        $attachmentRepository = new AttachmentRepository($this->db);
+        $attachments = $attachmentRepository->findByParentId('report', $reportId);
+        foreach ($attachments as $attachment) {
+            $filePath = $this->attachmentFilePathService->generateFilePath($attachment['file_name']);
+
+            if (unlink($filePath) === false) {
+                $this->logger->warning("Unable to delete report file '$filePath'");
             }
         }
 

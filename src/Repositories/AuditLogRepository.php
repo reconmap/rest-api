@@ -6,12 +6,11 @@ use Reconmap\Repositories\QueryBuilders\SelectQueryBuilder;
 
 class AuditLogRepository extends MysqlRepository
 {
-    public function findAll(int $page = 0): array
+    public function findAll(int $page = 0, int $limitPerPage = 20): array
     {
         $queryBuilder = $this->getBaseSelectQueryBuilder();
         $queryBuilder->setLimit('?, ?');
 
-        $limitPerPage = 20;
         $limitOffset = $page * $limitPerPage;
 
         $stmt = $this->db->prepare($queryBuilder->toSql());

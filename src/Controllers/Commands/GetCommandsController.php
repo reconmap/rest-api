@@ -8,9 +8,14 @@ use Reconmap\Repositories\CommandRepository;
 
 class GetCommandsController extends Controller
 {
+    private const PAGE_LIMIT = 20;
+
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
+        $params = $request->getQueryParams();
+        $limit = isset($params['limit']) ? intval($params['limit']) : self::PAGE_LIMIT;
+
         $repository = new CommandRepository($this->db);
-        return $repository->findAll();
+        return $repository->findAll($limit);
     }
 }
