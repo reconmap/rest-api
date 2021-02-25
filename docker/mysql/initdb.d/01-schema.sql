@@ -111,7 +111,7 @@ CREATE TABLE target
         'binary'
         ),
     PRIMARY KEY (id),
-    UNIQUE KEY (name)
+    UNIQUE KEY (project_id, name)
 ) ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS vulnerability_category;
