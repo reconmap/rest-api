@@ -37,7 +37,7 @@ class TaskRepository extends MysqlRepository
     {
         $queryBuilder = $this->getBaseSelectQueryBuilder();
         $queryBuilder->setLimit('20');
-        $queryBuilder->setWhere('t.name LIKE ? OR t.description LIKE ?');
+        $queryBuilder->setWhere('t.summary LIKE ? OR t.description LIKE ?');
         $sql = $queryBuilder->toSql();
 
         $keywordsLike = "%$keywords%";
