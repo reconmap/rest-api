@@ -10,12 +10,19 @@ class GetCommandsController extends Controller
 {
     private const PAGE_LIMIT = 20;
 
+    public function __construct(private CommandRepository $repository)
+    {
+    }
+
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
         $params = $request->getQueryParams();
         $limit = isset($params['limit']) ? intval($params['limit']) : self::PAGE_LIMIT;
 
-        $repository = new CommandRepository($this->db);
-        return $repository->findAll($limit);
+        if (isset($params['keywords'])) {
+            return $this->repository->findByKeywords($params['keywords'], $limit);
+        } else {
+            return $this->repository->findAll($limit);
+        }
     }
 }

@@ -8,12 +8,14 @@ use Reconmap\Repositories\CommandRepository;
 
 class GetCommandController extends Controller
 {
+    public function __construct(private CommandRepository $repository)
+    {
+    }
 
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
         $commandId = (int)$args['commandId'];
 
-        $repository = new CommandRepository($this->db);
-        return $repository->findById($commandId);
+        return $this->repository->findById($commandId);
     }
 }

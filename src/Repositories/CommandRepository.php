@@ -50,6 +50,21 @@ SQL;
         return $rs->fetch_all(MYSQLI_ASSOC);
     }
 
+    public function findByKeywords(string $keywords, int $limit = 20): array
+    {
+        $selectQueryBuilder = $this->getBaseSelectQueryBuilder();
+        $selectQueryBuilder->setLimit($limit);
+        $selectQueryBuilder->setWhere('c.short_name LIKE ? OR c.description LIKE ?');
+        $sql = $selectQueryBuilder->toSql();
+
+        $keywordsLike = "%$keywords%";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bind_param('ss', $keywordsLike, $keywordsLike);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
     private function getBaseSelectQueryBuilder(): SelectQueryBuilder
     {
         $queryBuilder = new SelectQueryBuilder('command c');

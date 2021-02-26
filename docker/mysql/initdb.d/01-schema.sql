@@ -139,7 +139,7 @@ CREATE TABLE vulnerability
     summary     VARCHAR(200)                                       NOT NULL,
     description VARCHAR(2000)                                      NULL,
     risk        ENUM ('none', 'low', 'medium', 'high', 'critical') NOT NULL,
-    cvss_score  DECIMAL(2, 1)                                      NULL,
+    cvss_score  DECIMAL(3, 1)                                      NULL,
     cvss_vector VARCHAR(80)                                        NULL,
     status      ENUM ('open', 'closed')                            NOT NULL DEFAULT 'open',
     PRIMARY KEY (id)

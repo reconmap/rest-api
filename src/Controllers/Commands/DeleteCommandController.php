@@ -8,12 +8,15 @@ use Reconmap\Repositories\CommandRepository;
 
 class DeleteCommandController extends Controller
 {
+    public function __construct(private CommandRepository $repository)
+    {
+    }
+
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
         $commandId = (int)$args['commandId'];
 
-        $repository = new CommandRepository($this->db);
-        $success = $repository->deleteById($commandId);
+        $success = $this->repository->deleteById($commandId);
 
         return ['success' => $success];
     }
