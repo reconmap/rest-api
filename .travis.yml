@@ -1,6 +1,6 @@
 env:
   global:
-    - CC_TEST_REPORTER_ID=bfe49936c2eff76912dd871c979208daf9ffa282cb5fde1812427bb99d6c683c
+    - CC_TEST_REPORTER_ID=783010307a213eb2dbcdd1d52b2c1efb493e04a553c4bf85c4cbe5bd4c2e867b
     - DOCKER_COMPOSE_VERSION=1.26.2
   
 services:
