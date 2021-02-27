@@ -3,10 +3,11 @@
 namespace Reconmap;
 
 use PHPUnit\Framework\TestCase;
-use Reconmap\Services\Config;
 
 abstract class DatabaseTestCase extends TestCase
 {
+    use ApplicationConfigTestingTrait;
+
     public const DATABASE_SETTINGS = [
         'host' => 'rmap-mysql',
         'username' => 'reconmapper',
@@ -16,7 +17,9 @@ abstract class DatabaseTestCase extends TestCase
 
     public function getDatabaseConnection(): \mysqli
     {
-        $config = new Config(['database' => self::DATABASE_SETTINGS]);
+        $config = $this->createEmptyApplicationConfig();
+        $config['database'] = self::DATABASE_SETTINGS;
+
         return DatabaseFactory::createConnection($config);
     }
 }

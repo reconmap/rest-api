@@ -4,7 +4,7 @@ namespace Reconmap\Services;
 
 class AttachmentFilePath
 {
-    public function __construct(private Config $config)
+    public function __construct(private ApplicationConfig $config)
     {
     }
 

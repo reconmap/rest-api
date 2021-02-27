@@ -10,14 +10,14 @@ use Reconmap\DatabaseFactory;
 
 class ApplicationContainer extends Container
 {
-    public function __construct(Config $config, Logger $logger)
+    public function __construct(ApplicationConfig $config, Logger $logger)
     {
         parent::__construct();
 
         $this->initialise($config, $logger);
     }
 
-    public function initialise(Config $config, Logger $logger)
+    public function initialise(ApplicationConfig $config, Logger $logger)
     {
         $this->delegate(new ReflectionContainer);
 
@@ -31,8 +31,8 @@ class ApplicationContainer extends Container
             ->invokeMethod('setDb', [\mysqli::class]);
 
         $this->inflector(ConfigConsumer::class)
-            ->invokeMethod('setConfig', [Config::class]);
-        $this->add(Config::class, $config);
+            ->invokeMethod('setConfig', [ApplicationConfig::class]);
+        $this->add(ApplicationConfig::class, $config);
 
         $this->inflector(ContainerConsumer::class)
             ->invokeMethod('setContainer', [Container::class]);

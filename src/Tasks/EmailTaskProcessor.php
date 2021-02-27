@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Reconmap\Tasks;
 
 use Monolog\Logger;
-use Reconmap\Services\Config;
+use Reconmap\Services\ApplicationConfig;
 use Swift_Attachment;
 use Swift_Mailer;
 use Swift_Message;
@@ -12,10 +12,10 @@ use Swift_SmtpTransport;
 
 class EmailTaskProcessor implements ItemProcessor
 {
-    private Config $config;
+    private ApplicationConfig $config;
     private Logger $logger;
 
-    public function __construct(Config $config, Logger $logger)
+    public function __construct(ApplicationConfig $config, Logger $logger)
     {
         $this->config = $config;
         $this->logger = $logger;

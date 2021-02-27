@@ -6,17 +6,17 @@ use Monolog\Logger;
 use Reconmap\Processors\ProcessorFactory;
 use Reconmap\Repositories\TaskRepository;
 use Reconmap\Repositories\VulnerabilityRepository;
-use Reconmap\Services\Config;
+use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\RedisServer;
 
 class TaskResultProcessor implements ItemProcessor
 {
-    private Config $config;
+    private ApplicationConfig $config;
     private Logger $logger;
     private \mysqli $db;
     private \Redis $redis;
 
-    public function __construct(Config $config, Logger $logger, \mysqli $db, RedisServer $redis)
+    public function __construct(ApplicationConfig $config, Logger $logger, \mysqli $db, RedisServer $redis)
     {
         $this->config = $config;
         $this->logger = $logger;

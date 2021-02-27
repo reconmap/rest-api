@@ -12,20 +12,20 @@ use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Repositories\ProjectRepository;
 use Reconmap\Repositories\ReportConfigurationRepository;
 use Reconmap\Repositories\ReportRepository;
+use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\AttachmentFilePath;
-use Reconmap\Services\Config;
 use Reconmap\Services\ConfigConsumer;
 use Reconmap\Services\ReportGenerator;
 
 class CreateReportController extends Controller implements ConfigConsumer
 {
-    private ?Config $config = null;
+    private ?ApplicationConfig $config = null;
 
     public function __construct(private AttachmentFilePath $attachmentFilePathService)
     {
     }
 
-    public function setConfig(Config $config): void
+    public function setConfig(ApplicationConfig $config): void
     {
         $this->config = $config;
     }

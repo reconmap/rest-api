@@ -4,13 +4,13 @@ namespace Reconmap;
 
 use League\Route\Strategy\JsonStrategy;
 use Psr\Http\Message\ResponseInterface;
-use Reconmap\Services\Config;
+use Reconmap\Services\ApplicationConfig;
 
 class ApiStrategy extends JsonStrategy
 {
-    private Config $config;
+    private ApplicationConfig $config;
 
-    public function setConfig(Config $config): void
+    public function setConfig(ApplicationConfig $config): void
     {
         $this->config = $config;
     }

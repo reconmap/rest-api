@@ -4,17 +4,17 @@ declare(strict_types=1);
 namespace Reconmap;
 
 use Monolog\Logger;
-use Reconmap\Services\Config;
+use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\RedisServer;
 use Reconmap\Tasks\ItemProcessor;
 
 class QueueProcessor
 {
     private RedisServer $redis;
-    private Config $config;
+    private ApplicationConfig $config;
     private Logger $logger;
 
-    public function __construct(RedisServer $redis, Config $config, Logger $logger)
+    public function __construct(RedisServer $redis, ApplicationConfig $config, Logger $logger)
     {
         $this->redis = $redis;
         $this->config = $config;

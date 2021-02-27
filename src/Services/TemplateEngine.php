@@ -9,7 +9,7 @@ class TemplateEngine
     private string $templatesDirectory;
     private \Twig\Environment $environment;
 
-    public function __construct(Config $config)
+    public function __construct(ApplicationConfig $config)
     {
         $this->templatesDirectory = $config->getAppDir() . '/resources/templates';
         $filesystemLoader = new FilesystemLoader($this->templatesDirectory);

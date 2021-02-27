@@ -6,11 +6,11 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Reconmap\Services\Config;
+use Reconmap\Services\ApplicationConfig;
 
 class CorsMiddleware implements MiddlewareInterface
 {
-    public function __construct(private Config $config)
+    public function __construct(private ApplicationConfig $config)
     {
     }
 

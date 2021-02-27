@@ -6,5 +6,5 @@ namespace Reconmap\Services;
 interface ConfigConsumer
 {
 
-    public function setConfig(Config $config): void;
+    public function setConfig(ApplicationConfig $config): void;
 }

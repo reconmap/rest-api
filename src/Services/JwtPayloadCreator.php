@@ -4,9 +4,9 @@ namespace Reconmap\Services;
 
 class JwtPayloadCreator
 {
-    private Config $config;
+    private ApplicationConfig $config;
 
-    public function __construct(Config $config)
+    public function __construct(ApplicationConfig $config)
     {
         $this->config = $config;
     }

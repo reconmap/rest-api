@@ -20,7 +20,8 @@
         "swiftmailer/swiftmailer": "^6.2",
         "erusev/parsedown": "^1.7",
         "knplabs/knp-snappy": "^1.2",
-        "twig/twig": "^3.0"
+        "twig/twig": "^3.0",
+        "hassankhan/config": "^2.2"
     },
     "autoload": {
         "psr-4": {

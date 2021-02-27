@@ -3,13 +3,16 @@
 namespace Reconmap\Services;
 
 use PHPUnit\Framework\TestCase;
+use Reconmap\ApplicationConfigTestingTrait;
 
 class TemplateEngineTest extends TestCase
 {
+    use ApplicationConfigTestingTrait;
+
     public function testDefaultsAreSet()
     {
-        $config = new Config();
-        $config->update('appDir', '.');
+        $config = $this->createEmptyApplicationConfig();
+        $config->setAppDir('.');
 
         $engine = new TemplateEngine($config);
         $this->assertEquals('./resources/templates', $engine->getTemplatesDirectory());

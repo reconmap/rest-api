@@ -14,11 +14,11 @@ use Reconmap\Repositories\VulnerabilityRepository;
 
 class ReportGenerator
 {
-    private Config $config;
+    private ApplicationConfig $config;
     private \mysqli $db;
     private TemplateEngine $template;
 
-    public function __construct(Config $config, \mysqli $db, TemplateEngine $template)
+    public function __construct(ApplicationConfig $config, \mysqli $db, TemplateEngine $template)
     {
         $this->config = $config;
         $this->db = $db;

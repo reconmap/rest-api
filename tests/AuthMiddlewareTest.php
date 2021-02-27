@@ -9,10 +9,10 @@ use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Reconmap\Services\Config;
 
 class AuthMiddlewareTest extends TestCase
 {
+    use ApplicationConfigTestingTrait;
 
     public function testJwtTokenValidation()
     {
@@ -42,13 +42,13 @@ class AuthMiddlewareTest extends TestCase
             ->method('handle')
             ->with($request);
 
-        $config = new Config([
-            'jwt' => [
-                'issuer' => 'reconmap.org',
-                'audience' => 'reconmap.com',
-                'key' => 'this is going to be replaced with asymmetric keys'
-            ]
-        ]);
+
+        $config = $this->createEmptyApplicationConfig();
+        $config['jwt'] = [
+            'issuer' => 'reconmap.org',
+            'audience' => 'reconmap.com',
+            'key' => 'this is going to be replaced with asymmetric keys'
+        ];
 
         $mockLogger = $this->createMock(Logger::class);
 

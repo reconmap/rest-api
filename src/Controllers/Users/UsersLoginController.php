@@ -9,8 +9,8 @@ use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditLogAction;
 use Reconmap\Repositories\UserRepository;
+use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\AuditLogService;
-use Reconmap\Services\Config;
 use Reconmap\Services\JwtPayloadCreator;
 
 class UsersLoginController extends Controller
@@ -36,7 +36,7 @@ class UsersLoginController extends Controller
 
         $this->audit($user['id'], AuditLogAction::USER_LOGGED_IN);
 
-        $config = $this->container->get(Config::class);
+        $config = $this->container->get(ApplicationConfig::class);
 
         $jwtPayload = (new JwtPayloadCreator($config))
             ->createFromUserArray($user);

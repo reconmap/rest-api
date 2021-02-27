@@ -7,15 +7,16 @@ require $applicationDir . '/vendor/autoload.php';
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Reconmap\QueueProcessor;
+use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\ApplicationContainer;
-use Reconmap\Services\ConfigLoader;
 use Reconmap\Tasks\EmailTaskProcessor;
 
 $logger = new Logger('cron');
 $logger->pushHandler(new StreamHandler($applicationDir . '/logs/application.log', Logger::DEBUG));
 
-$config = (new ConfigLoader())->loadFromFile($applicationDir . '/config.json');
-$config->update('appDir', $applicationDir);
+$configFilePath = $applicationDir . '/config.json';
+$config = ApplicationConfig::load($configFilePath);
+$config->setAppDir($applicationDir);
 
 $container = new ApplicationContainer($config, $logger);
 

@@ -8,15 +8,15 @@ use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Services\Config;
+use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\ConfigConsumer;
 use Reconmap\Services\ReportGenerator;
 
 class GetReportPreviewController extends Controller implements ConfigConsumer
 {
-    private ?Config $config = null;
+    private ?ApplicationConfig $config = null;
 
-    public function setConfig(Config $config): void
+    public function setConfig(ApplicationConfig $config): void
     {
         $this->config = $config;
     }

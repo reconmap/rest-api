@@ -11,13 +11,13 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Reconmap\Services\Config;
+use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\ConfigConsumer;
 
 class AuthMiddleware implements MiddlewareInterface, ConfigConsumer
 {
     private Logger $logger;
-    private Config $config;
+    private ApplicationConfig $config;
 
     public function __construct(Logger $logger)
     {
@@ -25,9 +25,9 @@ class AuthMiddleware implements MiddlewareInterface, ConfigConsumer
     }
 
     /**
-     * @param Config $config
+     * @param ApplicationConfig $config
      */
-    public function setConfig(Config $config): void
+    public function setConfig(ApplicationConfig $config): void
     {
         $this->config = $config;
     }

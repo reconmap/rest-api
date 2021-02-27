@@ -10,8 +10,8 @@ use League\Route\Http\Exception\NotFoundException;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Reconmap\ApiRouter;
+use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\ApplicationContainer;
-use Reconmap\Services\ConfigLoader;
 
 $logger = new Logger('http');
 $logsDirectory = $applicationDir . '/logs';
@@ -28,8 +28,9 @@ if (!file_exists($configFilePath) || !is_readable($configFilePath)) {
     echo $errorMessage, PHP_EOL;
     exit;
 }
-$config = (new ConfigLoader())->loadFromFile($configFilePath);
-$config->update('appDir', $applicationDir);
+
+$config = ApplicationConfig::load($configFilePath);
+$config->setAppDir($applicationDir);
 
 $container = new ApplicationContainer($config, $logger);
 

@@ -4,17 +4,19 @@ declare(strict_types=1);
 namespace Reconmap\Services;
 
 use PHPUnit\Framework\TestCase;
+use Reconmap\ApplicationConfigTestingTrait;
 
 class JwtPayloadCreatorTest extends TestCase
 {
+    use ApplicationConfigTestingTrait;
+
     public function testJwtBodyContainsBasicProperties()
     {
-        $config = new Config([
-            'jwt' => [
-                'issuer' => 'me',
-                'audience' => 'all of you'
-            ]
-        ]);
+        $config = $this->createEmptyApplicationConfig();
+        $config['jwt'] = [
+            'issuer' => 'me',
+            'audience' => 'all of you'
+        ];
 
         $now = time();
         $user = ['id' => 104, 'role' => 'superadmin'];

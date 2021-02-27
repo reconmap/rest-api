@@ -2,12 +2,12 @@
 
 namespace Reconmap;
 
-use Reconmap\Services\Config;
+use Reconmap\Services\ApplicationConfig;
 
 class DatabaseFactory
 {
 
-    static public function createConnection(Config $config)
+    static public function createConnection(ApplicationConfig $config)
     {
         $driver = new \mysqli_driver();
         $driver->report_mode = MYSQLI_REPORT_ALL ^ MYSQLI_REPORT_INDEX;

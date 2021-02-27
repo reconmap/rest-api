@@ -15,7 +15,7 @@ class ApplicationContainerTest extends TestCase
 
     public function testDelegationIsSetup()
     {
-        $config = $this->createMock(Config::class);
+        $config = $this->createMock(ApplicationConfig::class);
         $config->expects($this->atLeastOnce())
             ->method('getSettings')
             ->with('database')

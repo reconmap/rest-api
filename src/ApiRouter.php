@@ -20,7 +20,7 @@ use Reconmap\{Controllers\AuditLog\AuditLogRouter,
     Controllers\Users\UsersLoginController,
     Controllers\Users\UsersRouter,
     Controllers\Vulnerabilities\VulnerabilitiesRouter,
-    Services\Config
+    Services\ApplicationConfig
 };
 use Reconmap\Controllers\Attachments\AttachmentsRouter;
 
@@ -50,7 +50,7 @@ class ApiRouter extends Router
 
     private Container $container;
 
-    private Config $config;
+    private ApplicationConfig $config;
 
     /**
      * @param Container $container
@@ -60,7 +60,7 @@ class ApiRouter extends Router
     {
         $this->container = $container;
         $this->logger = $logger;
-        $this->config = $this->container->get(Config::class);
+        $this->config = $this->container->get(ApplicationConfig::class);
 
         $responseFactory = new ResponseFactory;
 

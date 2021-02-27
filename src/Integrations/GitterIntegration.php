@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Reconmap\Integrations;
 
-use Reconmap\Services\Config;
+use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\ConfigConsumer;
 
 class GitterIntegration implements Integration, ConfigConsumer, ActivityPublisher
 {
-    private ?Config $config = null;
+    private ?ApplicationConfig $config = null;
 
-    public function setConfig(Config $config): void
+    public function setConfig(ApplicationConfig $config): void
     {
         $this->config = $config;
     }
