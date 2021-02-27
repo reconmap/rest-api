@@ -2,5 +2,5 @@
 set -e
 
 pushd /var/www/webapp
-./vendor/bin/phpunit
+XDEBUG_MODE=coverage ./vendor/bin/phpunit
 popd
