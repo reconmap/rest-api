@@ -19,7 +19,7 @@ $config->update('appDir', $applicationDir);
 
 $container = new ApplicationContainer($config, $logger);
 
-$emailTaskProcessor = new EmailTaskProcessor($config, $logger);
+$emailTaskProcessor = $container->get(EmailTaskProcessor::class);
 
 /** @var QueueProcessor $queueProcessor */
 $queueProcessor = $container->get(QueueProcessor::class);
