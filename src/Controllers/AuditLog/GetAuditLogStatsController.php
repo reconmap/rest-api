@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Controllers\AuditLog;
 
@@ -10,12 +8,12 @@ use Reconmap\Repositories\AuditLogRepository;
 
 class GetAuditLogStatsController extends Controller
 {
+    public function __construct(private AuditLogRepository $repository)
+    {
+    }
 
     public function __invoke(ServerRequestInterface $request): array
     {
-        $repository = new AuditLogRepository($this->db);
-        $auditLog = $repository->findCountByDayStats();
-
-        return $auditLog;
+        return $this->repository->findCountByDayStats();
     }
 }

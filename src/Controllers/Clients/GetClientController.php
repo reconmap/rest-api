@@ -8,11 +8,14 @@ use Reconmap\Repositories\ClientRepository;
 
 class GetClientController extends Controller
 {
+    public function __construct(private ClientRepository $repository)
+    {
+    }
+
     public function __invoke(ServerRequestInterface $request, array $args): object
     {
         $clientId = (int)$args['clientId'];
 
-        $repository = new ClientRepository($this->db);
-        return $repository->findById($clientId);
+        return $this->repository->findById($clientId);
     }
 }

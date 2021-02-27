@@ -10,7 +10,7 @@ use Reconmap\Services\RedisServer;
 
 class SendReportController extends Controller
 {
-    public function __construct(private AttachmentFilePath $attachmentFilePathService)
+    public function __construct(private AttachmentFilePath $attachmentFilePathService, private RedisServer $redisServer)
     {
     }
 
@@ -34,9 +34,7 @@ class SendReportController extends Controller
         $recipients = explode(',', $deliverySettings->recipients);
         $this->logger->debug('recipients', [$recipients]);
 
-        /** @var RedisServer $redis */
-        $redis = $this->container->get(RedisServer::class);
-        $result = $redis->lPush("email:queue",
+        $result = $this->redisServer->lPush("email:queue",
             json_encode([
                 'subject' => $deliverySettings->subject,
                 'to' => $recipients,

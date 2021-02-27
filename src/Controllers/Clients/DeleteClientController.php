@@ -10,13 +10,15 @@ use Reconmap\Services\ActivityPublisherService;
 
 class DeleteClientController extends Controller
 {
+    public function __construct(private ClientRepository $repository)
+    {
+    }
 
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
         $clientId = (int)$args['clientId'];
 
-        $userRepository = new ClientRepository($this->db);
-        $success = $userRepository->deleteById($clientId);
+        $success = $this->repository->deleteById($clientId);
 
         $userId = $request->getAttribute('userId');
         $this->auditAction($userId, $clientId);

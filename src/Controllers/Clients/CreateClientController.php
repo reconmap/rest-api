@@ -9,14 +9,17 @@ use Reconmap\Repositories\ClientRepository;
 
 class CreateClientController extends Controller
 {
+    public function __construct(private ClientRepository $repository)
+    {
+    }
+
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
         /** @var Client $client */
         $client = $this->getJsonBodyDecoded($request);
         $client->creator_uid = $request->getAttribute('userId');
 
-        $repository = new ClientRepository($this->db);
-        $result = $repository->insert($client);
+        $result = $this->repository->insert($client);
 
         return ['success' => $result];
     }

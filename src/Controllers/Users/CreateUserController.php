@@ -11,14 +11,17 @@ use Reconmap\Services\RedisServer;
 
 class CreateUserController extends Controller
 {
+    public function __construct(private UserRepository $userRepository, private RedisServer $redisServer)
+    {
+    }
+
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
         $user = $this->getJsonBodyDecoded($request);
 
         $user->password = password_hash($user->password, PASSWORD_DEFAULT);
 
-        $repository = new UserRepository($this->db);
-        $userId = $repository->create($user);
+        $userId = $this->userRepository->create($user);
 
         $loggedInUserId = $request->getAttribute('userId');
 
@@ -29,9 +32,7 @@ class CreateUserController extends Controller
                 'user' => (array)$user
             ]);
 
-            /** @var RedisServer $redis */
-            $redis = $this->container->get(RedisServer::class);
-            $result = $redis->lPush("email:queue",
+            $result = $this->redisServer->lPush("email:queue",
                 json_encode([
                     'subject' => 'Account created',
                     'to' => ['email' => $user->email, 'name' => $user->name],

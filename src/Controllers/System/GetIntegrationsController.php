@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Controllers\System;
 
@@ -14,8 +12,6 @@ class GetIntegrationsController extends Controller
     public function __invoke(ServerRequestInterface $request): array
     {
         $repository = new IntegrationsRepository($this->container);
-        $integrations = $repository->findAll();
-
-        return $integrations;
+        return $repository->findAll();
     }
 }

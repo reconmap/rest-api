@@ -15,6 +15,9 @@ use Reconmap\Services\JwtPayloadCreator;
 
 class UsersLoginController extends Controller
 {
+    public function __construct(private UserRepository $userRepository, private ApplicationConfig $applicationConfig)
+    {
+    }
 
     public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
@@ -22,8 +25,7 @@ class UsersLoginController extends Controller
         $username = $json['username'];
         $password = $json['password'];
 
-        $repository = new UserRepository($this->db);
-        $user = $repository->findByUsername($username);
+        $user = $this->userRepository->findByUsername($username);
 
         $response = new Response;
 
@@ -36,12 +38,10 @@ class UsersLoginController extends Controller
 
         $this->audit($user['id'], AuditLogAction::USER_LOGGED_IN);
 
-        $config = $this->container->get(ApplicationConfig::class);
-
-        $jwtPayload = (new JwtPayloadCreator($config))
+        $jwtPayload = (new JwtPayloadCreator($this->applicationConfig))
             ->createFromUserArray($user);
 
-        $jwtConfig = $config->getSettings('jwt');
+        $jwtConfig = $this->applicationConfig->getSettings('jwt');
 
         $user['access_token'] = JWT::encode($jwtPayload, $jwtConfig['key'], 'HS256');
 

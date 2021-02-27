@@ -35,7 +35,7 @@ $config->setAppDir($applicationDir);
 $container = new ApplicationContainer($config, $logger);
 
 $router = new ApiRouter();
-$router->mapRoutes($container, $logger);
+$router->mapRoutes($container, $config);
 
 try {
     $request = GuzzleHttp\Psr7\ServerRequest::fromGlobals();

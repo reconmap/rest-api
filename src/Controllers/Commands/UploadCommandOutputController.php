@@ -11,7 +11,7 @@ use Reconmap\Services\RedisServer;
 
 class UploadCommandOutputController extends Controller
 {
-    public function __construct(private AttachmentFilePath $attachmentFilePathService)
+    public function __construct(private AttachmentFilePath $attachmentFilePathService, private RedisServer $redisServer)
     {
     }
 
@@ -45,9 +45,7 @@ class UploadCommandOutputController extends Controller
         $repository = new AttachmentRepository($this->db);
         $repository->insert($attachment);
 
-        /** @var RedisServer $redis */
-        $redis = $this->container->get(RedisServer::class);
-        $result = $redis->lPush("tasks:queue",
+        $result = $this->redisServer->lPush("tasks:queue",
             json_encode([
                 'taskId' => $taskId,
                 'userId' => $userId,
