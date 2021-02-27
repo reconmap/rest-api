@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Services;
 
@@ -12,7 +10,11 @@ class CvssTest extends TestCase
     public function listSeverities(): array
     {
         return [
-            [0, 'none']
+            [0, 'none'],
+            [2, 'low'],
+            [6.9, 'medium'],
+            [7, 'high'],
+            [100, 'critical']
         ];
     }
 
