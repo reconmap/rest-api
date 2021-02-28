@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Controllers\Vulnerabilities;
 
@@ -10,17 +8,18 @@ use Reconmap\Repositories\VulnerabilityRepository;
 
 class GetVulnerabilitiesStatsController extends Controller
 {
+    public function __construct(private VulnerabilityRepository $repository)
+    {
+    }
 
     public function __invoke(ServerRequestInterface $request): array
     {
         $params = $request->getQueryParams();
 
-        $repository = new VulnerabilityRepository($this->db);
-
         if (!isset($params['groupBy']) || $params['groupBy'] === 'risk') {
-            $stats = $repository->findCountByRisk();
+            $stats = $this->repository->findCountByRisk();
         } else {
-            $stats = $repository->findCountByCategory();
+            $stats = $this->repository->findCountByCategory();
         }
 
         return $stats;

@@ -10,22 +10,25 @@ use Reconmap\Repositories\VulnerabilityRepository;
 
 class GetVulnerabilitiesController extends Controller
 {
+    public function __construct(private VulnerabilityRepository $repository)
+    {
+    }
+
     public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
         $params = $request->getQueryParams();
         $page = (int)$params['page'];
 
-        $repository = new VulnerabilityRepository($this->db);
         if (isset($params['keywords'])) {
             $keywords = $params['keywords'];
-            $vulnerabilities = $repository->findByKeywords($keywords);
+            $vulnerabilities = $this->repository->findByKeywords($keywords);
         } elseif (isset($params['targetId'])) {
             $targetId = (int)$params['targetId'];
-            $vulnerabilities = $repository->findByTargetId($targetId);
+            $vulnerabilities = $this->repository->findByTargetId($targetId);
         } else {
-            $vulnerabilities = $repository->findAll($page);
+            $vulnerabilities = $this->repository->findAll($page);
         }
-        $count = $repository->countAll();
+        $count = $this->repository->countAll();
 
         $pageCount = max(ceil($count / 20), 1);
 

@@ -1,5 +1,4 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap;
 
@@ -23,8 +22,7 @@ class QueueProcessor
 
     public function run(ItemProcessor $itemProcessor, string $queueName): int
     {
-        $processorClass = get_class($itemProcessor);
-        $this->logger->debug("Running queue processor", ['class' => $processorClass]);
+        $this->logger->debug("Running queue processor", ['class' => $itemProcessor::class]);
 
         while ($itemEncoded = $this->redis->brPop($queueName, 1)) {
             $this->logger->debug('Pulling item from queue', ['item' => $itemEncoded]);
