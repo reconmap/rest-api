@@ -1,7 +1,10 @@
 Hi, {{ user.full_name }}
 
-You have been added to Reconmap {{ instance_url }}
+You have been added to the Reconmap instance at {{ instance_url }}.
 
-Ask the administrator for your password.
+Your login credentials are:
+
+- Username: {{ user.username }}
+- Password: {{ unencryptedPassword }}
 
 Thanks,
