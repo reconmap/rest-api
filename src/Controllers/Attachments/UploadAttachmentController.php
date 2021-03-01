@@ -11,9 +11,8 @@ use Reconmap\Services\AttachmentFilePath;
 
 class UploadAttachmentController extends Controller
 {
-    private AttachmentRepository $attachmentRepository;
-
-    public function __construct(private AttachmentFilePath $attachmentFilePathService)
+    public function __construct(private AttachmentRepository $attachmentRepository,
+                                private AttachmentFilePath $attachmentFilePathService)
     {
     }
 
@@ -25,8 +24,6 @@ class UploadAttachmentController extends Controller
 
         $userId = $request->getAttribute('userId');
         $files = $request->getUploadedFiles()['attachment'];
-
-        $this->attachmentRepository = new AttachmentRepository($this->db);
 
         foreach ($files as $file) {
             /** @var UploadedFileInterface $file */

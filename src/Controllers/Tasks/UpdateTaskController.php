@@ -11,6 +11,10 @@ use Reconmap\Services\ActivityPublisherService;
 
 class UpdateTaskController extends Controller
 {
+    public function __construct(private TaskRepository $repository)
+    {
+    }
+
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
         $taskId = (int)$args['taskId'];
@@ -26,8 +30,7 @@ class UpdateTaskController extends Controller
         if (!empty($newColumnValues)) {
             NullColumnReplacer::replaceEmptyWithNulls(['due_date'], $newColumnValues);
 
-            $repository = new TaskRepository($this->db);
-            $success = $repository->updateById($taskId, $newColumnValues);
+            $success = $this->repository->updateById($taskId, $newColumnValues);
 
             $loggedInUserId = $request->getAttribute('userId');
             $this->auditAction($loggedInUserId, $taskId);

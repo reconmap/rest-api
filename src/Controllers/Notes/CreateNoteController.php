@@ -8,14 +8,17 @@ use Reconmap\Repositories\NoteRepository;
 
 class CreateNoteController extends Controller
 {
+    public function __construct(private NoteRepository $repository)
+    {
+    }
+
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
         $note = $this->getJsonBodyDecoded($request);
 
         $userId = $request->getAttribute('userId');
 
-        $repository = new NoteRepository($this->db);
-        $result = $repository->insert($userId, $note);
+        $result = $this->repository->insert($userId, $note);
 
         return ['success' => $result];
     }

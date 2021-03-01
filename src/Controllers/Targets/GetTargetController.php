@@ -8,12 +8,14 @@ use Reconmap\Repositories\TargetRepository;
 
 class GetTargetController extends Controller
 {
+    public function __construct(private TargetRepository $repository)
+    {
+    }
 
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
         $targetId = (int)$args['targetId'];
 
-        $repository = new TargetRepository($this->db);
-        return $repository->findById($targetId);
+        return $this->repository->findById($targetId);
     }
 }

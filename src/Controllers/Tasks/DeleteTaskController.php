@@ -10,13 +10,15 @@ use Reconmap\Services\ActivityPublisherService;
 
 class DeleteTaskController extends Controller
 {
+    public function __construct(private TaskRepository $repository)
+    {
+    }
 
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
         $taskId = (int)$args['taskId'];
 
-        $userRepository = new TaskRepository($this->db);
-        $success = $userRepository->deleteById($taskId);
+        $success = $this->repository->deleteById($taskId);
 
         $userId = $request->getAttribute('userId');
         $this->auditAction($userId, $taskId);

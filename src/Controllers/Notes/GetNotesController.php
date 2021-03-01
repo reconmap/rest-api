@@ -8,11 +8,8 @@ use Reconmap\Repositories\NoteRepository;
 
 class GetNotesController extends Controller
 {
-    private NoteRepository $repository;
-
-    public function __construct(NoteRepository $repository)
+    public function __construct(private NoteRepository $repository)
     {
-        $this->repository = $repository;
     }
 
     public function __invoke(ServerRequestInterface $request): array

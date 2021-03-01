@@ -14,17 +14,16 @@ use Reconmap\Services\AuditLogService;
 
 class DownloadAttachmentController extends Controller
 {
-    public function __construct(private AttachmentFilePath $attachmentFilePathService)
+    public function __construct(private AttachmentRepository $attachmentRepository,
+                                private AttachmentFilePath $attachmentFilePathService)
     {
-
     }
 
     public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
     {
         $attachmentId = (int)$args['attachmentId'];
 
-        $repository = new AttachmentRepository($this->db);
-        $attachment = $repository->findById($attachmentId);
+        $attachment = $this->attachmentRepository->findById($attachmentId);
 
         $userId = $request->getAttribute('userId');
 

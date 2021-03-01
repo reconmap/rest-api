@@ -10,17 +10,20 @@ class GetTasksController extends Controller
 {
     private const PAGE_LIMIT = 20;
 
+    public function __construct(private TaskRepository $repository)
+    {
+    }
+
     public function __invoke(ServerRequestInterface $request): array
     {
         $params = $request->getQueryParams();
         $limit = isset($params['limit']) ? intval($params['limit']) : self::PAGE_LIMIT;
 
-        $repository = new TaskRepository($this->db);
         if (isset($params['keywords'])) {
             $keywords = $params['keywords'];
-            $tasks = $repository->findByKeywords($keywords);
+            $tasks = $this->repository->findByKeywords($keywords);
         } else {
-            $tasks = $repository->findAll(limit: $limit);
+            $tasks = $this->repository->findAll(limit: $limit);
         }
 
         return $tasks;

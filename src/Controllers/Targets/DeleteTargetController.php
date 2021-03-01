@@ -10,13 +10,15 @@ use Reconmap\Services\AuditLogService;
 
 class DeleteTargetController extends Controller
 {
+    public function __construct(private TargetRepository $repository)
+    {
+    }
 
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
         $targetId = (int)$args['targetId'];
 
-        $repository = new TargetRepository($this->db);
-        $success = $repository->deleteById($targetId);
+        $success = $this->repository->deleteById($targetId);
 
         $userId = $request->getAttribute('userId');
         $this->auditAction($userId, $targetId);

@@ -8,11 +8,8 @@ use Reconmap\Repositories\NoteRepository;
 
 class DeleteNoteController extends Controller
 {
-    private NoteRepository $repository;
-
-    public function __construct(NoteRepository $repository)
+    public function __construct(private NoteRepository $repository)
     {
-        $this->repository = $repository;
     }
 
     public function __invoke(ServerRequestInterface $request, array $args): array

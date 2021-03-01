@@ -5,6 +5,7 @@ namespace Reconmap\Controllers\Targets;
 use League\Plates\Engine;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\ControllerTestCase;
+use Reconmap\Repositories\TargetRepository;
 
 class DeleteTargetControllerTest extends ControllerTestCase
 {
@@ -20,8 +21,14 @@ class DeleteTargetControllerTest extends ControllerTestCase
 
         $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
 
-        $controller = $this->injectController(new DeleteTargetController());
+        $mockRepository = $this->createPartialMock(TargetRepository::class, ['deleteById']);
+        $mockRepository->expects($this->once())
+            ->method('deleteById')
+            ->with(0)
+            ->willReturn(true);
+
+        $controller = $this->injectController(new DeleteTargetController($mockRepository));
         $response = $controller($request, $args);
-        $this->assertEquals(['success' => 0], $response);
+        $this->assertEquals(['success' => true], $response);
     }
 }
