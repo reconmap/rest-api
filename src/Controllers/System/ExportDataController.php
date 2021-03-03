@@ -18,11 +18,8 @@ use Reconmap\Services\AuditLogService;
 
 class ExportDataController extends Controller
 {
-    private AuditLogService $auditLogService;
-
-    public function __construct(AuditLogService $auditLogService)
+    public function __construct(private AuditLogService $auditLogService)
     {
-        $this->auditLogService = $auditLogService;
     }
 
     public function __invoke(ServerRequestInterface $request): ResponseInterface

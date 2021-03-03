@@ -34,6 +34,18 @@ class TargetRepository extends MysqlRepository
         return $targets;
     }
 
+    public function findByProjectIdAndName(int $projectId, string $name): ?object
+    {
+        $stmt = $this->db->prepare('SELECT t.*, (SELECT COUNT(*) FROM vulnerability WHERE target_id = t.id) AS num_vulnerabilities FROM target t WHERE t.project_id = ? AND t.name = ?');
+        $stmt->bind_param('is', $projectId, $name);
+        $stmt->execute();
+        $rs = $stmt->get_result();
+        $target = $rs->fetch_object();
+        $stmt->close();
+
+        return $target;
+    }
+
     public function deleteById(int $id): bool
     {
         return $this->deleteByTableId('target', $id);

@@ -173,6 +173,11 @@
     {% for vulnerability in vulnerabilities %}
         <h3>{{ vulnerability.summary }}</h3>
 
+        {% if vulnerability.solution %}
+            <h4>Solution</h4>
+            <p>{{ markdownParser.text(vulnerability.solution)|raw }}</p>
+        {% endif %}
+
         <table>
             <tbody>
             <tr>

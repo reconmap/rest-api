@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Processors;
 
@@ -14,6 +12,8 @@ class ProcessorFactory
                 return new NmapResultsProcessor();
             case 'sqlmap':
                 return new SqlmapProcessor();
+            case 'nessus':
+                return new NessusProcessor();
         }
 
         return null;

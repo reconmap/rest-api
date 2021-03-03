@@ -15,6 +15,9 @@ use Reconmap\Services\AuditLogService;
 
 class ImportDataController extends Controller
 {
+    public function __construct(private AuditLogService $auditLogService)
+    {
+    }
 
     public function __invoke(ServerRequestInterface $request): array
     {
@@ -101,7 +104,6 @@ class ImportDataController extends Controller
 
     private function auditAction(int $loggedInUserId): void
     {
-        $auditLogService = new AuditLogService($this->db);
-        $auditLogService->insert($loggedInUserId, AuditLogAction::DATA_IMPORTED);
+        $this->auditLogService->insert($loggedInUserId, AuditLogAction::DATA_IMPORTED);
     }
 }
