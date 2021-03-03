@@ -6,6 +6,8 @@ class DeleteQueryBuilder implements QueryBuilder
 {
     public function __construct(private string $tableName)
     {
+        if (empty($this->tableName))
+            throw new \InvalidArgumentException('the constructor argument table name can not be empty or null');
     }
 
     public function toSql(): string
