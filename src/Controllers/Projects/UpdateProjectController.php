@@ -11,6 +11,10 @@ use Reconmap\Services\ActivityPublisherService;
 
 class UpdateProjectController extends Controller
 {
+    public function __construct(private ProjectRepository $repository, private ActivityPublisherService $activityPublisherService)
+    {
+    }
+
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
         $projectId = (int)$args['projectId'];
@@ -26,8 +30,7 @@ class UpdateProjectController extends Controller
         if (!empty($newColumnValues)) {
             NullColumnReplacer::replaceEmptyWithNulls(['engagement_start_date', 'engagement_end_date'], $newColumnValues);
 
-            $repository = new ProjectRepository($this->db);
-            $success = $repository->updateById($projectId, $newColumnValues);
+            $success = $this->repository->updateById($projectId, $newColumnValues);
 
             $loggedInUserId = $request->getAttribute('userId');
             $this->auditAction($loggedInUserId, $projectId);
@@ -38,7 +41,6 @@ class UpdateProjectController extends Controller
 
     private function auditAction(int $loggedInUserId, int $projectId): void
     {
-        $activityPublisherService = $this->container->get(ActivityPublisherService::class);
-        $activityPublisherService->publish($loggedInUserId, AuditLogAction::PROJECT_MODIFIED, ['projectId' => $projectId]);
+        $this->activityPublisherService->publish($loggedInUserId, AuditLogAction::PROJECT_MODIFIED, ['projectId' => $projectId]);
     }
 }

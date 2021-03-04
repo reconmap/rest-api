@@ -8,14 +8,20 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditLogAction;
+use Reconmap\Models\Permissions;
+use Reconmap\Models\UserPermissions;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\AuditLogService;
 use Reconmap\Services\JwtPayloadCreator;
+use const Reconmap\Models\USER_PERMISSIONS;
 
 class UsersLoginController extends Controller
 {
-    public function __construct(private UserRepository $userRepository, private ApplicationConfig $applicationConfig)
+    public function __construct(
+        private UserRepository $userRepository,
+        private ApplicationConfig $applicationConfig,
+        private AuditLogService $auditLogService)
     {
     }
 
@@ -44,6 +50,7 @@ class UsersLoginController extends Controller
         $jwtConfig = $this->applicationConfig->getSettings('jwt');
 
         $user['access_token'] = JWT::encode($jwtPayload, $jwtConfig['key'], 'HS256');
+        $user['permissions'] = Permissions::ByRoles[$user['role']];
 
         $response->getBody()->write(json_encode($user));
         return $response->withHeader('Content-type', 'application/json');
@@ -51,7 +58,6 @@ class UsersLoginController extends Controller
 
     private function audit(int $userId, string $action, ?array $object = null): void
     {
-        $auditLogService = new AuditLogService($this->db);
-        $auditLogService->insert($userId, $action, $object);
+        $this->auditLogService->insert($userId, $action, $object);
     }
 }

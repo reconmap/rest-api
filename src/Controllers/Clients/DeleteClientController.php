@@ -10,7 +10,9 @@ use Reconmap\Services\ActivityPublisherService;
 
 class DeleteClientController extends Controller
 {
-    public function __construct(private ClientRepository $repository)
+    public function __construct(
+        private ClientRepository $repository,
+        private ActivityPublisherService $activityPublisherService)
     {
     }
 
@@ -28,7 +30,6 @@ class DeleteClientController extends Controller
 
     private function auditAction(int $loggedInUserId, int $clientId): void
     {
-        $activityPublisherService = $this->container->get(ActivityPublisherService::class);
-        $activityPublisherService->publish($loggedInUserId, AuditLogAction::CLIENT_DELETED, ['id' => $clientId]);
+        $this->activityPublisherService->publish($loggedInUserId, AuditLogAction::CLIENT_DELETED, ['id' => $clientId]);
     }
 }

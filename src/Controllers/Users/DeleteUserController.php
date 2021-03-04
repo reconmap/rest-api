@@ -10,14 +10,17 @@ use Reconmap\Services\ActivityPublisherService;
 
 class DeleteUserController extends Controller
 {
+    public function __construct(private UserRepository $repository,
+                                private ActivityPublisherService $activityPublisherService)
+    {
+    }
 
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
         $userId = (int)$args['userId'];
         $loggedInUserId = $request->getAttribute('userId');
 
-        $userRepository = new UserRepository($this->db);
-        $success = $userRepository->deleteById($userId);
+        $success = $this->repository->deleteById($userId);
 
         $this->auditAction($loggedInUserId, $userId);
 
@@ -26,8 +29,6 @@ class DeleteUserController extends Controller
 
     private function auditAction(int $loggedInUserId, int $userId): void
     {
-        /** @var ActivityPublisherService $activityPublisherService */
-        $activityPublisherService = $this->container->get(ActivityPublisherService::class);
-        $activityPublisherService->publish($loggedInUserId, AuditLogAction::USER_DELETED, ['id' => $userId]);
+        $this->activityPublisherService->publish($loggedInUserId, AuditLogAction::USER_DELETED, ['id' => $userId]);
     }
 }

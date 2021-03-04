@@ -10,7 +10,8 @@ use Reconmap\Services\ActivityPublisherService;
 
 class DeleteTaskController extends Controller
 {
-    public function __construct(private TaskRepository $repository)
+    public function __construct(private TaskRepository $repository,
+                                private ActivityPublisherService $activityPublisherService)
     {
     }
 
@@ -28,7 +29,6 @@ class DeleteTaskController extends Controller
 
     private function auditAction(int $loggedInUserId, int $taskId): void
     {
-        $activityPublisherService = $this->container->get(ActivityPublisherService::class);
-        $activityPublisherService->publish($loggedInUserId, AuditLogAction::TASK_DELETED, ['type' => 'task', 'id' => $taskId]);
+        $this->activityPublisherService->publish($loggedInUserId, AuditLogAction::TASK_DELETED, ['type' => 'task', 'id' => $taskId]);
     }
 }

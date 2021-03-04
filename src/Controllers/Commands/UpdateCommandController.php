@@ -10,6 +10,11 @@ use Reconmap\Services\ActivityPublisherService;
 
 class UpdateCommandController extends Controller
 {
+    public function __construct(private CommandRepository $repository,
+                                private ActivityPublisherService $activityPublisherService)
+    {
+    }
+
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
         $commandId = (int)$args['commandId'];
@@ -23,8 +28,7 @@ class UpdateCommandController extends Controller
 
         $success = false;
         if (!empty($newColumnValues)) {
-            $repository = new CommandRepository($this->db);
-            $success = $repository->updateById($commandId, $newColumnValues);
+            $success = $this->repository->updateById($commandId, $newColumnValues);
 
             $loggedInUserId = $request->getAttribute('userId');
             $this->auditAction($loggedInUserId, $commandId);
@@ -35,7 +39,6 @@ class UpdateCommandController extends Controller
 
     private function auditAction(int $loggedInUserId, int $commandId): void
     {
-        $activityPublisherService = $this->container->get(ActivityPublisherService::class);
-        $activityPublisherService->publish($loggedInUserId, AuditLogAction::COMMAND_UPDATED, ['type' => 'command', 'id' => $commandId]);
+        $this->activityPublisherService->publish($loggedInUserId, AuditLogAction::COMMAND_UPDATED, ['type' => 'command', 'id' => $commandId]);
     }
 }

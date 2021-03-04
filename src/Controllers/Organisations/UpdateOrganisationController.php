@@ -11,13 +11,16 @@ use Reconmap\Services\ActivityPublisherService;
 
 class UpdateOrganisationController extends Controller
 {
+    public function __construct(private OrganisationRepository $repository, private ActivityPublisherService $activityPublisherService)
+    {
+    }
+
     public function __invoke(ServerRequestInterface $request): array
     {
         /** @var Organisation $organisation */
         $organisation = $this->getJsonBodyDecoded($request);
 
-        $repository = new OrganisationRepository($this->db);
-        $success = $repository->updateRootOrganisation($organisation);
+        $success = $this->repository->updateRootOrganisation($organisation);
 
         $loggedInUserId = $request->getAttribute('userId');
 
@@ -28,7 +31,6 @@ class UpdateOrganisationController extends Controller
 
     private function auditAction(int $loggedInUserId): void
     {
-        $activityPublisherService = $this->container->get(ActivityPublisherService::class);
-        $activityPublisherService->publish($loggedInUserId, AuditLogAction::ORGANISATION_UPDATED);
+        $this->activityPublisherService->publish($loggedInUserId, AuditLogAction::ORGANISATION_UPDATED);
     }
 }
