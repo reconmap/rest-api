@@ -14,7 +14,6 @@ use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\AuditLogService;
 use Reconmap\Services\JwtPayloadCreator;
-use const Reconmap\Models\USER_PERMISSIONS;
 
 class UsersLoginController extends Controller
 {
