@@ -5,6 +5,9 @@ server {
         server_tokens off;
         server_name localhost;
 
+        client_max_body_size 32m;
+        client_body_timeout 90s;
+
         root /var/www/webapp/public;
         index index.html index.php;
 

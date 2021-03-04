@@ -36,6 +36,9 @@ RUN sed -i "s/;clear_env = no/clear_env = no/" /etc/php/8.0/fpm/pool.d/www.conf
 RUN rm /etc/nginx/sites-enabled/default
 COPY docker/api/nginx/sites-enabled/* /etc/nginx/sites-enabled/
 
+RUN sed -i 's/upload_max_filesize = [[:digit:]]\+M/upload_max_filesize = 20M/' /etc/php/8.0/fpm/php.ini
+RUN sed -i 's/post_max_size = [[:digit:]]\+M/post_max_size = 28M/' /etc/php/8.0/fpm/php.ini
+
 WORKDIR /var/www/webapp
 COPY composer.json /var/www/webapp
 COPY composer.lock /var/www/webapp
