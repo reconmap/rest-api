@@ -2,18 +2,18 @@
 
 namespace Reconmap\Repositories;
 
-use League\Container\Container;
 use Reconmap\Integrations\GitterIntegration;
 use Reconmap\Integrations\Integration;
+use Reconmap\Services\ApplicationConfig;
 
 class IntegrationsRepository
 {
     private array $integrations;
 
-    public function __construct(Container $container)
+    public function __construct(ApplicationConfig $config)
     {
         $this->integrations = [
-            $container->get(GitterIntegration::class)
+            new GitterIntegration($config)
         ];
     }
 

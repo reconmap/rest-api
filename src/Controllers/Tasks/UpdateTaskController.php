@@ -11,7 +11,8 @@ use Reconmap\Services\ActivityPublisherService;
 
 class UpdateTaskController extends Controller
 {
-    public function __construct(private TaskRepository $repository)
+    public function __construct(private TaskRepository $repository,
+                                private ActivityPublisherService $activityPublisherService)
     {
     }
 
@@ -41,7 +42,6 @@ class UpdateTaskController extends Controller
 
     private function auditAction(int $loggedInUserId, int $taskId): void
     {
-        $activityPublisherService = $this->container->get(ActivityPublisherService::class);
-        $activityPublisherService->publish($loggedInUserId, AuditLogAction::TASK_MODIFIED, ['taskId' => $taskId]);
+        $this->activityPublisherService->publish($loggedInUserId, AuditLogAction::TASK_MODIFIED, ['taskId' => $taskId]);
     }
 }

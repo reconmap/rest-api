@@ -1,19 +1,13 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Integrations;
 
 use Reconmap\Services\ApplicationConfig;
-use Reconmap\Services\ConfigConsumer;
 
-class GitterIntegration implements Integration, ConfigConsumer, ActivityPublisher
+class GitterIntegration implements Integration, ActivityPublisher
 {
-    private ?ApplicationConfig $config = null;
-
-    public function setConfig(ApplicationConfig $config): void
+    public function __construct(private ApplicationConfig $config)
     {
-        $this->config = $config;
     }
 
     public function getName(): string
