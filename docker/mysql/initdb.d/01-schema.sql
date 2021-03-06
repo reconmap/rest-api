@@ -223,6 +223,7 @@ CREATE TABLE document
 (
     id          INT UNSIGNED                                 NOT NULL AUTO_INCREMENT,
     insert_ts   TIMESTAMP                                    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_ts   TIMESTAMP                                    NULL ON UPDATE CURRENT_TIMESTAMP,
     user_id     INT UNSIGNED                                 NOT NULL REFERENCES user,
     parent_type ENUM ('library', 'project', 'vulnerability') NOT NULL,
     parent_id   INT UNSIGNED                                 NULL,

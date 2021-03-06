@@ -70,6 +70,12 @@ class DocumentRepository extends MysqlRepository
         return $queryBuilder;
     }
 
+    public function findAll(): array
+    {
+        $resultSet = $this->db->query('SELECT * FROM document');
+        return $resultSet->fetch_all(MYSQLI_ASSOC);
+    }
+
     public function updateById(int $id, array $newColumnValues): bool
     {
         $updateQueryBuilder = new UpdateQueryBuilder('document');
