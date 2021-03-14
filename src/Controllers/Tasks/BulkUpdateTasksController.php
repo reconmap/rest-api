@@ -18,25 +18,30 @@ class BulkUpdateTasksController extends Controller
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
         $operation = $request->getHeaderLine('Bulk-Operation');
-        $tasksIds = $this->getJsonBodyDecodedAsArray($request);
+        $requestData = $this->getJsonBodyDecodedAsArray($request);
 
-        $this->logger->debug("Bulk-Operation: $operation", $tasksIds);
-
-        $numSuccesses = 0;
-
-        if ('DELETE' === $operation) {
-            $numSuccesses = $this->taskRepository->deleteByIds($tasksIds);
-        }
+        $this->logger->debug("Bulk-Operation: $operation", $requestData);
 
         $loggedInUserId = $request->getAttribute('userId');
 
-        $this->auditAction($loggedInUserId, $tasksIds);
+        $numSuccesses = 0;
+
+        switch ($operation) {
+            case 'UPDATE':
+                $taskIds = $requestData['taskIds'];
+                // @todo Do in one SQL update statement
+                foreach ($taskIds as $taskId) {
+                    $numSuccesses = $this->taskRepository->updateById($taskId, ['status' => $requestData['newStatus']]);
+                }
+                $this->auditLogService->insert($loggedInUserId, AuditLogAction::TASK_MODIFIED, ['type' => 'tasks', 'ids' => $taskIds]);
+                break;
+            case 'DELETE':
+                $taskIds = $requestData;
+                $numSuccesses = $this->taskRepository->deleteByIds($taskIds);
+                $this->auditLogService->insert($loggedInUserId, AuditLogAction::TASK_DELETED, ['type' => 'tasks', 'ids' => $taskIds]);
+                break;
+        }
 
         return ['numSuccesses' => $numSuccesses];
-    }
-
-    private function auditAction(int $loggedInUserId, array $userIds): void
-    {
-        $this->auditLogService->insert($loggedInUserId, AuditLogAction::USER_DELETED, ['type' => 'tasks', 'ids' => $userIds]);
     }
 }
