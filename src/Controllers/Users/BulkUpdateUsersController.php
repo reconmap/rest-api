@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Controllers\Users;
 
@@ -10,8 +8,13 @@ use Reconmap\Models\AuditLogAction;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\AuditLogService;
 
-class UpdateUsersController extends Controller
+class BulkUpdateUsersController extends Controller
 {
+    public function __construct(private UserRepository $userRepository,
+                                private AuditLogService $auditLogService)
+    {
+    }
+
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
         $operation = $request->getHeaderLine('Bulk-Operation');
@@ -22,8 +25,7 @@ class UpdateUsersController extends Controller
         $numSuccesses = 0;
 
         if ('DELETE' === $operation) {
-            $repository = new UserRepository($this->db);
-            $numSuccesses = $repository->deleteByIds($userIds);
+            $numSuccesses = $this->userRepository->deleteByIds($userIds);
         }
 
         $loggedInUserId = $request->getAttribute('userId');
@@ -35,7 +37,6 @@ class UpdateUsersController extends Controller
 
     private function auditAction(int $loggedInUserId, array $userIds): void
     {
-        $auditLogService = new AuditLogService($this->db);
-        $auditLogService->insert($loggedInUserId, AuditLogAction::USER_DELETED, ['type' => 'users', 'ids' => $userIds]);
+        $this->auditLogService->insert($loggedInUserId, AuditLogAction::USER_DELETED, ['type' => 'users', 'ids' => $userIds]);
     }
 }

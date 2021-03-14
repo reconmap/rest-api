@@ -44,13 +44,23 @@ abstract class MysqlRepository
 
     protected function deleteByTableId(string $tableName, int $id): bool
     {
+        return 1 === $this->deleteByTableIds($tableName, [$id]);
+    }
+
+    protected function deleteByTableIds(string $tableName, array $ids): int
+    {
+        $successfulDeleteCount = 0;
+
         $deleteQueryBuilder = new DeleteQueryBuilder($tableName);
         $stmt = $this->db->prepare($deleteQueryBuilder->toSql());
         $stmt->bind_param('i', $id);
-        $result = $stmt->execute();
-        $success = $result && 1 === $stmt->affected_rows;
+        foreach ($ids as $id) {
+            $result = $stmt->execute();
+            $success = $result && 1 === $stmt->affected_rows;
+            $successfulDeleteCount += $success ? 1 : 0;
+        }
         $stmt->close();
 
-        return $success;
+        return $successfulDeleteCount;
     }
 }

@@ -67,18 +67,7 @@ class UserRepository extends MysqlRepository
 
     public function deleteByIds(array $ids): int
     {
-        $numSuccesses = 0;
-
-        $stmt = $this->db->prepare('DELETE FROM user WHERE id = ?');
-        $stmt->bind_param('i', $id);
-        foreach ($ids as $id) {
-            $result = $stmt->execute();
-            $success = $result && 1 === $stmt->affected_rows;
-            $numSuccesses += $success ? 1 : 0;
-        }
-        $stmt->close();
-
-        return $numSuccesses;
+        return $this->deleteByTableIds('user', $ids);
     }
 
     public function create(object $user): int

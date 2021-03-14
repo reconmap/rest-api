@@ -104,6 +104,11 @@ class TaskRepository extends MysqlRepository
         return $this->deleteByTableId('task', $id);
     }
 
+    public function deleteByIds(array $ids): int
+    {
+        return $this->deleteByTableIds('task', $ids);
+    }
+
     public function updateById(int $id, array $newColumnValues): bool
     {
         $updateQueryBuilder = new UpdateQueryBuilder('task');
