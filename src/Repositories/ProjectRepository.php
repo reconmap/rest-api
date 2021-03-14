@@ -14,6 +14,7 @@ class ProjectRepository extends MysqlRepository
         'engagement_type' => 's',
         'engagement_start_date' => 's',
         'engagement_end_date' => 's',
+        'archived' => 'i'
     ];
 
     public function findAll(): array

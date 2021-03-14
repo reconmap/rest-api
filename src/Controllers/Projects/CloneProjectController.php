@@ -8,13 +8,15 @@ use Reconmap\Repositories\ProjectRepository;
 
 class CloneProjectController extends Controller
 {
+    public function __construct(private ProjectRepository $projectRepository)
+    {
+    }
 
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
-        $projectTemplateId = (int)$args['id'];
+        $projectTemplateId = (int)$args['projectId'];
         $userId = $request->getAttribute('userId');
 
-        $repository = new ProjectRepository($this->db);
-        return $repository->createFromTemplate($projectTemplateId, $userId);
+        return $this->projectRepository->createFromTemplate($projectTemplateId, $userId);
     }
 }

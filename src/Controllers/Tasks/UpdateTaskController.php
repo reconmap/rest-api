@@ -42,6 +42,6 @@ class UpdateTaskController extends Controller
 
     private function auditAction(int $loggedInUserId, int $taskId): void
     {
-        $this->activityPublisherService->publish($loggedInUserId, AuditLogAction::TASK_MODIFIED, ['taskId' => $taskId]);
+        $this->activityPublisherService->publish($loggedInUserId, AuditLogAction::TASK_MODIFIED, ['type' => 'task', 'id' => $taskId]);
     }
 }

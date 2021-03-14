@@ -8,12 +8,14 @@ use Reconmap\Repositories\ProjectRepository;
 
 class GetProjectController extends Controller
 {
+    public function __construct(private ProjectRepository $projectRepository)
+    {
+    }
 
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
         $projectId = (int)$args['projectId'];
 
-        $repository = new ProjectRepository($this->db);
-        return $repository->findById($projectId);
+        return $this->projectRepository->findById($projectId);
     }
 }

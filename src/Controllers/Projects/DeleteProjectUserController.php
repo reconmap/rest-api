@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Controllers\Projects;
 
@@ -10,13 +8,15 @@ use Reconmap\Repositories\ProjectUserRepository;
 
 class DeleteProjectUserController extends Controller
 {
+    public function __construct(private ProjectUserRepository $projectUserRepository)
+    {
+    }
 
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
         $membershipId = (int)$args['membershipId'];
 
-        $repository = new ProjectUserRepository($this->db);
-        $result = $repository->deleteById($membershipId);
+        $result = $this->projectUserRepository->deleteById($membershipId);
 
         return ['success' => $result];
     }

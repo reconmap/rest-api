@@ -12,6 +12,7 @@ CREATE TABLE user
     role      ENUM ('administrator', 'superuser', 'user', 'client'),
     username  VARCHAR(80)   NOT NULL,
     password  VARCHAR(255)  NOT NULL COMMENT 'Hashed password',
+
     PRIMARY KEY (id),
     UNIQUE KEY (username)
 ) ENGINE = InnoDB;
@@ -27,6 +28,7 @@ CREATE TABLE audit_log
     client_ip  INT UNSIGNED NOT NULL COMMENT 'IPv4 IP',
     action     VARCHAR(200) NOT NULL,
     object     JSON         NULL,
+
     PRIMARY KEY (id)
 ) ENGINE = InnoDB;
 
@@ -42,6 +44,7 @@ CREATE TABLE organisation
     contact_name  VARCHAR(200) NULL,
     contact_email VARCHAR(200) NULL,
     contact_phone VARCHAR(200) NULL,
+
     PRIMARY KEY (id),
     UNIQUE KEY (name)
 ) ENGINE = InnoDB;
@@ -59,6 +62,7 @@ CREATE TABLE client
     contact_name  VARCHAR(200) NOT NULL,
     contact_email VARCHAR(200) NOT NULL,
     contact_phone VARCHAR(200) NULL,
+
     PRIMARY KEY (id),
     UNIQUE KEY (name)
 ) ENGINE = InnoDB;
@@ -78,9 +82,20 @@ CREATE TABLE project
     engagement_type       ENUM ('blackbox', 'whitebox', 'greybox') NULL,
     engagement_start_date DATE,
     engagement_end_date   DATE,
+    archived              BOOLEAN                                  NOT NULL DEFAULT FALSE,
+    archive_ts            TIMESTAMP                                NULL,
+
     PRIMARY KEY (id),
     UNIQUE KEY (name)
 ) ENGINE = InnoDB;
+
+DROP TRIGGER IF EXISTS project_archive_ts_trigger;
+
+CREATE TRIGGER project_archive_ts_trigger
+    BEFORE UPDATE
+    ON project
+    FOR EACH ROW
+    SET NEW.archive_ts = IF(NEW.archived, CURRENT_TIMESTAMP, NULL);
 
 DROP TABLE IF EXISTS project_user;
 
@@ -90,6 +105,7 @@ CREATE TABLE project_user
     insert_ts  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     project_id INT UNSIGNED NOT NULL REFERENCES project,
     user_id    INT UNSIGNED NOT NULL REFERENCES user,
+
     PRIMARY KEY (id),
     UNIQUE KEY (project_id, user_id)
 );
@@ -103,13 +119,8 @@ CREATE TABLE target
     insert_ts  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_ts  TIMESTAMP    NULL ON UPDATE CURRENT_TIMESTAMP,
     name       VARCHAR(200) NOT NULL,
-    kind       ENUM (
-        'hostname',
-        'ip_address',
-        'cidr_range',
-        'url',
-        'binary'
-        ),
+    kind       ENUM ('hostname', 'ip_address', 'cidr_range', 'url', 'binary'),
+
     PRIMARY KEY (id),
     UNIQUE KEY (project_id, name)
 ) ENGINE = InnoDB;
@@ -121,6 +132,7 @@ CREATE TABLE vulnerability_category
     id          INT UNSIGNED  NOT NULL AUTO_INCREMENT,
     name        VARCHAR(200)  NOT NULL,
     description VARCHAR(2000) NULL,
+
     PRIMARY KEY (id),
     UNIQUE KEY (name)
 ) ENGINE = InnoDB;
@@ -143,6 +155,7 @@ CREATE TABLE vulnerability
     cvss_score  DECIMAL(3, 1)                                      NULL,
     cvss_vector VARCHAR(80)                                        NULL,
     status      ENUM ('open', 'closed')                            NOT NULL DEFAULT 'open',
+
     PRIMARY KEY (id)
 ) ENGINE = InnoDB;
 
@@ -161,6 +174,7 @@ CREATE TABLE task
     status       ENUM ('todo', 'doing', 'done') NOT NULL DEFAULT 'todo',
     due_date     DATE                           NULL,
     command_id   INT UNSIGNED                   NULL REFERENCES command,
+
     PRIMARY KEY (id)
 ) ENGINE = InnoDB;
 
@@ -180,6 +194,7 @@ CREATE TABLE command
     arguments       VARCHAR(240)           NULL,
     configuration   JSON                   NULL,
     output_filename VARCHAR(100)           NULL,
+
     PRIMARY KEY (id)
 ) ENGINE = InnoDB;
 
@@ -193,6 +208,7 @@ CREATE TABLE report
     insert_ts           TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     version_name        VARCHAR(50)  NOT NULL COMMENT 'eg 1.0, 202103',
     version_description VARCHAR(300) NOT NULL COMMENT 'eg Initial, Reviewed, In progress, Draft, Final',
+
     PRIMARY KEY (id)
 ) ENGINE = InnoDB;
 
@@ -230,6 +246,7 @@ CREATE TABLE document
     visibility  ENUM ('private', 'public')                   NOT NULL DEFAULT 'private',
     title       VARCHAR(250)                                 NULL,
     content     TEXT                                         NOT NULL,
+
     PRIMARY KEY (id),
     INDEX (parent_type, parent_id)
 ) ENGINE = InnoDB;
@@ -245,6 +262,7 @@ CREATE TABLE note
     parent_id   INT UNSIGNED                      NOT NULL,
     visibility  ENUM ('private', 'public')        NOT NULL DEFAULT 'private',
     content     TEXT                              NOT NULL,
+
     PRIMARY KEY (id),
     INDEX (parent_type, parent_id)
 ) ENGINE = InnoDB;
@@ -263,5 +281,6 @@ CREATE TABLE attachment
     file_size        INT UNSIGNED                                  NOT NULL,
     file_mimetype    VARCHAR(200)                                  NULL,
     file_hash        VARCHAR(10000)                                NOT NULL,
+
     PRIMARY KEY (id)
 ) ENGINE = InnoDB;

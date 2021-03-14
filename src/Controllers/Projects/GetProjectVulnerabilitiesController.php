@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Controllers\Projects;
 
@@ -13,11 +11,9 @@ class GetProjectVulnerabilitiesController extends Controller
 
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
-        $id = (int)$args['id'];
+        $projectId = (int)$args['projectId'];
 
         $repository = new VulnerabilityRepository($this->db);
-        $vulnerabilities = $repository->findByProjectId($id);
-
-        return $vulnerabilities;
+        return $repository->findByProjectId($projectId);
     }
 }

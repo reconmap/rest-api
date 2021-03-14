@@ -9,6 +9,10 @@ use Reconmap\Repositories\ProjectRepository;
 
 class CreateProjectController extends Controller
 {
+    public function __construct(private ProjectRepository $projectRepository)
+    {
+    }
+
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
         /** @var Project $project */
@@ -16,8 +20,7 @@ class CreateProjectController extends Controller
         $project->creator_uid = $request->getAttribute('userId');
         $project->isTemplate = false;
 
-        $repository = new ProjectRepository($this->db);
-        $result = $repository->insert($project);
+        $result = $this->projectRepository->insert($project);
 
         return ['success' => $result];
     }

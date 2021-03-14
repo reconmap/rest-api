@@ -11,9 +11,9 @@ class GetProjectUsersController extends Controller
 
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
-        $id = (int)$args['id'];
+        $projectId = (int)$args['projectId'];
 
         $repository = new UserRepository($this->db);
-        return $repository->findByProjectId($id);
+        return $repository->findByProjectId($projectId);
     }
 }

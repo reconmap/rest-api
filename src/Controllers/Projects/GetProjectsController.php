@@ -8,17 +8,18 @@ use Reconmap\Repositories\ProjectRepository;
 
 class GetProjectsController extends Controller
 {
+    public function __construct(private ProjectRepository $projectRepository)
+    {
+    }
 
     public function __invoke(ServerRequestInterface $request): array
     {
-        $orderRepository = new ProjectRepository($this->db);
-
         $params = $request->getQueryParams();
 
         if (isset($params['isTemplate'])) {
-            $projects = $orderRepository->findTemplateProjects((int)$params['isTemplate']);
+            $projects = $this->projectRepository->findTemplateProjects((int)$params['isTemplate']);
         } else {
-            $projects = $orderRepository->findTemplateProjects(0);
+            $projects = $this->projectRepository->findTemplateProjects(0);
         }
 
         return $projects;
