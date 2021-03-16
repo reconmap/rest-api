@@ -12,30 +12,25 @@ use Reconmap\Services\RedisServer;
 
 class TaskResultProcessor implements ItemProcessor
 {
-    private ApplicationConfig $config;
-    private Logger $logger;
-    private \mysqli $db;
-    private \Redis $redis;
-
-    public function __construct(ApplicationConfig $config, Logger $logger, \mysqli $db, RedisServer $redis)
+    public function __construct(
+        private ApplicationConfig $config,
+        private Logger $logger,
+        private \mysqli $db,
+        private RedisServer $redis,
+        private VulnerabilityRepository $vulnerabilityRepository,
+        private TaskRepository $taskRepository,
+        private TargetRepository $targetRepository,
+        private ProcessorFactory $processorFactory)
     {
-        $this->config = $config;
-        $this->logger = $logger;
-        $this->db = $db;
-        $this->redis = $redis;
     }
 
     public function process(object $item): void
     {
         $path = $item->filePath;
 
-        $vulnerabilityRepository = new VulnerabilityRepository($this->db);
+        $task = $this->taskRepository->findById($item->taskId);
 
-        $taskRepo = new TaskRepository($this->db);
-        $task = $taskRepo->findById($item->taskId);
-
-        $processorFactory = new ProcessorFactory;
-        $processor = $processorFactory->createByTaskType($task['command_short_name']);
+        $processor = $this->processorFactory->createByCommandShortName($task['command_short_name']);
         if ($processor) {
             $vulnerabilities = $processor->parseVulnerabilities($path);
             $numVulnerabilities = count($vulnerabilities);
@@ -50,19 +45,18 @@ class TaskResultProcessor implements ItemProcessor
 
                 $targetId = null;
                 if (!empty($vulnerability->host)) {
-                    $targetRepository = new TargetRepository($this->db);
-                    $target = $targetRepository->findByProjectIdAndName($task['project_id'], $vulnerability->host->name);
+                    $target = $this->targetRepository->findByProjectIdAndName($task['project_id'], $vulnerability->host->name);
                     if ($target) {
                         $targetId = $target->id;
                     } else {
-                        $targetId = $targetRepository->insert($task['project_id'], $vulnerability->host->name, 'hostname');
+                        $targetId = $this->targetRepository->insert($task['project_id'], $vulnerability->host->name, 'hostname');
                     }
                 }
 
                 $vulnerability->target_id = $targetId;
 
                 try {
-                    $vulnerabilityRepository->insert($vulnerability);
+                    $this->vulnerabilityRepository->insert($vulnerability);
                 } catch (\Exception $e) {
                     $this->logger->error($e->getMessage());
                 }

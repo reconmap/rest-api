@@ -4,7 +4,7 @@ namespace Reconmap\Processors;
 
 use Reconmap\Models\Vulnerability;
 
-class NmapResultsProcessor implements VulnerabilityProcessor
+class NmapResultsProcessor extends AbstractCommandProcessor
 {
 
     public function parseVulnerabilities(string $path): array

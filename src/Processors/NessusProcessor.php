@@ -2,7 +2,7 @@
 
 namespace Reconmap\Processors;
 
-class NessusProcessor implements VulnerabilityProcessor
+class NessusProcessor extends AbstractCommandProcessor
 {
 
     public function parseVulnerabilities(string $path): array
@@ -10,6 +10,7 @@ class NessusProcessor implements VulnerabilityProcessor
         $vulnerabilities = [];
 
         $xml = simplexml_load_file($path);
+
         foreach ($xml->Report->ReportHost as $rawHost) {
             $host = [
                 'name' => (string)$rawHost['name']
@@ -32,6 +33,14 @@ class NessusProcessor implements VulnerabilityProcessor
                     'solution' => $solution,
                     'host' => (object)$host
                 ];
+
+                if (isset($rawVulnerability->cvss_base_score)) {
+                    $vulnerability->cvss_score = (float)$rawVulnerability->cvss_base_score;
+                }
+                if (isset($rawVulnerability->cvss_vector)) {
+                    $vulnerability->cvss_vector = (string)$rawVulnerability->cvss_vector;
+                }
+
                 $vulnerabilities[] = $vulnerability;
             }
         }
