@@ -6,6 +6,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.0]
+
+### Added
+- Add vulnerability statuses
+- Add documents section
+- Add archive project option
+- Add bulk transition of tasks
+- Add automatic password generation for new users
+- Add new task due date
+- Add new client role
+
+### Changed
+- New upload limits
+- Rename existing user roles
+- Change import/export format to JSON
+- Change reports styling
+
 ## [0.8.5]
 
 ### Added
@@ -49,9 +66,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Add basic functionality: clients, projects, tasks, vulnerabilities, ... 
 
-[Unreleased]: https://github.com/Reconmap/api-backend/compare/0.8.5...master 
-[0.8.5]: https://github.com/Reconmap/api-backend/compare/0.8.0...0.8.5
-[0.8.0]: https://github.com/Reconmap/api-backend/compare/0.7.5...0.8.0
-[0.7.5]: https://github.com/Reconmap/api-backend/compare/0.7.0...0.7.5
-[0.7.0]: https://github.com/reconmap/application/compare/0.0.1..0.7.0
+[Unreleased]: https://github.com/reconmap/rest-api/compare/0.9.0...master 
+[0.9.0]: https://github.com/reconmap/rest-api/compare/0.8.5...0.9.0
+[0.8.5]: https://github.com/reconmap/rest-api/compare/0.8.0...0.8.5
+[0.8.0]: https://github.com/reconmap/rest-api/compare/0.7.5...0.8.0
+[0.7.5]: https://github.com/reconmap/rest-api/compare/0.7.0...0.7.5
+[0.7.0]: https://github.com/reconmap/rest-api/compare/0.0.1..0.7.0
 

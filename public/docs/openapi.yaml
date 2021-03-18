@@ -3,7 +3,7 @@ openapi: 3.0.3
 info:
   title: Reconmap API
   description: Reconmap API documentation
-  version: 0.8.5
+  version: 0.9.0
 
 servers:
   - url: 'http://localhost:3000'
@@ -79,7 +79,7 @@ components:
       required:
         - short_name
         - docker_image
-        - arguments"
+        - arguments
       properties:
         id:
           type: integer
@@ -87,7 +87,7 @@ components:
           type: string
         docker_image:
           type: string
-        arguments":
+        arguments:
           type: string
 
     User:
