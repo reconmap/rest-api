@@ -155,7 +155,7 @@ CREATE TABLE vulnerability
     cvss_score  DECIMAL(3, 1)                                                                                     NULL,
     cvss_vector VARCHAR(80)                                                                                       NULL,
     status      ENUM ('open', 'confirmed', 'resolved', 'closed')                                                  NOT NULL DEFAULT 'open',
-    substatus   ENUM ('reported', 'unresolved', 'unexploited', 'exploited', 'remediated', 'mitigated', 'invalid') NULL     DEFAULT 'reported',
+    substatus   ENUM ('reported', 'unresolved', 'unexploited', 'exploited', 'remediated', 'mitigated', 'rejected') NULL     DEFAULT 'reported',
 
     PRIMARY KEY (id)
 ) ENGINE = InnoDB;
