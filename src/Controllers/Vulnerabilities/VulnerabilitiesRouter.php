@@ -14,6 +14,7 @@ class VulnerabilitiesRouter
         $router->map('GET', '/vulnerabilities/stats', GetVulnerabilitiesStatsController::class);
         $router->map('GET', '/vulnerabilities/{vulnerabilityId:number}', GetVulnerabilityController::class);
         $router->map('PUT', '/vulnerabilities/{vulnerabilityId:number}', UpdateVulnerabilityController::class);
+        $router->map('PATCH', '/vulnerabilities/{vulnerabilityId:number}', UpdateVulnerabilityController::class);
         $router->map('DELETE', '/vulnerabilities/{vulnerabilityId:number}', DeleteVulnerabilityController::class);
     }
 }

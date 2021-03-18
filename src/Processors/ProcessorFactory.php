@@ -17,6 +17,7 @@ class ProcessorFactory
             'sqlmap' => SqlmapProcessor::class,
             'nessus' => NessusProcessor::class,
             'burppro' => BurpProProcessor::class,
+            'metasploit' => MetasploitProcessor::class,
         ];
 
         if (array_key_exists($shortName, $processors)) {

@@ -479,7 +479,9 @@ VALUES (2,
         4.8);
 
 UPDATE vulnerability
-SET cvss_vector = 'CVSS:3.0/AV:P/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:H';
+SET cvss_vector = 'CVSS:3.0/AV:P/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:H',
+    status      = 'open',
+    substatus   = 'reported';
 
 INSERT INTO command (creator_uid, short_name, description, docker_image, arguments, executable_type, output_filename)
 VALUES (1, 'goohost',

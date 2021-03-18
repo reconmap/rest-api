@@ -36,8 +36,8 @@ tests: start
 	docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet -e "DROP DATABASE IF EXISTS reconmap_test"
 	docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet -e "CREATE DATABASE reconmap_test"
 	docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet -e "GRANT ALL PRIVILEGES ON reconmap_test.* TO 'reconmapper'@'%';"
-	echo Importing SQL files: $(wildcard docker/mysql/initdb.d/*.sql)
-	cat docker/mysql/initdb.d/{01,02,03}*.sql | docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet reconmap_test
+	echo Importing SQL files: $(wildcard database/*.sql)
+	cat database/{01,02,03}*.sql | docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet reconmap_test
 	docker-compose run --rm -w /var/www/webapp -e CURRENT_PLANET=Moon --entrypoint ./run-tests.sh api
 	docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet -e "DROP DATABASE reconmap_test"
 
@@ -78,11 +78,11 @@ db-shell:
 
 .PHONY: db-reset
 db-reset:
-	cat docker/mysql/initdb.d/{01,02}*.sql | docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet reconmap
+	cat database/{01,02}*.sql | docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet reconmap
 
 .PHONY: db-import
 db-import:
-	cat docker/mysql/initdb.d/{01,02,03}*.sql | docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet reconmap
+	cat database/{01,02,03}*.sql | docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet reconmap
 
 .PHONY: db-migrate
 db-migrate:
@@ -91,4 +91,3 @@ db-migrate:
 .PHONY: redis-shell
 redis-shell:
 	@docker-compose exec redis redis-cli
-
