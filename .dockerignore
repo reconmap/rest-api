@@ -2,7 +2,6 @@
 **/.git
 config.json
 data
-database
 data-mysql
 data-redis
 docs
