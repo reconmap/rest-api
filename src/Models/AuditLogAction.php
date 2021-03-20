@@ -10,8 +10,6 @@ class AuditLogAction implements
     TaskAuditActions,
     TargetAuditActions
 {
-    public const AUDIT_LOG_EXPORTED = 'Exported audit log';
-
     public const INTEGRATION_ENABLED = 'Enabled integration';
     public const INTEGRATION_DISABLED = 'Disabled integration';
 

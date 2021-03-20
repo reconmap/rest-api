@@ -9,7 +9,6 @@ class AuditLogRouter
     public function mapRoutes(RouteCollectionInterface $router): void
     {
         $router->map('GET', '/auditlog', GetAuditLogController::class);
-        $router->map('GET', '/auditlog/export', ExportAuditLogController::class);
         $router->map('GET', '/auditlog/stats', GetAuditLogStatsController::class);
     }
 }

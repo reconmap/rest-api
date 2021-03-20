@@ -8,6 +8,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditLogAction;
+use Reconmap\Repositories\Exporters\AuditLogExporter;
 use Reconmap\Repositories\Exporters\ClientsExporter;
 use Reconmap\Repositories\Exporters\CommandsExporter;
 use Reconmap\Repositories\Exporters\DocumentsExporter;
@@ -33,6 +34,7 @@ class ExportDataController extends Controller
         $fileName = 'reconmap-data-' . date('Ymd-His') . '.json';
 
         $exportables = [
+            'auditlog' => AuditLogExporter::class,
             'clients' => ClientsExporter::class,
             'commands' => CommandsExporter::class,
             'documents' => DocumentsExporter::class,
