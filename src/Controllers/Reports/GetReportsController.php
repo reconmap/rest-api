@@ -8,18 +8,20 @@ use Reconmap\Repositories\ReportRepository;
 
 class GetReportsController extends Controller
 {
+    public function __construct(private ReportRepository $reportRepository)
+    {
+    }
+
     public function __invoke(ServerRequestInterface $request): array
     {
         $params = $request->getQueryParams();
 
-        $repository = new ReportRepository($this->db);
-
         if (isset($params['projectId'])) {
             $projectId = (int)$params['projectId'];
 
-            return $repository->findByProjectId($projectId);
+            return $this->reportRepository->findByProjectId($projectId);
         } else {
-            return $repository->findAll();
+            return $this->reportRepository->findAll();
         }
     }
 }

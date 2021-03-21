@@ -8,11 +8,14 @@ use Reconmap\Repositories\ReportConfigurationRepository;
 
 class GetReportConfigurationController extends Controller
 {
+    public function __construct(private ReportConfigurationRepository $configurationRepository)
+    {
+    }
+
     public function __invoke(ServerRequestInterface $request, array $args): object
     {
         $projectId = (int)$args['projectId'];
 
-        $repository = new ReportConfigurationRepository($this->db);
-        return $repository->findByProjectId($projectId);
+        return $this->configurationRepository->findByProjectId($projectId);
     }
 }

@@ -10,7 +10,9 @@ use Reconmap\Services\RedisServer;
 
 class SendReportController extends Controller
 {
-    public function __construct(private AttachmentFilePath $attachmentFilePathService, private RedisServer $redisServer)
+    public function __construct(private AttachmentFilePath $attachmentFilePathService,
+                                private AttachmentRepository $attachmentRepository,
+                                private RedisServer $redisServer)
     {
     }
 
@@ -19,8 +21,7 @@ class SendReportController extends Controller
         $deliverySettings = $this->getJsonBodyDecoded($request);
         $reportId = intval($deliverySettings->report_id);
 
-        $attachmentRepository = new AttachmentRepository($this->db);
-        $attachments = $attachmentRepository->findByParentId('report', $reportId, 'application/pdf');
+        $attachments = $this->attachmentRepository->findByParentId('report', $reportId, 'application/pdf');
 
         if (count($attachments) === 0) {
             $this->logger->warning("Unable to find PDF for report $reportId");

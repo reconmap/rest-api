@@ -10,7 +10,9 @@ use Reconmap\Services\AttachmentFilePath;
 
 class DeleteReportController extends Controller
 {
-    public function __construct(private AttachmentFilePath $attachmentFilePathService)
+    public function __construct(private AttachmentFilePath $attachmentFilePathService,
+                                private ReportRepository $reportRepository,
+                                private AttachmentRepository $attachmentRepository)
     {
     }
 
@@ -18,11 +20,9 @@ class DeleteReportController extends Controller
     {
         $reportId = (int)$args['reportId'];
 
-        $repository = new ReportRepository($this->db);
-        $success = $repository->deleteById($reportId);
+        $success = $this->reportRepository->deleteById($reportId);
 
-        $attachmentRepository = new AttachmentRepository($this->db);
-        $attachments = $attachmentRepository->findByParentId('report', $reportId);
+        $attachments = $this->attachmentRepository->findByParentId('report', $reportId);
         foreach ($attachments as $attachment) {
             $filePath = $this->attachmentFilePathService->generateFilePath($attachment['file_name']);
 

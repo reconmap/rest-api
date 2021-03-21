@@ -17,7 +17,8 @@ class CreateUserController extends Controller
         private UserRepository $userRepository,
         private RedisServer $redisServer,
         private PasswordGenerator $passwordGenerator,
-        private ApplicationConfig $applicationConfig
+        private ApplicationConfig $applicationConfig,
+        private AuditLogService $auditLogService
     )
     {
     }
@@ -67,7 +68,6 @@ class CreateUserController extends Controller
 
     private function auditAction(int $loggedInUserId, int $userId): void
     {
-        $auditLogService = new AuditLogService($this->db);
-        $auditLogService->insert($loggedInUserId, AuditLogAction::USER_CREATED, ['type' => 'user', 'id' => $userId]);
+        $this->auditLogService->insert($loggedInUserId, AuditLogAction::USER_CREATED, ['type' => 'user', 'id' => $userId]);
     }
 }

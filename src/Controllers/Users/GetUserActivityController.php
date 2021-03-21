@@ -10,12 +10,14 @@ use Reconmap\Repositories\AuditLogRepository;
 
 class GetUserActivityController extends Controller
 {
+    public function __construct(private AuditLogRepository $auditLogRepository)
+    {
+    }
 
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
         $userId = (int)$args['userId'];
 
-        $repository = new AuditLogRepository($this->db);
-        return $repository->findByUserId($userId);
+        return $this->auditLogRepository->findByUserId($userId);
     }
 }

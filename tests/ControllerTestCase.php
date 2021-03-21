@@ -11,11 +11,12 @@ class ControllerTestCase extends DatabaseTestCase
     public function injectController(Controller $controller): Controller
     {
         $mockLogger = $this->createMock(Logger::class);
-        $mockTemplate = $this->createMock(TemplateEngine::class);
-
         $controller->setLogger($mockLogger);
-        $controller->setDb($this->getDatabaseConnection());
+
+        $mockTemplate = $this->createMock(TemplateEngine::class);
         $controller->setTemplate($mockTemplate);
+
+        $controller->setDb($this->getDatabaseConnection());
 
         return $controller;
     }

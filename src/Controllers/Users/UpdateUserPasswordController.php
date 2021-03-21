@@ -11,6 +11,10 @@ use Reconmap\Services\AuditLogService;
 
 class UpdateUserPasswordController extends Controller
 {
+    public function __construct(private AuditLogService $auditLogService,
+                                private UserRepository $userRepository)
+    {
+    }
 
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
@@ -24,8 +28,7 @@ class UpdateUserPasswordController extends Controller
 
         $requestBody = $this->getJsonBodyDecoded($request);
 
-        $userRepository = new UserRepository($this->db);
-        $user = $userRepository->findById($userId);
+        $user = $this->userRepository->findById($userId);
 
         if (is_null($user) || !password_verify($requestBody->currentPassword, $user['password'])) {
             $this->logger->warning("Wrong password entered during password change. (User ID: $userId)");
@@ -34,7 +37,7 @@ class UpdateUserPasswordController extends Controller
 
         $hashedPassword = password_hash($requestBody->newPassword, PASSWORD_DEFAULT);
 
-        $success = $userRepository->updateById($userId, ['password' => $hashedPassword]);
+        $success = $this->userRepository->updateById($userId, ['password' => $hashedPassword]);
 
         $this->auditAction($loggedInUserId);
 
@@ -43,7 +46,6 @@ class UpdateUserPasswordController extends Controller
 
     private function auditAction(int $loggedInUserId): void
     {
-        $auditLogService = new AuditLogService($this->db);
-        $auditLogService->insert($loggedInUserId, AuditLogAction::USER_PASSWORD_CHANGED);
+        $this->auditLogService->insert($loggedInUserId, AuditLogAction::USER_PASSWORD_CHANGED);
     }
 }

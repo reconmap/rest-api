@@ -10,7 +10,8 @@ use Reconmap\Services\AuditLogService;
 
 class DeleteTargetController extends Controller
 {
-    public function __construct(private TargetRepository $repository)
+    public function __construct(private TargetRepository $repository,
+                                private AuditLogService $auditLogService)
     {
     }
 
@@ -28,7 +29,6 @@ class DeleteTargetController extends Controller
 
     private function auditAction(int $loggedInUserId, int $targetId): void
     {
-        $auditLogService = new AuditLogService($this->db);
-        $auditLogService->insert($loggedInUserId, AuditLogAction::TARGET_DELETED, ['type' => 'target', 'id' => $targetId]);
+        $this->auditLogService->insert($loggedInUserId, AuditLogAction::TARGET_DELETED, ['type' => 'target', 'id' => $targetId]);
     }
 }

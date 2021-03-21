@@ -9,6 +9,10 @@ use Reconmap\Repositories\ReportConfigurationRepository;
 
 class ReplaceReportConfigurationController extends Controller
 {
+    public function __construct(private ReportConfigurationRepository $configurationRepository)
+    {
+    }
+
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
         $projectId = (int)$args['projectId'];
@@ -17,8 +21,7 @@ class ReplaceReportConfigurationController extends Controller
         $reportConfiguration = $this->getJsonBodyDecoded($request);
         $reportConfiguration->project_id = $projectId;
 
-        $repository = new ReportConfigurationRepository($this->db);
-        $result = $repository->insert($reportConfiguration);
+        $result = $this->configurationRepository->insert($reportConfiguration);
 
         return ['success' => $result];
     }

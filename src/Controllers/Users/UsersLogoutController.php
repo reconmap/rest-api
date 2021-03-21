@@ -11,13 +11,15 @@ use Reconmap\Services\AuditLogService;
 
 class UsersLogoutController extends Controller
 {
+    public function __construct(private AuditLogService $auditLogService)
+    {
+    }
 
     public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
         $userId = $request->getAttribute('userId');
 
-        $auditLogService = new AuditLogService($this->db);
-        $auditLogService->insert($userId, AuditLogAction::USER_LOGGED_OUT);
+        $this->auditLogService->insert($userId, AuditLogAction::USER_LOGGED_OUT);
 
         $response = new Response;
         return $response

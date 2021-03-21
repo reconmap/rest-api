@@ -6,6 +6,7 @@ use League\Plates\Engine;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\ControllerTestCase;
 use Reconmap\Repositories\TargetRepository;
+use Reconmap\Services\AuditLogService;
 
 class DeleteTargetControllerTest extends ControllerTestCase
 {
@@ -27,7 +28,9 @@ class DeleteTargetControllerTest extends ControllerTestCase
             ->with(0)
             ->willReturn(true);
 
-        $controller = $this->injectController(new DeleteTargetController($mockRepository));
+        $mockAuditLogService = $this->createPartialMock(AuditLogService::class, ['insert']);
+
+        $controller = $this->injectController(new DeleteTargetController($mockRepository, $mockAuditLogService));
         $response = $controller($request, $args);
         $this->assertEquals(['success' => true], $response);
     }

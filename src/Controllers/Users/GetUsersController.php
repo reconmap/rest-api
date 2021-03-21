@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Controllers\Users;
 
@@ -10,12 +8,12 @@ use Reconmap\Repositories\UserRepository;
 
 class GetUsersController extends Controller
 {
+    public function __construct(private UserRepository $userRepository)
+    {
+    }
 
     public function __invoke(ServerRequestInterface $request): array
     {
-        $userRepository = new UserRepository($this->db);
-        $users = $userRepository->findAll();
-
-        return $users;
+        return $this->userRepository->findAll();
     }
 }
