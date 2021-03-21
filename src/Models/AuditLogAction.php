@@ -10,9 +10,6 @@ class AuditLogAction implements
     TaskAuditActions,
     TargetAuditActions
 {
-    public const INTEGRATION_ENABLED = 'Enabled integration';
-    public const INTEGRATION_DISABLED = 'Disabled integration';
-
     public const COMMAND_UPDATED = 'Updated command';
 
     public const DATA_IMPORTED = 'Imported data';
