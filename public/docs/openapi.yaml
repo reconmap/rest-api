@@ -263,16 +263,6 @@ paths:
         '200':
           description: Succesfully deleted
 
-  /integrations:
-    get:
-      tags:
-        - Integrations
-      security:
-        - BearerAuth: [ ]
-      responses:
-        '200':
-          description: OK
-
   ### Projects ###
 
   /projects:
@@ -694,3 +684,33 @@ paths:
       responses:
         '200':
           description: Succesfully deleted
+
+  /system/usage:
+    get:
+      tags:
+        - System
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+
+  /system/data:
+    get:
+      tags:
+        - System
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+
+  /integrations:
+    get:
+      tags:
+        - System
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: OK

@@ -64,4 +64,20 @@ SQL;
     {
         return $this->deleteByTableId('attachment', $id);
     }
+
+    public function getUsage(): array
+    {
+        $sql = <<<SQL
+        SELECT
+            COUNT(*) AS total_count,
+            COALESCE(SUM(file_size), 0) AS total_file_size
+        FROM attachment
+        SQL;
+
+        $result = $this->db->query($sql);
+        $usage = $result->fetch_assoc();
+        $result->close();
+
+        return $usage;
+    }
 }
