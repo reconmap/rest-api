@@ -2,8 +2,6 @@
 
 namespace Reconmap\Controllers\Users;
 
-use GuzzleHttp\Psr7\Response;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditLogAction;
@@ -15,16 +13,12 @@ class UsersLogoutController extends Controller
     {
     }
 
-    public function __invoke(ServerRequestInterface $request): ResponseInterface
+    public function __invoke(ServerRequestInterface $request): array
     {
         $userId = $request->getAttribute('userId');
 
         $this->auditLogService->insert($userId, AuditLogAction::USER_LOGGED_OUT);
 
-        $response = new Response;
-        return $response
-            ->withStatus(403)
-            ->withHeader('Access-Control-Allow-Methods', 'GET,POST,PUT')
-            ->withHeader('Access-Control-Allow-Origin', '*');
+        return ['success' => true];
     }
 }
