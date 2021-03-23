@@ -4,15 +4,10 @@ namespace Reconmap\Repositories\QueryBuilders;
 
 class UpdateQueryBuilder implements QueryBuilder
 {
-    private string $table;
-    private array $columnValues;
-    private ?string $whereConditions;
-
-    public function __construct(string $table)
+    public function __construct(private string $tableName,
+                                private array $columnValues = [],
+                                private ?string $whereConditions = null)
     {
-        $this->table = $table;
-        $this->columnValues = [];
-        $this->whereConditions = null;
     }
 
     public function setWhereConditions(string $whereConditions): void
@@ -30,6 +25,7 @@ class UpdateQueryBuilder implements QueryBuilder
         $columnAndValues = implode(', ', array_map(function ($name, $value) {
             return sprintf("%s = %s", $name, $value);
         }, array_keys($this->columnValues), $this->columnValues));
-        return sprintf('UPDATE %s SET %s WHERE %s', $this->table, $columnAndValues, $this->whereConditions);
+
+        return sprintf('UPDATE %s SET %s WHERE %s', $this->tableName, $columnAndValues, $this->whereConditions);
     }
 }

@@ -32,7 +32,8 @@ build:
 
 .PHONY: tests
 tests: start
-	docker-compose run --rm -w /var/www/webapp -e WAIT_HOSTS=$(DB_CONTAINER):3306 --entrypoint /usr/local/bin/wait api
+	docker-compose run --rm -e WAIT_HOSTS=$(DB_CONTAINER):3306 --entrypoint /usr/local/bin/wait waiter
+
 	docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet -e "DROP DATABASE IF EXISTS reconmap_test"
 	docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet -e "CREATE DATABASE reconmap_test"
 	docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet -e "GRANT ALL PRIVILEGES ON reconmap_test.* TO 'reconmapper'@'%';"

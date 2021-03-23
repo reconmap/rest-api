@@ -2,6 +2,7 @@
 
 namespace Reconmap\Controllers\AuditLog;
 
+use Fig\Http\Message\StatusCodeInterface;
 use GuzzleHttp\Psr7\ServerRequest;
 use Reconmap\ControllerTestCase;
 use Reconmap\Repositories\AuditLogRepository;
@@ -24,7 +25,7 @@ class GetAuditLogControllerTest extends ControllerTestCase
          */
         $controller = $this->injectController(new GetAuditLogController($mockRepository));
         $response = $controller($request);
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(StatusCodeInterface::STATUS_OK, $response->getStatusCode());
         $this->assertEquals(1, $response->getHeaderLine('X-Page-Count'));
         $this->assertEquals('X-Page-Count', $response->getHeaderLine('Access-Control-Expose-Headers'));
     }

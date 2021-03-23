@@ -2,6 +2,7 @@
 
 namespace Reconmap;
 
+use Fig\Http\Message\StatusCodeInterface;
 use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
 use GuzzleHttp\Psr7\Response;
@@ -47,11 +48,11 @@ class AuthMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         } catch (ForbiddenException | ExpiredException $e) {
             $this->logger->warning($e->getMessage());
-            return (new Response)->withStatus(401)
+            return (new Response)->withStatus(StatusCodeInterface::STATUS_UNAUTHORIZED)
                 ->withBody(Utils::streamFor($e->getMessage()));
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
-            return (new Response)->withStatus(400);
+            return (new Response)->withStatus(StatusCodeInterface::STATUS_BAD_REQUEST);
         }
     }
 

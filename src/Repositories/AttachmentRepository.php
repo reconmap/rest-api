@@ -3,13 +3,16 @@
 namespace Reconmap\Repositories;
 
 use Reconmap\Models\Attachment;
+use Reconmap\Repositories\QueryBuilders\InsertQueryBuilder;
 use Reconmap\Repositories\QueryBuilders\SelectQueryBuilder;
 
 class AttachmentRepository extends MysqlRepository
 {
     public function insert(Attachment $attachment): int
     {
-        $stmt = $this->db->prepare('INSERT INTO attachment (parent_type, parent_id, submitter_uid, client_file_name, file_name, file_hash, file_size, file_mimetype) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
+        $insertQueryBuilder = new InsertQueryBuilder('attachment');
+        $insertQueryBuilder->setColumns('parent_type, parent_id, submitter_uid, client_file_name, file_name, file_hash, file_size, file_mimetype');
+        $stmt = $this->db->prepare($insertQueryBuilder->toSql());
         $stmt->bind_param('siisssis', $attachment->parent_type, $attachment->parent_id, $attachment->submitter_uid, $attachment->client_file_name, $attachment->file_name, $attachment->file_hash, $attachment->file_size, $attachment->file_mimetype);
         return $this->executeInsertStatement($stmt);
     }

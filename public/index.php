@@ -4,6 +4,7 @@ $applicationDir = realpath('../');
 
 require $applicationDir . '/vendor/autoload.php';
 
+use Fig\Http\Message\StatusCodeInterface;
 use GuzzleHttp\Psr7\Response;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use League\Route\Http\Exception\NotFoundException;
@@ -24,7 +25,7 @@ $configFilePath = $applicationDir . '/config.json';
 if (!file_exists($configFilePath) || !is_readable($configFilePath)) {
     $errorMessage = 'Missing or unreadable API configuration file (config.json)';
     $logger->error($errorMessage);
-    header($errorMessage, true, 503);
+    header($errorMessage, true, StatusCodeInterface::STATUS_SERVICE_UNAVAILABLE);
     echo $errorMessage, PHP_EOL;
     exit;
 }
@@ -42,10 +43,10 @@ try {
     $response = $router->dispatch($request);
 } catch (NotFoundException $e) {
     $logger->error($e->getMessage());
-    $response = (new Response)->withStatus(404);
+    $response = (new Response)->withStatus(StatusCodeInterface::STATUS_NOT_FOUND);
 } catch (Exception $e) {
     $logger->error($e->getMessage());
-    $response = (new Response)->withStatus(500);
+    $response = (new Response)->withStatus(StatusCodeInterface::STATUS_INTERNAL_SERVER_ERROR);
 }
 
 (new SapiEmitter)->emit($response);

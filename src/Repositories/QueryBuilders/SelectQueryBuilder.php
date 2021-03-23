@@ -4,19 +4,15 @@ namespace Reconmap\Repositories\QueryBuilders;
 
 class SelectQueryBuilder implements QueryBuilder
 {
-    private string $columns;
-    private string $from;
-    private array $joins;
-    private array $where;
     private ?string $orderBy = null;
     private string|int|null $limit = null;
 
-    public function __construct(string $from)
+    public function __construct(private string $tableName,
+                                private string $columns = '*',
+                                private array $joins = [],
+                                private array $where = []
+    )
     {
-        $this->columns = '*';
-        $this->joins = [];
-        $this->from = $from;
-        $this->where = [];
     }
 
     public function setColumns(string $columns): void
@@ -46,7 +42,7 @@ class SelectQueryBuilder implements QueryBuilder
 
     public function toSql(): string
     {
-        $sql = 'SELECT ' . $this->columns . ' FROM ' . $this->from;
+        $sql = 'SELECT ' . $this->columns . ' FROM ' . $this->tableName;
         if (!empty($this->joins)) {
             $sql .= ' ' . implode(' ', $this->joins);
         }

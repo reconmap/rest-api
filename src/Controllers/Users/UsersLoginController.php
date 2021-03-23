@@ -2,6 +2,7 @@
 
 namespace Reconmap\Controllers\Users;
 
+use Fig\Http\Message\StatusCodeInterface;
 use Firebase\JWT\JWT;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
@@ -36,7 +37,7 @@ class UsersLoginController extends Controller
 
         if (is_null($user) || !password_verify($password, $user['password'])) {
             $this->audit(0, AuditLogAction::USER_LOGIN_FAILED, ['username' => $username]);
-            return $response->withStatus(403);
+            return $response->withStatus(StatusCodeInterface::STATUS_FORBIDDEN);
         }
 
         unset($user['password']); // DO NOT leak password in the response.

@@ -2,6 +2,12 @@ version: '3.7'
 
 services:
 
+  waiter:
+    container_name: rmap-waiter
+    build:
+      context: ./
+      dockerfile: docker/Dockerfile.waiter
+
   redis:
     container_name: rmap-redis
     image: redis:6.0
