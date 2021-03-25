@@ -40,6 +40,11 @@ abstract class Controller implements ContainerConsumer
         return json_decode((string)$request->getBody());
     }
 
+    public function getJsonBodyDecodedAsClass(ServerRequestInterface $request, object $instance): object
+    {
+        return (new \JsonMapper())->map($this->getJsonBodyDecoded($request), $instance);
+    }
+
     public function getJsonBodyDecodedAsArray(ServerRequestInterface $request): array
     {
         return json_decode((string)$request->getBody(), true);

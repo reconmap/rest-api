@@ -141,21 +141,24 @@ DROP TABLE IF EXISTS vulnerability;
 
 CREATE TABLE vulnerability
 (
-    id          INT UNSIGNED                                                                                      NOT NULL AUTO_INCREMENT,
-    project_id  INT UNSIGNED                                                                                      NOT NULL REFERENCES project,
-    target_id   INT UNSIGNED                                                                                      NULL REFERENCES target,
-    creator_uid INT UNSIGNED                                                                                      NOT NULL REFERENCES user,
-    category_id INT UNSIGNED                                                                                      NULL REFERENCES vulnerability_category,
-    insert_ts   TIMESTAMP                                                                                         NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    update_ts   TIMESTAMP                                                                                         NULL ON UPDATE CURRENT_TIMESTAMP,
-    summary     VARCHAR(200)                                                                                      NOT NULL,
-    description VARCHAR(7000)                                                                                     NULL,
-    solution    VARCHAR(7000)                                                                                     NULL,
-    risk        ENUM ('none', 'low', 'medium', 'high', 'critical')                                                NOT NULL,
-    cvss_score  DECIMAL(3, 1)                                                                                     NULL,
-    cvss_vector VARCHAR(80)                                                                                       NULL,
-    status      ENUM ('open', 'confirmed', 'resolved', 'closed')                                                  NOT NULL DEFAULT 'open',
-    substatus   ENUM ('reported', 'unresolved', 'unexploited', 'exploited', 'remediated', 'mitigated', 'rejected') NULL     DEFAULT 'reported',
+    id               INT UNSIGNED                                                                                       NOT NULL AUTO_INCREMENT,
+    project_id       INT UNSIGNED                                                                                       NOT NULL REFERENCES project,
+    target_id        INT UNSIGNED                                                                                       NULL REFERENCES target,
+    creator_uid      INT UNSIGNED                                                                                       NOT NULL REFERENCES user,
+    category_id      INT UNSIGNED                                                                                       NULL REFERENCES vulnerability_category,
+    insert_ts        TIMESTAMP                                                                                          NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_ts        TIMESTAMP                                                                                          NULL ON UPDATE CURRENT_TIMESTAMP,
+    summary          VARCHAR(300)                                                                                       NOT NULL,
+    description      TEXT                                                                                               NULL,
+    proof_of_concept TEXT                                                                                               NULL,
+    impact           TEXT                                                                                               NULL,
+    solution         TEXT                                                                                               NULL,
+
+    risk             ENUM ('none', 'low', 'medium', 'high', 'critical')                                                 NOT NULL,
+    cvss_score       DECIMAL(3, 1)                                                                                      NULL,
+    cvss_vector      VARCHAR(80)                                                                                        NULL,
+    status           ENUM ('open', 'confirmed', 'resolved', 'closed')                                                   NOT NULL DEFAULT 'open',
+    substatus        ENUM ('reported', 'unresolved', 'unexploited', 'exploited', 'remediated', 'mitigated', 'rejected') NULL     DEFAULT 'reported',
 
     PRIMARY KEY (id)
 ) ENGINE = InnoDB;
