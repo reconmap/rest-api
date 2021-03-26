@@ -42,13 +42,13 @@ class ImportDataController extends Controller
             }
         }
 
-        $this->auditAction($userId);
+        $this->auditAction($userId, array_column($response, 'name'));
 
         return $response;
     }
 
-    private function auditAction(int $loggedInUserId): void
+    private function auditAction(int $loggedInUserId, array $entities): void
     {
-        $this->auditLogService->insert($loggedInUserId, AuditLogAction::DATA_IMPORTED);
+        $this->auditLogService->insert($loggedInUserId, AuditLogAction::DATA_IMPORTED, $entities);
     }
 }
