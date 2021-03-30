@@ -15,8 +15,7 @@ class CreateProjectController extends Controller
 
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
-        /** @var Project $project */
-        $project = $this->getJsonBodyDecoded($request);
+        $project = $this->getJsonBodyDecodedAsClass($request, new Project());
         $project->creator_uid = $request->getAttribute('userId');
         $project->isTemplate = false;
 
