@@ -22,7 +22,7 @@ class GetAuditLogController extends Controller
     public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
         $params = $request->getQueryParams();
-        $page = (int)$params['page'];
+        $page = isset($params['page']) ? (int)$params['page'] : 0;
         $limit = isset($params['limit']) ? intval($params['limit']) : self::PAGE_LIMIT;
 
         $auditLog = $this->repository->findAll($page, $limit);

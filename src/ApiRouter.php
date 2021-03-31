@@ -6,6 +6,7 @@ use Laminas\Diactoros\ResponseFactory;
 use League\Container\Container;
 use League\Route\RouteGroup;
 use League\Route\Router;
+use Monolog\Logger;
 use Reconmap\{Controllers\AuditLog\AuditLogRouter,
     Controllers\Clients\ClientsRouter,
     Controllers\Commands\CommandsRouter,
@@ -64,8 +65,7 @@ class ApiRouter extends Router
     {
         $responseFactory = new ResponseFactory;
 
-        $strategy = new ApiStrategy($responseFactory);
-        $strategy->setConfig($applicationConfig);
+        $strategy = new ApiStrategy($responseFactory, $applicationConfig, $container->get(Logger::class));
         $strategy->setContainer($container);
 
         $this->setStrategy($strategy);

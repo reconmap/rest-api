@@ -3,6 +3,7 @@
 namespace Reconmap\Repositories;
 
 use Reconmap\DatabaseTestCase;
+use Reconmap\Models\User;
 
 class UserRepositoryTest extends DatabaseTestCase
 {
@@ -36,5 +37,17 @@ class UserRepositoryTest extends DatabaseTestCase
     {
         $user = $this->subject->findById(0);
         $this->assertNull($user);
+    }
+
+    public function testInsert()
+    {
+        $user = new User();
+        $user->full_name = 'Mr Happy';
+        $user->username = 'mrhappy';
+        $user->password = 'Password123';
+        $user->email = 'mr.happy@emailprovider.internet';
+        $user->role = 'administrator';
+
+        $this->assertEquals(5, $this->subject->create($user));
     }
 }

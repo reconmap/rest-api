@@ -2,12 +2,15 @@
 
 namespace Reconmap\Repositories;
 
+use Reconmap\Models\User;
+use Reconmap\Repositories\QueryBuilders\InsertQueryBuilder;
 use Reconmap\Repositories\QueryBuilders\SelectQueryBuilder;
 use Reconmap\Repositories\QueryBuilders\UpdateQueryBuilder;
 
 class UserRepository extends MysqlRepository
 {
     public const UPDATABLE_COLUMNS_TYPES = [
+        'active' => 'i',
         'full_name' => 's',
         'short_bio' => 's',
         'email' => 's',
@@ -19,8 +22,11 @@ class UserRepository extends MysqlRepository
 
     public function findAll(): array
     {
-        $rs = $this->db->query('SELECT u.id, u.insert_ts, u.update_ts, u.full_name, u.username, u.email, u.role FROM user u LIMIT 20');
-        return $rs->fetch_all(MYSQLI_ASSOC);
+        $queryBuilder = $this->getBaseSelectQueryBuilder();
+        $queryBuilder->setLimit(20);
+
+        $result = $this->db->query($queryBuilder->toSql());
+        return $result->fetch_all(MYSQLI_ASSOC);
     }
 
     public function findById(int $id): ?array
@@ -31,8 +37,8 @@ class UserRepository extends MysqlRepository
         $stmt = $this->db->prepare($queryBuilder->toSql());
         $stmt->bind_param('i', $id);
         $stmt->execute();
-        $rs = $stmt->get_result();
-        $user = $rs->fetch_assoc();
+        $result = $stmt->get_result();
+        $user = $result->fetch_assoc();
         $stmt->close();
 
         return $user;
@@ -41,20 +47,21 @@ class UserRepository extends MysqlRepository
     private function getBaseSelectQueryBuilder(): SelectQueryBuilder
     {
         $queryBuilder = new SelectQueryBuilder('user u');
-        $queryBuilder->setColumns('u.id, u.insert_ts, u.update_ts, u.full_name, u.short_bio, u.username, u.email, u.password, u.role, u.timezone');
+        $queryBuilder->setColumns('u.id, u.insert_ts, u.update_ts, u.active, u.full_name, u.short_bio, u.username, u.email, u.role, u.timezone');
         return $queryBuilder;
     }
 
     public function findByUsername(string $username): ?array
     {
         $queryBuilder = $this->getBaseSelectQueryBuilder();
-        $queryBuilder->setWhere('u.username = ?');
+        $queryBuilder->setColumns($queryBuilder->getColumns() . ', u.password');
+        $queryBuilder->setWhere('u.active AND u.username = ?');
 
         $stmt = $this->db->prepare($queryBuilder->toSql());
         $stmt->bind_param('s', $username);
         $stmt->execute();
-        $rs = $stmt->get_result();
-        $user = $rs->fetch_assoc();
+        $result = $stmt->get_result();
+        $user = $result->fetch_assoc();
         $stmt->close();
 
         return $user;
@@ -70,10 +77,12 @@ class UserRepository extends MysqlRepository
         return $this->deleteByTableIds('user', $ids);
     }
 
-    public function create(object $user): int
+    public function create(User $user): int
     {
-        $stmt = $this->db->prepare('INSERT INTO user (full_name, short_bio, username, password, email, role) VALUES (?, ?, ?, ?, ?, ?)');
-        $stmt->bind_param('ssssss', $user->full_name, $user->short_bio, $user->username, $user->password, $user->email, $user->role);
+        $insertStmt = new InsertQueryBuilder('user');
+        $insertStmt->setColumns('active, full_name, short_bio, username, password, email, role');
+        $stmt = $this->db->prepare($insertStmt->toSql());
+        $stmt->bind_param('issssss', $user->active, $user->full_name, $user->short_bio, $user->username, $user->password, $user->email, $user->role);
         return $this->executeInsertStatement($stmt);
     }
 

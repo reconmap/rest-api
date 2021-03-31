@@ -20,6 +20,11 @@ class SelectQueryBuilder implements QueryBuilder
         $this->columns = $columns;
     }
 
+    public function getColumns(): string
+    {
+        return $this->columns;
+    }
+
     public function setWhere(string $where): void
     {
         $this->where[] = $where;

@@ -30,6 +30,10 @@ if (!file_exists($configFilePath) || !is_readable($configFilePath)) {
     exit;
 }
 
+set_error_handler(function ($errno, $errstr, $errfile, $errline) use ($logger) {
+    $logger->error("$errstr ($errno) on $errfile:$errline");
+});
+
 $config = ApplicationConfig::load($configFilePath);
 $config->setAppDir($applicationDir);
 

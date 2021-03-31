@@ -5,6 +5,7 @@ namespace Reconmap\Controllers\Users;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditLogAction;
+use Reconmap\Models\User;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\AuditLogService;
@@ -25,7 +26,7 @@ class CreateUserController extends Controller
 
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
-        $user = $this->getJsonBodyDecoded($request);
+        $user = $this->getJsonBodyDecodedAsClass($request, new User());
 
         $passwordGenerationMethodIsAuto = empty($user->unencryptedPassword);
         if ($passwordGenerationMethodIsAuto) {
