@@ -17,6 +17,8 @@ class UserRepository extends MysqlRepository
         'role' => 's',
         'username' => 's',
         'password' => 's',
+        'mfa_enabled' => 'i',
+        'mfa_secret' => 's',
         'timezone' => 's'
     ];
 
@@ -32,6 +34,7 @@ class UserRepository extends MysqlRepository
     public function findById(int $id): ?array
     {
         $queryBuilder = $this->getBaseSelectQueryBuilder();
+        $queryBuilder->setColumns($queryBuilder->getColumns() . ', u.mfa_secret');
         $queryBuilder->setWhere('u.id = ?');
 
         $stmt = $this->db->prepare($queryBuilder->toSql());
@@ -47,14 +50,14 @@ class UserRepository extends MysqlRepository
     private function getBaseSelectQueryBuilder(): SelectQueryBuilder
     {
         $queryBuilder = new SelectQueryBuilder('user u');
-        $queryBuilder->setColumns('u.id, u.insert_ts, u.update_ts, u.active, u.full_name, u.short_bio, u.username, u.email, u.role, u.timezone');
+        $queryBuilder->setColumns('u.id, u.insert_ts, u.update_ts, u.active, u.full_name, u.short_bio, u.username, u.email, u.role, u.timezone, u.mfa_enabled');
         return $queryBuilder;
     }
 
     public function findByUsername(string $username): ?array
     {
         $queryBuilder = $this->getBaseSelectQueryBuilder();
-        $queryBuilder->setColumns($queryBuilder->getColumns() . ', u.password');
+        $queryBuilder->setColumns($queryBuilder->getColumns() . ', u.password, u.mfa_secret');
         $queryBuilder->setWhere('u.active AND u.username = ?');
 
         $stmt = $this->db->prepare($queryBuilder->toSql());
@@ -80,9 +83,9 @@ class UserRepository extends MysqlRepository
     public function create(User $user): int
     {
         $insertStmt = new InsertQueryBuilder('user');
-        $insertStmt->setColumns('active, full_name, short_bio, username, password, email, role');
+        $insertStmt->setColumns('active, full_name, short_bio, username, password, mfa_secret, email, role');
         $stmt = $this->db->prepare($insertStmt->toSql());
-        $stmt->bind_param('issssss', $user->active, $user->full_name, $user->short_bio, $user->username, $user->password, $user->email, $user->role);
+        $stmt->bind_param('isssssss', $user->active, $user->full_name, $user->short_bio, $user->username, $user->password, $user->mfa_secret, $user->email, $user->role);
         return $this->executeInsertStatement($stmt);
     }
 

@@ -7,6 +7,7 @@ use League\Route\Http\Exception\ForbiddenException;
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\UriInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Reconmap\Services\JwtPayloadCreator;
 
@@ -23,7 +24,7 @@ class AuthMiddlewareTest extends TestCase
             'key' => 'this is going to be replaced with asymmetric keys'
         ];
 
-        $user = ['id' => 5, 'role' => 'superuser'];
+        $user = ['id' => 5, 'role' => 'superuser', 'mfa' => 'disabled'];
 
         $jwtPayload = (new JwtPayloadCreator($config))->createFromUserArray($user);
         $jwt = JWT::encode($jwtPayload, $config['jwt']['key'], 'HS256');
@@ -36,6 +37,14 @@ class AuthMiddlewareTest extends TestCase
             ->method('withAttribute')
             ->with('userId', 5)
             ->willReturn($request);
+
+        $mockUri = $this->createMock(UriInterface::class);
+        $mockUri->expects($this->once())
+            ->method('getPath')
+            ->willReturn('/commands');
+        $request->expects($this->once())
+            ->method('getUri')
+            ->willReturn($mockUri);
 
         $handler = $this->createMock(RequestHandlerInterface::class);
         $handler->expects($this->once())

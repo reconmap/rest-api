@@ -8,6 +8,8 @@ use League\Route\RouteGroup;
 use League\Route\Router;
 use Monolog\Logger;
 use Reconmap\{Controllers\AuditLog\AuditLogRouter,
+    Controllers\Auth\AuthRouter,
+    Controllers\Auth\LoginController,
     Controllers\Clients\ClientsRouter,
     Controllers\Commands\CommandsRouter,
     Controllers\Documents\DocumentsRouter,
@@ -18,7 +20,6 @@ use Reconmap\{Controllers\AuditLog\AuditLogRouter,
     Controllers\System\SystemRouter,
     Controllers\Targets\TargetsRouter,
     Controllers\Tasks\TasksRouter,
-    Controllers\Users\UsersLoginController,
     Controllers\Users\UsersRouter,
     Controllers\Vulnerabilities\VulnerabilitiesRouter,
     Services\ApplicationConfig
@@ -28,6 +29,7 @@ use Reconmap\Controllers\Attachments\AttachmentsRouter;
 class ApiRouter extends Router
 {
     private const ROUTER_CLASSES = [
+        AuthRouter::class,
         AttachmentsRouter::class,
         AuditLogRouter::class,
         CommandsRouter::class,
@@ -51,7 +53,7 @@ class ApiRouter extends Router
         $authMiddleware = $container->get(AuthMiddleware::class);
         $corsMiddleware = $container->get(CorsMiddleware::class);
 
-        $this->map('POST', '/users/login', UsersLoginController::class)
+        $this->map('POST', '/users/login', LoginController::class)
             ->middleware($corsMiddleware);
 
         $this->group('', function (RouteGroup $router): void {

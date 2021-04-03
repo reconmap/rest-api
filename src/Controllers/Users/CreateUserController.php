@@ -26,6 +26,7 @@ class CreateUserController extends Controller
 
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
+        /** @var User $user */
         $user = $this->getJsonBodyDecodedAsClass($request, new User());
 
         $passwordGenerationMethodIsAuto = empty($user->unencryptedPassword);
@@ -34,6 +35,7 @@ class CreateUserController extends Controller
         }
 
         $user->password = password_hash($user->unencryptedPassword, PASSWORD_DEFAULT);
+
 
         $userId = $this->userRepository->create($user);
 

@@ -8,6 +8,7 @@ use Firebase\JWT\JWT;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Utils;
 use League\Route\Http\Exception\ForbiddenException;
+use League\Route\Http\Exception\UnauthorizedException;
 use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -44,6 +45,9 @@ class AuthMiddleware implements MiddlewareInterface
                 throw new ForbiddenException("Invalid JWT audience");
             }
 
+            if (!str_contains($request->getUri()->getPath(), '/auth/mfa') && !in_array($token->data->mfa, ['verified', 'disabled'])) {
+                throw new UnauthorizedException("Mfa code not verified");
+            }
             $request = $request->withAttribute('userId', $token->data->id);
             return $handler->handle($request);
         } catch (ForbiddenException | ExpiredException $e) {

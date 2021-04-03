@@ -1,5 +1,4 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Services;
 
@@ -19,7 +18,7 @@ class JwtPayloadCreatorTest extends TestCase
         ];
 
         $now = time();
-        $user = ['id' => 104, 'role' => 'superadmin'];
+        $user = ['id' => 104, 'role' => 'superadmin', 'mfa' => 'disabled'];
 
         $subject = new JwtPayloadCreator($config);
         $payload = $subject->createFromUserArray($user);

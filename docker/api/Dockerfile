@@ -7,7 +7,7 @@ RUN apt-get install -y wget unzip lsb-release
 RUN wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
 RUN echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/php.list
 RUN apt-get update
-RUN apt-get install -y php8.0 php8.0-cli php8.0-fpm php8.0-mysqlnd php8.0-dom php8.0-mbstring php8.0-intl php8.0-xdebug php8.0-curl
+RUN apt-get install -y php8.0 php8.0-cli php8.0-fpm php8.0-mysqlnd php8.0-dom php8.0-mbstring php8.0-intl php8.0-xdebug php8.0-curl php8.0-gd
 RUN apt-get install -y nginx
 
 RUN apt-get update && apt-get install -y php8.0-dev php-pear && \

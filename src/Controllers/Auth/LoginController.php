@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Reconmap\Controllers\Users;
+namespace Reconmap\Controllers\Auth;
 
 use Fig\Http\Message\StatusCodeInterface;
 use Firebase\JWT\JWT;
@@ -16,12 +16,13 @@ use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\AuditLogService;
 use Reconmap\Services\JwtPayloadCreator;
 
-class UsersLoginController extends Controller
+class LoginController extends Controller
 {
     public function __construct(
         private UserRepository $userRepository,
         private ApplicationConfig $applicationConfig,
-        private AuditLogService $auditLogService)
+        private AuditLogService $auditLogService,
+        private JwtPayloadCreator $jwtPayloadCreator)
     {
     }
 
@@ -42,10 +43,14 @@ class UsersLoginController extends Controller
 
         unset($user['password']); // DO NOT leak password in the response.
 
+        $user['mfa'] = match (true) {
+            $user['mfa_enabled'] === 1 => $user['mfa_secret'] ? 'ready' : 'setup',
+            default => 'disabled'
+        };
+
         $this->audit($user['id'], AuditLogAction::USER_LOGGED_IN);
 
-        $jwtPayload = (new JwtPayloadCreator($this->applicationConfig))
-            ->createFromUserArray($user);
+        $jwtPayload = $this->jwtPayloadCreator->createFromUserArray($user);
 
         $jwtConfig = $this->applicationConfig->getSettings('jwt');
 

@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace Reconmap\Controllers\Users;
+namespace Reconmap\Controllers\Auth;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditLogAction;
 use Reconmap\Services\AuditLogService;
 
-class UsersLogoutController extends Controller
+class LogoutController extends Controller
 {
     public function __construct(private AuditLogService $auditLogService)
     {

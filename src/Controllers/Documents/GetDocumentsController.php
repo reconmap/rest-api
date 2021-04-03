@@ -16,7 +16,7 @@ class GetDocumentsController extends Controller
     {
         $params = $request->getQueryParams();
         $parentType = $params['parentType'] ?? 'library';
-        $parentId = $params['parentId'] ? intval($params['parentId']) : null;
+        $parentId = isset($params['parentId']) ? intval($params['parentId']) : null;
 
         return $this->repository->findByParentId($parentType, $parentId);
     }
