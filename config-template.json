@@ -1,32 +1,33 @@
 {
-	"jwt": {
-		"issuer": "reconmap.org",
-		"audience": "reconmap.com",
-		"key": "One long key of your own"
-	},
-	"cors": {
-		"allowedOrigins": [
-			"http://localhost:3001"
-		]
-	},
-	"database": {
-		"host": "rmap-mysql",
-		"username": "reconmapper",
-		"password": "reconmapped",
-		"name": "reconmap"
-	},
-	"smtp": {
-		"host": "just.another.smtp.server",
-		"port": 587,
-		"username": "smtpuser",
-		"password": "smtpsecret",
-		"fromEmail": "no-reply@reconmap.org",
-		"fromName": "Reconmap"
-	},
-	"integrations": {
-		"gitter": {
-			"token": "yourpersonaltoken",
-			"roomId": "yourroomid"
-		}
-	}
+  "jwt": {
+    "issuer": "reconmap.org",
+    "audience": "reconmap.com",
+    "key": "One long key of your own"
+  },
+  "cors": {
+    "allowedOrigins": [
+      "http://localhost:3001",
+      "http://127.0.0.1:3001"
+    ]
+  },
+  "database": {
+    "host": "rmap-mysql",
+    "username": "reconmapper",
+    "password": "reconmapped",
+    "name": "reconmap"
+  },
+  "smtp": {
+    "host": "just.another.smtp.server",
+    "port": 587,
+    "username": "smtpuser",
+    "password": "smtpsecret",
+    "fromEmail": "no-reply@reconmap.org",
+    "fromName": "Reconmap"
+  },
+  "integrations": {
+    "gitter": {
+      "token": "yourpersonaltoken",
+      "roomId": "yourroomid"
+    }
+  }
 }
