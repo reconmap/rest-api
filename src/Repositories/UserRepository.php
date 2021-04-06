@@ -31,10 +31,10 @@ class UserRepository extends MysqlRepository
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
-    public function findById(int $id): ?array
+    public function findById(int $id, bool $includePassword = false): ?array
     {
         $queryBuilder = $this->getBaseSelectQueryBuilder();
-        $queryBuilder->setColumns($queryBuilder->getColumns() . ', u.mfa_secret');
+        $queryBuilder->setColumns($queryBuilder->getColumns() . ', u.mfa_secret' . ($includePassword ? ', u.password' : ''));
         $queryBuilder->setWhere('u.id = ?');
 
         $stmt = $this->db->prepare($queryBuilder->toSql());

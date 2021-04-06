@@ -28,7 +28,7 @@ class UpdateUserPasswordController extends Controller
 
         $requestBody = $this->getJsonBodyDecoded($request);
 
-        $user = $this->userRepository->findById($userId);
+        $user = $this->userRepository->findById($userId, true);
 
         if (is_null($user) || !password_verify($requestBody->currentPassword, $user['password'])) {
             $this->logger->warning("Wrong password entered during password change. (User ID: $userId)");
