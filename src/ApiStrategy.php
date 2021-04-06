@@ -23,9 +23,11 @@ class ApiStrategy extends JsonStrategy
 
     public function getThrowableHandler(): MiddlewareInterface
     {
-        return new class ($this->responseFactory->createResponse(), $this->logger) implements MiddlewareInterface {
+        $corsMiddleware = $this->container->get(CorsMiddleware::class);
+        return new class ($this->responseFactory->createResponse(), $corsMiddleware, $this->logger) implements MiddlewareInterface {
 
             public function __construct(private ResponseInterface $response,
+                                        private CorsMiddleware $corsMiddleware,
                                         private Logger $logger)
             {
             }
@@ -36,7 +38,8 @@ class ApiStrategy extends JsonStrategy
             ): ResponseInterface
             {
                 try {
-                    return $handler->handle($request);
+                    return $this->corsMiddleware->process($request, $handler);
+
                 } catch (\Throwable $exception) {
                     $this->logger->error($exception->getMessage());
 
@@ -55,19 +58,6 @@ class ApiStrategy extends JsonStrategy
                     return $response->withStatus(StatusCodeInterface::STATUS_INTERNAL_SERVER_ERROR, 'Internal server error');
                 }
             }
-        };
-    }
-
-    public function getOptionsCallable(array $methods): callable
-    {
-        $corsConfig = $this->config->getSettings('cors');
-        $allowedOrigins = implode(',', $corsConfig['allowedOrigins']);
-
-        $parentOptionsCallable = parent::getOptionsCallable($methods);
-        return function () use ($parentOptionsCallable, $allowedOrigins, $methods): ResponseInterface {
-            return $parentOptionsCallable()
-                ->withHeader('Access-Control-Allow-Headers', 'Authorization,Bulk-Operation,Content-Type')
-                ->withHeader('Access-Control-Allow-Origin', $allowedOrigins);
         };
     }
 }
