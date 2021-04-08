@@ -47,9 +47,11 @@ class TaskResultProcessor implements ItemProcessor
                 if (!empty($vulnerability->host)) {
                     $target = $this->targetRepository->findByProjectIdAndName($task['project_id'], $vulnerability->host->name);
                     if ($target) {
+                        $this->logger->debug("Host found: " . $target->id);
                         $targetId = $target->id;
                     } else {
                         $targetId = $this->targetRepository->insert($task['project_id'], $vulnerability->host->name, 'hostname');
+                        $this->logger->debug("Host created: " . $targetId);
                     }
                 }
 

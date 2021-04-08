@@ -2,6 +2,8 @@
 
 namespace Reconmap\Processors;
 
+use Reconmap\Models\Vulnerability;
+
 class NessusProcessor extends AbstractCommandProcessor
 {
 
@@ -25,14 +27,14 @@ class NessusProcessor extends AbstractCommandProcessor
 
                 $risk = strtolower((string)$rawVulnerability->risk_factor);
 
-                $vulnerability = (object)[
-                    'severity' => (string)$rawVulnerability['severity'],
-                    'summary' => (string)$rawVulnerability->synopsis,
-                    'description' => preg_replace('/^ +/', '', (string)$rawVulnerability->description),
-                    'risk' => $risk,
-                    'solution' => $solution,
-                    'host' => (object)$host
-                ];
+                $vulnerability = new Vulnerability();
+                $vulnerability->summary = (string)$rawVulnerability->synopsis;
+                $vulnerability->description = preg_replace('/^ +/', '', (string)$rawVulnerability->description);
+                $vulnerability->risk = $risk;
+                $vulnerability->solution = $solution;
+                // Dynamic props
+                $vulnerability->host = (object)$host;
+                $vulnerability->severity = (string)$rawVulnerability['severity'];
 
                 if (isset($rawVulnerability->cvss_base_score)) {
                     $vulnerability->cvss_score = (float)$rawVulnerability->cvss_base_score;

@@ -2,6 +2,8 @@
 
 namespace Reconmap\Processors;
 
+use Reconmap\Models\Vulnerability;
+
 class MetasploitProcessor extends AbstractCommandProcessor
 {
 
@@ -17,14 +19,14 @@ class MetasploitProcessor extends AbstractCommandProcessor
             ];
 
             foreach ($rawHost->vulns->vuln as $rawVulnerability) {
-                $vulnerability = (object)[
-                    'summary' => (string)$rawVulnerability->name,
-                    'risk' => 'medium',
-                    'host' => (object)$host
-                ];
+                $vulnerability = new Vulnerability();
+                $vulnerability->summary = (string)$rawVulnerability->name;
+                $vulnerability->risk = 'medium';
+                // Dynamic props
+                $vulnerability->host = (object)$host;
 
                 if ((string)$rawVulnerability->info !== 'NULL') {
-                    $vulnerability['description'] = (string)$rawVulnerability->info;
+                    $vulnerability->description = (string)$rawVulnerability->info;
                 }
 
                 $vulnerabilities[] = $vulnerability;

@@ -2,6 +2,8 @@
 
 namespace Reconmap\Processors;
 
+use Reconmap\Models\Vulnerability;
+
 class BurpProProcessor extends AbstractCommandProcessor
 {
     public function parseVulnerabilities(string $path): array
@@ -20,14 +22,16 @@ class BurpProProcessor extends AbstractCommandProcessor
 
             $risk = strtolower((string)$rawVulnerability->risk_factor);
 
-            $vulnerability = (object)[
-                'severity' => (string)$rawVulnerability['severity'],
-                'summary' => (string)$rawVulnerability->name,
-                'description' => preg_replace('/^ +/', '', (string)$rawVulnerability->issueDetail),
-                'risk' => $risk,
-                'solution' => $solution,
-                'host' => (string)$rawVulnerability->host
-            ];
+            $vulnerability = new Vulnerability();
+            $vulnerability->summary = (string)$rawVulnerability->name;
+            $vulnerability->description = preg_replace('/^ +/', '', (string)$rawVulnerability->issueDetail);
+            $vulnerability->risk = $risk;
+            $vulnerability->solution = $solution;
+
+            // Dynamic props
+            $vulnerability->host = (object)['name' => (string)$rawVulnerability->host];
+            $vulnerability->severity = (string)$rawVulnerability['severity'];
+
             $vulnerabilities[] = $vulnerability;
         }
 
