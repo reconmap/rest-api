@@ -49,4 +49,9 @@ abstract class Controller implements ContainerConsumer
     {
         return json_decode((string)$request->getBody(), true);
     }
+
+    protected function getIntQueryParam(array $queryParams, string $name, int $default = 0): int
+    {
+        return isset($queryParams[$name]) ? intval($queryParams[$name]) : $default;
+    }
 }

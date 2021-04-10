@@ -17,7 +17,7 @@ class GetVulnerabilitiesController extends Controller
     public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
         $params = $request->getQueryParams();
-        $page = (int)$params['page'];
+        $page = $this->getIntQueryParam($params, 'page');
 
         if (isset($params['keywords'])) {
             $keywords = $params['keywords'];
