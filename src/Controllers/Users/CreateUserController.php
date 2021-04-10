@@ -24,7 +24,7 @@ class CreateUserController extends Controller
     {
     }
 
-    public function __invoke(ServerRequestInterface $request, array $args): array
+    public function __invoke(ServerRequestInterface $request): array
     {
         /** @var User $user */
         $user = $this->getJsonBodyDecodedAsClass($request, new User());
@@ -36,16 +36,15 @@ class CreateUserController extends Controller
 
         $user->password = password_hash($user->unencryptedPassword, PASSWORD_DEFAULT);
 
-
-        $userId = $this->userRepository->create($user);
+        $user->id = $this->userRepository->create($user);
 
         $loggedInUserId = $request->getAttribute('userId');
 
-        $this->auditAction($loggedInUserId, $userId);
+        $this->auditAction($loggedInUserId, $user->id);
 
         $instanceUrl = $this->applicationConfig->getSettings('cors')['allowedOrigins'][0];
 
-        if ($passwordGenerationMethodIsAuto || (bool)($user->sendEmailToUser)) {
+        if ($passwordGenerationMethodIsAuto || $user->sendEmailToUser) {
             $emailBody = $this->template->render('users/newAccount', [
                 'instance_url' => $instanceUrl,
                 'user' => (array)$user,
@@ -55,7 +54,7 @@ class CreateUserController extends Controller
             $result = $this->redisServer->lPush("email:queue",
                 json_encode([
                     'subject' => 'Account created',
-                    'to' => [$user->email => $user->name],
+                    'to' => [$user->email => $user->full_name],
                     'body' => $emailBody
                 ])
             );
