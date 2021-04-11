@@ -14,6 +14,8 @@ class Task
     public ?string $description;
     public string $status;
     public ?string $due_date;
+    public ?int $command_id;
+
     public ?string $command;
     public ?string $command_parser;
 }

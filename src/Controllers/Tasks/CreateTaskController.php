@@ -16,11 +16,11 @@ class CreateTaskController extends Controller
     public function __invoke(ServerRequestInterface $request): array
     {
         /** @var Task $task */
-        $task = $this->getJsonBodyDecoded($request);
+        $task = $this->getJsonBodyDecodedAsClass($request, new Task());
         $task->creator_uid = $request->getAttribute('userId');
 
-        $result = $this->repository->insert($task);
+        $this->repository->insert($task);
 
-        return ['success' => $result];
+        return ['success' => true];
     }
 }
