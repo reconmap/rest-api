@@ -22,8 +22,7 @@ script:
   - make security-tests
 
 after_script:
-  - sed -i "s@/var/www/webapp@$PWD@" tests/clover.xml
-  - pushd tests; ../cc-test-reporter after-build -t clover --prefix $PWD/../ --exit-code $TRAVIS_TEST_RESULT; popd
+  - pushd tests; ../cc-test-reporter after-build -t clover --prefix /var/www/webapp --exit-code $TRAVIS_TEST_RESULT; popd
 
 deploy:
   skip_cleanup: true
