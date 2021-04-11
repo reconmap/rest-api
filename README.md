@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.com/reconmap/rest-api.svg?branch=master)](https://travis-ci.com/Reconmap/rest-api)
 [![Maintainability](https://api.codeclimate.com/v1/badges/7bebfcc41dce2610de78/maintainability)](https://codeclimate.com/github/reconmap/rest-api/maintainability)
+[![codecov](https://codecov.io/gh/reconmap/rest-api/branch/master/graph/badge.svg?token=VTC6RAM41Q)](https://codecov.io/gh/reconmap/rest-api)
 [![Gitter](https://badges.gitter.im/reconmap/community.svg)](https://gitter.im/reconmap/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 ![Reconmap devices](https://pasteall.org/media/2/0/204759e8714dc1def4209d10b3370c4d.png)
