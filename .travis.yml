@@ -26,7 +26,7 @@ after_script:
   - pushd tests; ../cc-test-reporter after-build -t clover --prefix /var/www/webapp --exit-code $TRAVIS_TEST_RESULT; popd
 
 after_success:
-  - bash <(curl -s https://codecov.io/bash) -f tests/cover.xml
+  - bash <(curl -s https://codecov.io/bash) -f tests/clover.xml
 
 deploy:
   skip_cleanup: true
