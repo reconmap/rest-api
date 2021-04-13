@@ -20,9 +20,10 @@ class DeleteProjectController extends Controller
         $projectId = (int)$args['projectId'];
 
         $success = $this->projectRepository->deleteById($projectId);
-
-        $userId = $request->getAttribute('userId');
-        $this->auditAction($userId, $projectId);
+        if ($success) {
+            $userId = $request->getAttribute('userId');
+            $this->auditAction($userId, $projectId);
+        }
 
         return ['success' => $success];
     }

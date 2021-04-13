@@ -13,14 +13,13 @@ class CreateProjectController extends Controller
     {
     }
 
-    public function __invoke(ServerRequestInterface $request, array $args): array
+    public function __invoke(ServerRequestInterface $request): array
     {
         $project = $this->getJsonBodyDecodedAsClass($request, new Project());
         $project->creator_uid = $request->getAttribute('userId');
-        $project->isTemplate = false;
 
-        $result = $this->projectRepository->insert($project);
+        $this->projectRepository->insert($project);
 
-        return ['success' => $result];
+        return ['success' => true];
     }
 }
