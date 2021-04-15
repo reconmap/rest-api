@@ -48,7 +48,7 @@ SQL;
         return $this->deleteByTableId('client', $id);
     }
 
-    public function insert(object $client): int
+    public function insert(Client $client): int
     {
         $stmt = $this->db->prepare('INSERT INTO client (creator_uid, name, url, contact_name, contact_email, contact_phone) VALUES (?, ?, ?, ?, ?, ?)');
         $stmt->bind_param('isssss', $client->creator_uid, $client->name, $client->url, $client->contact_name, $client->contact_email, $client->contact_phone);

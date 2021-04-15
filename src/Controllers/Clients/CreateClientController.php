@@ -13,14 +13,14 @@ class CreateClientController extends Controller
     {
     }
 
-    public function __invoke(ServerRequestInterface $request, array $args): array
+    public function __invoke(ServerRequestInterface $request): array
     {
         /** @var Client $client */
-        $client = $this->getJsonBodyDecoded($request);
+        $client = $this->getJsonBodyDecodedAsClass($request, new Client());
         $client->creator_uid = $request->getAttribute('userId');
 
-        $result = $this->repository->insert($client);
+        $this->repository->insert($client);
 
-        return ['success' => $result];
+        return ['success' => true];
     }
 }

@@ -8,9 +8,9 @@ class Client
     public int $creator_uid;
     public ?string $name;
     public ?string $url;
-    public ?string $contactName;
-    public ?string $contactEmail;
-    public ?string $contactPhone;
+    public ?string $contact_name;
+    public ?string $contact_email;
+    public ?string $contact_phone;
 
     public function getId(): int
     {

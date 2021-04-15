@@ -30,6 +30,6 @@ class DeleteClientController extends Controller
 
     private function auditAction(int $loggedInUserId, int $clientId): void
     {
-        $this->activityPublisherService->publish($loggedInUserId, AuditLogAction::CLIENT_DELETED, ['id' => $clientId]);
+        $this->activityPublisherService->publish($loggedInUserId, AuditLogAction::CLIENT_DELETED, ['type' => 'client', 'id' => $clientId]);
     }
 }
