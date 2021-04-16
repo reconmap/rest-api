@@ -10,7 +10,7 @@ use Reconmap\Services\ActivityPublisherService;
 
 class DeleteClientControllerTest extends TestCase
 {
-    public function testSuccesfulDelete()
+    public function testSuccessfulDelete()
     {
         $fakeClientId = 86;
 

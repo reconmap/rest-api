@@ -8,12 +8,15 @@ use Reconmap\Models\AuditLogAction;
 use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Services\ActivityPublisherService;
 use Reconmap\Services\AttachmentFilePath;
+use Symfony\Component\Filesystem\Exception\IOException;
+use Symfony\Component\Filesystem\Filesystem;
 
 class DeleteAttachmentController extends Controller
 {
     public function __construct(private AttachmentRepository $attachmentRepository,
                                 private AttachmentFilePath $attachmentFilePathService,
-                                private ActivityPublisherService $activityPublisherService)
+                                private ActivityPublisherService $activityPublisherService,
+                                private Filesystem $filesystem)
     {
     }
 
@@ -24,8 +27,11 @@ class DeleteAttachmentController extends Controller
         $attachment = $this->attachmentRepository->findById($attachmentId);
 
         $pathName = $this->attachmentFilePathService->generateFilePathFromAttachment((array)$attachment);
-        if (unlink($pathName) === false) {
-            $this->logger->warning('Unable to delete: ' . $pathName);
+
+        try {
+            $this->filesystem->remove($pathName);
+        } catch (IOException $ioe) {
+            $this->logger->warning($ioe->getMessage());
         }
 
         $success = $this->attachmentRepository->deleteById($attachmentId);
@@ -38,6 +44,6 @@ class DeleteAttachmentController extends Controller
 
     private function auditAction(int $loggedInUserId, int $attachmentId): void
     {
-        $this->activityPublisherService->publish($loggedInUserId, AuditLogAction::ATTACHMENT_DELETED, ['id' => $attachmentId]);
+        $this->activityPublisherService->publish($loggedInUserId, AuditLogAction::ATTACHMENT_DELETED, ['type' => 'attachment', 'id' => $attachmentId]);
     }
 }

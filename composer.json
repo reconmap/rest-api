@@ -27,7 +27,8 @@
         "fig/http-message-util": "^1.1",
         "netresearch/jsonmapper": "^4.0",
         "endroid/qr-code": "^4.0",
-        "pragmarx/google2fa": "^8.0"
+        "pragmarx/google2fa": "^8.0",
+        "symfony/filesystem": "^5.2"
     },
     "autoload": {
         "psr-4": {

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e33b0aa686f7daa2629a3c0be37d1ca4",
+    "content-hash": "c4bb1833f0d92f47015bab6b807e91c4",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -854,16 +854,16 @@
         },
         {
             "name": "laminas/laminas-diactoros",
-            "version": "2.5.0",
+            "version": "2.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-diactoros.git",
-                "reference": "4ff7400c1c12e404144992ef43c8b733fd9ad516"
+                "reference": "53df7b7cd66e0905e6133970a4b90392a7a08075"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-diactoros/zipball/4ff7400c1c12e404144992ef43c8b733fd9ad516",
-                "reference": "4ff7400c1c12e404144992ef43c8b733fd9ad516",
+                "url": "https://api.github.com/repos/laminas/laminas-diactoros/zipball/53df7b7cd66e0905e6133970a4b90392a7a08075",
+                "reference": "53df7b7cd66e0905e6133970a4b90392a7a08075",
                 "shasum": ""
             },
             "require": {
@@ -950,20 +950,20 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2020-11-18T18:39:28+00:00"
+            "time": "2021-04-13T19:39:11+00:00"
         },
         {
             "name": "laminas/laminas-httphandlerrunner",
-            "version": "1.3.0",
+            "version": "1.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-httphandlerrunner.git",
-                "reference": "e8f850bd12cb82b268ff235fe74b2df906e8bfe8"
+                "reference": "6a2dd33e4166469ade07ad1283b45924383b224b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-httphandlerrunner/zipball/e8f850bd12cb82b268ff235fe74b2df906e8bfe8",
-                "reference": "e8f850bd12cb82b268ff235fe74b2df906e8bfe8",
+                "url": "https://api.github.com/repos/laminas/laminas-httphandlerrunner/zipball/6a2dd33e4166469ade07ad1283b45924383b224b",
+                "reference": "6a2dd33e4166469ade07ad1283b45924383b224b",
                 "shasum": ""
             },
             "require": {
@@ -979,7 +979,9 @@
             "require-dev": {
                 "laminas/laminas-coding-standard": "~1.0.0",
                 "laminas/laminas-diactoros": "^2.1.1",
-                "phpunit/phpunit": "^9.3"
+                "phpunit/phpunit": "^9.3",
+                "psalm/plugin-phpunit": "^0.15.1",
+                "vimeo/psalm": "^4.6"
             },
             "type": "library",
             "extra": {
@@ -1019,7 +1021,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2020-11-19T17:12:59+00:00"
+            "time": "2021-04-08T13:52:56+00:00"
         },
         {
             "name": "laminas/laminas-zendframework-bridge",
@@ -1450,16 +1452,16 @@
         },
         {
             "name": "opis/closure",
-            "version": "3.6.1",
+            "version": "3.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/opis/closure.git",
-                "reference": "943b5d70cc5ae7483f6aff6ff43d7e34592ca0f5"
+                "reference": "06e2ebd25f2869e54a306dda991f7db58066f7f6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opis/closure/zipball/943b5d70cc5ae7483f6aff6ff43d7e34592ca0f5",
-                "reference": "943b5d70cc5ae7483f6aff6ff43d7e34592ca0f5",
+                "url": "https://api.github.com/repos/opis/closure/zipball/06e2ebd25f2869e54a306dda991f7db58066f7f6",
+                "reference": "06e2ebd25f2869e54a306dda991f7db58066f7f6",
                 "shasum": ""
             },
             "require": {
@@ -1509,9 +1511,9 @@
             ],
             "support": {
                 "issues": "https://github.com/opis/closure/issues",
-                "source": "https://github.com/opis/closure/tree/3.6.1"
+                "source": "https://github.com/opis/closure/tree/3.6.2"
             },
-            "time": "2020-11-07T02:01:34+00:00"
+            "time": "2021-04-09T13:42:10+00:00"
         },
         {
             "name": "paragonie/constant_time_encoding",
@@ -2178,6 +2180,68 @@
                 }
             ],
             "time": "2021-03-09T12:30:35+00:00"
+        },
+        {
+            "name": "symfony/filesystem",
+            "version": "v5.2.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/filesystem.git",
+                "reference": "8c86a82f51658188119e62cff0a050a12d09836f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/filesystem/zipball/8c86a82f51658188119e62cff0a050a12d09836f",
+                "reference": "8c86a82f51658188119e62cff0a050a12d09836f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2.5",
+                "symfony/polyfill-ctype": "~1.8"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Filesystem\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Provides basic utilities for the filesystem",
+            "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/filesystem/tree/v5.2.6"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2021-03-28T14:30:26+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",

@@ -7,12 +7,15 @@ use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Repositories\ReportRepository;
 use Reconmap\Services\AttachmentFilePath;
+use Symfony\Component\Filesystem\Exception\IOException;
+use Symfony\Component\Filesystem\Filesystem;
 
 class DeleteReportController extends Controller
 {
     public function __construct(private AttachmentFilePath $attachmentFilePathService,
                                 private ReportRepository $reportRepository,
-                                private AttachmentRepository $attachmentRepository)
+                                private AttachmentRepository $attachmentRepository,
+                                private Filesystem $filesystem)
     {
     }
 
@@ -26,8 +29,10 @@ class DeleteReportController extends Controller
         foreach ($attachments as $attachment) {
             $filePath = $this->attachmentFilePathService->generateFilePath($attachment['file_name']);
 
-            if (unlink($filePath) === false) {
-                $this->logger->warning("Unable to delete report file '$filePath'");
+            try {
+                $this->filesystem->remove($filePath);
+            } catch (IOException $ioe) {
+                $this->logger->warning($ioe->getMessage());
             }
         }
 
