@@ -11,14 +11,14 @@ use Reconmap\Services\ActivityPublisherService;
 
 class UpdateOrganisationController extends Controller
 {
-    public function __construct(private OrganisationRepository $repository, private ActivityPublisherService $activityPublisherService)
+    public function __construct(private OrganisationRepository $repository,
+                                private ActivityPublisherService $activityPublisherService)
     {
     }
 
     public function __invoke(ServerRequestInterface $request): array
     {
-        /** @var Organisation $organisation */
-        $organisation = $this->getJsonBodyDecoded($request);
+        $organisation = $this->getJsonBodyDecodedAsClass($request, new Organisation());
 
         $success = $this->repository->updateRootOrganisation($organisation);
 

@@ -7,7 +7,7 @@ class Organisation
     public ?int $id = null;
     public string $name;
     public ?string $url = null;
-    public ?string $contactName = null;
-    public ?string $contactEmail = null;
-    public ?string $contactPhone = null;
+    public ?string $contact_name = null;
+    public ?string $contact_email = null;
+    public ?string $contact_phone = null;
 }

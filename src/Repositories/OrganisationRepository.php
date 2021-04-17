@@ -13,24 +13,21 @@ class OrganisationRepository extends MysqlRepository
         $stmt = $this->db->prepare('SELECT * FROM organisation WHERE id = ?');
         $stmt->bind_param('i', self::$rootOrganisationId);
         $stmt->execute();
-        $rs = $stmt->get_result();
-        $organisation = $rs->fetch_object(Organisation::class);
+        $result = $stmt->get_result();
+        $organisation = $result->fetch_object(Organisation::class);
+        $result->close();
         $stmt->close();
 
         return $organisation;
     }
 
-    /**
-     * @param Organisation $organisation
-     * @return bool
-     */
-    public function updateRootOrganisation(object $organisation): bool
+    public function updateRootOrganisation(Organisation $organisation): bool
     {
         $stmt = $this->db->prepare('UPDATE organisation SET name = ?, url = ?, contact_name = ?, contact_email = ?, contact_phone = ? WHERE id = ?');
-        $stmt->bind_param('sssssi', $organisation->name, $organisation->url, $organisation->contactName, $organisation->contactEmail, $organisation->contactPhone, self::$rootOrganisationId);
-        $result = $stmt->execute();
+        $stmt->bind_param('sssssi', $organisation->name, $organisation->url, $organisation->contact_name, $organisation->contact_email, $organisation->contact_phone, self::$rootOrganisationId);
+        $success = $stmt->execute();
         $stmt->close();
 
-        return $result;
+        return $success;
     }
 }
