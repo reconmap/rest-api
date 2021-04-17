@@ -28,7 +28,7 @@ class ProjectsImporter
             $project->creator_uid = $userId;
             $project->name = $jsonProject->name;
             $project->description = $jsonProject->description;
-            $project->isTemplate = (bool)$jsonProject->is_template;
+            $project->is_template = (bool)$jsonProject->is_template;
             try {
                 $projectId = $this->projectRepository->insert($project);
 
