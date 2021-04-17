@@ -3,8 +3,6 @@
 [![codecov](https://codecov.io/gh/reconmap/rest-api/branch/master/graph/badge.svg?token=VTC6RAM41Q)](https://codecov.io/gh/reconmap/rest-api)
 [![Gitter](https://badges.gitter.im/reconmap/community.svg)](https://gitter.im/reconmap/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-![Reconmap devices](https://pasteall.org/media/2/0/204759e8714dc1def4209d10b3370c4d.png)
-
 ![Reconmap logo](https://pasteall.org/media/4/7/4780c30723f90cfd56ec0d056555b7e6.png)
 
 # Reconmap
