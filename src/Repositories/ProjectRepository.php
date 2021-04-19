@@ -5,7 +5,6 @@ namespace Reconmap\Repositories;
 use Reconmap\Models\Project;
 use Reconmap\Repositories\QueryBuilders\InsertQueryBuilder;
 use Reconmap\Repositories\QueryBuilders\SelectQueryBuilder;
-use Reconmap\Repositories\QueryBuilders\UpdateQueryBuilder;
 
 class ProjectRepository extends MysqlRepository
 {
@@ -119,17 +118,7 @@ SQL;
 
     public function updateById(int $id, array $newColumnValues): bool
     {
-        $updateQueryBuilder = new UpdateQueryBuilder('project');
-        $updateQueryBuilder->setColumnValues(array_map(fn() => '?', $newColumnValues));
-        $updateQueryBuilder->setWhereConditions('id = ?');
-
-        $stmt = $this->db->prepare($updateQueryBuilder->toSql());
-        call_user_func_array([$stmt, 'bind_param'], [$this->generateParamTypes(array_keys($newColumnValues)) . 'i', ...$this->refValues($newColumnValues), &$id]);
-        $result = $stmt->execute();
-        $success = $result && 1 === $stmt->affected_rows;
-        $stmt->close();
-
-        return $success;
+        return $this->updateByTableId('project', $id, $newColumnValues);
     }
 
     private function getBaseSelectQueryBuilder(): SelectQueryBuilder
