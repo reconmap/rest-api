@@ -3,6 +3,7 @@
 namespace Reconmap\Repositories;
 
 use Reconmap\Repositories\QueryBuilders\DeleteQueryBuilder;
+use Reconmap\Repositories\QueryBuilders\UpdateQueryBuilder;
 
 abstract class MysqlRepository
 {
@@ -62,5 +63,20 @@ abstract class MysqlRepository
         $stmt->close();
 
         return $successfulDeleteCount;
+    }
+
+    protected function updateByTableId(string $tableName, int $id, array $newColumnValues): bool
+    {
+        $updateQueryBuilder = new UpdateQueryBuilder($tableName);
+        $updateQueryBuilder->setColumnValues(array_map(fn() => '?', $newColumnValues));
+        $updateQueryBuilder->setWhereConditions('id = ?');
+
+        $stmt = $this->db->prepare($updateQueryBuilder->toSql());
+        $stmt->bind_param($this->generateParamTypes(array_keys($newColumnValues)) . 'i', ...array_merge(array_values($newColumnValues), [$id]));
+        $result = $stmt->execute();
+        $success = $result && 1 === $stmt->affected_rows;
+        $stmt->close();
+
+        return $success;
     }
 }
