@@ -7,10 +7,14 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\VulnerabilityRepository;
+use Reconmap\Repositories\VulnerabilityStatsRepository;
 
 class GetVulnerabilitiesController extends Controller
 {
-    public function __construct(private VulnerabilityRepository $repository)
+    public function __construct(
+        private VulnerabilityRepository $repository,
+        private VulnerabilityStatsRepository $statsRepository
+    )
     {
     }
 
@@ -28,7 +32,7 @@ class GetVulnerabilitiesController extends Controller
         } else {
             $vulnerabilities = $this->repository->findAll($page);
         }
-        $count = $this->repository->countAll();
+        $count = $this->statsRepository->countAll();
 
         $pageCount = max(ceil($count / 20), 1);
 

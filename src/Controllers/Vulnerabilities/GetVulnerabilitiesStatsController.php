@@ -4,11 +4,11 @@ namespace Reconmap\Controllers\Vulnerabilities;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Repositories\VulnerabilityRepository;
+use Reconmap\Repositories\VulnerabilityStatsRepository;
 
 class GetVulnerabilitiesStatsController extends Controller
 {
-    public function __construct(private VulnerabilityRepository $repository)
+    public function __construct(private VulnerabilityStatsRepository $repository)
     {
     }
 
