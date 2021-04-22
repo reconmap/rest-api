@@ -48,7 +48,8 @@ class AuthMiddleware implements MiddlewareInterface
             if (!str_contains($request->getUri()->getPath(), '/auth/mfa') && !in_array($token->data->mfa, ['verified', 'disabled'])) {
                 throw new UnauthorizedException("Mfa code not verified");
             }
-            $request = $request->withAttribute('userId', $token->data->id);
+            $request = $request->withAttribute('userId', $token->data->id)
+                ->withAttribute('role', $token->data->role);
             return $handler->handle($request);
         } catch (ForbiddenException | ExpiredException $e) {
             $this->logger->warning($e->getMessage());

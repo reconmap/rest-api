@@ -9,12 +9,11 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditLogAction;
-use Reconmap\Models\Permissions;
-use Reconmap\Models\UserPermissions;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\AuditLogService;
 use Reconmap\Services\JwtPayloadCreator;
+use Reconmap\Services\Security\Permissions;
 
 class LoginController extends Controller
 {

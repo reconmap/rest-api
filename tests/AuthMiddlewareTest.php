@@ -33,9 +33,9 @@ class AuthMiddlewareTest extends TestCase
         $request->expects($this->once())
             ->method('getHeader')
             ->willReturn(['Bearer ' . $jwt]);
-        $request->expects($this->once())
+        $request->expects($this->exactly(2))
             ->method('withAttribute')
-            ->with('userId', 5)
+            ->withConsecutive(['userId', 5], ['role', 'superuser'])
             ->willReturn($request);
 
         $mockUri = $this->createMock(UriInterface::class);

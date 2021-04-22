@@ -8,11 +8,11 @@ use GuzzleHttp\Psr7\Response;
 use PragmaRX\Google2FA\Google2FA;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Models\Permissions;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\AuditLogService;
 use Reconmap\Services\JwtPayloadCreator;
+use Reconmap\Services\Security\Permissions;
 
 class MfaVerificationController extends Controller
 {
