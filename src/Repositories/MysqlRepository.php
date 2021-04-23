@@ -27,15 +27,6 @@ abstract class MysqlRepository
         return $newId;
     }
 
-    protected function refValues(array $columnValues): array
-    {
-        $refs = [];
-        foreach ($columnValues as $key => $value) {
-            $refs[] = &$columnValues[$key];
-        }
-        return $refs;
-    }
-
     protected function generateParamTypes(array $columnNames): string
     {
         return array_reduce($columnNames, function (string $columnTypes, string $columnName) {
