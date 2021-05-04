@@ -3,6 +3,7 @@
 namespace Reconmap;
 
 use Fig\Http\Message\StatusCodeInterface;
+use League\Route\Http\Exception;
 use League\Route\Strategy\JsonStrategy;
 use Monolog\Logger;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -45,7 +46,7 @@ class ApiStrategy extends JsonStrategy
 
                     $response = $this->response;
 
-                    if ($exception instanceof Http\Exception) {
+                    if ($exception instanceof Exception) {
                         return $exception->buildJsonResponse($response);
                     }
 

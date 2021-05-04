@@ -2,6 +2,7 @@
 
 namespace Reconmap\Controllers\Commands;
 
+use League\Route\Http\Exception\NotFoundException;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\CommandRepository;
@@ -16,6 +17,11 @@ class GetCommandController extends Controller
     {
         $commandId = (int)$args['commandId'];
 
-        return $this->repository->findById($commandId);
+        $command = $this->repository->findById($commandId);
+        if (is_null($command)) {
+            throw new NotFoundException();
+        }
+
+        return $command;
     }
 }

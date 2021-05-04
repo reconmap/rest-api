@@ -32,8 +32,8 @@ SQL;
         $stmt = $this->db->prepare($sql);
         $stmt->bind_param('i', $id);
         $stmt->execute();
-        $rs = $stmt->get_result();
-        $command = $rs->fetch_assoc();
+        $result = $stmt->get_result();
+        $command = $result->fetch_assoc();
         $stmt->close();
 
         return $command;

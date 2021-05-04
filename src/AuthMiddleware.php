@@ -7,6 +7,7 @@ use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Utils;
+use League\Route\Http\Exception;
 use League\Route\Http\Exception\ForbiddenException;
 use League\Route\Http\Exception\UnauthorizedException;
 use Monolog\Logger;
@@ -55,6 +56,8 @@ class AuthMiddleware implements MiddlewareInterface
             $this->logger->warning($e->getMessage());
             return (new Response)->withStatus(StatusCodeInterface::STATUS_UNAUTHORIZED)
                 ->withBody(Utils::streamFor($e->getMessage()));
+        } catch (Exception $httpException) {
+            throw $httpException;
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
             return (new Response)->withStatus(StatusCodeInterface::STATUS_BAD_REQUEST);

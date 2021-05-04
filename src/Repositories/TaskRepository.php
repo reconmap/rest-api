@@ -65,7 +65,7 @@ class TaskRepository extends MysqlRepository
         return $queryBuilder;
     }
 
-    public function findById(int $id): array
+    public function findById(int $id): ?array
     {
         $queryBuilder = $this->getBaseSelectQueryBuilder();
         $queryBuilder->setWhere('t.id = ?');
@@ -74,11 +74,11 @@ class TaskRepository extends MysqlRepository
         $stmt = $this->db->prepare($sql);
         $stmt->bind_param('i', $id);
         $stmt->execute();
-        $rs = $stmt->get_result();
-        $project = $rs->fetch_assoc();
+        $result = $stmt->get_result();
+        $task = $result->fetch_assoc();
         $stmt->close();
 
-        return $project;
+        return $task;
     }
 
     public function findByProjectId(int $projectId): array
