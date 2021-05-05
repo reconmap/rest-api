@@ -200,6 +200,8 @@
             </tbody>
         </table>
         <p>{{ markdownParser.text(vulnerability.description)|raw }}</p>
+    {% else %}
+        <p>No vulnerabilities have been reported for this project.</p>
     {% endfor %}
 </div>
 

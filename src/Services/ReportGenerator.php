@@ -36,7 +36,6 @@ class ReportGenerator
             ->findByProjectId($projectId);
 
         $reports = (new ReportRepository($this->db))->findByProjectId($projectId);
-        $latestVersion = $reports[0];
 
         $markdownParser = new \Parsedown();
 
@@ -46,7 +45,6 @@ class ReportGenerator
             'configuration' => $configuration,
             'project' => $project,
             'org' => $organisation,
-            'version' => $latestVersion['version_name'],
             'date' => date('Y-m-d'),
             'reports' => $reports,
             'markdownParser' => $markdownParser,
@@ -57,12 +55,16 @@ class ReportGenerator
             'findingsOverview' => $this->createFindingsOverview($vulnerabilities),
         ];
 
+        if (!empty($reports)) {
+            $latestVersion = $reports[0];
+            $vars['version'] = $latestVersion['version_name'];
+        }
+
         $users = (new UserRepository($this->db))->findByProjectId($projectId);
         foreach ($users as &$user) {
             $user['email_md5'] = md5($user['email']);
         }
         $vars['users'] = $users;
-
 
         $components = [
             'body' => $this->template->render('reports/body', $vars)
