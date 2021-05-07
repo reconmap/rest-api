@@ -38,6 +38,6 @@ class UpdateUserController extends Controller
 
     private function auditAction(int $loggedInUserId, int $userId): void
     {
-        $this->activityPublisherService->publish($loggedInUserId, AuditLogAction::USER_MODIFIED, ['userId' => $userId]);
+        $this->activityPublisherService->publish($loggedInUserId, AuditLogAction::USER_MODIFIED, ['type' => 'user', 'id' => $userId]);
     }
 }
