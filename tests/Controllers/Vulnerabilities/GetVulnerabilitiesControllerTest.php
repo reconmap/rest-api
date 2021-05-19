@@ -12,7 +12,7 @@ class GetVulnerabilitiesControllerTest extends TestCase
     public function testNoFilters()
     {
         $mockRequest = $this->createMock(ServerRequestInterface::class);
-        $mockRequest->expects($this->once())
+        $mockRequest->expects($this->atLeastOnce())
             ->method('getQueryParams')
             ->willReturn(['page' => 5]);
 

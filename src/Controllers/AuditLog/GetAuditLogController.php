@@ -7,28 +7,26 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\AuditLogRepository;
+use Reconmap\Services\RequestPaginator;
 
 class GetAuditLogController extends Controller
 {
     private const PAGE_LIMIT = 20;
 
-    private AuditLogRepository $repository;
-
-    public function __construct(AuditLogRepository $repository)
+    public function __construct(private AuditLogRepository $repository)
     {
-        $this->repository = $repository;
     }
 
     public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
+        $paginator = new RequestPaginator($request);
         $params = $request->getQueryParams();
-        $page = isset($params['page']) ? (int)$params['page'] : 0;
+        $currentPage = $paginator->getCurrentPage();
         $limit = isset($params['limit']) ? intval($params['limit']) : self::PAGE_LIMIT;
 
-        $auditLog = $this->repository->findAll($page, $limit);
+        $auditLog = $this->repository->findAll($currentPage, $limit);
         $count = $this->repository->countAll();
-
-        $pageCount = max(ceil($count / self::PAGE_LIMIT), 1);
+        $pageCount = $paginator->calculatePageCount($count);
 
         $response = new Response;
         $response->getBody()->write(json_encode($auditLog));
