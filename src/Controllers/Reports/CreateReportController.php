@@ -12,22 +12,19 @@ use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Repositories\ProjectRepository;
 use Reconmap\Repositories\ReportConfigurationRepository;
 use Reconmap\Repositories\ReportRepository;
-use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\AttachmentFilePath;
-use Reconmap\Services\ConfigConsumer;
 use Reconmap\Services\ReportGenerator;
 
-class CreateReportController extends Controller implements ConfigConsumer
+class CreateReportController extends Controller
 {
-    private ?ApplicationConfig $config = null;
-
-    public function __construct(private AttachmentFilePath $attachmentFilePathService)
+    public function __construct(
+        private AttachmentFilePath $attachmentFilePathService,
+        private ProjectRepository $projectRepository,
+        private ReportRepository $reportRepository,
+        private ReportConfigurationRepository $reportConfigurationRepository,
+        private AttachmentRepository $attachmentRepository,
+        private ReportGenerator $reportGenerator)
     {
-    }
-
-    public function setConfig(ApplicationConfig $config): void
-    {
-        $this->config = $config;
     }
 
     public function __invoke(ServerRequestInterface $request, array $args): array
@@ -44,17 +41,13 @@ class CreateReportController extends Controller implements ConfigConsumer
         $report->versionName = $versionName;
         $report->versionDescription = $params['description'];
 
-        $projectRepository = new ProjectRepository($this->db);
-        $project = $projectRepository->findById($projectId);
+        $project = $this->projectRepository->findById($projectId);
 
-        $reportRepository = new ReportRepository($this->db);
-        $reportId = $reportRepository->insert($report);
+        $reportId = $this->reportRepository->insert($report);
 
-        $reportGenerator = new ReportGenerator($this->config, $this->db, $this->template);
-        $reportSections = $reportGenerator->generate($projectId, $reportId);
+        $reportSections = $this->reportGenerator->generate($projectId, $reportId);
 
-        $reportConfiguration = new ReportConfigurationRepository($this->db);
-        $config = $reportConfiguration->findByProjectId($projectId);
+        $config = $this->reportConfigurationRepository->findByProjectId($projectId);
 
         $basePath = $this->attachmentFilePathService->generateBasePath();
 
@@ -65,9 +58,8 @@ class CreateReportController extends Controller implements ConfigConsumer
 
         $attachmentIds = [];
 
-        $repository = new AttachmentRepository($this->db);
-        $attachmentIds[] = $repository->insert($this->generateHtmlReportAndAttachment($project, $attachment, $reportSections, $basePath, $versionName));
-        $attachmentIds[] = $repository->insert($this->generatePdfReportAndAttachment($project, $attachment, $reportSections, $basePath, $config, $versionName));
+        $attachmentIds[] = $this->attachmentRepository->insert($this->generateHtmlReportAndAttachment($project, $attachment, $reportSections, $basePath, $versionName));
+        $attachmentIds[] = $this->attachmentRepository->insert($this->generatePdfReportAndAttachment($project, $attachment, $reportSections, $basePath, $config, $versionName));
 
         return $attachmentIds;
     }

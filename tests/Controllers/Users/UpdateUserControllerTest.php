@@ -7,6 +7,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Models\AuditLogAction;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\ActivityPublisherService;
+use Reconmap\Services\EmailService;
 
 class UpdateUserControllerTest extends TestCase
 {
@@ -28,6 +29,12 @@ class UpdateUserControllerTest extends TestCase
             ->method('updateById')
             ->with($fakeUserId, ['email' => 'foo@bar.com'])
             ->willReturn(true);
+        $mockUserRepository->expects($this->once())
+            ->method('findById')
+            ->with($fakeUserId, false)
+            ->willReturn(['full_name' => 'Some Body', 'email' => 'some.body@on.the.internet']);
+
+        $mockEmailService = $this->createMock(EmailService::class);
 
         $mockPublisherService = $this->createMock(ActivityPublisherService::class);
         $mockPublisherService->expects($this->once())
@@ -36,7 +43,7 @@ class UpdateUserControllerTest extends TestCase
 
         $args = ['userId' => $fakeUserId];
 
-        $controller = new UpdateUserController($mockUserRepository, $mockPublisherService);
+        $controller = new UpdateUserController($mockUserRepository, $mockEmailService, $mockPublisherService);
         $response = $controller($mockRequest, $args);
         $this->assertEquals(['success' => true], $response);
     }

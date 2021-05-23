@@ -7,10 +7,14 @@ use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditLogAction;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\ActivityPublisherService;
+use Reconmap\Services\EmailService;
 
 class UpdateUserController extends Controller
 {
-    public function __construct(private UserRepository $repository, private ActivityPublisherService $activityPublisherService)
+    public function __construct(
+        private UserRepository $userRepository,
+        private EmailService $emailService,
+        private ActivityPublisherService $activityPublisherService)
     {
     }
 
@@ -27,10 +31,18 @@ class UpdateUserController extends Controller
 
         $success = false;
         if (!empty($newColumnValues)) {
-            $success = $this->repository->updateById($userId, $newColumnValues);
+            $success = $this->userRepository->updateById($userId, $newColumnValues);
 
             $loggedInUserId = $request->getAttribute('userId');
             $this->auditAction($loggedInUserId, $userId);
+
+            $user = $this->userRepository->findById($userId);
+
+            $templateVars = [
+                'user_full_name' => $user['full_name'],
+                'attributes' => array_keys($newColumnValues)
+            ];
+            $this->emailService->queueTemplatedEmail('users/changed', $templateVars, 'Your user has been changed', [$user['email']]);
         }
 
         return ['success' => $success];

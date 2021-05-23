@@ -4,7 +4,6 @@ namespace Reconmap;
 
 use Monolog\Logger;
 use Reconmap\Controllers\Controller;
-use Reconmap\Services\TemplateEngine;
 
 class ControllerTestCase extends DatabaseTestCase
 {
@@ -12,10 +11,6 @@ class ControllerTestCase extends DatabaseTestCase
     {
         $mockLogger = $this->createMock(Logger::class);
         $controller->setLogger($mockLogger);
-
-        $mockTemplate = $this->createMock(TemplateEngine::class);
-        $controller->setTemplate($mockTemplate);
-
         $controller->setDb($this->getDatabaseConnection());
 
         return $controller;

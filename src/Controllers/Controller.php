@@ -25,11 +25,6 @@ abstract class Controller implements ContainerConsumer
         $this->db = $db;
     }
 
-    public function setTemplate(TemplateEngine $template): void
-    {
-        $this->template = $template;
-    }
-
     public function setContainer(ContainerInterface $container): void
     {
         $this->container = $container;

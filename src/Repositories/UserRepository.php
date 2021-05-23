@@ -104,8 +104,8 @@ class UserRepository extends MysqlRepository
         $stmt = $this->db->prepare($sql);
         $stmt->bind_param('i', $projectId);
         $stmt->execute();
-        $rs = $stmt->get_result();
-        $users = $rs->fetch_all(MYSQLI_ASSOC);
+        $result = $stmt->get_result();
+        $users = $result->fetch_all(MYSQLI_ASSOC);
         $stmt->close();
         return $users;
     }

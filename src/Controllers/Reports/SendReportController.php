@@ -6,17 +6,17 @@ use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Services\AttachmentFilePath;
-use Reconmap\Services\RedisServer;
+use Reconmap\Services\EmailService;
 
 class SendReportController extends Controller
 {
     public function __construct(private AttachmentFilePath $attachmentFilePathService,
                                 private AttachmentRepository $attachmentRepository,
-                                private RedisServer $redisServer)
+                                private EmailService $emailService)
     {
     }
 
-    public function __invoke(ServerRequestInterface $request, array $args): array
+    public function __invoke(ServerRequestInterface $request): array
     {
         $deliverySettings = $this->getJsonBodyDecoded($request);
         $reportId = intval($deliverySettings->report_id);
@@ -35,17 +35,7 @@ class SendReportController extends Controller
         $recipients = explode(',', $deliverySettings->recipients);
         $this->logger->debug('recipients', [$recipients]);
 
-        $result = $this->redisServer->lPush("email:queue",
-            json_encode([
-                'subject' => $deliverySettings->subject,
-                'to' => $recipients,
-                'body' => $emailBody,
-                'attachmentPath' => $attachmentFilePath
-            ])
-        );
-        if (false === $result) {
-            $this->logger->error('Item could not be pushed to the queue', ['queue' => 'email:queue']);
-        }
+        $this->emailService->queueEmail($deliverySettings->subject, $recipients, $emailBody, $attachmentFilePath);
 
         return ['success' => true];
     }

@@ -8,11 +8,13 @@ use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditLogAction;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\AuditLogService;
+use Reconmap\Services\EmailService;
 
 class UpdateUserPasswordController extends Controller
 {
-    public function __construct(private AuditLogService $auditLogService,
-                                private UserRepository $userRepository)
+    public function __construct(private UserRepository $userRepository,
+                                private EmailService $emailService,
+                                private AuditLogService $auditLogService)
     {
     }
 
@@ -38,6 +40,13 @@ class UpdateUserPasswordController extends Controller
         $hashedPassword = password_hash($requestBody->newPassword, PASSWORD_DEFAULT);
 
         $success = $this->userRepository->updateById($userId, ['password' => $hashedPassword]);
+
+        $user = $this->userRepository->findById($userId);
+
+        $templateVars = [
+            'user_full_name' => $user['full_name']
+        ];
+        $this->emailService->queueTemplatedEmail('users/passwordChanged', $templateVars, 'Your password has been changed', [$user['email']]);
 
         $this->auditAction($loggedInUserId);
 

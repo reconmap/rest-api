@@ -6,11 +6,9 @@ use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Repositories\UserRepository;
-use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\AuditLogService;
+use Reconmap\Services\EmailService;
 use Reconmap\Services\PasswordGenerator;
-use Reconmap\Services\RedisServer;
-use Reconmap\Services\TemplateEngine;
 
 class CreateUserControllerTest extends TestCase
 {
@@ -26,20 +24,12 @@ class CreateUserControllerTest extends TestCase
             ->willReturn(9);
 
         $mockUserRepository = $this->createMock(UserRepository::class);
-        $mockRedisServer = $this->createMock(RedisServer::class);
+
         $mockPasswordGenerator = $this->createMock(PasswordGenerator::class);
         $mockPasswordGenerator->expects($this->never())
             ->method('generate');
 
-        $mockAppConfig = $this->createMock(ApplicationConfig::class);
-        $mockAppConfig->expects($this->once())
-            ->method('getSettings')
-            ->with('cors')
-            ->willReturn(['allowedOrigins' => ['reconmap.local']]);
-
-        $mockTemplateEngine = $this->createMock(TemplateEngine::class);
-        $mockTemplateEngine->expects($this->never())
-            ->method('render');
+        $mockEmailService = $this->createMock(EmailService::class);
 
         $mockAuditLogService = $this->createMock(AuditLogService::class);
         $mockAuditLogService->expects($this->once())
@@ -48,8 +38,7 @@ class CreateUserControllerTest extends TestCase
 
         $mockLogger = $this->createMock(Logger::class);
 
-        $controller = new CreateUserController($mockUserRepository, $mockRedisServer, $mockPasswordGenerator, $mockAppConfig, $mockAuditLogService);
-        $controller->setTemplate($mockTemplateEngine);
+        $controller = new CreateUserController($mockUserRepository, $mockPasswordGenerator, $mockEmailService, $mockAuditLogService);
         $controller->setLogger($mockLogger);
 
         $user = $controller($mockRequest);
@@ -72,23 +61,14 @@ class CreateUserControllerTest extends TestCase
             ->willReturn(9);
 
         $mockUserRepository = $this->createMock(UserRepository::class);
-        $mockRedisServer = $this->createMock(RedisServer::class);
+
         $mockPasswordGenerator = $this->createMock(PasswordGenerator::class);
         $mockPasswordGenerator->expects($this->once())
             ->method('generate')
             ->with(24)
             ->willReturn('123456789012345678901234');
 
-        $mockAppConfig = $this->createMock(ApplicationConfig::class);
-        $mockAppConfig->expects($this->once())
-            ->method('getSettings')
-            ->with('cors')
-            ->willReturn(['allowedOrigins' => ['reconmap.local']]);
-
-        $mockTemplateEngine = $this->createMock(TemplateEngine::class);
-        $mockTemplateEngine->expects($this->once())
-            ->method('render')
-            ->with('users/newAccount');
+        $mockEmailService = $this->createMock(EmailService::class);
 
         $mockAuditLogService = $this->createMock(AuditLogService::class);
         $mockAuditLogService->expects($this->once())
@@ -97,8 +77,7 @@ class CreateUserControllerTest extends TestCase
 
         $mockLogger = $this->createMock(Logger::class);
 
-        $controller = new CreateUserController($mockUserRepository, $mockRedisServer, $mockPasswordGenerator, $mockAppConfig, $mockAuditLogService);
-        $controller->setTemplate($mockTemplateEngine);
+        $controller = new CreateUserController($mockUserRepository, $mockPasswordGenerator, $mockEmailService, $mockAuditLogService);
         $controller->setLogger($mockLogger);
 
         $user = $controller($mockRequest);

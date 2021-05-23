@@ -7,18 +7,16 @@ use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditLogAction;
 use Reconmap\Models\User;
 use Reconmap\Repositories\UserRepository;
-use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\AuditLogService;
+use Reconmap\Services\EmailService;
 use Reconmap\Services\PasswordGenerator;
-use Reconmap\Services\RedisServer;
 
 class CreateUserController extends Controller
 {
     public function __construct(
         private UserRepository $userRepository,
-        private RedisServer $redisServer,
         private PasswordGenerator $passwordGenerator,
-        private ApplicationConfig $applicationConfig,
+        private EmailService $emailService,
         private AuditLogService $auditLogService
     )
     {
@@ -45,25 +43,16 @@ class CreateUserController extends Controller
 
         $this->auditAction($loggedInUserId, $user->id);
 
-        $instanceUrl = $this->applicationConfig->getSettings('cors')['allowedOrigins'][0];
-
         if ($passwordGenerationMethodIsAuto || $user->sendEmailToUser) {
-            $emailBody = $this->template->render('users/newAccount', [
-                'instance_url' => $instanceUrl,
-                'user' => (array)$user,
-                'unencryptedPassword' => $user->unencryptedPassword
-            ]);
-
-            $result = $this->redisServer->lPush("email:queue",
-                json_encode([
-                    'subject' => 'Account created',
-                    'to' => [$user->email => $user->full_name],
-                    'body' => $emailBody
-                ])
+            $this->emailService->queueTemplatedEmail(
+                'users/newAccount',
+                [
+                    'user' => (array)$user,
+                    'unencryptedPassword' => $user->unencryptedPassword
+                ],
+                'Account created',
+                [$user->email => $user->full_name]
             );
-            if (false === $result) {
-                $this->logger->error('Item could not be pushed to the queue', ['queue' => 'email:queue']);
-            }
         } else {
             $this->logger->debug('Email invitation not sent', ['email' => $user->email]);
         }

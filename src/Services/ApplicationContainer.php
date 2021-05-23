@@ -27,7 +27,6 @@ class ApplicationContainer extends Container
 
         $this->inflector(Controller::class)
             ->invokeMethod('setLogger', [$logger])
-            ->invokeMethod('setTemplate', [TemplateEngine::class])
             ->invokeMethod('setDb', [\mysqli::class]);
 
         $this->inflector(ConfigConsumer::class)

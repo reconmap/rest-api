@@ -14,15 +14,11 @@ use Reconmap\Repositories\VulnerabilityRepository;
 
 class ReportGenerator
 {
-    private ApplicationConfig $config;
-    private \mysqli $db;
-    private TemplateEngine $template;
-
-    public function __construct(ApplicationConfig $config, \mysqli $db, TemplateEngine $template)
+    public function __construct(
+        private ApplicationConfig $config,
+        private \mysqli $db,
+        private TemplateEngine $templateEngine)
     {
-        $this->config = $config;
-        $this->db = $db;
-        $this->template = $template;
     }
 
     public function generate(int $projectId): array
@@ -67,23 +63,23 @@ class ReportGenerator
         $vars['users'] = $users;
 
         $components = [
-            'body' => $this->template->render('reports/body', $vars)
+            'body' => $this->templateEngine->render('reports/body', $vars)
         ];
 
         if ($configuration->include_cover === 'default') {
-            $components['cover'] = $this->template->render('reports/cover', $vars);
+            $components['cover'] = $this->templateEngine->render('reports/cover', $vars);
         } elseif ($configuration->include_cover === 'custom') {
-            $components['cover'] = $this->template->renderString($configuration->custom_cover, $vars);
+            $components['cover'] = $this->templateEngine->renderString($configuration->custom_cover, $vars);
         }
         if ($configuration->include_header === 'default') {
-            $components['header'] = $this->template->render('reports/header', $vars);
+            $components['header'] = $this->templateEngine->render('reports/header', $vars);
         } elseif ($configuration->include_header === 'custom') {
-            $components['header'] = $this->template->renderString($configuration->custom_header, $vars);
+            $components['header'] = $this->templateEngine->renderString($configuration->custom_header, $vars);
         }
         if ($configuration->include_footer === 'default') {
-            $components['footer'] = $this->template->render('reports/footer', $vars);
+            $components['footer'] = $this->templateEngine->render('reports/footer', $vars);
         } elseif ($configuration->include_footer === 'custom') {
-            $components['footer'] = $this->template->renderString($configuration->custom_footer, $vars);
+            $components['footer'] = $this->templateEngine->renderString($configuration->custom_footer, $vars);
         }
 
         return $components;
