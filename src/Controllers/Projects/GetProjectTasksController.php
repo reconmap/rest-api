@@ -8,12 +8,14 @@ use Reconmap\Repositories\TaskRepository;
 
 class GetProjectTasksController extends Controller
 {
+    public function __construct(private TaskRepository $taskRepository)
+    {
+    }
 
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
         $projectId = (int)$args['projectId'];
 
-        $repository = new TaskRepository($this->db);
-        return $repository->findByProjectId($projectId);
+        return $this->taskRepository->findByProjectId($projectId);
     }
 }

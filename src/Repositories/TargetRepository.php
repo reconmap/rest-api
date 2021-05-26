@@ -2,6 +2,8 @@
 
 namespace Reconmap\Repositories;
 
+use Reconmap\Models\Target;
+
 class TargetRepository extends MysqlRepository
 {
     public function findAll(): array
@@ -51,10 +53,10 @@ class TargetRepository extends MysqlRepository
         return $this->deleteByTableId('target', $id);
     }
 
-    public function insert(int $projectId, string $name, string $kind): int
+    public function insert(Target $target): int
     {
         $stmt = $this->db->prepare('INSERT INTO target (project_id, name, kind) VALUES (?, ?, ?)');
-        $stmt->bind_param('iss', $projectId, $name, $kind);
+        $stmt->bind_param('iss', $target->projectId, $target->name, $target->kind);
         return $this->executeInsertStatement($stmt);
     }
 }

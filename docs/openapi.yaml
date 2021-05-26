@@ -108,6 +108,7 @@ components:
           type: string
         role:
           type: string
+
     Target:
       type: object
       required:
@@ -122,6 +123,28 @@ components:
         name:
           type: string
         kind:
+          type: string
+
+    Vulnerability:
+      type: object
+      required:
+        - summary
+        - description
+        - risk
+        - status
+        - substatus
+      properties:
+        id:
+          type: integer
+        summary:
+          type: string
+        description:
+          type: string
+        risk:
+          type: string
+        status:
+          type: string
+        substatus:
           type: string
 
 security:
@@ -335,8 +358,8 @@ paths:
             schema:
               $ref: '#/components/schemas/Target'
       responses:
-        '200':
-          description: User succesfully created response
+        '201':
+          description: Target succesfully created response
           content:
             application/json:
               schema:
@@ -555,6 +578,24 @@ paths:
       responses:
         '200':
           description: OK
+    post:
+      tags:
+        - Vulnerabilities
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Vulnerability'
+      responses:
+        '201':
+          description: Vulnerability succesfully created response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vulnerability'
   '/vulnerabilities/{id}':
     get:
       tags:

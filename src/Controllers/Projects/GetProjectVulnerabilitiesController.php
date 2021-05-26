@@ -8,12 +8,14 @@ use Reconmap\Repositories\VulnerabilityRepository;
 
 class GetProjectVulnerabilitiesController extends Controller
 {
+    public function __construct(private VulnerabilityRepository $vulnerabilityRepository)
+    {
+    }
 
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
         $projectId = (int)$args['projectId'];
 
-        $repository = new VulnerabilityRepository($this->db);
-        return $repository->findByProjectId($projectId);
+        return $this->vulnerabilityRepository->findByProjectId($projectId);
     }
 }

@@ -1,10 +1,9 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
 use Reconmap\DatabaseTestCase;
+use Reconmap\Models\Target;
 
 class TargetRepositoryTest extends DatabaseTestCase
 {
@@ -20,5 +19,16 @@ class TargetRepositoryTest extends DatabaseTestCase
     {
         $targets = $this->subject->findAll();
         $this->assertCount(2, $targets);
+    }
+
+    public function testInsert()
+    {
+        $target = new Target();
+        $target->projectId = 5;
+        $target->name = '192.168.0.1';
+        $target->kind = 'hostname';
+
+        $targetId = $this->subject->insert($target);
+        $this->assertIsInt($targetId);
     }
 }

@@ -26,8 +26,7 @@ class ApplicationContainer extends Container
         $this->add(\mysqli::class, DatabaseFactory::createConnection($config));
 
         $this->inflector(Controller::class)
-            ->invokeMethod('setLogger', [$logger])
-            ->invokeMethod('setDb', [\mysqli::class]);
+            ->invokeMethod('setLogger', [$logger]);
 
         $this->inflector(ConfigConsumer::class)
             ->invokeMethod('setConfig', [ApplicationConfig::class]);

@@ -2,8 +2,10 @@
 
 namespace Reconmap\Controllers\Targets;
 
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
+use Reconmap\Models\Target;
 use Reconmap\Repositories\TargetRepository;
 
 class CreateTargetController extends Controller
@@ -12,12 +14,14 @@ class CreateTargetController extends Controller
     {
     }
 
-    public function __invoke(ServerRequestInterface $request, array $args): array
+    public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
-        $target = $this->getJsonBodyDecoded($request);
+        /** @var Target $target */
+        $target = $this->getJsonBodyDecodedAsClass($request, new Target());
 
-        $result = $this->repository->insert((int)$target->projectId, $target->name, $target->kind);
+        $targetId = $this->repository->insert($target);
+        $body = ['targetId' => $targetId];
 
-        return ['success' => $result];
+        return $this->createStatusCreatedResponse($body);
     }
 }

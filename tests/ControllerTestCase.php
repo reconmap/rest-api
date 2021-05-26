@@ -11,7 +11,6 @@ class ControllerTestCase extends DatabaseTestCase
     {
         $mockLogger = $this->createMock(Logger::class);
         $controller->setLogger($mockLogger);
-        $controller->setDb($this->getDatabaseConnection());
 
         return $controller;
     }
