@@ -1,5 +1,4 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Tasks;
 
@@ -12,13 +11,9 @@ use Swift_SmtpTransport;
 
 class EmailTaskProcessor implements ItemProcessor
 {
-    private ApplicationConfig $config;
-    private Logger $logger;
-
-    public function __construct(ApplicationConfig $config, Logger $logger)
+    public function __construct(private ApplicationConfig $config,
+                                private Logger $logger)
     {
-        $this->config = $config;
-        $this->logger = $logger;
     }
 
     public function process(object $message): void

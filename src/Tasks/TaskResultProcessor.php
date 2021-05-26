@@ -3,6 +3,7 @@
 namespace Reconmap\Tasks;
 
 use Monolog\Logger;
+use Reconmap\Models\Target;
 use Reconmap\Processors\ProcessorFactory;
 use Reconmap\Repositories\TargetRepository;
 use Reconmap\Repositories\TaskRepository;
@@ -50,7 +51,12 @@ class TaskResultProcessor implements ItemProcessor
                         $this->logger->debug("Host found: " . $target->id);
                         $targetId = $target->id;
                     } else {
-                        $targetId = $this->targetRepository->insert($task['project_id'], $vulnerability->host->name, 'hostname');
+                        $target = new Target();
+                        $target->projectId = $task['project_id'];
+                        $target->name = $vulnerability->host->name;
+                        $target->kind = 'hostname';
+
+                        $targetId = $this->targetRepository->insert($target);
                         $this->logger->debug("Host created: " . $targetId);
                     }
                 }
