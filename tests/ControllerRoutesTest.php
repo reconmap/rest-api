@@ -20,7 +20,7 @@ use Reconmap\Controllers\Tasks\TasksRouter;
 use Reconmap\Controllers\Users\UsersRouter;
 use Reconmap\Controllers\Vulnerabilities\VulnerabilitiesRouter;
 
-class RouterTestCase extends TestCase
+class ControllerRoutesTest extends TestCase
 {
     public function routerDataProvider(): array
     {
