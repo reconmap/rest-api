@@ -3,21 +3,14 @@
 namespace Reconmap;
 
 use Monolog\Logger;
-use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\RedisServer;
 use Reconmap\Tasks\ItemProcessor;
 
 class QueueProcessor
 {
-    private RedisServer $redis;
-    private ApplicationConfig $config;
-    private Logger $logger;
-
-    public function __construct(RedisServer $redis, ApplicationConfig $config, Logger $logger)
+    public function __construct(private RedisServer $redis,
+                                private Logger $logger)
     {
-        $this->redis = $redis;
-        $this->config = $config;
-        $this->logger = $logger;
     }
 
     public function run(ItemProcessor $itemProcessor, string $queueName): int
