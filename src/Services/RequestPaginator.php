@@ -21,7 +21,17 @@ class RequestPaginator
 
     public function calculatePageCount(int $totalResults): int
     {
-        return max((int)ceil($totalResults / 20), 1);
+        return max((int)ceil($totalResults / $this->getLimitPerPage()), 1);
+    }
+
+    public function getLimitPerPage(): int
+    {
+        return 20;
+    }
+
+    public function getLimitOffset(): int
+    {
+        return $this->getCurrentPage() * $this->getLimitPerPage();
     }
 }
 

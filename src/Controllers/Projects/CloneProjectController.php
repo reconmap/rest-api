@@ -17,6 +17,6 @@ class CloneProjectController extends Controller
         $projectTemplateId = (int)$args['projectId'];
         $userId = $request->getAttribute('userId');
 
-        return $this->projectRepository->createFromTemplate($projectTemplateId, $userId);
+        return $this->projectRepository->clone($projectTemplateId, $userId);
     }
 }

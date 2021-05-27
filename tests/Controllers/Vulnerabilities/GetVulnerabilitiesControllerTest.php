@@ -18,7 +18,7 @@ class GetVulnerabilitiesControllerTest extends TestCase
 
         $mockRepository = $this->createMock(VulnerabilityRepository::class);
         $mockRepository->expects($this->once())
-            ->method('findAll')
+            ->method('search')
             ->willReturn([]);
 
         $mockStatsRepository = $this->createMock(VulnerabilityStatsRepository::class);

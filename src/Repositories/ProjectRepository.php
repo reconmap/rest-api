@@ -24,8 +24,8 @@ class ProjectRepository extends MysqlRepository
         $queryBuilder = $this->getBaseSelectQueryBuilder();
         $queryBuilder->setLimit('20');
 
-        $rs = $this->db->query($queryBuilder->toSql());
-        return $rs->fetch_all(MYSQLI_ASSOC);
+        $result = $this->db->query($queryBuilder->toSql());
+        return $result->fetch_all(MYSQLI_ASSOC);
     }
 
     public function findById(int $id): ?array
@@ -46,8 +46,8 @@ SQL;
         $stmt = $this->db->prepare($sql);
         $stmt->bind_param('i', $id);
         $stmt->execute();
-        $rs = $stmt->get_result();
-        $project = $rs->fetch_assoc();
+        $result = $stmt->get_result();
+        $project = $result->fetch_assoc();
         $stmt->close();
 
         return $project;
@@ -67,13 +67,13 @@ SQL;
         $stmt = $this->db->prepare($sql);
         $stmt->bind_param('i', $isTemplate);
         $stmt->execute();
-        $rs = $stmt->get_result();
-        $projects = $rs->fetch_all(MYSQLI_ASSOC);
+        $result = $stmt->get_result();
+        $projects = $result->fetch_all(MYSQLI_ASSOC);
         $stmt->close();
         return $projects;
     }
 
-    public function createFromTemplate(int $templateId, int $userId): array
+    public function clone(int $templateId, int $userId): array
     {
         $this->db->begin_transaction();
 
@@ -92,13 +92,11 @@ SQL;
         $this->executeInsertStatement($stmt);
 
         $repository = new ProjectUserRepository($this->db);
-        $result = $repository->create($projectId, $userId);
+        $repository->create($projectId, $userId);
 
         $this->db->commit();
 
-        return [
-            'projectId' => $projectId
-        ];
+        return ['projectId' => $projectId];
     }
 
     public function insert(Project $project): int

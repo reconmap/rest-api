@@ -6,6 +6,7 @@ use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
+use Reconmap\Repositories\QueryBuilders\SearchCriteria;
 use Reconmap\Repositories\VulnerabilityRepository;
 use Reconmap\Repositories\VulnerabilityStatsRepository;
 use Reconmap\Services\RequestPaginator;
@@ -21,20 +22,27 @@ class GetVulnerabilitiesController extends Controller
 
     public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
-        $paginator = new RequestPaginator($request);
-        $currentPage = $paginator->getCurrentPage();
-
         $params = $request->getQueryParams();
+
+        $searchCriteria = new SearchCriteria();
 
         if (isset($params['keywords'])) {
             $keywords = $params['keywords'];
-            $vulnerabilities = $this->repository->findByKeywords($keywords);
-        } elseif (isset($params['targetId'])) {
-            $targetId = (int)$params['targetId'];
-            $vulnerabilities = $this->repository->findByTargetId($targetId);
-        } else {
-            $vulnerabilities = $this->repository->findAll($currentPage);
+            $keywordsLike = "%$keywords%";
+
+            $searchCriteria->addCriterion('v.summary LIKE ? OR v.description LIKE ?', [$keywordsLike, $keywordsLike]);
         }
+        if (isset($params['targetId'])) {
+            $targetId = (int)$params['targetId'];
+            $searchCriteria->addCriterion('v.target_id = ?', [$targetId]);
+        }
+        if (isset($params['isTemplate'])) {
+            $searchCriteria->addCriterion('v.is_template = ?', [intval($params['isTemplate'])]);
+        }
+
+        $paginator = new RequestPaginator($request);
+        $vulnerabilities = $this->repository->search($searchCriteria, $paginator);
+
         $count = $this->statsRepository->countAll();
         $pageCount = $paginator->calculatePageCount($count);
 

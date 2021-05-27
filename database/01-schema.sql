@@ -145,12 +145,13 @@ DROP TABLE IF EXISTS vulnerability;
 CREATE TABLE vulnerability
 (
     id               INT UNSIGNED                                                                                       NOT NULL AUTO_INCREMENT,
-    project_id       INT UNSIGNED                                                                                       NOT NULL REFERENCES project,
+    project_id       INT UNSIGNED                                                                                       NULL REFERENCES project,
     target_id        INT UNSIGNED                                                                                       NULL REFERENCES target,
     creator_uid      INT UNSIGNED                                                                                       NOT NULL REFERENCES user,
     category_id      INT UNSIGNED                                                                                       NULL REFERENCES vulnerability_category,
     insert_ts        TIMESTAMP                                                                                          NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_ts        TIMESTAMP                                                                                          NULL ON UPDATE CURRENT_TIMESTAMP,
+    is_template      BOOLEAN                                                                                            NOT NULL DEFAULT FALSE,
     summary          VARCHAR(300)                                                                                       NOT NULL,
     description      TEXT                                                                                               NULL,
     proof_of_concept TEXT                                                                                               NULL,
