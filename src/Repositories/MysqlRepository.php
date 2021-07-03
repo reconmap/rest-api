@@ -58,6 +58,8 @@ abstract class MysqlRepository
 
     protected function updateByTableId(string $tableName, int $id, array $newColumnValues): bool
     {
+        if (empty($newColumnValues)) return false;
+
         $updateQueryBuilder = new UpdateQueryBuilder($tableName);
         $updateQueryBuilder->setColumnValues(array_map(fn() => '?', $newColumnValues));
         $updateQueryBuilder->setWhereConditions('id = ?');

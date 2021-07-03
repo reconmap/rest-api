@@ -16,7 +16,7 @@ class TaskRepositoryTest extends DatabaseTestCase
     public function testFindAllReturnsProjectInformation()
     {
         $tasks = $this->subject->findAll();
-        $this->assertCount(3, $tasks);
+        $this->assertCount(6, $tasks);
         $task = $tasks[0];
         $this->assertArrayHasKey('project_id', $task);
         $this->assertArrayHasKey('project_name', $task);
@@ -25,7 +25,7 @@ class TaskRepositoryTest extends DatabaseTestCase
     public function testFindByKeywords()
     {
         $tasks = $this->subject->findByKeywords('SCANNER');
-        $this->assertCount(4, $tasks);
+        $this->assertCount(6, $tasks);
         $this->assertEquals('Run port scanner', $tasks[0]['summary']);
     }
 }

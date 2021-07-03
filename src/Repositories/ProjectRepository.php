@@ -4,6 +4,7 @@ namespace Reconmap\Repositories;
 
 use Reconmap\Models\Project;
 use Reconmap\Repositories\QueryBuilders\InsertQueryBuilder;
+use Reconmap\Repositories\QueryBuilders\SearchCriteria;
 use Reconmap\Repositories\QueryBuilders\SelectQueryBuilder;
 
 class ProjectRepository extends MysqlRepository
@@ -53,23 +54,29 @@ SQL;
         return $project;
     }
 
-    public function findTemplateProjects(int $isTemplate): array
+    public function search(SearchCriteria $searchCriteria): array
     {
-        $sql = <<<SQL
-        SELECT
-            p.*,
-            c.name AS client_name,
-            (SELECT COUNT(*) FROM task WHERE project_id = p.id) AS num_tasks
-        FROM project p
-        LEFT JOIN client c ON (c.id = p.client_id)
-        WHERE p.is_template = ?
-        SQL;
+        $queryBuilder = $this->getBaseSelectQueryBuilder();
+
+        $criteriaSql = implode(' AND ', $searchCriteria->getCriteria());
+        $queryBuilder->setWhere($criteriaSql);
+
+        $sql = $queryBuilder->toSql();
+
+        $values = $searchCriteria->getValues();
+
+        $types = array_fill(0, count($values), 's');
+
         $stmt = $this->db->prepare($sql);
-        $stmt->bind_param('i', $isTemplate);
+        if (!empty($values)) {
+            $stmt->bind_param(implode('', $types), ...$values);
+        }
+
         $stmt->execute();
         $result = $stmt->get_result();
         $projects = $result->fetch_all(MYSQLI_ASSOC);
         $stmt->close();
+
         return $projects;
     }
 
@@ -122,6 +129,12 @@ SQL;
     private function getBaseSelectQueryBuilder(): SelectQueryBuilder
     {
         $queryBuilder = new SelectQueryBuilder('project p');
+        $queryBuilder->setColumns('
+            p.*,
+            c.name AS client_name,
+            (SELECT COUNT(*) FROM task WHERE project_id = p.id) AS num_tasks
+        ');
+        $queryBuilder->addJoin('LEFT JOIN client c ON (c.id = p.client_id)');
         return $queryBuilder;
     }
 }

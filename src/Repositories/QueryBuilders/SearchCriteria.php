@@ -7,7 +7,7 @@ class SearchCriteria
     private array $clauses = [];
     private array $values = [];
 
-    public function addCriterion(string $clause, array $values): void
+    public function addCriterion(string $clause, array $values = []): void
     {
         $this->clauses[] = $clause;
         $this->values = array_merge($this->values, $values);
