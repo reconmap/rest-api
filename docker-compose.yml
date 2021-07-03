@@ -48,6 +48,7 @@ services:
       - "./composer.lock:/var/www/webapp/composer.lock"
       - "./vendor:/var/www/webapp/vendor"
       - "./public:/var/www/webapp/public"
+      - "./docs/openapi.yaml:/var/www/webapp/public/docs/openapi.yaml"
       - "./src:/var/www/webapp/src"
       - "./resources:/var/www/webapp/resources"
       - "./tests:/var/www/webapp/tests"
