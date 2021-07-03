@@ -43,7 +43,7 @@ RUN mkdir -p data/attachments && chown www-data data/attachments
 RUN mkdir logs && chown www-data logs && chmod a+w logs
 
 COPY public /var/www/webapp/public
-COPY docs/openapi.yaml /var/www/webapp/public/docs/
+COPY ./docs/openapi.yaml /var/www/webapp/public/docs/
 COPY resources /var/www/webapp/resources
 COPY src /var/www/webapp/src
 VOLUME /var/www/webapp

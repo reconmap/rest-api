@@ -4,6 +4,6 @@ config.json
 data
 data-mysql
 data-redis
-docs
+docs/Makefile
 logs/**
 tests
