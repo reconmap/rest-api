@@ -17,6 +17,8 @@ class GetProjectsController extends Controller
     {
         $params = $request->getQueryParams();
 
+        $user = $this->getUserFromRequest($request);
+
         $searchCriteria = new SearchCriteria();
         if (isset($params['keywords'])) {
             $keywords = $params['keywords'];
@@ -29,6 +31,10 @@ class GetProjectsController extends Controller
             $searchCriteria->addCriterion('p.is_template = ?', [(int)$params['isTemplate']]);
         } else {
             $searchCriteria->addCriterion('p.is_template = 0');
+        }
+
+        if (!$user->isAdministrator()) {
+            $searchCriteria->addCriterion('(p.visibility = "PUBLIC" OR ? IN (SELECT user_id FROM project_user WHERE project_id = p.id))', [$user->id]);
         }
 
         return $this->projectRepository->search($searchCriteria);

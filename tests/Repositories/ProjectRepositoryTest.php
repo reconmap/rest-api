@@ -62,6 +62,16 @@ class ProjectRepositoryTest extends DatabaseTestCase
         $this->assertEquals(3, $projects[0]['num_tasks']);
     }
 
+    public function testIsVisibleToUser()
+    {
+        $this->assertTrue($this->subject->isVisibleToUser(2, 1));
+    }
+
+    public function testIsNotVisibleToUser()
+    {
+        $this->assertFalse($this->subject->isVisibleToUser(4, 1));
+    }
+
     public function testDeleteById()
     {
         $this->assertFalse($this->subject->deleteById(9));

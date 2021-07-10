@@ -30,6 +30,25 @@ class ProjectRepository extends MysqlRepository
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
+    public function isVisibleToUser(int $projectId, int $userId): bool
+    {
+        $sql = <<<SQL
+SELECT 1
+FROM project p
+LEFT JOIN project_user pu ON (pu.project_id = p.id)
+WHERE p.id = ? AND (p.visibility = 'public' OR pu.user_id = ?)
+SQL;
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bind_param('ii', $projectId, $userId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $exists = $result->num_rows > 0;
+        $stmt->close();
+
+        return $exists;
+    }
+
     public function findById(int $id): ?array
     {
         $sql = <<<SQL

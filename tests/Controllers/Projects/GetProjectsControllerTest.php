@@ -5,12 +5,13 @@ namespace Reconmap\Controllers\Projects;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Repositories\ProjectRepository;
+use Reconmap\Repositories\QueryBuilders\SearchCriteria;
 
-class GetProjectControllerTest extends TestCase
+class GetProjectsControllerTest extends TestCase
 {
     public function testHappyPath()
     {
-        $mockProject = ['title' => 'foo'];
+        $mockProjects = [['title' => 'foo']];
 
         $mockRequest = $this->createMock(ServerRequestInterface::class);
         $mockRequest->expects($this->exactly(2))
@@ -18,17 +19,18 @@ class GetProjectControllerTest extends TestCase
             ->withConsecutive(['userId'], ['role'])
             ->willReturnOnConsecutiveCalls(9, 'administrator');
 
+        $searchCriteria = new SearchCriteria();
+        $searchCriteria->addCriterion('p.is_template = 0');
+
         $mockRepository = $this->createMock(ProjectRepository::class);
         $mockRepository->expects($this->once())
-            ->method('findById')
-            ->with(568)
-            ->willReturn($mockProject);
+            ->method('search')
+            ->with($searchCriteria)
+            ->willReturn($mockProjects);
 
-        $args = ['projectId' => 568];
+        $controller = new GetProjectsController($mockRepository);
+        $response = $controller($mockRequest);
 
-        $controller = new GetProjectController($mockRepository);
-        $response = $controller($mockRequest, $args);
-
-        $this->assertEquals($mockProject, $response);
+        $this->assertEquals($mockProjects, $response);
     }
 }

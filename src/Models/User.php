@@ -13,5 +13,10 @@ class User
     public bool $mfa_enabled = false;
     public ?string $mfa_secret;
     public string $email;
-    public string $role;
+    public ?string $role = null;
+
+    public function isAdministrator(): bool
+    {
+        return 'administrator' === $this->role;
+    }
 }

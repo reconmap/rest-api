@@ -8,6 +8,7 @@ use Monolog\Logger;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\Models\User;
 use Reconmap\Services\ContainerConsumer;
 use Reconmap\Services\TemplateEngine;
 
@@ -56,5 +57,13 @@ abstract class Controller implements ContainerConsumer
             ->withHeader('Content-type', 'application/json');
         $response->getBody()->write($jsonBody);
         return $response;
+    }
+
+    public function getUserFromRequest(ServerRequestInterface $request): User
+    {
+        $user = new User();
+        $user->id = $request->getAttribute('userId');
+        $user->role = $request->getAttribute('role');
+        return $user;
     }
 }
