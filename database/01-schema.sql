@@ -80,6 +80,7 @@ CREATE TABLE project
     creator_uid           INT UNSIGNED                             NOT NULL REFERENCES user,
     client_id             INT UNSIGNED                             NULL COMMENT 'Null when project is template' REFERENCES client,
     is_template           BOOLEAN                                  NOT NULL DEFAULT FALSE,
+    visibility            ENUM ('public', 'private')               NOT NULL DEFAULT 'public',
     name                  VARCHAR(200)                             NOT NULL,
     description           VARCHAR(2000)                            NULL,
     engagement_type       ENUM ('blackbox', 'whitebox', 'greybox') NULL,

@@ -1,0 +1,18 @@
+type: object
+required:
+  - name
+  - contactName
+  - contactEmail
+properties:
+  id:
+    type: integer
+  name:
+    type: string
+  url:
+    type: string
+  contactName:
+    type: string
+  contactEmail:
+    type: string
+  contactPhone:
+    type: string

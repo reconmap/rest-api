@@ -13,6 +13,7 @@ class ProjectRepository extends MysqlRepository
         'client_id' => 'i',
         'name' => 's',
         'description' => 's',
+        'visibility' => 's',
         'is_template' => 'i',
         'engagement_type' => 's',
         'engagement_start_date' => 's',
@@ -109,10 +110,10 @@ SQL;
     public function insert(Project $project): int
     {
         $insertStmt = new InsertQueryBuilder('project');
-        $insertStmt->setColumns('creator_uid, client_id, name, description, is_template, engagement_type, engagement_start_date, engagement_end_date');
+        $insertStmt->setColumns('creator_uid, client_id, name, description, is_template, engagement_type, engagement_start_date, engagement_end_date, visibility');
 
         $stmt = $this->db->prepare($insertStmt->toSql());
-        $stmt->bind_param('iississs', $project->creator_uid, $project->clientId, $project->name, $project->description, $project->is_template, $project->engagement_type, $project->engagement_start_date, $project->engagement_end_date);
+        $stmt->bind_param('iississss', $project->creator_uid, $project->clientId, $project->name, $project->description, $project->is_template, $project->engagement_type, $project->engagement_start_date, $project->engagement_end_date, $project->visibility);
         return $this->executeInsertStatement($stmt);
     }
 

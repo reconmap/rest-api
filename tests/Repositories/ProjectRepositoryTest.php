@@ -30,6 +30,7 @@ class ProjectRepositoryTest extends DatabaseTestCase
             'creator_uid' => 1,
             'client_id' => null,
             'is_template' => 1,
+            'visibility' => 'public',
             'name' => 'Linux host template',
             'description' => 'Project template to show general linux host reconnaissance tasks',
             'engagement_type' => null,
@@ -76,6 +77,7 @@ class ProjectRepositoryTest extends DatabaseTestCase
         $project = new Project();
         $project->name = 'Blackbox pentesting project';
         $project->creator_uid = 1;
+        $project->visibility = 'public';
         $projectId = $this->subject->insert($project);
         $this->assertEquals(6, $projectId);
     }

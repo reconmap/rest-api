@@ -154,14 +154,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Client'
+              $ref: './schemas/Client.yaml'
       responses:
         '200':
           description: Client succesfully created response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Client'
+                $ref: './schemas/Client.yaml'
     get:
       tags:
         - Clients
@@ -183,14 +183,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Client'
+              $ref: './schemas/Client.yaml'
       responses:
         '200':
           description: Client succesfully created response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Client'
+                $ref: './schemas/Client.yaml'
     get:
       tags:
         - Clients
@@ -201,6 +201,10 @@ paths:
       responses:
         '200':
           description: Succesfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: './schemas/Client.yaml'
     delete:
       tags:
         - Clients
@@ -416,6 +420,10 @@ paths:
       responses:
         '200':
           description: Succesfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: './schemas/Project.yaml'
     delete:
       tags:
         - Projects
@@ -864,26 +872,6 @@ components:
       type: object
       required:
         - name
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        url:
-          type: string
-        contactName:
-          type: string
-        contactEmail:
-          type: string
-        contactPhone:
-          type: string
-
-    Client:
-      type: object
-      required:
-        - name
-        - contactName
-        - contactEmail
       properties:
         id:
           type: integer

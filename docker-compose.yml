@@ -49,6 +49,7 @@ services:
       - "./vendor:/var/www/webapp/vendor"
       - "./public:/var/www/webapp/public"
       - "./docs/openapi.yaml:/var/www/webapp/public/docs/openapi.yaml"
+      - "./docs/schemas/:/var/www/webapp/public/docs/schemas/"
       - "./src:/var/www/webapp/src"
       - "./resources:/var/www/webapp/resources"
       - "./tests:/var/www/webapp/tests"

@@ -8,6 +8,7 @@ class Project
     public ?int $clientId;
     public string $name;
     public ?string $description;
+    public ?string $visibility;
     public bool $is_template = false;
     public ?string $engagement_type;
     public ?string $engagement_start_date;
