@@ -33,12 +33,16 @@ class ImportDataController extends Controller
         ];
 
         $json = json_decode($importJsonString);
-        foreach ($json as $entityType => $entities) {
-            if (isset($importables[$entityType])) {
-                $importer = $this->container->get($importables[$entityType]);
-                $response[] = array_merge(['name' => $entityType], $importer->import($userId, $entities));
-            } else {
-                $this->logger->warning("Trying to import invalid entity type: $entityType");
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $this->logger->warning(json_last_error_msg());
+        } else {
+            foreach ($json as $entityType => $entities) {
+                if (isset($importables[$entityType])) {
+                    $importer = $this->container->get($importables[$entityType]);
+                    $response[] = array_merge(['name' => $entityType], $importer->import($userId, $entities));
+                } else {
+                    $this->logger->warning("Trying to import invalid entity type: $entityType");
+                }
             }
         }
 
