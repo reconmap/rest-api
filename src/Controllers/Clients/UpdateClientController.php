@@ -39,6 +39,6 @@ class UpdateClientController extends Controller
 
     private function auditAction(int $loggedInUserId, int $clientId): void
     {
-        $this->activityPublisherService->publish($loggedInUserId, AuditLogAction::CLIENT_MODIFIED, ['clientId' => $clientId]);
+        $this->activityPublisherService->publish($loggedInUserId, AuditLogAction::CLIENT_MODIFIED, ['type' => 'client', 'id' => $clientId]);
     }
 }

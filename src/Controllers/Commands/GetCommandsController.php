@@ -14,7 +14,7 @@ class GetCommandsController extends Controller
     {
     }
 
-    public function __invoke(ServerRequestInterface $request, array $args): array
+    public function __invoke(ServerRequestInterface $request): array
     {
         $params = $request->getQueryParams();
         $limit = isset($params['limit']) ? intval($params['limit']) : self::PAGE_LIMIT;

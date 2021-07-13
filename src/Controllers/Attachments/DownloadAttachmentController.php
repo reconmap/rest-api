@@ -30,10 +30,9 @@ class DownloadAttachmentController extends Controller
 
         $pathName = $this->attachmentFilePathService->generateFilePathFromAttachment((array)$attachment);
 
-        $response = new Response;
-
         $this->auditAction($userId, $attachment->client_file_name);
 
+        $response = new Response;
         return $response
             ->withHeader('Access-Control-Expose-Headers', 'Content-Disposition')
             ->withHeader('Content-Disposition', 'attachment; filename="' . $attachment->client_file_name . '";')

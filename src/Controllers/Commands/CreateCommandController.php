@@ -12,7 +12,7 @@ class CreateCommandController extends Controller
     {
     }
 
-    public function __invoke(ServerRequestInterface $request, array $args): array
+    public function __invoke(ServerRequestInterface $request): array
     {
         $command = $this->getJsonBodyDecoded($request);
         $command->creator_uid = $request->getAttribute('userId');

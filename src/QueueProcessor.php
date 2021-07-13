@@ -16,9 +16,8 @@ class QueueProcessor
     public function run(ItemProcessor $itemProcessor, string $queueName): int
     {
         while ($itemEncoded = $this->redis->brPop($queueName, 1)) {
-            $this->logger->debug('Pulling item from queue', ['item' => $itemEncoded]);
+            $this->logger->debug('Pulling item from queue', ['queueName' => $queueName]);
             $item = json_decode($itemEncoded[1]);
-            $this->logger->debug('Item decoded', [$item]);
             $itemProcessor->process($item);
         }
 

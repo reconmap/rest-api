@@ -517,6 +517,20 @@ paths:
         '200':
           description: OK
 
+  /system/logs:
+    get:
+      tags:
+        - System
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+
   /system/data:
     get:
       tags:
@@ -779,14 +793,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Vulnerability'
+              $ref: './schemas/Vulnerability.yaml'
       responses:
         '201':
           description: Vulnerability succesfully created response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Vulnerability'
+                $ref: './schemas/Vulnerability.yaml'
+
   '/vulnerabilities/{id}':
     get:
       tags:
@@ -935,28 +950,6 @@ components:
         name:
           type: string
         kind:
-          type: string
-
-    Vulnerability:
-      type: object
-      required:
-        - summary
-        - description
-        - risk
-        - status
-        - substatus
-      properties:
-        id:
-          type: integer
-        summary:
-          type: string
-        description:
-          type: string
-        risk:
-          type: string
-        status:
-          type: string
-        substatus:
           type: string
 
   parameters:
