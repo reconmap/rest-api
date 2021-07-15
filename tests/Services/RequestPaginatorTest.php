@@ -29,4 +29,26 @@ class RequestPaginatorTest extends TestCase
         $paginator = new RequestPaginator($mockRequest);
         $this->assertEquals(45, $paginator->calculatePageCount(900));
     }
+
+    public function testDefaultLimit()
+    {
+        $mockRequest = $this->createMock(ServerRequestInterface::class);
+        $mockRequest->expects($this->once())
+            ->method('getQueryParams')
+            ->willReturn([]);
+
+        $paginator = new RequestPaginator($mockRequest);
+        $this->assertEquals(20, $paginator->getLimitPerPage());
+    }
+
+    public function testCustomLimit()
+    {
+        $mockRequest = $this->createMock(ServerRequestInterface::class);
+        $mockRequest->expects($this->once())
+            ->method('getQueryParams')
+            ->willReturn(['limit' => 5]);
+
+        $paginator = new RequestPaginator($mockRequest);
+        $this->assertEquals(5, $paginator->getLimitPerPage());
+    }
 }

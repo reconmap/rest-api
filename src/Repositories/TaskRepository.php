@@ -3,7 +3,9 @@
 namespace Reconmap\Repositories;
 
 use Reconmap\Models\Task;
+use Reconmap\Repositories\QueryBuilders\SearchCriteria;
 use Reconmap\Repositories\QueryBuilders\SelectQueryBuilder;
+use Reconmap\Services\RequestPaginator;
 
 class TaskRepository extends MysqlRepository
 {
@@ -47,6 +49,38 @@ class TaskRepository extends MysqlRepository
         $result = $stmt->get_result();
         return $result->fetch_all(MYSQLI_ASSOC);
     }
+
+    public function search(SearchCriteria $searchCriteria, ?RequestPaginator $paginator = null): array
+    {
+        $queryBuilder = $this->getBaseSelectQueryBuilder();
+
+        foreach ($searchCriteria->getCriteria() as $criteria) {
+            $queryBuilder->setWhere($criteria);
+        }
+
+        if ($paginator) {
+            $queryBuilder->setLimit('?, ?');
+        }
+
+        $sql = $queryBuilder->toSql();
+
+        $values = $searchCriteria->getValues();
+        if ($paginator) {
+            $values[] = $paginator->getLimitOffset();
+            $values[] = $paginator->getLimitPerPage();
+        }
+
+        $types = array_fill(0, count($values), 's');
+
+        $stmt = $this->db->prepare($sql);
+        if (!empty($values)) {
+            $stmt->bind_param(implode('', $types), ...$values);
+        }
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
 
     private function getBaseSelectQueryBuilder(): SelectQueryBuilder
     {

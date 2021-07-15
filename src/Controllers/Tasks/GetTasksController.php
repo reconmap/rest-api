@@ -4,7 +4,9 @@ namespace Reconmap\Controllers\Tasks;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
+use Reconmap\Repositories\QueryBuilders\SearchCriteria;
 use Reconmap\Repositories\TaskRepository;
+use Reconmap\Services\RequestPaginator;
 
 class GetTasksController extends Controller
 {
@@ -17,15 +19,22 @@ class GetTasksController extends Controller
     public function __invoke(ServerRequestInterface $request): array
     {
         $params = $request->getQueryParams();
-        $limit = isset($params['limit']) ? intval($params['limit']) : self::PAGE_LIMIT;
+        $paginator = new RequestPaginator($request);
+
+        $searchCriteria = new SearchCriteria();
 
         if (isset($params['keywords'])) {
             $keywords = $params['keywords'];
-            $tasks = $this->repository->findByKeywords($keywords);
-        } else {
-            $tasks = $this->repository->findAll(limit: $limit);
+            $keywordsLike = "%$keywords%";
+
+            $searchCriteria->addCriterion('t.summary LIKE ? OR t.description LIKE ?', [$keywordsLike, $keywordsLike]);
+        }
+        if (isset($params['assigneeUid'])) {
+            $assigneeUid = intval($params['assigneeUid']);
+
+            $searchCriteria->addCriterion('t.assignee_uid = ?', [$assigneeUid]);
         }
 
-        return $tasks;
+        return $this->repository->search($searchCriteria, $paginator);
     }
 }

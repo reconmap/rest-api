@@ -26,7 +26,7 @@ class RequestPaginator
 
     public function getLimitPerPage(): int
     {
-        return 20;
+        return isset($this->queryParams['limit']) ? intval($this->queryParams['limit']) : $this->resultsPerPage;
     }
 
     public function getLimitOffset(): int
