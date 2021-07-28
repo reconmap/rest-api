@@ -14,12 +14,16 @@ class GetProjectsControllerTest extends TestCase
         $mockProjects = [['title' => 'foo']];
 
         $mockRequest = $this->createMock(ServerRequestInterface::class);
+        $mockRequest->expects($this->once())
+            ->method('getQueryParams')
+            ->willReturn(['status' => 'archived']);
         $mockRequest->expects($this->exactly(2))
             ->method('getAttribute')
             ->withConsecutive(['userId'], ['role'])
             ->willReturnOnConsecutiveCalls(9, 'administrator');
 
         $searchCriteria = new SearchCriteria();
+        $searchCriteria->addCriterion('p.archived = ?', [true]);
         $searchCriteria->addCriterion('p.is_template = 0');
 
         $mockRepository = $this->createMock(ProjectRepository::class);

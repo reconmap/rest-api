@@ -12,7 +12,7 @@ class TargetRepository extends MysqlRepository
         return $rs->fetch_all(MYSQLI_ASSOC);
     }
 
-    public function findById(int $id): array
+    public function findById(int $id): ?array
     {
         $stmt = $this->db->prepare('SELECT * FROM target WHERE id = ?');
         $stmt->bind_param('i', $id);

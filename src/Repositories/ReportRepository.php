@@ -6,7 +6,7 @@ use Reconmap\Models\Report;
 
 class ReportRepository extends MysqlRepository
 {
-    public function findById(int $reportId): array
+    public function findById(int $reportId): ?array
     {
         $stmt = $this->db->prepare('SELECT * FROM report WHERE id = ?');
         $stmt->bind_param('i', $reportId);

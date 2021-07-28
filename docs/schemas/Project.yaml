@@ -12,3 +12,5 @@ properties:
     type: string
   visibility:
     type: string
+  archived:
+    type: boolean

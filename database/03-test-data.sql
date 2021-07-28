@@ -539,3 +539,6 @@ VALUES (1,
         3,
         'private',
         'The client asked not to touch the servers during office hours.');
+
+INSERT INTO document (user_id, visibility, parent_type, content, title)
+VALUES (1, 'public', 'library', 'Some', 'Thing');

@@ -6,6 +6,13 @@ use Reconmap\DatabaseTestCase;
 
 class CommandRepositoryTest extends DatabaseTestCase
 {
+    private CommandRepository $subject;
+
+    public function setUp(): void
+    {
+        $this->subject = new CommandRepository($this->getDatabaseConnection());
+    }
+
     public function testInsert()
     {
         $command = new \stdClass();
@@ -14,7 +21,18 @@ class CommandRepositoryTest extends DatabaseTestCase
         $command->executable_type = 'custom';
         $command->executable_path = 'nmap';
 
-        $repository = new CommandRepository($this->getDatabaseConnection());
-        $this->assertTrue($repository->insert($command) >= 1);
+        $this->assertTrue($this->subject->insert($command) >= 1);
+    }
+
+    public function testFindById()
+    {
+        $command = $this->subject->findById(1);
+        $this->assertEquals('goohost', $command['short_name']);
+    }
+
+    public function testFindByIdNotFound()
+    {
+        $command = $this->subject->findById(-5);
+        $this->assertNull($command);
     }
 }

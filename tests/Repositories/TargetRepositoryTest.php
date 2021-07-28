@@ -31,4 +31,16 @@ class TargetRepositoryTest extends DatabaseTestCase
         $targetId = $this->subject->insert($target);
         $this->assertIsInt($targetId);
     }
+
+    public function testFindById()
+    {
+        $target = $this->subject->findById(1);
+        $this->assertEquals('url', $target['kind']);
+    }
+
+    public function testFindByIdNotFound()
+    {
+        $target = $this->subject->findById(-5);
+        $this->assertNull($target);
+    }
 }

@@ -28,4 +28,21 @@ class TaskRepositoryTest extends DatabaseTestCase
         $this->assertCount(6, $tasks);
         $this->assertEquals('Run port scanner', $tasks[0]['summary']);
     }
+
+    public function testFindById()
+    {
+        $task = $this->subject->findById(1);
+        $this->assertEquals('Run port scanner', $task['summary']);
+    }
+
+    public function testFindByIdNotFound()
+    {
+        $task = $this->subject->findById(0);
+        $this->assertNull($task);
+    }
+
+    public function testDeleteById()
+    {
+        $this->assertFalse($this->subject->deleteById(50));
+    }
 }

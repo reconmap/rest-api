@@ -35,7 +35,7 @@ class DocumentRepository extends MysqlRepository
         return $notes;
     }
 
-    public function findById(int $id): array
+    public function findById(int $id): ?array
     {
         $stmt = $this->db->prepare('SELECT * FROM document WHERE id = ?');
         $stmt->bind_param('i', $id);

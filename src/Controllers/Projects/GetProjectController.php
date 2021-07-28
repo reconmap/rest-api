@@ -3,6 +3,7 @@
 namespace Reconmap\Controllers\Projects;
 
 use League\Route\Http\Exception\ForbiddenException;
+use League\Route\Http\Exception\NotFoundException;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\ProjectRepository;
@@ -20,9 +21,13 @@ class GetProjectController extends Controller
         $user = $this->getUserFromRequest($request);
 
         if ($user->isAdministrator() || $this->projectRepository->isVisibleToUser($projectId, $user->id)) {
-            return $this->projectRepository->findById($projectId);
+            $project = $this->projectRepository->findById($projectId);
+            if (is_null($project)) {
+                throw new NotFoundException("Project #$projectId not found");
+            }
+            return $project;
         }
 
-        throw new ForbiddenException('Project not visible to user');
+        throw new ForbiddenException("Project #$projectId not visible to user #{$user->id}");
     }
 }

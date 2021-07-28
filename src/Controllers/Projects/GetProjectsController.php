@@ -26,7 +26,10 @@ class GetProjectsController extends Controller
 
             $searchCriteria->addCriterion('p.name LIKE ? OR p.description LIKE ?', [$keywordsLike, $keywordsLike]);
         }
-
+        if (isset($params['status'])) {
+            $archived = 'archived' === $params['status'];
+            $searchCriteria->addCriterion('p.archived = ?', [$archived]);
+        }
         if (isset($params['isTemplate'])) {
             $searchCriteria->addCriterion('p.is_template = ?', [(int)$params['isTemplate']]);
         } else {
