@@ -12,22 +12,25 @@ use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Repositories\ProjectRepository;
 use Reconmap\Repositories\ReportConfigurationRepository;
 use Reconmap\Repositories\ReportRepository;
+use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\AttachmentFilePath;
 use Reconmap\Services\ReportGenerator;
 
 class CreateReportController extends Controller
 {
     public function __construct(
-        private AttachmentFilePath $attachmentFilePathService,
-        private ProjectRepository $projectRepository,
-        private ReportRepository $reportRepository,
+        private AttachmentFilePath            $attachmentFilePathService,
+        private ProjectRepository             $projectRepository,
+        private ReportRepository              $reportRepository,
         private ReportConfigurationRepository $reportConfigurationRepository,
-        private AttachmentRepository $attachmentRepository,
-        private ReportGenerator $reportGenerator)
+        private AttachmentRepository          $attachmentRepository,
+        private ReportGenerator               $reportGenerator,
+        private ApplicationConfig             $applicationConfig
+    )
     {
     }
 
-    public function __invoke(ServerRequestInterface $request, array $args): array
+    public function __invoke(ServerRequestInterface $request): array
     {
         $params = $this->getJsonBodyDecodedAsArray($request);
         $projectId = (int)$params['projectId'];
@@ -47,7 +50,7 @@ class CreateReportController extends Controller
 
         $reportSections = $this->reportGenerator->generate($projectId, $reportId);
 
-        $config = $this->reportConfigurationRepository->findByProjectId($projectId);
+        $reportConfig = $this->reportConfigurationRepository->findByProjectId($projectId);
 
         $basePath = $this->attachmentFilePathService->generateBasePath();
 
@@ -59,7 +62,7 @@ class CreateReportController extends Controller
         $attachmentIds = [];
 
         $attachmentIds[] = $this->attachmentRepository->insert($this->generateHtmlReportAndAttachment($project, $attachment, $reportSections, $basePath, $versionName));
-        $attachmentIds[] = $this->attachmentRepository->insert($this->generatePdfReportAndAttachment($project, $attachment, $reportSections, $basePath, $config, $versionName));
+        $attachmentIds[] = $this->attachmentRepository->insert($this->generatePdfReportAndAttachment($project, $attachment, $reportSections, $basePath, $reportConfig, $versionName));
 
         return $attachmentIds;
     }
@@ -82,43 +85,43 @@ class CreateReportController extends Controller
         return $attachment;
     }
 
-    private function generatePdfReportAndAttachment(array $project, Attachment $attachment, array $reportSections, string $basePath, ReportConfiguration $config, string $versionName): Attachment
+    private function generatePdfReportAndAttachment(array $project, Attachment $attachment, array $reportSections, string $basePath, ReportConfiguration $reportConfig, string $versionName): Attachment
     {
-        $pdf = new Pdf('/usr/local/bin/wkhtmltopdf');
+        $pdfGenerator = new Pdf('/usr/local/bin/wkhtmltopdf');
         // @todo Create own logger $pdf->setLogger($this->logger);
 
-        $pdf->setOption('no-background', false);
+        $pdfGenerator->setOption('no-background', false);
 
         // Table of contents and outline
-        if ($config->include_toc) {
-            $pdf->setOption('toc', true);
-            $pdf->setOption('xsl-style-sheet', $this->config->getAppDir() . '/resources/templates/reports/toc.xsl');
+        if ($reportConfig->include_toc) {
+            $pdfGenerator->setOption('toc', true);
+            $pdfGenerator->setOption('xsl-style-sheet', $this->applicationConfig->getAppDir() . '/resources/templates/reports/toc.xsl');
         }
-        $pdf->setOption('outline-depth', 2);
+        $pdfGenerator->setOption('outline-depth', 2);
 
         // Margins and paddings
-        $pdf->setOption('header-spacing', 15);
-        $pdf->setOption('footer-spacing', 15);
-        $pdf->setOption('margin-left', 0);
-        $pdf->setOption('margin-right', 0);
+        $pdfGenerator->setOption('header-spacing', 15);
+        $pdfGenerator->setOption('footer-spacing', 15);
+        $pdfGenerator->setOption('margin-left', 0);
+        $pdfGenerator->setOption('margin-right', 0);
         // $pdf->setOption('margin-top', 0); # This breaks the whole layout
-        $pdf->setOption('margin-bottom', 5);
+        $pdfGenerator->setOption('margin-bottom', 5);
 
         // Content
-        if ($config->include_cover !== 'none') {
-            $pdf->setOption('cover', $reportSections['cover']);
+        if ($reportConfig->include_cover !== 'none') {
+            $pdfGenerator->setOption('cover', $reportSections['cover']);
         }
-        if ($config->include_header !== 'none') {
-            $pdf->setOption('header-html', $reportSections['header']);
+        if ($reportConfig->include_header !== 'none') {
+            $pdfGenerator->setOption('header-html', $reportSections['header']);
         }
-        if ($config->include_footer !== 'none') {
-            $pdf->setOption('footer-html', $reportSections['footer']);
+        if ($reportConfig->include_footer !== 'none') {
+            $pdfGenerator->setOption('footer-html', $reportSections['footer']);
         }
 
         $fileName = uniqid(gethostname());
         $filePath = $basePath . $fileName;
 
-        $pdf->generateFromHtml($reportSections['body'], $filePath);
+        $pdfGenerator->generateFromHtml($reportSections['body'], $filePath);
 
         $projectName = str_replace(' ', '_', strtolower($project['name']));
         $clientFileName = "reconmap-{$projectName}-v{$versionName}.pdf";
