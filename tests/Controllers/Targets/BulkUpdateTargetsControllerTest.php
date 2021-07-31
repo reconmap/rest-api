@@ -23,7 +23,7 @@ class BulkUpdateTargetsControllerTest extends ControllerTestCase
             ->willReturn($userId);
         $request->expects($this->once())
             ->method('getBody')
-            ->willReturn(json_encode(['projectId' => $fakeProjectId, 'lines' => '192.168.0.1,hostname']));
+            ->willReturn(json_encode(['projectId' => $fakeProjectId, 'lines' => "192.168.0.1,ip_address\n127.0.0.1"]));
         $request->expects($this->once())
             ->method('getHeaderLine')
             ->with('Bulk-Operation')
@@ -32,13 +32,18 @@ class BulkUpdateTargetsControllerTest extends ControllerTestCase
         $target = new Target();
         $target->projectId = $fakeProjectId;
         $target->name = '192.168.0.1';
-        $target->kind = 'hostname';
+        $target->kind = 'ip_address';
+
+        $target2 = new Target();
+        $target2->projectId = $fakeProjectId;
+        $target2->name = '127.0.0.1';
+        $target2->kind = 'hostname';
 
         $mockTargetRepository = $this->createPartialMock(TargetRepository::class, ['insert']);
-        $mockTargetRepository->expects($this->once())
+        $mockTargetRepository->expects($this->exactly(2))
             ->method('insert')
-            ->with($target)
-            ->willReturn(3);
+            ->withConsecutive([$target], [$target2])
+            ->willReturnOnConsecutiveCalls(3, 4);
 
         $mockAuditLogService = $this->createMock(AuditLogService::class);
 
@@ -46,6 +51,6 @@ class BulkUpdateTargetsControllerTest extends ControllerTestCase
         $response = $controller($request);
 
         $this->assertEquals(StatusCodeInterface::STATUS_CREATED, $response->getStatusCode());
-        $this->assertEquals('[3]', (string)$response->getBody());
+        $this->assertEquals('[3,4]', (string)$response->getBody());
     }
 }

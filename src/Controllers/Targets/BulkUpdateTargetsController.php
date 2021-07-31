@@ -13,7 +13,7 @@ use Reconmap\Services\AuditLogService;
 class BulkUpdateTargetsController extends Controller
 {
     public function __construct(private TargetRepository $repository,
-                                private AuditLogService $auditLogService)
+                                private AuditLogService  $auditLogService)
     {
     }
 
@@ -22,7 +22,7 @@ class BulkUpdateTargetsController extends Controller
         $body = $this->getJsonBodyDecoded($request);
 
         $operation = $request->getHeaderLine('Bulk-Operation');
-        $this->logger->debug("Bulk-Operation: $operation");
+        $this->logger->debug("Target Bulk-Operation: $operation");
 
         $loggedInUserId = $request->getAttribute('userId');
 
@@ -32,15 +32,19 @@ class BulkUpdateTargetsController extends Controller
             case 'CREATE':
                 $lines = explode("\n", $body->lines);
                 foreach ($lines as $line) {
-                    if (empty(trim($line))) continue;
+                    $trimmedLine = trim($line);
+                    if (empty($trimmedLine))
+                        continue;
 
-                    list($name, $kind) = str_getcsv($line);
-                    $this->logger->debug("Bulk-Operation: $name - $kind", [$line]);
+                    $columns = str_getcsv($line);
+                    $columnCount = count($columns);
+                    $targetName = $columns[0];
+                    $targetKind = 2 === $columnCount ? $columns[1] : 'hostname';
 
                     $target = new Target();
                     $target->projectId = intval($body->projectId);
-                    $target->name = $name;
-                    $target->kind = $kind;
+                    $target->name = $targetName;
+                    $target->kind = $targetKind;
                     try {
                         $targetIds[] = $this->repository->insert($target);
                     } catch (\Exception $e) {
