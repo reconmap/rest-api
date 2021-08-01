@@ -203,6 +203,8 @@ CREATE TABLE command
     arguments       VARCHAR(240)           NULL,
     configuration   JSON                   NULL,
     output_filename VARCHAR(100)           NULL,
+    more_info_url   VARCHAR(200)           NULL,
+    tags            JSON                   NULL,
 
     PRIMARY KEY (id)
 ) ENGINE = InnoDB;

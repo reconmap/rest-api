@@ -28,11 +28,11 @@ class DocumentRepository extends MysqlRepository
             $stmt->bind_param('si', $parentType, $parentId);
         }
         $stmt->execute();
-        $rs = $stmt->get_result();
-        $notes = $rs->fetch_all(MYSQLI_ASSOC);
+        $result = $stmt->get_result();
+        $documents = $result->fetch_all(MYSQLI_ASSOC);
         $stmt->close();
 
-        return $notes;
+        return $documents;
     }
 
     public function findById(int $id): ?array
@@ -40,8 +40,8 @@ class DocumentRepository extends MysqlRepository
         $stmt = $this->db->prepare('SELECT * FROM document WHERE id = ?');
         $stmt->bind_param('i', $id);
         $stmt->execute();
-        $rs = $stmt->get_result();
-        $document = $rs->fetch_assoc();
+        $result = $stmt->get_result();
+        $document = $result->fetch_assoc();
         $stmt->close();
 
         return $document;

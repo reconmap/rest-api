@@ -2,6 +2,8 @@
 
 namespace Reconmap\Repositories;
 
+use Reconmap\Models\Command;
+use Reconmap\Repositories\QueryBuilders\InsertQueryBuilder;
 use Reconmap\Repositories\QueryBuilders\SelectQueryBuilder;
 
 class CommandRepository extends MysqlRepository
@@ -14,7 +16,9 @@ class CommandRepository extends MysqlRepository
         'executable_path' => 's',
         'arguments' => 's',
         'configuration' => 's',
-        'output_filename' => 's'
+        'output_filename' => 's',
+        'more_info_url' => 's',
+        'tags' => 's'
     ];
 
     public function findById(int $id): ?array
@@ -45,8 +49,8 @@ SQL;
         $selectQueryBuilder->setLimit($limit);
         $sql = $selectQueryBuilder->toSql();
 
-        $rs = $this->db->query($sql);
-        return $rs->fetch_all(MYSQLI_ASSOC);
+        $result = $this->db->query($sql);
+        return $result->fetch_all(MYSQLI_ASSOC);
     }
 
     public function findByKeywords(string $keywords, int $limit = 20): array
@@ -66,8 +70,7 @@ SQL;
 
     private function getBaseSelectQueryBuilder(): SelectQueryBuilder
     {
-        $queryBuilder = new SelectQueryBuilder('command c');
-        return $queryBuilder;
+        return new SelectQueryBuilder('command c');
     }
 
     public function deleteById(int $id): bool
@@ -75,10 +78,12 @@ SQL;
         return $this->deleteByTableId('command', $id);
     }
 
-    public function insert(object $command): int
+    public function insert(Command $command): int
     {
-        $stmt = $this->db->prepare('INSERT INTO command (creator_uid, short_name, description, docker_image, arguments, executable_type, executable_path, output_filename) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
-        $stmt->bind_param('isssssss', $command->creator_uid, $command->short_name, $command->description, $command->docker_image, $command->arguments, $command->executable_type, $command->executable_path, $command->output_filename);
+        $insertStmt = new InsertQueryBuilder('command');
+        $insertStmt->setColumns('creator_uid, short_name, description, docker_image, arguments, executable_type, executable_path, output_filename, more_info_url, tags');
+        $stmt = $this->db->prepare($insertStmt->toSql());
+        $stmt->bind_param('isssssssss', $command->creator_uid, $command->short_name, $command->description, $command->docker_image, $command->arguments, $command->executable_type, $command->executable_path, $command->output_filename, $command->more_info_url, $command->tags);
         return $this->executeInsertStatement($stmt);
     }
 

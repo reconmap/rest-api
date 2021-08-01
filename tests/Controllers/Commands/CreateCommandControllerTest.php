@@ -4,20 +4,21 @@ namespace Reconmap\Controllers\Commands;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\Models\Command;
 use Reconmap\Repositories\CommandRepository;
 
 class CreateCommandControllerTest extends TestCase
 {
     public function testHappyPath()
     {
-        $expectedClient = new \stdClass();
-        $expectedClient->name = 'exciting new client';
-        $expectedClient->creator_uid = 9;
+        $expectedCommand = new Command();
+        $expectedCommand->short_name = 'co_mmand';
+        $expectedCommand->creator_uid = 9;
 
         $mockProjectRepository = $this->createMock(CommandRepository::class);
         $mockProjectRepository->expects($this->once())
             ->method('insert')
-            ->with($expectedClient)
+            ->with($expectedCommand)
             ->willReturn(1);
 
         $mockRequest = $this->createMock(ServerRequestInterface::class);
@@ -27,7 +28,7 @@ class CreateCommandControllerTest extends TestCase
             ->willReturn(9);
         $mockRequest->expects($this->once())
             ->method('getBody')
-            ->willReturn('{"name": "exciting new client"}');
+            ->willReturn('{"short_name": "co_mmand"}');
 
         $controller = new CreateCommandController($mockProjectRepository);
         $response = $controller($mockRequest);

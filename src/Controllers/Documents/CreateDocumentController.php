@@ -12,7 +12,7 @@ class CreateDocumentController extends Controller
     {
     }
 
-    public function __invoke(ServerRequestInterface $request, array $args): array
+    public function __invoke(ServerRequestInterface $request): array
     {
         $document = $this->getJsonBodyDecoded($request);
 

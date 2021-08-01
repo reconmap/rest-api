@@ -2,6 +2,7 @@
 
 namespace Reconmap\Repositories\Importers;
 
+use Reconmap\Models\Command;
 use Reconmap\Repositories\CommandRepository;
 
 class CommandsImporter
@@ -10,6 +11,11 @@ class CommandsImporter
     {
     }
 
+    /**
+     * @param int $userId
+     * @param array<Command> $commands
+     * @return array
+     */
     public function import(int $userId, array $commands): array
     {
         $response = [

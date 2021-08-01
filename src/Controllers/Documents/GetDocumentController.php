@@ -2,6 +2,7 @@
 
 namespace Reconmap\Controllers\Documents;
 
+use League\Route\Http\Exception\NotFoundException;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\DocumentRepository;
@@ -16,6 +17,11 @@ class GetDocumentController extends Controller
     {
         $documentId = (int)$args['documentId'];
 
-        return $this->repository->findById($documentId);
+        $document = $this->repository->findById($documentId);
+        if (is_null($document)) {
+            throw new NotFoundException("Document #$documentId not found");
+        }
+
+        return $document;
     }
 }

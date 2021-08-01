@@ -487,21 +487,22 @@ SET cvss_vector = 'CVSS:3.0/AV:P/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:H',
     status      = 'open',
     substatus   = 'reported';
 
-INSERT INTO command (creator_uid, short_name, description, docker_image, arguments, executable_type, output_filename)
+INSERT INTO command (creator_uid, short_name, description, docker_image, arguments, executable_type, output_filename,
+                     more_info_url, tags)
 VALUES (1, 'goohost',
         'Extracts hosts/subdomains, IP or emails for a specific domain with Google search.',
         'reconmap/pentest-container-tools-goohost',
-        '-t {{{Domain|||nmap.org}}}', 'rmap', NULL)
+        '-t {{{Domain|||nmap.org}}}', 'rmap', NULL, NULL, '["google","domain"]')
         ,
        (2, 'nmap', 'Scans all reserved TCP ports on the machine', 'instrumentisto/nmap',
-        '-v {{{Host|||scanme.nmap.org}}} -oX nmap-output.xml', 'rmap', 'nmap-output.xml')
+        '-v {{{Host|||scanme.nmap.org}}} -oX nmap-output.xml', 'rmap', 'nmap-output.xml', NULL, '["network"]')
         ,
        (3, 'whois', 'Retrieves information about domain', 'zeitgeist/docker-whois', '{{{Domain|||nmap.org}}}', 'rmap',
-        NULL)
+        NULL, NULL, '["domain"]')
         ,
        (4, 'sqlmap', 'Runs SQL map scan', 'paoloo/sqlmap',
         '-u {{{Host|||localhost}}} --method POST --data "{{{Data|||username=foo&password=bar}}}" -p username --level 5 --dbms=mysql -v 1 --tables',
-        'rmap', NULL);
+        'rmap', NULL, NULL, '["sql","database"]');
 
 INSERT INTO task (creator_uid, project_id, summary, description, command_id)
 VALUES (@admin_user_id, 1,

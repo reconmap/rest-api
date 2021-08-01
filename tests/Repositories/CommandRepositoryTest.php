@@ -3,6 +3,7 @@
 namespace Reconmap\Repositories;
 
 use Reconmap\DatabaseTestCase;
+use Reconmap\Models\Command;
 
 class CommandRepositoryTest extends DatabaseTestCase
 {
@@ -15,7 +16,7 @@ class CommandRepositoryTest extends DatabaseTestCase
 
     public function testInsert()
     {
-        $command = new \stdClass();
+        $command = new Command();
         $command->creator_uid = 1;
         $command->short_name = 'nmap';
         $command->executable_type = 'custom';
@@ -23,6 +24,13 @@ class CommandRepositoryTest extends DatabaseTestCase
 
         $this->assertTrue($this->subject->insert($command) >= 1);
     }
+
+    public function testFindAll()
+    {
+        $commands = $this->subject->findAll();
+        $this->assertCount(5, $commands);
+    }
+
 
     public function testFindById()
     {

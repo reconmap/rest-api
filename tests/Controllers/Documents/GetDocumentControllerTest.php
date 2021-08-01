@@ -2,13 +2,14 @@
 
 namespace Reconmap\Controllers\Documents;
 
+use League\Route\Http\Exception\NotFoundException;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Repositories\DocumentRepository;
 
 class GetDocumentControllerTest extends TestCase
 {
-    public function testHappyPath()
+    public function testRetrievingDocument()
     {
         $mockDocument = ['title' => 'foo'];
 
@@ -26,5 +27,23 @@ class GetDocumentControllerTest extends TestCase
         $response = $controller($mockRequest, $args);
 
         $this->assertEquals($mockDocument, $response);
+    }
+
+    public function testRetrievingMissingDocument()
+    {
+        $mockRequest = $this->createMock(ServerRequestInterface::class);
+
+        $mockRepository = $this->createMock(DocumentRepository::class);
+        $mockRepository->expects($this->once())
+            ->method('findById')
+            ->with(568)
+            ->willReturn(null);
+
+        $args = ['documentId' => 568];
+
+        $this->expectException(NotFoundException::class);
+
+        $controller = new GetDocumentController($mockRepository);
+        $controller($mockRequest, $args);
     }
 }
