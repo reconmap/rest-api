@@ -78,7 +78,7 @@ SQL;
         return $this->deleteByTableId('command', $id);
     }
 
-    public function insert(Command $command): int
+    public function insert(Command|\stdClass $command): int
     {
         $insertStmt = new InsertQueryBuilder('command');
         $insertStmt->setColumns('creator_uid, short_name, description, docker_image, arguments, executable_type, executable_path, output_filename, more_info_url, tags');
