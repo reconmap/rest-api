@@ -173,7 +173,7 @@ DROP TABLE IF EXISTS task;
 CREATE TABLE task
 (
     id           INT UNSIGNED                   NOT NULL AUTO_INCREMENT,
-    project_id   INT UNSIGNED                   NOT NULL REFERENCES project,
+    project_id   INT UNSIGNED                   NOT NULL,
     creator_uid  INT UNSIGNED                   NOT NULL REFERENCES user,
     assignee_uid INT UNSIGNED                   NULL REFERENCES user,
     insert_ts    TIMESTAMP                      NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -184,7 +184,8 @@ CREATE TABLE task
     due_date     DATE                           NULL,
     command_id   INT UNSIGNED                   NULL REFERENCES command,
 
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    FOREIGN KEY (project_id) REFERENCES project (id) ON DELETE CASCADE
 ) ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS command;

@@ -5,7 +5,7 @@ namespace Reconmap\Models;
 class Project
 {
     public int $creator_uid;
-    public ?int $clientId;
+    public ?int $client_id;
     public string $name;
     public ?string $description;
     public ?string $visibility = 'public';
