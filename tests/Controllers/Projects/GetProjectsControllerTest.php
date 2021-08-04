@@ -14,7 +14,7 @@ class GetProjectsControllerTest extends TestCase
         $mockProjects = [['title' => 'foo']];
 
         $mockRequest = $this->createMock(ServerRequestInterface::class);
-        $mockRequest->expects($this->once())
+        $mockRequest->expects($this->exactly(2))
             ->method('getQueryParams')
             ->willReturn(['status' => 'archived']);
         $mockRequest->expects($this->exactly(2))

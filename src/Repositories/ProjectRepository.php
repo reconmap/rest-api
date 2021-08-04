@@ -6,6 +6,7 @@ use Reconmap\Models\Project;
 use Reconmap\Repositories\QueryBuilders\InsertQueryBuilder;
 use Reconmap\Repositories\QueryBuilders\SearchCriteria;
 use Reconmap\Repositories\QueryBuilders\SelectQueryBuilder;
+use Reconmap\Services\RequestPaginator;
 
 class ProjectRepository extends MysqlRepository
 {
@@ -74,30 +75,10 @@ SQL;
         return $project;
     }
 
-    public function search(SearchCriteria $searchCriteria): array
+    public function search(SearchCriteria $searchCriteria, ?RequestPaginator $paginator = null): array
     {
         $queryBuilder = $this->getBaseSelectQueryBuilder();
-
-        $criteriaSql = implode(' AND ', $searchCriteria->getCriteria());
-        $queryBuilder->setWhere($criteriaSql);
-
-        $sql = $queryBuilder->toSql();
-
-        $values = $searchCriteria->getValues();
-
-        $types = array_fill(0, count($values), 's');
-
-        $stmt = $this->db->prepare($sql);
-        if (!empty($values)) {
-            $stmt->bind_param(implode('', $types), ...$values);
-        }
-
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $projects = $result->fetch_all(MYSQLI_ASSOC);
-        $stmt->close();
-
-        return $projects;
+        return $this->searchAll($queryBuilder, $searchCriteria, $paginator);
     }
 
     public function clone(int $templateId, int $userId): array

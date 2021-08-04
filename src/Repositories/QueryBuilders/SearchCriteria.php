@@ -13,6 +13,11 @@ class SearchCriteria
         $this->values = array_merge($this->values, $values);
     }
 
+    public function hasCriteria(): bool
+    {
+        return count($this->clauses) > 0;
+    }
+
     public function getCriteria(): array
     {
         return $this->clauses;
