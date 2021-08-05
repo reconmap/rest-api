@@ -2,20 +2,13 @@
 
 namespace Reconmap\Controllers\Clients;
 
-use Psr\Http\Message\ServerRequestInterface;
-use Reconmap\Controllers\Controller;
+use Reconmap\Controllers\GetEntityController;
 use Reconmap\Repositories\ClientRepository;
 
-class GetClientController extends Controller
+class GetClientController extends GetEntityController
 {
-    public function __construct(private ClientRepository $repository)
+    public function __construct(ClientRepository $repository)
     {
-    }
-
-    public function __invoke(ServerRequestInterface $request, array $args): object
-    {
-        $clientId = (int)$args['clientId'];
-
-        return $this->repository->findById($clientId);
+        parent::__construct($repository, 'clientId');
     }
 }

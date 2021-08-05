@@ -4,12 +4,12 @@ namespace Reconmap\Repositories;
 
 use Reconmap\Models\Target;
 
-class TargetRepository extends MysqlRepository
+class TargetRepository extends MysqlRepository implements Findable
 {
     public function findAll(): array
     {
-        $rs = $this->db->query('SELECT * FROM target LIMIT 20');
-        return $rs->fetch_all(MYSQLI_ASSOC);
+        $result = $this->db->query('SELECT * FROM target LIMIT 20');
+        return $result->fetch_all(MYSQLI_ASSOC);
     }
 
     public function findById(int $id): ?array
@@ -17,8 +17,8 @@ class TargetRepository extends MysqlRepository
         $stmt = $this->db->prepare('SELECT * FROM target WHERE id = ?');
         $stmt->bind_param('i', $id);
         $stmt->execute();
-        $rs = $stmt->get_result();
-        $target = $rs->fetch_assoc();
+        $result = $stmt->get_result();
+        $target = $result->fetch_assoc();
         $stmt->close();
 
         return $target;
@@ -29,8 +29,8 @@ class TargetRepository extends MysqlRepository
         $stmt = $this->db->prepare('SELECT t.*, (SELECT COUNT(*) FROM vulnerability WHERE target_id = t.id) AS num_vulnerabilities FROM target t WHERE t.project_id = ?');
         $stmt->bind_param('i', $projectId);
         $stmt->execute();
-        $rs = $stmt->get_result();
-        $targets = $rs->fetch_all(MYSQLI_ASSOC);
+        $result = $stmt->get_result();
+        $targets = $result->fetch_all(MYSQLI_ASSOC);
         $stmt->close();
 
         return $targets;
@@ -41,8 +41,8 @@ class TargetRepository extends MysqlRepository
         $stmt = $this->db->prepare('SELECT t.*, (SELECT COUNT(*) FROM vulnerability WHERE target_id = t.id) AS num_vulnerabilities FROM target t WHERE t.project_id = ? AND t.name = ?');
         $stmt->bind_param('is', $projectId, $name);
         $stmt->execute();
-        $rs = $stmt->get_result();
-        $target = $rs->fetch_object();
+        $result = $stmt->get_result();
+        $target = $result->fetch_object();
         $stmt->close();
 
         return $target;

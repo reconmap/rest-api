@@ -7,7 +7,7 @@ use Reconmap\Repositories\QueryBuilders\SearchCriteria;
 use Reconmap\Repositories\QueryBuilders\SelectQueryBuilder;
 use Reconmap\Services\RequestPaginator;
 
-class TaskRepository extends MysqlRepository
+class TaskRepository extends MysqlRepository implements Findable
 {
     public const UPDATABLE_COLUMNS_TYPES = [
         'project_id' => 'i',

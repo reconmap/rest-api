@@ -2,20 +2,13 @@
 
 namespace Reconmap\Controllers\Tasks;
 
-use Psr\Http\Message\ServerRequestInterface;
-use Reconmap\Controllers\Controller;
+use Reconmap\Controllers\GetEntityController;
 use Reconmap\Repositories\TaskRepository;
 
-class GetTaskController extends Controller
+class GetTaskController extends GetEntityController
 {
-    public function __construct(private TaskRepository $repository)
+    public function __construct(TaskRepository $repository)
     {
-    }
-
-    public function __invoke(ServerRequestInterface $request, array $args): array
-    {
-        $taskId = (int)$args['taskId'];
-
-        return $this->repository->findById($taskId);
+        parent::__construct($repository, 'taskId');
     }
 }
