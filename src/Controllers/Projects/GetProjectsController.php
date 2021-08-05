@@ -25,7 +25,7 @@ class GetProjectsController extends Controller
             $keywords = $params['keywords'];
             $keywordsLike = "%$keywords%";
 
-            $searchCriteria->addCriterion('p.name LIKE ? OR p.description LIKE ?', [$keywordsLike, $keywordsLike]);
+            $searchCriteria->addCriterion('(p.name LIKE ? OR p.description LIKE ?)', [$keywordsLike, $keywordsLike]);
         }
         if (isset($params['status'])) {
             $archived = 'archived' === $params['status'];

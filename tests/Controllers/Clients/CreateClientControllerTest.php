@@ -2,6 +2,7 @@
 
 namespace Reconmap\Controllers\Clients;
 
+use Fig\Http\Message\StatusCodeInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Models\Client;
@@ -33,6 +34,6 @@ class CreateClientControllerTest extends TestCase
         $controller = new CreateClientController($mockProjectRepository);
         $response = $controller($mockRequest);
 
-        $this->assertTrue($response['success']);
+        $this->assertEquals(StatusCodeInterface::STATUS_CREATED, $response->getStatusCode());
     }
 }

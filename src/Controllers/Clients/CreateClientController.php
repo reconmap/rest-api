@@ -2,6 +2,7 @@
 
 namespace Reconmap\Controllers\Clients;
 
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\Client;
@@ -13,14 +14,14 @@ class CreateClientController extends Controller
     {
     }
 
-    public function __invoke(ServerRequestInterface $request): array
+    public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
         /** @var Client $client */
         $client = $this->getJsonBodyDecodedAsClass($request, new Client());
         $client->creator_uid = $request->getAttribute('userId');
 
-        $this->repository->insert($client);
+        $client->id = $this->repository->insert($client);
 
-        return ['success' => true];
+        return $this->createStatusCreatedResponse($client);
     }
 }

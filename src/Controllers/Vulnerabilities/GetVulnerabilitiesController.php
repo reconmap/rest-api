@@ -14,7 +14,7 @@ use Reconmap\Services\RequestPaginator;
 class GetVulnerabilitiesController extends Controller
 {
     public function __construct(
-        private VulnerabilityRepository $repository,
+        private VulnerabilityRepository      $repository,
         private VulnerabilityStatsRepository $statsRepository
     )
     {
@@ -30,7 +30,7 @@ class GetVulnerabilitiesController extends Controller
             $keywords = $params['keywords'];
             $keywordsLike = "%$keywords%";
 
-            $searchCriteria->addCriterion('v.summary LIKE ? OR v.description LIKE ?', [$keywordsLike, $keywordsLike]);
+            $searchCriteria->addCriterion('(v.summary LIKE ? OR v.description LIKE ?)', [$keywordsLike, $keywordsLike]);
         }
         if (isset($params['targetId'])) {
             $targetId = (int)$params['targetId'];

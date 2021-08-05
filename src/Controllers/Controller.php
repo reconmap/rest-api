@@ -48,7 +48,7 @@ abstract class Controller implements ContainerConsumer
         return isset($queryParams[$name]) ? intval($queryParams[$name]) : $default;
     }
 
-    protected function createStatusCreatedResponse(string|array $body): ResponseInterface
+    protected function createStatusCreatedResponse(string|array|object $body): ResponseInterface
     {
         $jsonBody = is_string($body) ? $body : json_encode($body);
 
