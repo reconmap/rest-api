@@ -18,6 +18,7 @@ class GetTasksControllerTest extends TestCase
             ->willReturn([]);
 
         $searchCriteria = new SearchCriteria();
+		$searchCriteria->addCriterion('p.is_template = 0');
         $paginator = new RequestPaginator($mockRequest);
 
         $mockRepository = $this->createMock(TaskRepository::class);

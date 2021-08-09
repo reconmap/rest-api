@@ -10,8 +10,6 @@ use Reconmap\Services\RequestPaginator;
 
 class GetTasksController extends Controller
 {
-    private const PAGE_LIMIT = 20;
-
     public function __construct(private TaskRepository $repository)
     {
     }
@@ -22,6 +20,12 @@ class GetTasksController extends Controller
         $paginator = new RequestPaginator($request);
 
         $searchCriteria = new SearchCriteria();
+
+        if (isset($params['isTemplate'])) {
+            $searchCriteria->addCriterion('p.is_template = ?', [(int)$params['isTemplate']]);
+        } else {
+            $searchCriteria->addCriterion('p.is_template = 0');
+        }
 
         if (isset($params['keywords'])) {
             $keywords = $params['keywords'];
