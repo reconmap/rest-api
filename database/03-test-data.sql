@@ -485,7 +485,8 @@ VALUES (2,
 UPDATE vulnerability
 SET cvss_vector = 'CVSS:3.0/AV:P/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:H',
     status      = 'open',
-    substatus   = 'reported';
+    substatus   = 'reported',
+    tags		= '["test","tag"]';
 
 INSERT INTO command (creator_uid, short_name, description, docker_image, arguments, executable_type, output_filename,
                      more_info_url, tags)

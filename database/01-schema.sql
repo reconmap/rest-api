@@ -166,6 +166,7 @@ CREATE TABLE vulnerability
     cvss_vector      VARCHAR(80)                                                                                        NULL,
     status           ENUM ('open', 'confirmed', 'resolved', 'closed')                                                   NOT NULL DEFAULT 'open',
     substatus        ENUM ('reported', 'unresolved', 'unexploited', 'exploited', 'remediated', 'mitigated', 'rejected') NULL     DEFAULT 'reported',
+    tags            JSON                   NULL,
 
     PRIMARY KEY (id)
 ) ENGINE = InnoDB;
