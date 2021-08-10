@@ -9,7 +9,7 @@ use Reconmap\Tasks\ItemProcessor;
 class QueueProcessor
 {
     public function __construct(private RedisServer $redis,
-                                private Logger $logger)
+                                private Logger      $logger)
     {
     }
 

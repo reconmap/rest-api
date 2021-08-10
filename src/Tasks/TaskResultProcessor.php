@@ -14,14 +14,14 @@ use Reconmap\Services\RedisServer;
 class TaskResultProcessor implements ItemProcessor
 {
     public function __construct(
-        private ApplicationConfig $config,
-        private Logger $logger,
-        private \mysqli $db,
-        private RedisServer $redis,
+        private ApplicationConfig       $config,
+        private Logger                  $logger,
+        private \mysqli                 $db,
+        private RedisServer             $redis,
         private VulnerabilityRepository $vulnerabilityRepository,
-        private TaskRepository $taskRepository,
-        private TargetRepository $targetRepository,
-        private ProcessorFactory $processorFactory)
+        private TaskRepository          $taskRepository,
+        private TargetRepository        $targetRepository,
+        private ProcessorFactory        $processorFactory)
     {
     }
 
@@ -30,14 +30,16 @@ class TaskResultProcessor implements ItemProcessor
         $path = $item->filePath;
 
         $task = $this->taskRepository->findById($item->taskId);
+        $commandShortName = $task['command_short_name'];
 
-        $processor = $this->processorFactory->createByCommandShortName($task['command_short_name']);
+        $processor = $this->processorFactory->createByCommandShortName($commandShortName);
         if ($processor) {
             $vulnerabilities = $processor->parseVulnerabilities($path);
             $numVulnerabilities = count($vulnerabilities);
             $this->logger->debug("Number of vulnerabilities in uploaded file: " . $numVulnerabilities);
 
             foreach ($vulnerabilities as $vulnerability) {
+                $vulnerability->tags = json_encode([$commandShortName]);
                 $vulnerability->project_id = $task['project_id'];
                 if (empty($vulnerability->risk)) {
                     $vulnerability->risk = 'medium';
@@ -48,7 +50,6 @@ class TaskResultProcessor implements ItemProcessor
                 if (!empty($vulnerability->host)) {
                     $target = $this->targetRepository->findByProjectIdAndName($task['project_id'], $vulnerability->host->name);
                     if ($target) {
-                        $this->logger->debug("Host found: " . $target->id);
                         $targetId = $target->id;
                     } else {
                         $target = new Target();
@@ -57,7 +58,7 @@ class TaskResultProcessor implements ItemProcessor
                         $target->kind = 'hostname';
 
                         $targetId = $this->targetRepository->insert($target);
-                        $this->logger->debug("Host created: " . $targetId);
+                        $this->logger->debug("New target added: " . $target->name);
                     }
                 }
 
@@ -69,15 +70,17 @@ class TaskResultProcessor implements ItemProcessor
                     $this->logger->error($e->getMessage());
                 }
             }
+
+            $this->redis->lPush("notifications:queue",
+                json_encode([
+                    'time' => date('H:i'),
+                    'title' => "$numVulnerabilities vulnerabilities have been found",
+                    'detail' => "(corresponding to '$commandShortName' results)",
+                    'entity' => 'vulnerabilities'
+                ])
+            );
         } else {
             $this->logger->warning("Task type has no processor: ${task['command_short_name']}");
         }
-
-        $this->redis->lPush("notifications:queue",
-            json_encode([
-                'title' => 'Task results processed.',
-                'detail' => date('h:i'),
-            ])
-        );
     }
 }

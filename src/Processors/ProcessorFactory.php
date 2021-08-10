@@ -18,6 +18,7 @@ class ProcessorFactory
             'nessus' => NessusProcessor::class,
             'burppro' => BurpProProcessor::class,
             'metasploit' => MetasploitProcessor::class,
+            'zap' => ZapResultsProcessor::class,
         ];
 
         if (array_key_exists($shortName, $processors)) {
