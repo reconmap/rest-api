@@ -27,6 +27,9 @@ class GetProjectsController extends Controller
 
             $searchCriteria->addCriterion('(p.name LIKE ? OR p.description LIKE ?)', [$keywordsLike, $keywordsLike]);
         }
+        if (isset($params['clientId'])) {
+            $searchCriteria->addCriterion('p.client_id = ?', [intval($params['clientId'])]);
+        }
         if (isset($params['status'])) {
             $archived = 'archived' === $params['status'];
             $searchCriteria->addCriterion('p.archived = ?', [$archived]);
