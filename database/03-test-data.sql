@@ -105,9 +105,9 @@ INSERT INTO project_user (project_id, user_id)
 VALUES (2, 1),
        (2, 2);
 
-INSERT INTO target (project_id, name, kind)
-VALUES (1, ' https://test.com ', 'url'),
-       (2, '127.0.0.1', 'hostname ');
+INSERT INTO target (project_id, name, kind, tags)
+VALUES (1, ' https://test.com ', 'url', NULL),
+       (2, '127.0.0.1', 'hostname', '["linux","dev-environment"]');
 
 INSERT INTO vulnerability (project_id, target_id, creator_uid, category_id, summary, risk, cvss_score)
 VALUES (2,
@@ -486,7 +486,7 @@ UPDATE vulnerability
 SET cvss_vector = 'CVSS:3.0/AV:P/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:H',
     status      = 'open',
     substatus   = 'reported',
-    tags		= '["test","tag"]';
+    tags        = '["test","tag"]';
 
 INSERT INTO command (creator_uid, short_name, description, docker_image, arguments, executable_type, output_filename,
                      more_info_url, tags)

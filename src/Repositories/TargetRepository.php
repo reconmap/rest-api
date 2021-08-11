@@ -9,6 +9,13 @@ use Reconmap\Services\RequestPaginator;
 
 class TargetRepository extends MysqlRepository implements Findable
 {
+    public const UPDATABLE_COLUMNS_TYPES = [
+        'project_id' => 'i',
+        'name' => 's',
+        'kind' => 's',
+        'tags' => 's',
+    ];
+
     public function findById(int $id): ?array
     {
         $queryBuilder = $this->getBaseSelectQueryBuilder();
@@ -74,8 +81,8 @@ class TargetRepository extends MysqlRepository implements Findable
 
     public function insert(Target $target): int
     {
-        $stmt = $this->db->prepare('INSERT INTO target (project_id, name, kind) VALUES (?, ?, ?)');
-        $stmt->bind_param('iss', $target->projectId, $target->name, $target->kind);
+        $stmt = $this->db->prepare('INSERT INTO target (project_id, name, kind, tags) VALUES (?, ?, ?, ?)');
+        $stmt->bind_param('isss', $target->projectId, $target->name, $target->kind, $target->tags);
         return $this->executeInsertStatement($stmt);
     }
 

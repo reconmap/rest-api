@@ -7,4 +7,5 @@ class Target
     public int $projectId;
     public string $name;
     public string $kind;
+    public ?string $tags;
 }

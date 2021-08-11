@@ -126,6 +126,7 @@ CREATE TABLE target
     update_ts  TIMESTAMP    NULL ON UPDATE CURRENT_TIMESTAMP,
     name       VARCHAR(200) NOT NULL,
     kind       ENUM ('hostname', 'ip_address', 'cidr_range', 'url', 'binary'),
+    tags       JSON         NULL,
 
     PRIMARY KEY (id),
     UNIQUE KEY (project_id, name)
@@ -166,7 +167,7 @@ CREATE TABLE vulnerability
     cvss_vector      VARCHAR(80)                                                                                        NULL,
     status           ENUM ('open', 'confirmed', 'resolved', 'closed')                                                   NOT NULL DEFAULT 'open',
     substatus        ENUM ('reported', 'unresolved', 'unexploited', 'exploited', 'remediated', 'mitigated', 'rejected') NULL     DEFAULT 'reported',
-    tags            JSON                   NULL,
+    tags             JSON                                                                                               NULL,
 
     PRIMARY KEY (id)
 ) ENGINE = InnoDB;
