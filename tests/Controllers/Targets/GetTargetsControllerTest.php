@@ -13,7 +13,7 @@ class GetTargetsControllerTest extends TestCase
         $mockParams = ['projectId' => 5];
 
         $mockRequest = $this->createMock(ServerRequestInterface::class);
-        $mockRequest->expects($this->once())
+        $mockRequest->expects($this->exactly(2))
             ->method('getQueryParams')
             ->willReturn($mockParams);
 
@@ -21,12 +21,17 @@ class GetTargetsControllerTest extends TestCase
 
         $mockTargetRepository = $this->createMock(TargetRepository::class);
         $mockTargetRepository->expects($this->once())
-            ->method('findByProjectId')
+            ->method('search')
             ->willReturn($expectedTarget);
+        $mockTargetRepository->expects($this->once())
+            ->method('countSearch')
+            ->willReturn(4);
 
         $controller = new GetTargetsController($mockTargetRepository);
-        $target = $controller($mockRequest);
+        $response = $controller($mockRequest);
 
-        $this->assertEquals($expectedTarget, $target);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(1, $response->getHeaderLine('X-Page-Count'));
+        $this->assertEquals('X-Page-Count', $response->getHeaderLine('Access-Control-Expose-Headers'));
     }
 }

@@ -15,12 +15,6 @@ class TargetRepositoryTest extends DatabaseTestCase
         $this->subject = new TargetRepository($db);
     }
 
-    public function testFindAllReturnsAllRecords()
-    {
-        $targets = $this->subject->findAll();
-        $this->assertCount(2, $targets);
-    }
-
     public function testInsert()
     {
         $target = new Target();

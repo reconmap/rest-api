@@ -15,27 +15,32 @@ use Reconmap\Repositories\VulnerabilityRepository;
 class ReportGenerator
 {
     public function __construct(
-        private ApplicationConfig $config,
-        private \mysqli $db,
-        private TemplateEngine $templateEngine)
+        private ProjectRepository             $projectRepository,
+        private ReportRepository              $reportRepository,
+        private ReportConfigurationRepository $reportConfigurationRepository,
+        private VulnerabilityRepository       $vulnerabilityRepository,
+        private OrganisationRepository        $organisationRepository,
+        private UserRepository                $userRepository,
+        private ClientRepository              $clientRepository,
+        private TaskRepository                $taskRepository,
+        private TargetRepository              $targetRepository,
+        private TemplateEngine                $templateEngine)
     {
     }
 
     public function generate(int $projectId): array
     {
-        $project = (new ProjectRepository($this->db))->findById($projectId);
+        $project = $this->projectRepository->findById($projectId);
 
-        $configurationRepository = new ReportConfigurationRepository($this->db);
-        $configuration = $configurationRepository->findByProjectId($projectId);
+        $configuration = $this->reportConfigurationRepository->findByProjectId($projectId);
 
-        $vulnerabilities = (new VulnerabilityRepository($this->db))
-            ->findByProjectId($projectId);
+        $vulnerabilities = $this->vulnerabilityRepository->findByProjectId($projectId);
 
-        $reports = (new ReportRepository($this->db))->findByProjectId($projectId);
+        $reports = $this->reportRepository->findByProjectId($projectId);
 
         $markdownParser = new \Parsedown();
 
-        $organisation = (new OrganisationRepository($this->db))->findRootOrganisation();
+        $organisation = $this->organisationRepository->findRootOrganisation();
 
         $vars = [
             'configuration' => $configuration,
@@ -44,9 +49,9 @@ class ReportGenerator
             'date' => date('Y-m-d'),
             'reports' => $reports,
             'markdownParser' => $markdownParser,
-            'client' => $project['client_id'] ? (new ClientRepository($this->db))->findById($project['client_id']) : null,
-            'targets' => (new TargetRepository($this->db))->findByProjectId($projectId),
-            'tasks' => (new TaskRepository($this->db))->findByProjectId($projectId),
+            'client' => $project['client_id'] ? $this->clientRepository->findById($project['client_id']) : null,
+            'targets' => $this->targetRepository->findByProjectId($projectId),
+            'tasks' => $this->taskRepository->findByProjectId($projectId),
             'vulnerabilities' => $vulnerabilities,
             'findingsOverview' => $this->createFindingsOverview($vulnerabilities),
         ];
@@ -56,7 +61,7 @@ class ReportGenerator
             $vars['version'] = $latestVersion['version_name'];
         }
 
-        $users = (new UserRepository($this->db))->findByProjectId($projectId);
+        $users = $this->userRepository->findByProjectId($projectId);
         foreach ($users as &$user) {
             $user['email_md5'] = md5($user['email']);
         }
