@@ -4,7 +4,7 @@ namespace Reconmap\Processors;
 
 use Reconmap\Models\Vulnerability;
 
-class ZapResultsProcessor extends AbstractCommandProcessor
+class ZapOutputProcessor extends AbstractCommandProcessor
 {
 
     public function parseVulnerabilities(string $path): array

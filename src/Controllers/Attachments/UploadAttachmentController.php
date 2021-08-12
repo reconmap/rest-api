@@ -11,8 +11,8 @@ use Reconmap\Services\AttachmentFilePath;
 
 class UploadAttachmentController extends Controller
 {
-    public function __construct(private AttachmentRepository $attachmentRepository,
-                                private AttachmentFilePath $attachmentFilePathService)
+    public function __construct(protected AttachmentRepository $attachmentRepository,
+                                protected AttachmentFilePath   $attachmentFilePathService)
     {
     }
 
@@ -34,13 +34,27 @@ class UploadAttachmentController extends Controller
         return ['success' => true];
     }
 
-    private function uploadAttachment(UploadedFileInterface $uploadedFile, string $parentType, int $parentId, int $userId)
+    /**
+     * @throws \Exception
+     */
+    protected function uploadAttachment(UploadedFileInterface $uploadedFile, string $parentType, int $parentId, int $userId): Attachment
     {
         $fileName = $this->attachmentFilePathService->generateFileName();
         $pathName = $this->attachmentFilePathService->generateFilePath($fileName);
+        $attachmentDir = $this->attachmentFilePathService->generateBasePath();
 
         if ($uploadedFile->getError() === UPLOAD_ERR_OK) {
-            $uploadedFile->moveTo($pathName);
+            if (!is_dir($attachmentDir)) {
+                throw new \Exception('The attachments directory is missing: ' . $attachmentDir);
+            }
+            if (!is_writeable($attachmentDir)) {
+                throw new \Exception('The attachments directory is not writeable: ' . $attachmentDir);
+            }
+            if (!file_exists($pathName) || is_writeable($pathName)) {
+                $uploadedFile->moveTo($pathName);
+            } else {
+                throw new \Exception('Attachment file cannot be saved to ' . $pathName);
+            }
         }
 
         $attachment = new Attachment();
@@ -53,6 +67,8 @@ class UploadAttachmentController extends Controller
         $attachment->file_size = filesize($pathName);
         $attachment->file_mimetype = mime_content_type($pathName);
 
-        $this->attachmentRepository->insert($attachment);
+        $attachment->id = $this->attachmentRepository->insert($attachment);
+
+        return $attachment;
     }
 }

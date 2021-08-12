@@ -12,7 +12,7 @@ class NessusProcessorTest extends TestCase
     {
         $mockLogger = $this->createMock(Logger::class);
 
-        $processor = new NessusProcessor($mockLogger);
+        $processor = new NessusOutputProcessor($mockLogger);
         $vulnerabilities = $processor->parseVulnerabilities(__DIR__ . '/nessus-2.xml');
         $this->assertCount(5, $vulnerabilities);
         $this->assertEquals('Protect your target with an IP filter.', $vulnerabilities[4]->solution);
@@ -22,7 +22,7 @@ class NessusProcessorTest extends TestCase
     {
         $mockLogger = $this->createMock(Logger::class);
 
-        $processor = new NessusProcessor($mockLogger);
+        $processor = new NessusOutputProcessor($mockLogger);
         $vulnerabilities = $processor->parseVulnerabilities(__DIR__ . '/nessus-1.xml');
 
         $this->assertCount(288, $vulnerabilities);

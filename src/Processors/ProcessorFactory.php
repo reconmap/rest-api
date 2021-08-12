@@ -12,17 +12,10 @@ class ProcessorFactory
 
     public function createByCommandShortName(string $shortName): ?VulnerabilityProcessor
     {
-        $processors = [
-            'nmap' => NmapResultsProcessor::class,
-            'sqlmap' => SqlmapProcessor::class,
-            'nessus' => NessusProcessor::class,
-            'burppro' => BurpProProcessor::class,
-            'metasploit' => MetasploitProcessor::class,
-            'zap' => ZapResultsProcessor::class,
-        ];
+        $className = 'Reconmap\\Processors\\' . ucfirst($shortName) . 'OutputProcessor';
 
-        if (array_key_exists($shortName, $processors)) {
-            return new $processors[$shortName]($this->logger);
+        if (class_exists($className)) {
+            return new $className($this->logger);
         }
 
         return null;

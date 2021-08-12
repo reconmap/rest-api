@@ -29,6 +29,9 @@ class UploadAttachmentControllerTest extends ControllerTestCase
         $mockAttachmentFilePath->expects($this->once())
             ->method('generateFilePath')
             ->willReturn(__FILE__);
+        $mockAttachmentFilePath->expects($this->once())
+            ->method('generateBasePath')
+            ->willReturn(__DIR__);
 
         $fakeUploadedFile = $this->createMock(UploadedFileInterface::class);
         $fakeUploadedFile->expects($this->exactly(2))

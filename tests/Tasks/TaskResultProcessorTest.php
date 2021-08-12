@@ -5,7 +5,7 @@ namespace Reconmap\Tasks;
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
 use Reconmap\Models\Vulnerability;
-use Reconmap\Processors\NmapResultsProcessor;
+use Reconmap\Processors\NmapOutputProcessor;
 use Reconmap\Processors\ProcessorFactory;
 use Reconmap\Repositories\TargetRepository;
 use Reconmap\Repositories\TaskRepository;
@@ -38,7 +38,7 @@ class TaskResultProcessorTest extends TestCase
         $mockVulnerability = new Vulnerability();
         $mockVulnerability->host = (object)['name' => 'new-host.local'];
 
-        $mockNmapResultProcessor = $this->createMock(NmapResultsProcessor::class);
+        $mockNmapResultProcessor = $this->createMock(NmapOutputProcessor::class);
         $mockNmapResultProcessor->expects($this->once())
             ->method('parseVulnerabilities')
             ->willReturn([$mockVulnerability]);

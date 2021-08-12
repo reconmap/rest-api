@@ -12,7 +12,7 @@ class BurpProProcessorTest extends TestCase
     {
         $mockLogger = $this->createMock(Logger::class);
 
-        $processor = new BurpProProcessor($mockLogger);
+        $processor = new BurpproOutputProcessor($mockLogger);
         $vulnerabilities = $processor->parseVulnerabilities(__DIR__ . '/burp-2.1.02.xml');
 
         $this->assertCount(17, $vulnerabilities);

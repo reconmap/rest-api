@@ -12,7 +12,7 @@ class MetasploitsProcessorTest extends TestCase
     {
         $mockLogger = $this->createMock(Logger::class);
 
-        $processor = new MetasploitProcessor($mockLogger);
+        $processor = new MetasploitOutputProcessor($mockLogger);
         $vulnerabilities = $processor->parseVulnerabilities(__DIR__ . '/metasploit.xml');
 
         $this->assertCount(2, $vulnerabilities);

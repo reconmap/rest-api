@@ -4,7 +4,7 @@ namespace Reconmap\Processors;
 
 use Reconmap\Models\Vulnerability;
 
-class NessusProcessor extends AbstractCommandProcessor
+class NucleiOutputProcessor extends AbstractCommandProcessor
 {
 
     public function parseVulnerabilities(string $path): array

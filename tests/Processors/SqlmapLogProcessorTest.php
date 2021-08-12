@@ -12,7 +12,7 @@ class SqlmapLogProcessorTest extends TestCase
     {
         $mockLogger = $this->createMock(Logger::class);
 
-        $processor = new SqlmapProcessor($mockLogger);
+        $processor = new SqlmapOutputProcessor($mockLogger);
         $vulnerabilities = $processor->parseVulnerabilities(__DIR__ . '/sqlmap-log-example.txt');
         $this->assertCount(1, $vulnerabilities);
         $this->assertEquals("SQL can be injected using parameter 'username (POST)'", $vulnerabilities[0]->description);
