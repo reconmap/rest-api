@@ -17,7 +17,7 @@ class ProcessorFactoryTest extends TestCase
 
     public function testInvalidCommand()
     {
-        $this->assertNull($this->processorFactory->createByCommandShortName('foobar'));
+        $this->assertNull($this->processorFactory->createFromOutputParserName('foobar'));
     }
 
     public function commandDataProvider(): array
@@ -38,6 +38,11 @@ class ProcessorFactoryTest extends TestCase
      */
     public function testNessusCommand(string $commandShortName, string $classFqn)
     {
-        $this->assertInstanceOf($classFqn, $this->processorFactory->createByCommandShortName($commandShortName));
+        $this->assertInstanceOf($classFqn, $this->processorFactory->createFromOutputParserName($commandShortName));
+    }
+
+    public function testGettingAll()
+    {
+        $this->assertTrue(in_array('nessus', array_column($this->processorFactory->getAll(), 'code')));
     }
 }

@@ -10,14 +10,29 @@ class ProcessorFactory
     {
     }
 
-    public function createByCommandShortName(string $shortName): ?VulnerabilityProcessor
+    public function createFromOutputParserName(string $outputParserName): ?VulnerabilityProcessor
     {
-        $className = 'Reconmap\\Processors\\' . ucfirst($shortName) . 'OutputProcessor';
+        $className = 'Reconmap\\Processors\\' . ucfirst($outputParserName) . 'OutputProcessor';
 
         if (class_exists($className)) {
             return new $className($this->logger);
         }
 
         return null;
+    }
+
+    public function getAll(): array
+    {
+        $currentDir = __DIR__;
+        $fileIterator = new \GlobIterator("$currentDir/*OutputProcessor.php");
+
+        $list = [];
+        foreach ($fileIterator as $file) {
+            $fileName = $file->getFileName();
+            $commandName = str_replace('OutputProcessor.php', '', $fileName);
+            $commandCode = strtolower($commandName);
+            $list[] = ['name' => $commandName, 'code' => $commandCode];
+        }
+        return $list;
     }
 }

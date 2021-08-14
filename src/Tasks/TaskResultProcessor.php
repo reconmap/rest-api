@@ -30,16 +30,16 @@ class TaskResultProcessor implements ItemProcessor
         $path = $item->filePath;
 
         $task = $this->taskRepository->findById($item->taskId);
-        $commandShortName = $task['command_short_name'];
+        $outputParserName = $task['output_parser'];
 
-        $processor = $this->processorFactory->createByCommandShortName($commandShortName);
+        $processor = $this->processorFactory->createFromOutputParserName($outputParserName);
         if ($processor) {
             $vulnerabilities = $processor->parseVulnerabilities($path);
             $numVulnerabilities = count($vulnerabilities);
             $this->logger->debug("Number of vulnerabilities in uploaded file: " . $numVulnerabilities);
 
             foreach ($vulnerabilities as $vulnerability) {
-                $vulnerability->tags = json_encode([$commandShortName]);
+                $vulnerability->tags = json_encode([$outputParserName]);
                 $vulnerability->project_id = $task['project_id'];
                 if (empty($vulnerability->risk)) {
                     $vulnerability->risk = 'medium';
@@ -75,7 +75,7 @@ class TaskResultProcessor implements ItemProcessor
                 json_encode([
                     'time' => date('H:i'),
                     'title' => "$numVulnerabilities vulnerabilities have been found",
-                    'detail' => "(corresponding to '$commandShortName' results)",
+                    'detail' => "(corresponding to '$outputParserName' results)",
                     'entity' => 'vulnerabilities'
                 ])
             );

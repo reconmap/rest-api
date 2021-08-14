@@ -9,8 +9,9 @@ use Reconmap\Repositories\QueryBuilders\SelectQueryBuilder;
 class CommandRepository extends MysqlRepository
 {
     public const UPDATABLE_COLUMNS_TYPES = [
-        'short_name' => 's',
+        'name' => 's',
         'description' => 's',
+        'output_parser' => 's',
         'docker_image' => 's',
         'executable_type' => 's',
         'executable_path' => 's',
@@ -57,7 +58,7 @@ SQL;
     {
         $selectQueryBuilder = $this->getBaseSelectQueryBuilder();
         $selectQueryBuilder->setLimit($limit);
-        $selectQueryBuilder->setWhere('c.short_name LIKE ? OR c.description LIKE ?');
+        $selectQueryBuilder->setWhere('c.name LIKE ? OR c.description LIKE ?');
         $sql = $selectQueryBuilder->toSql();
 
         $keywordsLike = "%$keywords%";
@@ -81,9 +82,9 @@ SQL;
     public function insert(Command|\stdClass $command): int
     {
         $insertStmt = new InsertQueryBuilder('command');
-        $insertStmt->setColumns('creator_uid, short_name, description, docker_image, arguments, executable_type, executable_path, output_filename, more_info_url, tags');
+        $insertStmt->setColumns('creator_uid, name, description, docker_image, arguments, executable_type, executable_path, output_filename, more_info_url, tags, output_parser');
         $stmt = $this->db->prepare($insertStmt->toSql());
-        $stmt->bind_param('isssssssss', $command->creator_uid, $command->short_name, $command->description, $command->docker_image, $command->arguments, $command->executable_type, $command->executable_path, $command->output_filename, $command->more_info_url, $command->tags);
+        $stmt->bind_param('issssssssss', $command->creator_uid, $command->short_name, $command->description, $command->docker_image, $command->arguments, $command->executable_type, $command->executable_path, $command->output_filename, $command->more_info_url, $command->tags, $command->output_parser);
         return $this->executeInsertStatement($stmt);
     }
 

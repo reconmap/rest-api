@@ -6,7 +6,8 @@ class Command
 {
     public ?int $id;
     public ?int $creator_uid;
-    public string $short_name;
+    public string $name;
+    public ?string $output_parser;
     public ?string $description;
     public ?string $executable_type;
     public ?string $executable_path;
