@@ -18,7 +18,8 @@ class CommandRepositoryTest extends DatabaseTestCase
     {
         $command = new Command();
         $command->creator_uid = 1;
-        $command->short_name = 'nmap';
+        $command->name = 'Nmap';
+        $command->output_parser = 'nmap';
         $command->executable_type = 'custom';
         $command->executable_path = 'nmap';
 
@@ -35,7 +36,7 @@ class CommandRepositoryTest extends DatabaseTestCase
     public function testFindById()
     {
         $command = $this->subject->findById(1);
-        $this->assertEquals('goohost', $command['short_name']);
+        $this->assertEquals('Goohost', $command['name']);
     }
 
     public function testFindByIdNotFound()

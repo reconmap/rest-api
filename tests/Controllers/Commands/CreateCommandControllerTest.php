@@ -12,7 +12,7 @@ class CreateCommandControllerTest extends TestCase
     public function testHappyPath()
     {
         $expectedCommand = new Command();
-        $expectedCommand->short_name = 'co_mmand';
+        $expectedCommand->name = 'co_mmand';
         $expectedCommand->creator_uid = 9;
 
         $mockProjectRepository = $this->createMock(CommandRepository::class);
@@ -28,7 +28,7 @@ class CreateCommandControllerTest extends TestCase
             ->willReturn(9);
         $mockRequest->expects($this->once())
             ->method('getBody')
-            ->willReturn('{"short_name": "co_mmand"}');
+            ->willReturn('{"name": "co_mmand"}');
 
         $controller = new CreateCommandController($mockProjectRepository);
         $response = $controller($mockRequest);

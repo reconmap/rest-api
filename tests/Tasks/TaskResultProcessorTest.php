@@ -28,7 +28,7 @@ class TaskResultProcessorTest extends TestCase
         $mockTaskRepository->expects($this->once())
             ->method('findById')
             ->with(4)
-            ->willReturn(['command_short_name' => 'nmap', 'project_id' => 5]);
+            ->willReturn(['command_name' => 'Nmap', 'output_parser' => 'nmap', 'project_id' => 5]);
         $mockTargetRepository = $this->createMock(TargetRepository::class);
         $mockTargetRepository->expects($this->once())
             ->method('insert');
@@ -44,7 +44,7 @@ class TaskResultProcessorTest extends TestCase
             ->willReturn([$mockVulnerability]);
 
         $mockProcessorFactory->expects($this->once())
-            ->method('createByCommandShortName')
+            ->method('createFromOutputParserName')
             ->with('nmap')
             ->willReturn($mockNmapResultProcessor);
 

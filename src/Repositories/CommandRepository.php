@@ -84,7 +84,7 @@ SQL;
         $insertStmt = new InsertQueryBuilder('command');
         $insertStmt->setColumns('creator_uid, name, description, docker_image, arguments, executable_type, executable_path, output_filename, more_info_url, tags, output_parser');
         $stmt = $this->db->prepare($insertStmt->toSql());
-        $stmt->bind_param('issssssssss', $command->creator_uid, $command->short_name, $command->description, $command->docker_image, $command->arguments, $command->executable_type, $command->executable_path, $command->output_filename, $command->more_info_url, $command->tags, $command->output_parser);
+        $stmt->bind_param('issssssssss', $command->creator_uid, $command->name, $command->description, $command->docker_image, $command->arguments, $command->executable_type, $command->executable_path, $command->output_filename, $command->more_info_url, $command->tags, $command->output_parser);
         return $this->executeInsertStatement($stmt);
     }
 
