@@ -5,7 +5,7 @@ namespace Reconmap\Repositories\Importers;
 use Reconmap\Models\Command;
 use Reconmap\Repositories\CommandRepository;
 
-class CommandsImporter
+class CommandsImporter implements Importable
 {
     public function __construct(private CommandRepository $repository)
     {

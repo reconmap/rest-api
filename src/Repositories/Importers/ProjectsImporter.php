@@ -8,11 +8,11 @@ use Reconmap\Repositories\ProjectRepository;
 use Reconmap\Repositories\ProjectUserRepository;
 use Reconmap\Repositories\TaskRepository;
 
-class ProjectsImporter
+class ProjectsImporter implements Importable
 {
-    public function __construct(private ProjectRepository $projectRepository,
+    public function __construct(private ProjectRepository     $projectRepository,
                                 private ProjectUserRepository $projectUserRepository,
-                                private TaskRepository $taskRepository)
+                                private TaskRepository        $taskRepository)
     {
     }
 

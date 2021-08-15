@@ -4,7 +4,7 @@ namespace Reconmap\Repositories\Importers;
 
 use Reconmap\Repositories\DocumentRepository;
 
-class DocumentsImporter
+class DocumentsImporter implements Importable
 {
     public function __construct(private DocumentRepository $repository)
     {

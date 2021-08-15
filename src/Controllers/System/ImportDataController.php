@@ -7,7 +7,9 @@ use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditLogAction;
 use Reconmap\Repositories\Importers\CommandsImporter;
 use Reconmap\Repositories\Importers\DocumentsImporter;
+use Reconmap\Repositories\Importers\Importable;
 use Reconmap\Repositories\Importers\ProjectsImporter;
+use Reconmap\Repositories\Importers\VulnerabilitiesImporter;
 use Reconmap\Services\AuditLogService;
 
 class ImportDataController extends Controller
@@ -28,8 +30,11 @@ class ImportDataController extends Controller
 
         $importables = [
             'projects' => ProjectsImporter::class,
+            'project_templates' => ProjectsImporter::class,
             'commands' => CommandsImporter::class,
-            'documents' => DocumentsImporter::class
+            'documents' => DocumentsImporter::class,
+            'vulnerabilities' => VulnerabilitiesImporter::class,
+            'vulnerability_templates' => VulnerabilitiesImporter::class,
         ];
 
         $json = json_decode($importJsonString);
@@ -38,6 +43,7 @@ class ImportDataController extends Controller
         } else {
             foreach ($json as $entityType => $entities) {
                 if (isset($importables[$entityType])) {
+                    /** @var Importable $importer */
                     $importer = $this->container->get($importables[$entityType]);
                     $response[] = array_merge(['name' => $entityType], $importer->import($userId, $entities));
                 } else {

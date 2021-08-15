@@ -6,10 +6,24 @@ use PHPUnit\Framework\TestCase;
 
 class ProjectSearchCriteriaTest extends TestCase
 {
-    public function testBasics()
+    private ProjectSearchCriteria $searchCriteria;
+
+    protected function setUp(): void
     {
-        $subject = new ProjectSearchCriteria();
-        $subject->addIsTemplateCriterion();
-        $this->assertEquals(['p.is_template = ?'], $subject->getCriteria());
+        $this->searchCriteria = new ProjectSearchCriteria();
+    }
+
+    public function testAddIsTemplateCriterion()
+    {
+        $this->searchCriteria->addIsTemplateCriterion();
+        $this->assertEquals(['p.is_template = ?'], $this->searchCriteria->getCriteria());
+        $this->assertEquals([1], $this->searchCriteria->getValues());
+    }
+
+    public function testAddIsNotTemplateCriterion()
+    {
+        $this->searchCriteria->addIsNotTemplateCriterion();
+        $this->assertEquals(['p.is_template = ?'], $this->searchCriteria->getCriteria());
+        $this->assertEquals([0], $this->searchCriteria->getValues());
     }
 }
