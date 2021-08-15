@@ -22,15 +22,6 @@ class ProjectRepository extends MysqlRepository
         'archived' => 'i'
     ];
 
-    public function findAll(): array
-    {
-        $queryBuilder = $this->getBaseSelectQueryBuilder();
-        $queryBuilder->setLimit('20');
-
-        $result = $this->db->query($queryBuilder->toSql());
-        return $result->fetch_all(MYSQLI_ASSOC);
-    }
-
     public function isVisibleToUser(int $projectId, int $userId): bool
     {
         $sql = <<<SQL

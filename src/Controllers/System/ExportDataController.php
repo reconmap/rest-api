@@ -12,6 +12,7 @@ use Reconmap\Repositories\Exporters\AuditLogExporter;
 use Reconmap\Repositories\Exporters\ClientsExporter;
 use Reconmap\Repositories\Exporters\CommandsExporter;
 use Reconmap\Repositories\Exporters\DocumentsExporter;
+use Reconmap\Repositories\Exporters\Exportable;
 use Reconmap\Repositories\Exporters\ProjectsExporter;
 use Reconmap\Repositories\Exporters\TasksExporter;
 use Reconmap\Repositories\Exporters\UsersExporter;
@@ -39,9 +40,11 @@ class ExportDataController extends Controller
             'commands' => CommandsExporter::class,
             'documents' => DocumentsExporter::class,
             'projects' => ProjectsExporter::class,
+            'project_templates' => ProjectsExporter::class,
             'tasks' => TasksExporter::class,
             'users' => UsersExporter::class,
-            'vulnerabilities' => VulnerabilitiesExporter::class
+            'vulnerabilities' => VulnerabilitiesExporter::class,
+            'vulnerability_templates' => VulnerabilitiesExporter::class,
         ];
 
         $body = new CallbackStream(function () use ($exportables, $entities) {
@@ -51,8 +54,9 @@ class ExportDataController extends Controller
 
             foreach ($exportables as $exportableKey => $exportable) {
                 if (in_array($exportableKey, $entities)) {
+                    /** @var Exportable $exporter */
                     $exporter = $this->container->get($exportable);
-                    $data[$exportableKey] = $exporter->export();
+                    $data[$exportableKey] = $exporter->export($exportableKey);
                 }
             }
 

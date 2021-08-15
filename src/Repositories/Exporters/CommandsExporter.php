@@ -4,13 +4,13 @@ namespace Reconmap\Repositories\Exporters;
 
 use Reconmap\Repositories\CommandRepository;
 
-class CommandsExporter
+class CommandsExporter implements Exportable
 {
     public function __construct(private CommandRepository $repository)
     {
     }
 
-    public function export(): array
+    public function export(string $entityType): array
     {
         return $this->repository->findAll();
     }

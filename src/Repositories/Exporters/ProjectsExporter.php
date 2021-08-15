@@ -3,15 +3,22 @@
 namespace Reconmap\Repositories\Exporters;
 
 use Reconmap\Repositories\ProjectRepository;
+use Reconmap\Repositories\SearchCriterias\ProjectSearchCriteria;
 
-class ProjectsExporter
+class ProjectsExporter implements Exportable
 {
     public function __construct(private ProjectRepository $repository)
     {
     }
 
-    public function export(): array
+    public function export(string $entityType): array
     {
-        return $this->repository->findAll();
+        $searchCriteria = new ProjectSearchCriteria();
+        if ('projects' === $entityType) {
+            $searchCriteria->addIsNotTemplateCriterion();
+        } elseif ('project_templates' === $entityType) {
+            $searchCriteria->addIsTemplateCriterion();
+        }
+        return $this->repository->search($searchCriteria);
     }
 }

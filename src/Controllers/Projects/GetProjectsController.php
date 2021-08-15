@@ -5,7 +5,7 @@ namespace Reconmap\Controllers\Projects;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\ProjectRepository;
-use Reconmap\Repositories\QueryBuilders\SearchCriteria;
+use Reconmap\Repositories\SearchCriterias\ProjectSearchCriteria;
 use Reconmap\Services\RequestPaginator;
 
 class GetProjectsController extends Controller
@@ -20,7 +20,7 @@ class GetProjectsController extends Controller
 
         $user = $this->getUserFromRequest($request);
 
-        $searchCriteria = new SearchCriteria();
+        $searchCriteria = new ProjectSearchCriteria();
         if (isset($params['keywords'])) {
             $keywords = $params['keywords'];
             $keywordsLike = "%$keywords%";
@@ -35,9 +35,9 @@ class GetProjectsController extends Controller
             $searchCriteria->addCriterion('p.archived = ?', [$archived]);
         }
         if (isset($params['isTemplate'])) {
-            $searchCriteria->addCriterion('p.is_template = ?', [(int)$params['isTemplate']]);
+            $searchCriteria->addTemplateCriterion(intval($params['isTemplate']));
         } else {
-            $searchCriteria->addCriterion('p.is_template = 0');
+            $searchCriteria->addIsNotTemplateCriterion();
         }
 
         if (!$user->isAdministrator()) {

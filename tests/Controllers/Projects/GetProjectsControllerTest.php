@@ -5,7 +5,7 @@ namespace Reconmap\Controllers\Projects;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Repositories\ProjectRepository;
-use Reconmap\Repositories\QueryBuilders\SearchCriteria;
+use Reconmap\Repositories\SearchCriterias\ProjectSearchCriteria;
 
 class GetProjectsControllerTest extends TestCase
 {
@@ -22,9 +22,9 @@ class GetProjectsControllerTest extends TestCase
             ->withConsecutive(['userId'], ['role'])
             ->willReturnOnConsecutiveCalls(9, 'administrator');
 
-        $searchCriteria = new SearchCriteria();
+        $searchCriteria = new ProjectSearchCriteria();
         $searchCriteria->addCriterion('p.archived = ?', [true]);
-        $searchCriteria->addCriterion('p.is_template = 0');
+        $searchCriteria->addCriterion('p.is_template = ?', [0]);
 
         $mockRepository = $this->createMock(ProjectRepository::class);
         $mockRepository->expects($this->once())

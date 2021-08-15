@@ -16,12 +16,6 @@ class ProjectRepositoryTest extends DatabaseTestCase
         $this->subject = new ProjectRepository($db);
     }
 
-    public function testFindAll()
-    {
-        $projects = $this->subject->findAll();
-        $this->assertCount(4, $projects);
-    }
-
     public function testFindById()
     {
         $expectedProject = [

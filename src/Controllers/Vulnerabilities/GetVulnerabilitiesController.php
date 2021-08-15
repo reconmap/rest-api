@@ -6,7 +6,7 @@ use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Repositories\QueryBuilders\SearchCriteria;
+use Reconmap\Repositories\SearchCriterias\VulnerabilitySearchCriteria;
 use Reconmap\Repositories\VulnerabilityRepository;
 use Reconmap\Repositories\VulnerabilityStatsRepository;
 use Reconmap\Services\RequestPaginator;
@@ -24,7 +24,7 @@ class GetVulnerabilitiesController extends Controller
     {
         $params = $request->getQueryParams();
 
-        $searchCriteria = new SearchCriteria();
+        $searchCriteria = new VulnerabilitySearchCriteria();
 
         if (isset($params['keywords'])) {
             $keywords = $params['keywords'];
@@ -37,7 +37,7 @@ class GetVulnerabilitiesController extends Controller
             $searchCriteria->addCriterion('v.target_id = ?', [$targetId]);
         }
         if (isset($params['isTemplate'])) {
-            $searchCriteria->addCriterion('v.is_template = ?', [intval($params['isTemplate'])]);
+            $searchCriteria->addTemplateCriterion(intval($params['isTemplate']));
         }
 
         $paginator = new RequestPaginator($request);
