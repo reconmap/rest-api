@@ -27,10 +27,7 @@ class GetVulnerabilitiesController extends Controller
         $searchCriteria = new VulnerabilitySearchCriteria();
 
         if (isset($params['keywords'])) {
-            $keywords = $params['keywords'];
-            $keywordsLike = "%$keywords%";
-
-            $searchCriteria->addCriterion('(v.summary LIKE ? OR v.description LIKE ?)', [$keywordsLike, $keywordsLike]);
+            $searchCriteria->addKeywordsCriterion($params['keywords']);
         }
         if (isset($params['targetId'])) {
             $targetId = (int)$params['targetId'];

@@ -4,7 +4,9 @@ namespace Reconmap\Repositories;
 
 use Reconmap\Models\Command;
 use Reconmap\Repositories\QueryBuilders\InsertQueryBuilder;
+use Reconmap\Repositories\QueryBuilders\SearchCriteria;
 use Reconmap\Repositories\QueryBuilders\SelectQueryBuilder;
+use Reconmap\Services\RequestPaginator;
 
 class CommandRepository extends MysqlRepository
 {
@@ -44,29 +46,19 @@ SQL;
         return $command;
     }
 
-    public function findAll(int $limit = 20): array
+    public function findAll(): array
     {
         $selectQueryBuilder = $this->getBaseSelectQueryBuilder();
-        $selectQueryBuilder->setLimit($limit);
         $sql = $selectQueryBuilder->toSql();
 
         $result = $this->db->query($sql);
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
-    public function findByKeywords(string $keywords, int $limit = 20): array
+    public function search(SearchCriteria $searchCriteria, ?RequestPaginator $paginator = null): array
     {
-        $selectQueryBuilder = $this->getBaseSelectQueryBuilder();
-        $selectQueryBuilder->setLimit($limit);
-        $selectQueryBuilder->setWhere('c.name LIKE ? OR c.description LIKE ?');
-        $sql = $selectQueryBuilder->toSql();
-
-        $keywordsLike = "%$keywords%";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bind_param('ss', $keywordsLike, $keywordsLike);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        return $result->fetch_all(MYSQLI_ASSOC);
+        $queryBuilder = $this->getBaseSelectQueryBuilder();
+        return $this->searchAll($queryBuilder, $searchCriteria, $paginator);
     }
 
     private function getBaseSelectQueryBuilder(): SelectQueryBuilder

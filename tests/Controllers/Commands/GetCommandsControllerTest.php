@@ -5,23 +5,30 @@ namespace Reconmap\Controllers\Commands;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Repositories\CommandRepository;
+use Reconmap\Repositories\SearchCriterias\CommandSearchCriteria;
+use Reconmap\Services\RequestPaginator;
 
 class GetCommandsControllerTest extends TestCase
 {
-    public function testHappyPath()
+    public function testGetCommandsByKeywords()
     {
         $mockRequest = $this->createMock(ServerRequestInterface::class);
-        $mockRequest->expects($this->once())
+        $mockRequest->expects($this->exactly(2))
             ->method('getQueryParams')
             ->willReturn(['limit' => 5, 'keywords' => 'foo']);
 
         $mockRepository = $this->createMock(CommandRepository::class);
         $mockRepository->expects($this->once())
-            ->method('findByKeywords')
-            ->with('foo', 5)
+            ->method('search')
+            ->with($this->isInstanceOf(CommandSearchCriteria::class), $this->isInstanceOf(RequestPaginator::class))
             ->willReturn([]);
 
-        $controller = new GetCommandsController($mockRepository);
+        $mockSearchCriteria = $this->createMock(CommandSearchCriteria::class);
+        $mockSearchCriteria->expects($this->once())
+            ->method('addKeywordsCriterion')
+            ->with('foo');
+
+        $controller = new GetCommandsController($mockRepository, $mockSearchCriteria);
         $response = $controller($mockRequest);
 
         $this->assertEquals([], $response);
