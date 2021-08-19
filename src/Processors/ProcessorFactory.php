@@ -10,7 +10,7 @@ class ProcessorFactory
     {
     }
 
-    public function createFromOutputParserName(string $outputParserName): ?VulnerabilityProcessor
+    public function createFromOutputParserName(string $outputParserName): ?AbstractCommandParser
     {
         $className = 'Reconmap\\Processors\\' . ucfirst($outputParserName) . 'OutputProcessor';
 

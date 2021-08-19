@@ -58,6 +58,7 @@ SQL;
     public function search(SearchCriteria $searchCriteria, ?RequestPaginator $paginator = null): array
     {
         $queryBuilder = $this->getBaseSelectQueryBuilder();
+        $queryBuilder->setOrderBy('c.name ASC');
         return $this->searchAll($queryBuilder, $searchCriteria, $paginator);
     }
 

@@ -4,47 +4,47 @@ namespace Reconmap\Processors;
 
 use Reconmap\Models\Vulnerability;
 
-class NucleiOutputProcessor extends AbstractCommandProcessor
+class NucleiOutputProcessor extends AbstractCommandParser implements VulnerabilityParser
 {
 
     public function parseVulnerabilities(string $path): array
     {
         $vulnerabilities = [];
 
-        $xml = simplexml_load_file($path);
-
-        foreach ($xml->Report->ReportHost as $rawHost) {
+        $lines = file($path);
+        foreach ($lines as $line) {
+            /*
+             {
+            "templateID":"robots-txt",
+            "info":{
+                "name":"robots.txt file",
+                "author":"CasperGN",
+                "severity":"info",
+                "tags":"misc,generic"
+            },
+            "type":"http",
+            "host":"https://reconmap.com",
+            "matched":"https://reconmap.com/robots.txt",
+            "ip":"188.166.137.55",
+            "timestamp":"2021-08-19T21:16:47.969895638Z"
+            }
+             */
+            $json = json_decode($line);
             $host = [
-                'name' => (string)$rawHost['name']
+                'name' => $json->host
             ];
 
-            foreach ($rawHost->ReportItem as $rawVulnerability) {
-                $pluginName = (string)$rawVulnerability->plugin_name;
-                if ('Nessus Scan Information' === $pluginName) continue;
+            $vulnerability = new Vulnerability();
+            $vulnerability->summary = $json->info->name;
+            $vulnerability->description = $line;
+            $vulnerability->tags = explode(',', $json->info->tags);
+            $vulnerability->severity = $json->info->severity;
 
-                $solution = (string)$rawVulnerability->solution;
-                if ('n/a' === $solution) $solution = null;
+            // Dynamic props
+            $vulnerability->host = (object)$host;
+            $vulnerability->severity = (string)$json->info->severity;
 
-                $risk = strtolower((string)$rawVulnerability->risk_factor);
-
-                $vulnerability = new Vulnerability();
-                $vulnerability->summary = (string)$rawVulnerability->synopsis;
-                $vulnerability->description = preg_replace('/^ +/', '', (string)$rawVulnerability->description);
-                $vulnerability->risk = $risk;
-                $vulnerability->solution = $solution;
-                // Dynamic props
-                $vulnerability->host = (object)$host;
-                $vulnerability->severity = (string)$rawVulnerability['severity'];
-
-                if (isset($rawVulnerability->cvss_base_score)) {
-                    $vulnerability->cvss_score = (float)$rawVulnerability->cvss_base_score;
-                }
-                if (isset($rawVulnerability->cvss_vector)) {
-                    $vulnerability->cvss_vector = (string)$rawVulnerability->cvss_vector;
-                }
-
-                $vulnerabilities[] = $vulnerability;
-            }
+            $vulnerabilities[] = $vulnerability;
         }
 
         return $vulnerabilities;

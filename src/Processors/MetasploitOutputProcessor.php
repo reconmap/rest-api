@@ -4,7 +4,7 @@ namespace Reconmap\Processors;
 
 use Reconmap\Models\Vulnerability;
 
-class MetasploitOutputProcessor extends AbstractCommandProcessor
+class MetasploitOutputProcessor extends AbstractCommandParser implements VulnerabilityParser
 {
 
     public function parseVulnerabilities(string $path): array

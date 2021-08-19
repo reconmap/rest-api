@@ -4,7 +4,9 @@ namespace Reconmap\Tasks;
 
 use Monolog\Logger;
 use Reconmap\Models\Target;
+use Reconmap\Processors\HostParser;
 use Reconmap\Processors\ProcessorFactory;
+use Reconmap\Processors\VulnerabilityParser;
 use Reconmap\Repositories\TargetRepository;
 use Reconmap\Repositories\TaskRepository;
 use Reconmap\Repositories\VulnerabilityRepository;
@@ -34,53 +36,84 @@ class TaskResultProcessor implements ItemProcessor
 
         $processor = $this->processorFactory->createFromOutputParserName($outputParserName);
         if ($processor) {
-            $vulnerabilities = $processor->parseVulnerabilities($path);
-            $numVulnerabilities = count($vulnerabilities);
-            $this->logger->debug("Number of vulnerabilities in uploaded file: " . $numVulnerabilities);
-
-            foreach ($vulnerabilities as $vulnerability) {
-                $vulnerability->tags = json_encode([$outputParserName]);
-                $vulnerability->project_id = $task['project_id'];
-                if (empty($vulnerability->risk)) {
-                    $vulnerability->risk = 'medium';
+            if ($processor instanceof HostParser) {
+                $hosts = $processor->parseHost($path);
+                foreach ($hosts as $host) {
+                    $this->findOrCreateHost($task['project_id'], $host->name, $outputParserName);
                 }
-                $vulnerability->creator_uid = $item->userId;
+                $numHosts = count($hosts);
 
-                $targetId = null;
-                if (!empty($vulnerability->host)) {
-                    $target = $this->targetRepository->findByProjectIdAndName($task['project_id'], $vulnerability->host->name);
-                    if ($target) {
-                        $targetId = $target->id;
+                $this->redis->lPush("notifications:queue",
+                    json_encode([
+                        'time' => date('H:i'),
+                        'title' => "$numHosts hosts have been found",
+                        'detail' => "(corresponding to '$outputParserName' results)",
+                        'entity' => 'vulnerabilities'
+                    ])
+                );
+            }
+            if ($processor instanceof VulnerabilityParser) {
+                $vulnerabilities = $processor->parseVulnerabilities($path);
+                $numVulnerabilities = count($vulnerabilities);
+                $this->logger->debug("Number of vulnerabilities in uploaded file: " . $numVulnerabilities);
+
+                foreach ($vulnerabilities as $vulnerability) {
+                    if (is_array($vulnerability->tags)) {
+                        $vulnerability->tags[] = $outputParserName;
                     } else {
-                        $target = new Target();
-                        $target->projectId = $task['project_id'];
-                        $target->name = $vulnerability->host->name;
-                        $target->kind = 'hostname';
+                        $vulnerability->tags = [$outputParserName];
+                    }
+                    $vulnerability->tags = json_encode($vulnerability->tags);
+                    $vulnerability->project_id = $task['project_id'];
+                    if (empty($vulnerability->risk)) {
+                        $vulnerability->risk = 'medium';
+                    }
+                    $vulnerability->creator_uid = $item->userId;
 
-                        $targetId = $this->targetRepository->insert($target);
-                        $this->logger->debug("New target added: " . $target->name);
+                    $targetId = null;
+                    if (!empty($vulnerability->host)) {
+                        $targetId = $this->findOrCreateHost($task['project_id'], $vulnerability->host->name, $outputParserName);
+                    }
+
+                    $vulnerability->target_id = $targetId;
+
+                    try {
+                        $this->vulnerabilityRepository->insert($vulnerability);
+                    } catch (\Exception $e) {
+                        $this->logger->error($e->getMessage());
                     }
                 }
 
-                $vulnerability->target_id = $targetId;
-
-                try {
-                    $this->vulnerabilityRepository->insert($vulnerability);
-                } catch (\Exception $e) {
-                    $this->logger->error($e->getMessage());
-                }
+                $this->redis->lPush("notifications:queue",
+                    json_encode([
+                        'time' => date('H:i'),
+                        'title' => "$numVulnerabilities vulnerabilities have been found",
+                        'detail' => "(corresponding to '$outputParserName' results)",
+                        'entity' => 'vulnerabilities'
+                    ])
+                );
             }
-
-            $this->redis->lPush("notifications:queue",
-                json_encode([
-                    'time' => date('H:i'),
-                    'title' => "$numVulnerabilities vulnerabilities have been found",
-                    'detail' => "(corresponding to '$outputParserName' results)",
-                    'entity' => 'vulnerabilities'
-                ])
-            );
         } else {
             $this->logger->warning("Task type has no processor: ${task['command_short_name']}");
         }
+    }
+
+    private function findOrCreateHost(int $projectId, string $hostName, string $parserName): int
+    {
+        $target = $this->targetRepository->findByProjectIdAndName($projectId, $hostName);
+        if ($target) {
+            return $target->id;
+        }
+
+        $target = new Target();
+        $target->tags = json_encode([$parserName]);
+        $target->projectId = $projectId;
+        $target->name = $hostName;
+        $target->kind = 'hostname';
+
+        $targetId = $this->targetRepository->insert($target);
+        $this->logger->debug("New target added: " . $target->name);
+
+        return $targetId;
     }
 }

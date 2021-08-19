@@ -4,7 +4,7 @@ namespace Reconmap\Processors;
 
 use Reconmap\Models\Vulnerability;
 
-class BurpproOutputProcessor extends AbstractCommandProcessor
+class BurpproOutputProcessor extends AbstractCommandParser implements VulnerabilityParser
 {
     public function parseVulnerabilities(string $path): array
     {

@@ -4,7 +4,7 @@ namespace Reconmap\Processors;
 
 use Monolog\Logger;
 
-abstract class AbstractCommandProcessor implements VulnerabilityProcessor
+abstract class AbstractCommandParser
 {
     public function __construct(protected Logger $logger)
     {
