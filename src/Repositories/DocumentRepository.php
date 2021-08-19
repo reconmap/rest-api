@@ -37,7 +37,9 @@ class DocumentRepository extends MysqlRepository
 
     public function findById(int $id): ?array
     {
-        $stmt = $this->db->prepare('SELECT * FROM document WHERE id = ?');
+        $queryBuilder = $this->getBaseSelectQueryBuilder();
+        $queryBuilder->setWhere('n.id = ?');
+        $stmt = $this->db->prepare($queryBuilder->toSql());
         $stmt->bind_param('i', $id);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -71,7 +73,8 @@ class DocumentRepository extends MysqlRepository
 
     public function findAll(): array
     {
-        $resultSet = $this->db->query('SELECT * FROM document');
+        $sql = $this->getBaseSelectQueryBuilder()->toSql();
+        $resultSet = $this->db->query($sql);
         return $resultSet->fetch_all(MYSQLI_ASSOC);
     }
 
