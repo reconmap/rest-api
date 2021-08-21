@@ -1,6 +1,5 @@
 env:
   global:
-    - CC_TEST_REPORTER_ID=8e25b4cbf8f24abb51f638946ee8718984be0f35a56081596253a33a859ca5cb
     - CODECOV_TOKEN=8fdec8fb-4484-44d9-b359-31857a4d8bb9
     - DOCKER_COMPOSE_VERSION=1.26.2
 
@@ -12,9 +11,6 @@ before_install:
   - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
   - chmod +x docker-compose
   - sudo mv docker-compose /usr/local/bin
-  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-  - chmod +x ./cc-test-reporter
-  - ./cc-test-reporter before-build
   - cp config-template.json config.json
   - make
 
@@ -23,7 +19,7 @@ script:
   - make security-tests
 
 after_script:
-  - pushd tests; ../cc-test-reporter after-build -t clover --prefix /var/www/webapp --exit-code $TRAVIS_TEST_RESULT; popd
+  - echo after script 
 
 after_success:
   - bash <(curl -s https://codecov.io/bash) -f tests/clover.xml
