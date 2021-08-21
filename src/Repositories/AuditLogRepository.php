@@ -16,8 +16,8 @@ class AuditLogRepository extends MysqlRepository
         $stmt = $this->db->prepare($queryBuilder->toSql());
         $stmt->bind_param('ii', $limitOffset, $limitPerPage);
         $stmt->execute();
-        $rs = $stmt->get_result();
-        return $rs->fetch_all(MYSQLI_ASSOC);
+        $result = $stmt->get_result();
+        return $result->fetch_all(MYSQLI_ASSOC);
     }
 
     public function countAll(): int
@@ -30,8 +30,8 @@ class AuditLogRepository extends MysqlRepository
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
-        $rs = $stmt->get_result();
-        $row = $rs->fetch_assoc();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
         return (int)$row['total'];
     }
 
@@ -44,8 +44,8 @@ class AuditLogRepository extends MysqlRepository
         $stmt = $this->db->prepare($queryBuilder->toSql());
         $stmt->bind_param('i', $userId);
         $stmt->execute();
-        $rs = $stmt->get_result();
-        return $rs->fetch_all(MYSQLI_ASSOC);
+        $result = $stmt->get_result();
+        return $result->fetch_all(MYSQLI_ASSOC);
     }
 
     public function findCountByDayStats(): array
@@ -71,7 +71,7 @@ class AuditLogRepository extends MysqlRepository
     private function getBaseSelectQueryBuilder(): SelectQueryBuilder
     {
         $queryBuilder = new SelectQueryBuilder('audit_log al');
-        $queryBuilder->setColumns('al.insert_ts, al.user_agent, INET_NTOA(al.client_ip) AS client_ip, al.action, al.object,
+        $queryBuilder->setColumns('al.id, al.insert_ts, al.user_agent, INET_NTOA(al.client_ip) AS client_ip, al.action, al.object,
                u.id AS user_id, u.username AS user_name, COALESCE(u.role, \'system\') AS user_role');
         $queryBuilder->addJoin('LEFT JOIN user u ON (u.id = al.user_id)');
         $queryBuilder->setOrderBy('al.insert_ts DESC');
