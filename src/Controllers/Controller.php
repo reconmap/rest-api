@@ -33,19 +33,16 @@ abstract class Controller implements ContainerConsumer
         return json_decode((string)$request->getBody());
     }
 
-    public function getJsonBodyDecodedAsClass(ServerRequestInterface $request, object $instance): object
+    public function getJsonBodyDecodedAsClass(ServerRequestInterface $request, object $instance, bool $strictNullTypes = true): object
     {
-        return (new \JsonMapper())->map($this->getJsonBodyDecoded($request), $instance);
+        $jsonMapper = new \JsonMapper();
+        $jsonMapper->bStrictNullTypes = $strictNullTypes;
+        return $jsonMapper->map($this->getJsonBodyDecoded($request), $instance);
     }
 
     public function getJsonBodyDecodedAsArray(ServerRequestInterface $request): array
     {
         return json_decode((string)$request->getBody(), true);
-    }
-
-    protected function getIntQueryParam(array $queryParams, string $name, int $default = 0): int
-    {
-        return isset($queryParams[$name]) ? intval($queryParams[$name]) : $default;
     }
 
     protected function createStatusCreatedResponse(string|array|object $body): ResponseInterface
