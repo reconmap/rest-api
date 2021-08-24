@@ -3,10 +3,10 @@ openapi: 3.0.3
 info:
   title: Reconmap API
   description: Reconmap API documentation
-  version: 0.9.0
+  version: 0.9.5
 
 servers:
-  - url: 'http://localhost:3000'
+  - url: 'http://localhost:3001'
   - url: 'https://api.reconmap.org'
 
 security:
@@ -509,6 +509,17 @@ paths:
 
   /system/usage:
     get:
+      tags:
+        - System
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+
+  /system/health:
+    get:
+      description: Returns information about the health of the system.
       tags:
         - System
       security:
