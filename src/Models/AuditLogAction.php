@@ -3,12 +3,13 @@
 namespace Reconmap\Models;
 
 class AuditLogAction implements
-    UserAuditActions,
-    ProjectLogActions,
-    VulnerabilityLogActions,
     ClientAuditActions,
+    ProjectLogActions,
     TaskAuditActions,
-    TargetAuditActions
+    TargetAuditActions,
+    UserAuditActions,
+    VulnerabilityLogActions,
+    VulnerabilityCategoryLogActions
 {
     public const COMMAND_UPDATED = 'Updated command';
 

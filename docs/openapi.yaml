@@ -854,10 +854,40 @@ paths:
   /vulnerabilities/categories:
     get:
       tags:
-        - Vulnerabilities
+        - Vulnerability categories
       responses:
         200:
           description: OK
+    post:
+      tags:
+        - Vulnerability categories
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './schemas/VulnerabilityCategory.yaml'
+      responses:
+        '201':
+          description: Vulnerability succesfully created response
+          content:
+            application/json:
+              schema:
+                $ref: './schemas/VulnerabilityCategory.yaml'
+
+  '/vulnerabilities/categories/{id}':
+    delete:
+      tags:
+        - Vulnerability categories
+      parameters:
+        - $ref: '#/components/parameters/resourceId'
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: Succesfully deleted
 
   /vulnerabilities/stats:
     get:

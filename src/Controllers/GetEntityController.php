@@ -18,11 +18,11 @@ abstract class GetEntityController extends Controller
      */
     public function __invoke(ServerRequestInterface $request, array $args): array|object
     {
-        $entityId = (int)$args[$this->idParamName];
+        $entityId = intval($args[$this->idParamName]);
 
         $entity = $this->repository->findById($entityId);
         if (is_null($entity)) {
-            throw new NotFoundException("Entity #$entityId not found");
+            throw new NotFoundException("Entity {$this->idParamName}:{$entityId} not found");
         }
 
         return $entity;

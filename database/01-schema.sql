@@ -137,6 +137,8 @@ DROP TABLE IF EXISTS vulnerability_category;
 CREATE TABLE vulnerability_category
 (
     id          INT UNSIGNED  NOT NULL AUTO_INCREMENT,
+    insert_ts   TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_ts   TIMESTAMP     NULL ON UPDATE CURRENT_TIMESTAMP,
     name        VARCHAR(200)  NOT NULL,
     description VARCHAR(2000) NULL,
 
