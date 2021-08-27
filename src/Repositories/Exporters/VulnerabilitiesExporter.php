@@ -14,11 +14,7 @@ class VulnerabilitiesExporter implements Exportable
     public function export(string $entityType): array
     {
         $searchCriteria = new VulnerabilitySearchCriteria();
-        if ('vulnerabilities' === $entityType) {
-            $searchCriteria->addIsNotTemplateCriterion();
-        } elseif ('vulnerability_templates' === $entityType) {
-            $searchCriteria->addIsTemplateCriterion();
-        }
+        $searchCriteria->addIsNotTemplateCriterion();
         return $this->repository->search($searchCriteria);
     }
 }

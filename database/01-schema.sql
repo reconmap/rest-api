@@ -174,6 +174,25 @@ CREATE TABLE vulnerability
     PRIMARY KEY (id)
 ) ENGINE = InnoDB;
 
+DROP VIEW IF EXISTS vulnerability_template;
+CREATE VIEW vulnerability_template AS
+SELECT id,
+       creator_uid,
+       category_id,
+       insert_ts,
+       update_ts,
+       summary,
+       description,
+       proof_of_concept,
+       impact,
+       solution,
+       risk,
+       cvss_score,
+       cvss_vector,
+       tags
+FROM vulnerability
+WHERE is_template = 1;
+
 DROP TABLE IF EXISTS task;
 
 CREATE TABLE task

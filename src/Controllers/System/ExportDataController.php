@@ -17,6 +17,7 @@ use Reconmap\Repositories\Exporters\ProjectsExporter;
 use Reconmap\Repositories\Exporters\TasksExporter;
 use Reconmap\Repositories\Exporters\UsersExporter;
 use Reconmap\Repositories\Exporters\VulnerabilitiesExporter;
+use Reconmap\Repositories\Exporters\VulnerabilityTemplatesExporter;
 use Reconmap\Services\AuditLogService;
 
 class ExportDataController extends Controller
@@ -44,7 +45,7 @@ class ExportDataController extends Controller
             'tasks' => TasksExporter::class,
             'users' => UsersExporter::class,
             'vulnerabilities' => VulnerabilitiesExporter::class,
-            'vulnerability_templates' => VulnerabilitiesExporter::class,
+            'vulnerability_templates' => VulnerabilityTemplatesExporter::class,
         ];
 
         $body = new CallbackStream(function () use ($exportables, $entities) {

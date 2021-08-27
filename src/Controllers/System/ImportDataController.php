@@ -10,6 +10,7 @@ use Reconmap\Repositories\Importers\DocumentsImporter;
 use Reconmap\Repositories\Importers\Importable;
 use Reconmap\Repositories\Importers\ProjectsImporter;
 use Reconmap\Repositories\Importers\VulnerabilitiesImporter;
+use Reconmap\Repositories\Importers\VulnerabilityTemplatesImporter;
 use Reconmap\Services\AuditLogService;
 
 class ImportDataController extends Controller
@@ -34,7 +35,7 @@ class ImportDataController extends Controller
             'commands' => CommandsImporter::class,
             'documents' => DocumentsImporter::class,
             'vulnerabilities' => VulnerabilitiesImporter::class,
-            'vulnerability_templates' => VulnerabilitiesImporter::class,
+            'vulnerability_templates' => VulnerabilityTemplatesImporter::class,
         ];
 
         $json = json_decode($importJsonString);

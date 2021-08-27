@@ -107,7 +107,10 @@ VALUES (2, 1),
 
 INSERT INTO target (project_id, name, kind, tags)
 VALUES (1, ' https://test.com ', 'url', NULL),
-       (2, '127.0.0.1', 'hostname', '["linux","dev-environment"]');
+       (2, '127.0.0.1', 'hostname', '[
+         "linux",
+         "dev-environment"
+       ]');
 
 INSERT INTO vulnerability (project_id, target_id, creator_uid, category_id, summary, risk, cvss_score)
 VALUES (2,
@@ -486,24 +489,40 @@ UPDATE vulnerability
 SET cvss_vector = 'CVSS:3.0/AV:P/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:H',
     status      = 'open',
     substatus   = 'reported',
-    tags        = '["test","tag"]';
+    tags        = '[
+      "test",
+      "tag"
+    ]';
+
+INSERT INTO vulnerability (creator_uid, category_id, summary, risk, cvss_score, is_template)
+VALUES (@admin_user_id, RAND() * (12 - 1) + 1, 'Domain about to expire', 'medium', 6.4, 1);
 
 INSERT INTO command (creator_uid, name, description, docker_image, arguments, executable_type, output_filename,
                      more_info_url, tags, output_parser)
 VALUES (1, 'Goohost',
         'Extracts hosts/subdomains, IP or emails for a specific domain with Google search.',
         'reconmap/pentest-container-tools-goohost',
-        '-t {{{Domain|||nmap.org}}}', 'rmap', NULL, NULL, '["google","domain"]', NULL)
+        '-t {{{Domain|||nmap.org}}}', 'rmap', NULL, NULL, '[
+    "google",
+    "domain"
+  ]', NULL)
         ,
        (2, 'Nmap', 'Scans all reserved TCP ports on the machine', 'instrumentisto/nmap',
-        '-v {{{Host|||scanme.nmap.org}}} -oX nmap-output.xml', 'rmap', 'nmap-output.xml', NULL, '["network"]', 'nmap')
+        '-v {{{Host|||scanme.nmap.org}}} -oX nmap-output.xml', 'rmap', 'nmap-output.xml', NULL, '[
+         "network"
+       ]', 'nmap')
         ,
        (3, 'Whois', 'Retrieves information about domain', 'zeitgeist/docker-whois', '{{{Domain|||nmap.org}}}', 'rmap',
-        NULL, NULL, '["domain"]', NULL)
+        NULL, NULL, '[
+         "domain"
+       ]', NULL)
         ,
        (4, 'SQLmap', 'Runs SQL map scan', 'paoloo/sqlmap',
         '-u {{{Host|||localhost}}} --method POST --data "{{{Data|||username=foo&password=bar}}}" -p username --level 5 --dbms=mysql -v 1 --tables',
-        'rmap', NULL, NULL, '["sql","database"]', 'sqlmap');
+        'rmap', NULL, NULL, '[
+         "sql",
+         "database"
+       ]', 'sqlmap');
 
 INSERT INTO task (creator_uid, project_id, summary, description, command_id)
 VALUES (@admin_user_id, 1,
