@@ -118,7 +118,7 @@ SQL;
         return $this->updateByTableId('project', $id, $newColumnValues);
     }
 
-    private function getBaseSelectQueryBuilder(): SelectQueryBuilder
+    protected function getBaseSelectQueryBuilder(): SelectQueryBuilder
     {
         $queryBuilder = new SelectQueryBuilder('project p');
         $queryBuilder->setColumns('

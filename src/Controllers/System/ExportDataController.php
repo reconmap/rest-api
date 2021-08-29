@@ -14,6 +14,7 @@ use Reconmap\Repositories\Exporters\CommandsExporter;
 use Reconmap\Repositories\Exporters\DocumentsExporter;
 use Reconmap\Repositories\Exporters\Exportable;
 use Reconmap\Repositories\Exporters\ProjectsExporter;
+use Reconmap\Repositories\Exporters\ProjectTemplatesExporter;
 use Reconmap\Repositories\Exporters\TasksExporter;
 use Reconmap\Repositories\Exporters\UsersExporter;
 use Reconmap\Repositories\Exporters\VulnerabilitiesExporter;
@@ -41,7 +42,7 @@ class ExportDataController extends Controller
             'commands' => CommandsExporter::class,
             'documents' => DocumentsExporter::class,
             'projects' => ProjectsExporter::class,
-            'project_templates' => ProjectsExporter::class,
+            'project_templates' => ProjectTemplatesExporter::class,
             'tasks' => TasksExporter::class,
             'users' => UsersExporter::class,
             'vulnerabilities' => VulnerabilitiesExporter::class,

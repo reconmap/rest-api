@@ -95,6 +95,14 @@ CREATE TABLE project
     UNIQUE KEY (name)
 ) ENGINE = InnoDB;
 
+DROP VIEW IF EXISTS project_template;
+
+CREATE VIEW project_template
+AS
+SELECT id, insert_ts, update_ts, creator_uid, name, description, engagement_type
+FROM project
+WHERE is_template = 1;
+
 DROP TRIGGER IF EXISTS project_archive_ts_trigger;
 
 CREATE TRIGGER project_archive_ts_trigger
