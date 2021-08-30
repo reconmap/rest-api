@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8"/>
     <meta name="author" content="{{ org.name }}"/>
-    <style type="text/css">
+    <title></title>
+    <style>
 
         body {
             margin-top: 25.4mm;
@@ -24,6 +25,10 @@
             margin-top: 1cm;
             border-bottom: 1px solid #748094;
             padding-bottom: .25cm;
+        }
+
+        dt {
+            font-weight: bold;
         }
 
         table {
@@ -109,14 +114,14 @@
 <div style="break-after:page;page-break-after: always;"></div>
 
 {% if configuration.include_team_bios and users %}
-    <h1><a name="pentesting-team">Pentesting team</a></h1>
+    <h1><a id="pentesting-team">Pentesting team</a></h1>
 
     <table>
         <tbody>
         {% for user in users %}
             <tr>
                 <td style="border: 0; width: 60px; padding-bottom: 8px;">
-                    <img style="width: 50px;"
+                    <img alt="Avatar" style="width: 50px;"
                          src="https://www.gravatar.com/avatar/{{ user.email_md5 }}?s=200&d=robohash"/>
                 </td>
                 <td style="border: 0;">
@@ -132,7 +137,7 @@
 {% if targets %}
     <div style="break-after:page;page-break-after: always;"></div>
 
-    <h1><a name="targets">Targets</a></h1>
+    <h1><a id="targets">Targets</a></h1>
 
     <ul>
         {% for target in targets %}
@@ -145,7 +150,7 @@
 
 
 {% if configuration.include_findings_overview %}
-    <h1><a name="findings-overview">Findings overview</a></h1>
+    <h1><a id="findings-overview">Findings overview</a></h1>
 
     <table>
         <thead>
@@ -171,35 +176,7 @@
 
 <div>
     {% for vulnerability in vulnerabilities %}
-        <h3>{{ vulnerability.summary }}</h3>
-
-        {% if vulnerability.solution %}
-            <h4>Solution</h4>
-            <p>{{ markdownParser.text(vulnerability.solution)|raw }}</p>
-        {% endif %}
-
-        <table>
-            <tbody>
-            <tr>
-                <td>Severity</td>
-                <td class="risk-{{ vulnerability.risk }}">{{ vulnerability.risk|capitalize }}</td>
-            </tr>
-            <tr>
-                <td>Category</td>
-                <td>{{ vulnerability.category_name ?? '(undefined)' }}</td>
-            </tr>
-            <tr>
-                <td>CVSS score</td>
-                <td>{% if vulnerability.cvss_vector %}
-                        <a href="https://www.first.org/cvss/calculator/3.0#{{ vulnerability.cvss_vector }}">{{ vulnerability.cvss_score }}</a>
-                    {% else %}
-                        (undefined)
-                    {% endif %}
-                </td>
-            </tr>
-            </tbody>
-        </table>
-        <p>{{ markdownParser.text(vulnerability.description)|raw }}</p>
+        {% include 'reports/vulnerability.twig' %}
     {% else %}
         <p>No vulnerabilities have been reported for this project.</p>
     {% endfor %}

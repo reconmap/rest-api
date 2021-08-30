@@ -16,7 +16,7 @@ class ZapOutputProcessor extends AbstractCommandParser implements VulnerabilityP
             $vulnerability = new Vulnerability;
             $vulnerability->summary = (string)$alertItem->alert;
             $vulnerability->description = (string)$alertItem->desc;
-            $vulnerability->solution = (string)$alertItem->solution;
+            $vulnerability->remediation = (string)$alertItem->solution;
             list($risk,) = sscanf((string)$alertItem->risk, '%s (%s)');
             if (!is_null($risk)) {
                 $vulnerability->risk = strtolower($risk);

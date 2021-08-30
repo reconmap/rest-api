@@ -28,7 +28,7 @@ class VulnerabilitiesImporter implements Importable
                 $vulnerability->description = $jsonDoc->description;
                 $vulnerability->proof_of_concept = $jsonDoc->proof_of_concept;
                 $vulnerability->impact = $jsonDoc->impact;
-                $vulnerability->solution = $jsonDoc->solution;
+                $vulnerability->remediation = $jsonDoc->remediation;
                 $vulnerability->risk = $jsonDoc->risk;
                 $vulnerability->cvss_score = $jsonDoc->cvss_score;
                 $vulnerability->cvss_vector = $jsonDoc->cvss_vector;

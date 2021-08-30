@@ -15,7 +15,7 @@ class NessusProcessorTest extends TestCase
         $processor = new NessusOutputProcessor($mockLogger);
         $vulnerabilities = $processor->parseVulnerabilities(__DIR__ . '/nessus-2.xml');
         $this->assertCount(5, $vulnerabilities);
-        $this->assertEquals('Protect your target with an IP filter.', $vulnerabilities[4]->solution);
+        $this->assertEquals('Protect your target with an IP filter.', $vulnerabilities[4]->remediation);
     }
 
     public function testParseVulnerabilitiesIncludingCvssData()

@@ -158,26 +158,34 @@ DROP TABLE IF EXISTS vulnerability;
 
 CREATE TABLE vulnerability
 (
-    id               INT UNSIGNED                                                                                       NOT NULL AUTO_INCREMENT,
-    project_id       INT UNSIGNED                                                                                       NULL REFERENCES project,
-    target_id        INT UNSIGNED                                                                                       NULL REFERENCES target,
-    creator_uid      INT UNSIGNED                                                                                       NOT NULL REFERENCES user,
-    category_id      INT UNSIGNED                                                                                       NULL REFERENCES vulnerability_category,
-    insert_ts        TIMESTAMP                                                                                          NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    update_ts        TIMESTAMP                                                                                          NULL ON UPDATE CURRENT_TIMESTAMP,
-    is_template      BOOLEAN                                                                                            NOT NULL DEFAULT FALSE,
-    summary          VARCHAR(300)                                                                                       NOT NULL,
-    description      TEXT                                                                                               NULL,
-    proof_of_concept TEXT                                                                                               NULL,
-    impact           TEXT                                                                                               NULL,
-    solution         TEXT                                                                                               NULL,
+    id                     INT UNSIGNED                                                                                       NOT NULL AUTO_INCREMENT,
+    insert_ts              TIMESTAMP                                                                                          NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_ts              TIMESTAMP                                                                                          NULL ON UPDATE CURRENT_TIMESTAMP,
+    creator_uid            INT UNSIGNED                                                                                       NOT NULL REFERENCES user,
 
-    risk             ENUM ('none', 'low', 'medium', 'high', 'critical')                                                 NOT NULL,
-    cvss_score       DECIMAL(3, 1)                                                                                      NULL,
-    cvss_vector      VARCHAR(80)                                                                                        NULL,
-    status           ENUM ('open', 'confirmed', 'resolved', 'closed')                                                   NOT NULL DEFAULT 'open',
-    substatus        ENUM ('reported', 'unresolved', 'unexploited', 'exploited', 'remediated', 'mitigated', 'rejected') NULL     DEFAULT 'reported',
-    tags             JSON                                                                                               NULL,
+    is_template            BOOLEAN                                                                                            NOT NULL DEFAULT FALSE,
+
+    external_id            VARCHAR(50)                                                                                        NULL COMMENT 'External reference eg RMAP-CLIENT-001',
+    project_id             INT UNSIGNED                                                                                       NULL REFERENCES project,
+    target_id              INT UNSIGNED                                                                                       NULL REFERENCES target,
+    category_id            INT UNSIGNED                                                                                       NULL REFERENCES vulnerability_category,
+
+    summary                VARCHAR(500)                                                                                       NOT NULL,
+    description            TEXT                                                                                               NULL,
+    external_refs          TEXT                                                                                               NULL,
+
+    risk                   ENUM ('none', 'low', 'medium', 'high', 'critical')                                                 NOT NULL,
+    proof_of_concept       TEXT                                                                                               NULL,
+    impact                 TEXT                                                                                               NULL,
+    remediation            TEXT                                                                                               NULL,
+    remediation_complexity ENUM ('unknown', 'low', 'medium', 'high')                                                          NULL,
+    remediation_priority   ENUM ('low','medium','high')                                                                       NULL,
+
+    cvss_score             DECIMAL(3, 1)                                                                                      NULL,
+    cvss_vector            VARCHAR(80)                                                                                        NULL,
+    status                 ENUM ('open', 'confirmed', 'resolved', 'closed')                                                   NOT NULL DEFAULT 'open',
+    substatus              ENUM ('reported', 'unresolved', 'unexploited', 'exploited', 'remediated', 'mitigated', 'rejected') NULL     DEFAULT 'reported',
+    tags                   JSON                                                                                               NULL,
 
     PRIMARY KEY (id)
 ) ENGINE = InnoDB;
@@ -193,7 +201,7 @@ SELECT id,
        description,
        proof_of_concept,
        impact,
-       solution,
+       remediation,
        risk,
        cvss_score,
        cvss_vector,

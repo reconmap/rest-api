@@ -6,7 +6,10 @@ use Reconmap\Models\Vulnerability;
 
 class NessusOutputProcessor extends AbstractCommandParser implements VulnerabilityParser
 {
-
+    /**
+     * @param string $path
+     * @return array<Vulnerability>
+     */
     public function parseVulnerabilities(string $path): array
     {
         $vulnerabilities = [];
@@ -22,8 +25,8 @@ class NessusOutputProcessor extends AbstractCommandParser implements Vulnerabili
                 $pluginName = (string)$rawVulnerability->plugin_name;
                 if ('Nessus Scan Information' === $pluginName) continue;
 
-                $solution = (string)$rawVulnerability->solution;
-                if ('n/a' === $solution) $solution = null;
+                $remediation = (string)$rawVulnerability->solution;
+                if ('n/a' === $remediation) $remediation = null;
 
                 $risk = strtolower((string)$rawVulnerability->risk_factor);
 
@@ -31,7 +34,7 @@ class NessusOutputProcessor extends AbstractCommandParser implements Vulnerabili
                 $vulnerability->summary = (string)$rawVulnerability->synopsis;
                 $vulnerability->description = preg_replace('/^ +/', '', (string)$rawVulnerability->description);
                 $vulnerability->risk = $risk;
-                $vulnerability->solution = $solution;
+                $vulnerability->remediation = $remediation;
                 // Dynamic props
                 $vulnerability->host = (object)$host;
                 $vulnerability->severity = (string)$rawVulnerability['severity'];

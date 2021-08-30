@@ -19,7 +19,7 @@ class VulnerabilitiesImporterTest extends TestCase
         $fakeVulnerability->is_template = false;
         $fakeVulnerability->proof_of_concept = 'PoC';
         $fakeVulnerability->impact = 'None';
-        $fakeVulnerability->solution = 'Turn off and on again';
+        $fakeVulnerability->remediation = 'Turn off and on again';
         $fakeVulnerability->risk = 'low';
         $fakeVulnerability->cvss_score = 5;
         $fakeVulnerability->cvss_vector = 'VECTOR';
@@ -32,7 +32,7 @@ class VulnerabilitiesImporterTest extends TestCase
             'is_template' => false,
             'proof_of_concept' => 'PoC',
             'impact' => 'None',
-            'solution' => 'Turn off and on again',
+            'remediation' => 'Turn off and on again',
             'risk' => 'low',
             'cvss_score' => 5,
             'cvss_vector' => 'VECTOR'
