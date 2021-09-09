@@ -15,6 +15,7 @@ class GetVulnerabilitiesController extends Controller
 {
     public function __construct(
         private VulnerabilityRepository      $repository,
+        private VulnerabilitySearchCriteria  $searchCriteria,
         private VulnerabilityStatsRepository $statsRepository
     )
     {
@@ -24,21 +25,29 @@ class GetVulnerabilitiesController extends Controller
     {
         $params = $request->getQueryParams();
 
-        $searchCriteria = new VulnerabilitySearchCriteria();
-
         if (isset($params['keywords'])) {
-            $searchCriteria->addKeywordsCriterion($params['keywords']);
+            $this->searchCriteria->addKeywordsCriterion($params['keywords']);
+        }
+        if (isset($params['projectId'])) {
+            $projectId = intval($params['projectId']);
+            $this->searchCriteria->addProjectCriterion($projectId);
         }
         if (isset($params['targetId'])) {
-            $targetId = (int)$params['targetId'];
-            $searchCriteria->addCriterion('v.target_id = ?', [$targetId]);
+            $targetId = intval($params['targetId']);
+            $this->searchCriteria->addTargetCriterion($targetId);
         }
         if (isset($params['isTemplate'])) {
-            $searchCriteria->addTemplateCriterion(intval($params['isTemplate']));
+            $isTemplate = intval($params['isTemplate']);
+            $this->searchCriteria->addTemplateCriterion($isTemplate);
+        }
+
+        $role = $request->getAttribute('role');
+        if ('client' === $role) {
+            $this->searchCriteria->addPublicVisibilityCriterion();
         }
 
         $paginator = new RequestPaginator($request);
-        $vulnerabilities = $this->repository->search($searchCriteria, $paginator);
+        $vulnerabilities = $this->repository->search($this->searchCriteria, $paginator);
 
         $count = $this->statsRepository->countAll();
         $pageCount = $paginator->calculatePageCount($count);

@@ -19,6 +19,5 @@ class ProjectsRouter
         $router->map('GET', '/projects/{projectId:number}/users', GetProjectUsersController::class);
         $router->map('POST', '/projects/{projectId:number}/users', AddProjectUserController::class);
         $router->map('DELETE', '/projects/{projectId:number}/users/{membershipId:number}', DeleteProjectUserController::class);
-        $router->map('GET', '/projects/{projectId:number}/vulnerabilities', GetProjectVulnerabilitiesController::class);
     }
 }

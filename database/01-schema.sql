@@ -174,6 +174,8 @@ CREATE TABLE vulnerability
     description            TEXT                                                                                               NULL,
     external_refs          TEXT                                                                                               NULL,
 
+    visibility             ENUM ('private', 'public')                                                                         NOT NULL DEFAULT 'public',
+
     risk                   ENUM ('none', 'low', 'medium', 'high', 'critical')                                                 NOT NULL,
     proof_of_concept       TEXT                                                                                               NULL,
     impact                 TEXT                                                                                               NULL,

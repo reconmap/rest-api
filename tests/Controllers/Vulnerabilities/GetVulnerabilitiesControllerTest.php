@@ -4,29 +4,35 @@ namespace Reconmap\Controllers\Vulnerabilities;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\Repositories\SearchCriterias\VulnerabilitySearchCriteria;
 use Reconmap\Repositories\VulnerabilityRepository;
 use Reconmap\Repositories\VulnerabilityStatsRepository;
 
 class GetVulnerabilitiesControllerTest extends TestCase
 {
-    public function testNoFilters()
+    public function testFindingVulnerabilitiesByKeywords()
     {
         $mockRequest = $this->createMock(ServerRequestInterface::class);
         $mockRequest->expects($this->atLeastOnce())
             ->method('getQueryParams')
-            ->willReturn(['page' => 5]);
+            ->willReturn(['keywords' => 'foo', 'page' => 5]);
 
         $mockRepository = $this->createMock(VulnerabilityRepository::class);
         $mockRepository->expects($this->once())
             ->method('search')
             ->willReturn([]);
 
+        $mockSearchCriteria = $this->createMock(VulnerabilitySearchCriteria::class);
+        $mockSearchCriteria->expects($this->once())
+            ->method('addKeywordsCriterion')
+            ->with('foo');
+
         $mockStatsRepository = $this->createMock(VulnerabilityStatsRepository::class);
         $mockStatsRepository->expects($this->once())
             ->method('countAll')
             ->willReturn(32);
 
-        $controller = new GetVulnerabilitiesController($mockRepository, $mockStatsRepository);
+        $controller = new GetVulnerabilitiesController($mockRepository, $mockSearchCriteria, $mockStatsRepository);
         $response = $controller($mockRequest);
 
         $this->assertEquals(200, $response->getStatusCode());

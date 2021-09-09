@@ -7,6 +7,7 @@ use Reconmap\Repositories\OrganisationRepository;
 use Reconmap\Repositories\ProjectRepository;
 use Reconmap\Repositories\ReportConfigurationRepository;
 use Reconmap\Repositories\ReportRepository;
+use Reconmap\Repositories\SearchCriterias\VulnerabilitySearchCriteria;
 use Reconmap\Repositories\TargetRepository;
 use Reconmap\Repositories\TaskRepository;
 use Reconmap\Repositories\UserRepository;
@@ -34,7 +35,10 @@ class ReportGenerator
 
         $configuration = $this->reportConfigurationRepository->findByProjectId($projectId);
 
-        $vulnerabilities = $this->vulnerabilityRepository->findByProjectId($projectId);
+        $vulnerabilitySearchCriteria = new VulnerabilitySearchCriteria();
+        $vulnerabilitySearchCriteria->addProjectCriterion($projectId);
+        $vulnerabilitySearchCriteria->addPublicVisibilityCriterion();
+        $vulnerabilities = $this->vulnerabilityRepository->search($vulnerabilitySearchCriteria);
 
         $reports = $this->reportRepository->findByProjectId($projectId);
 
