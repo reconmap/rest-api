@@ -4,6 +4,7 @@ namespace Reconmap\Controllers\Documents;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
+use Reconmap\Models\Document;
 use Reconmap\Repositories\DocumentRepository;
 
 class CreateDocumentController extends Controller
@@ -14,11 +15,11 @@ class CreateDocumentController extends Controller
 
     public function __invoke(ServerRequestInterface $request): array
     {
-        $document = $this->getJsonBodyDecoded($request);
+        /** @var Document $document */
+        $document = $this->getJsonBodyDecodedAsClass($request, new Document());
+        $document->user_id = $request->getAttribute('userId');
 
-        $userId = $request->getAttribute('userId');
-
-        $result = $this->repository->insert($userId, $document);
+        $result = $this->repository->insert($document);
 
         return ['success' => $result];
     }

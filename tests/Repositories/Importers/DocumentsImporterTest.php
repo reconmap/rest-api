@@ -3,21 +3,24 @@
 namespace Reconmap\Repositories\Importers;
 
 use PHPUnit\Framework\TestCase;
+use Reconmap\Models\Document;
 use Reconmap\Repositories\DocumentRepository;
 
 class DocumentsImporterTest extends TestCase
 {
     public function testHappyPath()
     {
-        $document = (object)[];
-
         $userId = 5;
+
+        $document = new Document();
+        $document->user_id = 5;
+
         $documents = [$document];
 
         $mockDocumentRepository = $this->createMock(DocumentRepository::class);
         $mockDocumentRepository->expects($this->once())
             ->method('insert')
-            ->with($userId, (object)[]);
+            ->with($document);
 
         $importer = new DocumentsImporter($mockDocumentRepository);
         $result = $importer->import($userId, $documents);

@@ -13,7 +13,7 @@ class Task
     public string $summary;
     public ?string $description;
     public string $status;
-    public ?string $due_date;
+    public ?string $due_date = null;
     public ?int $command_id;
 
     public ?string $command;

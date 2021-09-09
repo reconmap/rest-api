@@ -2,6 +2,7 @@
 
 namespace Reconmap\Repositories\Importers;
 
+use Reconmap\Models\Document;
 use Reconmap\Repositories\DocumentRepository;
 
 class DocumentsImporter implements Importable
@@ -10,6 +11,11 @@ class DocumentsImporter implements Importable
     {
     }
 
+    /**
+     * @param int $userId
+     * @param array<Document> $documents
+     * @return array
+     */
     public function import(int $userId, array $documents): array
     {
         $response = [
@@ -19,7 +25,8 @@ class DocumentsImporter implements Importable
 
         foreach ($documents as $jsonDoc) {
             try {
-                $this->repository->insert($userId, $jsonDoc);
+                $jsonDoc->user_id = $userId;
+                $this->repository->insert($jsonDoc);
 
                 $response['count']++;
             } catch (\Exception $e) {

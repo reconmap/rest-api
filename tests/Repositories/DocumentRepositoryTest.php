@@ -3,6 +3,7 @@
 namespace Reconmap\Repositories;
 
 use Reconmap\DatabaseTestCase;
+use Reconmap\Models\Document;
 
 class DocumentRepositoryTest extends DatabaseTestCase
 {
@@ -15,13 +16,13 @@ class DocumentRepositoryTest extends DatabaseTestCase
 
     public function testInsert()
     {
-        $userId = 1;
-        $document = new \stdClass();
+        $document = new Document();
+        $document->user_id = 1;
         $document->parent_type = 'library';
         $document->visibility = 'public';
         $document->content = 'Hacker\'s stuff';
 
-        $this->assertTrue($this->subject->insert($userId, $document) >= 1);
+        $this->assertTrue($this->subject->insert($document) >= 1);
     }
 
     public function testFindById()

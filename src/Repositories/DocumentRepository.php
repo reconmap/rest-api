@@ -2,6 +2,7 @@
 
 namespace Reconmap\Repositories;
 
+use Reconmap\Models\Document;
 use Reconmap\Repositories\QueryBuilders\SelectQueryBuilder;
 
 class DocumentRepository extends MysqlRepository
@@ -54,10 +55,10 @@ class DocumentRepository extends MysqlRepository
         return $this->deleteByTableId('document', $id);
     }
 
-    public function insert(int $userId, object $document): int
+    public function insert(Document $document): int
     {
         $stmt = $this->db->prepare('INSERT INTO document (user_id, parent_type, parent_id, visibility, title, content) VALUES (?, ?, ?, ?, ?, ?)');
-        $stmt->bind_param('isisss', $userId, $document->parent_type, $document->parent_id, $document->visibility, $document->title, $document->content);
+        $stmt->bind_param('isisss', $document->user_id, $document->parent_type, $document->parent_id, $document->visibility, $document->title, $document->content);
         return $this->executeInsertStatement($stmt);
     }
 

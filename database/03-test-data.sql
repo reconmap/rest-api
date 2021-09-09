@@ -524,27 +524,6 @@ VALUES (1, 'Goohost',
          "database"
        ]', 'sqlmap');
 
-INSERT INTO task (creator_uid, project_id, summary, description, command_id)
-VALUES (@admin_user_id, 1,
-        'Run port scanner',
-        'Use nmap to detect all open ports',
-        2),
-       (@admin_user_id, 1,
-        'Run SQL injection scanner',
-        'Use sqlmap to test the application for SQL injection vulnerabilities', 4),
-       (@admin_user_id, 1,
-        'Check domain expiration date',
-        'Use whois or other tools to check when the domain expiration is.', 3),
-       (@admin_user_id, 2,
-        'Run port scanner',
-        'Use nmap to detect all open ports', 2),
-       (@admin_user_id, 2,
-        'Run SQL injection scanner',
-        'Use sqlmap to test the application for SQL injection vulnerabilities', 4),
-       (@admin_user_id, 2,
-        'Check domain expiration date',
-        'Use whois or other tools to check when the domain expiration is.', 3);
-
 INSERT INTO note (user_id,
                   parent_type,
                   parent_id,
@@ -561,5 +540,3 @@ VALUES (1,
         'private',
         'The client asked not to touch the servers during office hours.');
 
-INSERT INTO document (user_id, visibility, parent_type, content, title)
-VALUES (1, 'public', 'library', 'Some', 'Thing');
