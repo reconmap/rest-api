@@ -5,6 +5,7 @@ namespace Reconmap\Controllers\Notes;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\NoteRepository;
+use Reconmap\Models\Note;
 
 class CreateNoteController extends Controller
 {
@@ -14,11 +15,10 @@ class CreateNoteController extends Controller
 
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
-        $note = $this->getJsonBodyDecoded($request);
+        $note = $this->getJsonBodyDecodedAsClass($request, new Note());
+        $note->user_id = $request->getAttribute('userId');
 
-        $userId = $request->getAttribute('userId');
-
-        $result = $this->repository->insert($userId, $note);
+        $result = $this->repository->insert($note);
 
         return ['success' => $result];
     }

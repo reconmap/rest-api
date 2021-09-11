@@ -3,18 +3,20 @@
 namespace Reconmap\Repositories;
 
 use Reconmap\DatabaseTestCase;
+use Reconmap\Models\Note;
 
 class NoteRepositoryTest extends DatabaseTestCase
 {
     public function testInsert()
     {
-        $note = new \stdClass();
-        $note->parentType = 'project';
-        $note->parentId = 1;
+        $note = new Note();
+		$note->user_id = 1;
+        $note->parent_type = 'project';
+        $note->parent_id = 1;
         $note->visibility = 'public';
         $note->content = 'found this and that';
 
         $repository = new NoteRepository($this->getDatabaseConnection());
-        $this->assertTrue($repository->insert(1, $note) >= 1);
+        $this->assertTrue($repository->insert($note) >= 1);
     }
 }

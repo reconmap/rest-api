@@ -9,3 +9,4 @@ clover.xml
 .idea
 tests/data/*
 environment.js
+tags

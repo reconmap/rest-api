@@ -2,6 +2,8 @@
 
 namespace Reconmap\Repositories;
 
+use Reconmap\Models\Note;
+
 class NoteRepository extends MysqlRepository
 {
     public function findByParentId(?string $parentType, int $parentId): array
@@ -21,10 +23,10 @@ class NoteRepository extends MysqlRepository
         return $this->deleteByTableId('note', $id);
     }
 
-    public function insert(int $userId, object $note): int
+    public function insert(Note $note): int
     {
         $stmt = $this->db->prepare('INSERT INTO note (user_id, parent_type, parent_id, visibility, content) VALUES (?, ?, ?, ?, ?)');
-        $stmt->bind_param('isiss', $userId, $note->parentType, $note->parentId, $note->visibility, $note->content);
+        $stmt->bind_param('isiss', $note->user_id, $note->parent_type, $note->parent_id, $note->visibility, $note->content);
         return $this->executeInsertStatement($stmt);
     }
 }

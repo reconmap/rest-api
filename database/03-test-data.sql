@@ -524,19 +524,3 @@ VALUES (1, 'Goohost',
          "database"
        ]', 'sqlmap');
 
-INSERT INTO note (user_id,
-                  parent_type,
-                  parent_id,
-                  visibility,
-                  content)
-VALUES (1,
-        'project',
-        3,
-        'private',
-        'Credentials are stored in the secret server'),
-       (1,
-        'project',
-        3,
-        'private',
-        'The client asked not to touch the servers during office hours.');
-

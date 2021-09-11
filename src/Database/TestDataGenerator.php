@@ -2,16 +2,18 @@
 
 namespace Reconmap\Database;
 
-
 use Reconmap\Models\Document;
 use Reconmap\Models\Task;
+use Reconmap\Models\Note;
 use Reconmap\Repositories\DocumentRepository;
 use Reconmap\Repositories\TaskRepository;
+use Reconmap\Repositories\NoteRepository;
 
 class TestDataGenerator
 {
     public function __construct(
         private TaskRepository     $taskRepository,
+        private NoteRepository $noteRepository,
         private DocumentRepository $documentRepository)
     {
 
@@ -19,6 +21,23 @@ class TestDataGenerator
 
     public function generate()
     {
+        echo 'Generating test note...';
+		$notes = [
+			[ 'description' => 'Credentials are stored in the secret server' ],
+			[ 'description' => 'The client asked not to touch the servers during office hours.' ]
+		];
+		foreach($notes as $noteData) {
+        	$note = new Note();
+        	$note->user_id = 1;
+        	$note->visibility = 'public';
+        	$note->parent_type = 'project';
+			$note->parent_id = 1;
+        	$note->content = $noteData['description'];
+
+        	$this->noteRepository->insert($note);
+		}
+        echo 'Done!', PHP_EOL;
+
         echo 'Generating test document...';
         $document = new Document();
         $document->user_id = 1;
