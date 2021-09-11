@@ -25,7 +25,7 @@ services:
       dockerfile: docker/mysql/Dockerfile
     volumes:
       - ./data-mysql:/var/lib/mysql
-      - ./docker/mysql/initdb.d:/docker-entrypoint-initdb.d
+      - ./database:/docker-entrypoint-initdb.d
     ports:
       - 3306:3306
     environment:
