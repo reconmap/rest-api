@@ -4,23 +4,31 @@ namespace Reconmap\Controllers\System;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Services\AttachmentFilePath;
+use Reconmap\Services\Filesystem\ApplicationLogFilePath;
+use Reconmap\Services\Filesystem\AttachmentFilePath;
+use Reconmap\Services\Filesystem\DirectoryChecker;
 
 class GetHealthController extends Controller
 {
-    public function __construct(private AttachmentFilePath $attachmentFilePath)
+    public function __construct(
+        private AttachmentFilePath     $attachmentFilePath,
+        private ApplicationLogFilePath $applicationLogFilePath,
+        private DirectoryChecker       $directoryChecker,
+        private \mysqli                $dbConnection
+    )
     {
     }
 
     public function __invoke(ServerRequestInterface $request): array
     {
         $attachmentBasePath = $this->attachmentFilePath->generateBasePath();
+        $logsPath = $this->applicationLogFilePath->getDirectory();
 
         return [
-            'attachmentsDirectory' => [
-                'location' => $attachmentBasePath,
-                'exists' => is_dir($attachmentBasePath),
-                'writeable' => is_writeable($attachmentBasePath)
+            'attachmentsDirectory' => $this->directoryChecker->checkDirectoryIsWriteable($attachmentBasePath),
+            'logsDirectory' => $this->directoryChecker->checkDirectoryIsWriteable($logsPath),
+            'dbConnection' => [
+                'ping' => $this->dbConnection->ping()
             ]
         ];
     }

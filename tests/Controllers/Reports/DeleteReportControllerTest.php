@@ -7,7 +7,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Models\Attachment;
 use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Repositories\ReportRepository;
-use Reconmap\Services\AttachmentFilePath;
+use Reconmap\Services\Filesystem\AttachmentFilePath;
 use Symfony\Component\Filesystem\Filesystem;
 
 class DeleteReportControllerTest extends TestCase

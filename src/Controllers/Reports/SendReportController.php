@@ -5,14 +5,14 @@ namespace Reconmap\Controllers\Reports;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\AttachmentRepository;
-use Reconmap\Services\AttachmentFilePath;
 use Reconmap\Services\EmailService;
+use Reconmap\Services\Filesystem\AttachmentFilePath;
 
 class SendReportController extends Controller
 {
-    public function __construct(private AttachmentFilePath $attachmentFilePathService,
+    public function __construct(private AttachmentFilePath   $attachmentFilePathService,
                                 private AttachmentRepository $attachmentRepository,
-                                private EmailService $emailService)
+                                private EmailService         $emailService)
     {
     }
 

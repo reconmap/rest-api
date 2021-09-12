@@ -5,7 +5,7 @@ namespace Reconmap\Controllers\Commands;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Attachments\UploadAttachmentController;
 use Reconmap\Repositories\AttachmentRepository;
-use Reconmap\Services\AttachmentFilePath;
+use Reconmap\Services\Filesystem\AttachmentFilePath;
 use Reconmap\Services\RedisServer;
 
 class UploadCommandOutputController extends UploadAttachmentController

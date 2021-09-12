@@ -7,7 +7,7 @@ use Psr\Http\Message\UploadedFileInterface;
 use Reconmap\ControllerTestCase;
 use Reconmap\Models\Attachment;
 use Reconmap\Repositories\AttachmentRepository;
-use Reconmap\Services\AttachmentFilePath;
+use Reconmap\Services\Filesystem\AttachmentFilePath;
 
 class UploadAttachmentControllerTest extends ControllerTestCase
 {

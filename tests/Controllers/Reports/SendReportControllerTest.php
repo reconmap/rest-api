@@ -6,8 +6,8 @@ use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Repositories\AttachmentRepository;
-use Reconmap\Services\AttachmentFilePath;
 use Reconmap\Services\EmailService;
+use Reconmap\Services\Filesystem\AttachmentFilePath;
 
 class SendReportControllerTest extends TestCase
 {

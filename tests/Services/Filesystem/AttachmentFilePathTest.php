@@ -1,8 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace Reconmap\Services;
+namespace Reconmap\Services\Filesystem;
 
 use PHPUnit\Framework\TestCase;
+use Reconmap\Services\ApplicationConfig;
 
 class AttachmentFilePathTest extends TestCase
 {

@@ -8,7 +8,7 @@ use Reconmap\Models\Attachment;
 use Reconmap\Models\AuditLogAction;
 use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Services\ActivityPublisherService;
-use Reconmap\Services\AttachmentFilePath;
+use Reconmap\Services\Filesystem\AttachmentFilePath;
 use Symfony\Component\Filesystem\Filesystem;
 
 class DeleteAttachmentControllerTest extends TestCase

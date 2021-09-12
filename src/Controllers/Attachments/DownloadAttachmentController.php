@@ -9,14 +9,14 @@ use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditLogAction;
 use Reconmap\Repositories\AttachmentRepository;
-use Reconmap\Services\AttachmentFilePath;
 use Reconmap\Services\AuditLogService;
+use Reconmap\Services\Filesystem\AttachmentFilePath;
 
 class DownloadAttachmentController extends Controller
 {
     public function __construct(private AttachmentRepository $attachmentRepository,
-                                private AttachmentFilePath $attachmentFilePathService,
-                                private AuditLogService $auditLogService)
+                                private AttachmentFilePath   $attachmentFilePathService,
+                                private AuditLogService      $auditLogService)
     {
     }
 

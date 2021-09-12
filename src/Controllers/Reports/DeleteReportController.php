@@ -6,16 +6,16 @@ use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Repositories\ReportRepository;
-use Reconmap\Services\AttachmentFilePath;
+use Reconmap\Services\Filesystem\AttachmentFilePath;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 
 class DeleteReportController extends Controller
 {
-    public function __construct(private AttachmentFilePath $attachmentFilePathService,
-                                private ReportRepository $reportRepository,
+    public function __construct(private AttachmentFilePath   $attachmentFilePathService,
+                                private ReportRepository     $reportRepository,
                                 private AttachmentRepository $attachmentRepository,
-                                private Filesystem $filesystem)
+                                private Filesystem           $filesystem)
     {
     }
 

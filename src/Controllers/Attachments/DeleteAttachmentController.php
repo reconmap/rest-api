@@ -7,16 +7,16 @@ use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditLogAction;
 use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Services\ActivityPublisherService;
-use Reconmap\Services\AttachmentFilePath;
+use Reconmap\Services\Filesystem\AttachmentFilePath;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 
 class DeleteAttachmentController extends Controller
 {
-    public function __construct(private AttachmentRepository $attachmentRepository,
-                                private AttachmentFilePath $attachmentFilePathService,
+    public function __construct(private AttachmentRepository     $attachmentRepository,
+                                private AttachmentFilePath       $attachmentFilePathService,
                                 private ActivityPublisherService $activityPublisherService,
-                                private Filesystem $filesystem)
+                                private Filesystem               $filesystem)
     {
     }
 

@@ -13,29 +13,30 @@ use Monolog\Logger;
 use Reconmap\ApiRouter;
 use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\ApplicationContainer;
-
-$logger = new Logger('http');
-$logsDirectory = $applicationDir . '/logs';
-if (is_writable($logsDirectory)) {
-    $applicationLogPath = $applicationDir . '/logs/application.log';
-    $logger->pushHandler(new StreamHandler($applicationLogPath, Logger::DEBUG));
-}
+use Reconmap\Services\Filesystem\ApplicationLogFilePath;
 
 $configFilePath = $applicationDir . '/config.json';
 if (!file_exists($configFilePath) || !is_readable($configFilePath)) {
     $errorMessage = 'Missing or unreadable API configuration file (config.json)';
-    $logger->error($errorMessage);
     header($errorMessage, true, StatusCodeInterface::STATUS_SERVICE_UNAVAILABLE);
     echo $errorMessage, PHP_EOL;
     exit;
 }
 
+$config = ApplicationConfig::load($configFilePath);
+$config->setAppDir($applicationDir);
+
+$logger = new Logger('http');
+$applicationLogFilePath = new ApplicationLogFilePath($config);
+$logsDirectory = $applicationLogFilePath->getDirectory();
+if (is_writable($logsDirectory)) {
+    $applicationLogPath = $applicationDir . '/logs/application.log';
+    $logger->pushHandler(new StreamHandler($applicationLogPath, Logger::DEBUG));
+}
+
 set_error_handler(function ($errno, $errstr, $errfile, $errline) use ($logger) {
     $logger->error("$errstr ($errno) on $errfile:$errline");
 });
-
-$config = ApplicationConfig::load($configFilePath);
-$config->setAppDir($applicationDir);
 
 $container = new ApplicationContainer($config, $logger);
 

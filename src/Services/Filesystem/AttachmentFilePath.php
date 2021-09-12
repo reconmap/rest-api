@@ -1,6 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Reconmap\Services;
+namespace Reconmap\Services\Filesystem;
+
+use Reconmap\Services\ApplicationConfig;
 
 class AttachmentFilePath
 {

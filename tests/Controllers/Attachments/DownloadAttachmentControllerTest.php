@@ -7,8 +7,8 @@ use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Models\Attachment;
 use Reconmap\Models\AuditLogAction;
 use Reconmap\Repositories\AttachmentRepository;
-use Reconmap\Services\AttachmentFilePath;
 use Reconmap\Services\AuditLogService;
+use Reconmap\Services\Filesystem\AttachmentFilePath;
 
 class DownloadAttachmentControllerTest extends TestCase
 {

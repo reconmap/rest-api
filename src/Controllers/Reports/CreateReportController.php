@@ -13,7 +13,7 @@ use Reconmap\Repositories\ProjectRepository;
 use Reconmap\Repositories\ReportConfigurationRepository;
 use Reconmap\Repositories\ReportRepository;
 use Reconmap\Services\ApplicationConfig;
-use Reconmap\Services\AttachmentFilePath;
+use Reconmap\Services\Filesystem\AttachmentFilePath;
 use Reconmap\Services\ReportGenerator;
 
 class CreateReportController extends Controller

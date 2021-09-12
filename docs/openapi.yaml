@@ -527,6 +527,27 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  attachmentsDirectory:
+                    type: object
+                  logsDirectory:
+                    type: string
+              examples:
+                default:
+                  attachmentsDirectory:
+                    location: '/var/www/webapp/data/attachments/'
+                    exists: true
+                    writeable: true
+                  logsDirectory:
+                    location: '/var/www/webapp/logs'
+                    exists: true
+                    writeable: true
+                  dbConnection:
+                    ping: true
 
   /system/logs:
     get:
