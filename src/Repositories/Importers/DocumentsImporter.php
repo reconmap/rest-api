@@ -25,8 +25,9 @@ class DocumentsImporter implements Importable
 
         foreach ($documents as $jsonDoc) {
             try {
-                $jsonDoc->user_id = $userId;
-                $this->repository->insert($jsonDoc);
+                $document = Document::fromObject($jsonDoc);
+                $document->user_id = $userId;
+                $this->repository->insert($document);
 
                 $response['count']++;
             } catch (\Exception $e) {

@@ -3,6 +3,7 @@
 namespace Reconmap\Controllers\System;
 
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\UploadedFileInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditLogAction;
 use Reconmap\Repositories\Importers\CommandsImporter;
@@ -21,13 +22,29 @@ class ImportDataController extends Controller
 
     public function __invoke(ServerRequestInterface $request): array
     {
+        $response = [
+            'errors' => [],
+            'results' => []
+        ];
+
         $files = $request->getUploadedFiles();
+        /** @var UploadedFileInterface $importFile */
         $importFile = $files['importFile'];
+
+        if ($importFile->getSize() === 0) {
+            $response['errors'][] = 'Uploaded file is empty.';
+            return $response;
+        }
+
         $importJsonString = $importFile->getStream()->getContents();
+        $json = json_decode($importJsonString);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $this->logger->warning('Invalid JSON file: ' . json_last_error_msg(), [$importFile->getClientFilename()]);
+            $response['errors'][] = 'Invalid JSON file.';
+            return $response;
+        }
 
         $userId = $request->getAttribute('userId');
-
-        $response = [];
 
         $importables = [
             'projects' => ProjectsImporter::class,
@@ -38,18 +55,14 @@ class ImportDataController extends Controller
             'vulnerability_templates' => VulnerabilityTemplatesImporter::class,
         ];
 
-        $json = json_decode($importJsonString);
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            $this->logger->warning(json_last_error_msg());
-        } else {
-            foreach ($json as $entityType => $entities) {
-                if (isset($importables[$entityType])) {
-                    /** @var Importable $importer */
-                    $importer = $this->container->get($importables[$entityType]);
-                    $response[] = array_merge(['name' => $entityType], $importer->import($userId, $entities));
-                } else {
-                    $this->logger->warning("Trying to import invalid entity type: $entityType");
-                }
+        foreach ($json as $entityType => $entities) {
+            if (isset($importables[$entityType])) {
+                /** @var Importable $importer */
+                $importer = $this->container->get($importables[$entityType]);
+                $response['results'][] = array_merge(['name' => $entityType], $importer->import($userId, $entities));
+            } else {
+                $this->logger->warning("Trying to import invalid entity type: $entityType");
+                $response['errors'][] = "Invalid entity '$entityType' found in file. Expected one of: " . implode(', ', array_keys($importables));
             }
         }
 

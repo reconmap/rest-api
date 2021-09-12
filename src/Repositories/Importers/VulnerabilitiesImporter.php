@@ -26,13 +26,13 @@ class VulnerabilitiesImporter implements Importable
                 $vulnerability->is_template = false;
                 $vulnerability->summary = $jsonDoc->summary;
                 $vulnerability->description = $jsonDoc->description;
-                $vulnerability->proof_of_concept = $jsonDoc->proof_of_concept;
-                $vulnerability->impact = $jsonDoc->impact;
-                $vulnerability->remediation = $jsonDoc->remediation;
+                $vulnerability->proof_of_concept = $jsonDoc->proof_of_concept ?? '-';
+                $vulnerability->impact = $jsonDoc->impact ?? '-';
+                $vulnerability->remediation = $jsonDoc->remediation ?? null;
                 $vulnerability->risk = $jsonDoc->risk;
                 $vulnerability->cvss_score = $jsonDoc->cvss_score;
                 $vulnerability->cvss_vector = $jsonDoc->cvss_vector;
-                $vulnerability->tags = $jsonDoc->tags;
+                $vulnerability->tags = $jsonDoc->tags ?? null;
 
                 $this->repository->insert($vulnerability);
 

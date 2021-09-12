@@ -12,15 +12,24 @@ class DocumentsImporterTest extends TestCase
     {
         $userId = 5;
 
-        $document = new Document();
-        $document->user_id = 5;
+        $jsonDoc = new \stdClass();
+        $jsonDoc->user_id = 5;
+        $jsonDoc->visibility = 'public';
+        $jsonDoc->parent_id = null;
+        $jsonDoc->parent_type = 'library';
 
-        $documents = [$document];
+        $docModel = new Document();
+        $docModel->user_id = 5;
+        $docModel->visibility = 'public';
+        $docModel->parent_id = null;
+        $docModel->parent_type = 'library';
+
+        $documents = [$jsonDoc];
 
         $mockDocumentRepository = $this->createMock(DocumentRepository::class);
         $mockDocumentRepository->expects($this->once())
             ->method('insert')
-            ->with($document);
+            ->with($docModel);
 
         $importer = new DocumentsImporter($mockDocumentRepository);
         $result = $importer->import($userId, $documents);
