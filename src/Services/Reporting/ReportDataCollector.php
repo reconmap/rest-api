@@ -1,7 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Reconmap\Services;
+namespace Reconmap\Services\Reporting;
 
+use League\CommonMark\GithubFlavoredMarkdownConverter;
 use Reconmap\Repositories\ClientRepository;
 use Reconmap\Repositories\OrganisationRepository;
 use Reconmap\Repositories\ProjectRepository;
@@ -13,7 +14,7 @@ use Reconmap\Repositories\TaskRepository;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Repositories\VulnerabilityRepository;
 
-class ReportGenerator
+class ReportDataCollector
 {
     public function __construct(
         private ProjectRepository             $projectRepository,
@@ -24,12 +25,11 @@ class ReportGenerator
         private UserRepository                $userRepository,
         private ClientRepository              $clientRepository,
         private TaskRepository                $taskRepository,
-        private TargetRepository              $targetRepository,
-        private TemplateEngine                $templateEngine)
+        private TargetRepository              $targetRepository)
     {
     }
 
-    public function generate(int $projectId): array
+    public function collectForProject(int $projectId): array
     {
         $project = $this->projectRepository->findById($projectId);
 
@@ -42,7 +42,7 @@ class ReportGenerator
 
         $reports = $this->reportRepository->findByProjectId($projectId);
 
-        $markdownParser = new \Parsedown();
+        $markdownParser = new GithubFlavoredMarkdownConverter();
 
         $organisation = $this->organisationRepository->findRootOrganisation();
 
@@ -71,27 +71,7 @@ class ReportGenerator
         }
         $vars['users'] = $users;
 
-        $components = [
-            'body' => $this->templateEngine->render('reports/body', $vars)
-        ];
-
-        if ($configuration->include_cover === 'default') {
-            $components['cover'] = $this->templateEngine->render('reports/cover', $vars);
-        } elseif ($configuration->include_cover === 'custom') {
-            $components['cover'] = $this->templateEngine->renderString($configuration->custom_cover, $vars);
-        }
-        if ($configuration->include_header === 'default') {
-            $components['header'] = $this->templateEngine->render('reports/header', $vars);
-        } elseif ($configuration->include_header === 'custom') {
-            $components['header'] = $this->templateEngine->renderString($configuration->custom_header, $vars);
-        }
-        if ($configuration->include_footer === 'default') {
-            $components['footer'] = $this->templateEngine->render('reports/footer', $vars);
-        } elseif ($configuration->include_footer === 'custom') {
-            $components['footer'] = $this->templateEngine->renderString($configuration->custom_footer, $vars);
-        }
-
-        return $components;
+        return $vars;
     }
 
     private function createFindingsOverview(array $vulnerabilities): array

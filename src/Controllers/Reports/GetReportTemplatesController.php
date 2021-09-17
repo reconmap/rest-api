@@ -6,7 +6,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\ReportRepository;
 
-class GetReportsController extends Controller
+class GetReportTemplatesController extends Controller
 {
     public function __construct(private ReportRepository $reportRepository)
     {
@@ -16,11 +16,6 @@ class GetReportsController extends Controller
     {
         $params = $request->getQueryParams();
 
-        if (isset($params['projectId'])) {
-            $projectId = (int)$params['projectId'];
-            return $this->reportRepository->findByProjectId($projectId);
-        }
-
-        return $this->reportRepository->findAll();
+        return $this->reportRepository->findTemplates();
     }
 }

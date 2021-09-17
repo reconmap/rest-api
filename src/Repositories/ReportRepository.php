@@ -11,8 +11,8 @@ class ReportRepository extends MysqlRepository
         $stmt = $this->db->prepare('SELECT * FROM report WHERE id = ?');
         $stmt->bind_param('i', $reportId);
         $stmt->execute();
-        $rs = $stmt->get_result();
-        $report = $rs->fetch_assoc();
+        $result = $stmt->get_result();
+        $report = $result->fetch_assoc();
         $stmt->close();
 
         return $report;
@@ -28,14 +28,14 @@ class ReportRepository extends MysqlRepository
             ORDER BY r.insert_ts DESC
             LIMIT 20
         SQL;
-        $rs = $this->db->query($sql);
-        return $rs->fetch_all(MYSQLI_ASSOC);
+        $result = $this->db->query($sql);
+        return $result->fetch_all(MYSQLI_ASSOC);
     }
 
     public function insert(Report $report): int
     {
-        $stmt = $this->db->prepare('INSERT INTO report (project_id, generated_by_uid, version_name, version_description) VALUES (?, ?, ?, ?)');
-        $stmt->bind_param('iiss', $report->projectId, $report->generatedByUid, $report->versionName, $report->versionDescription);
+        $stmt = $this->db->prepare('INSERT INTO report (project_id, generated_by_uid, is_template, version_name, version_description) VALUES (?, ?, ?, ?, ?)');
+        $stmt->bind_param('iiiss', $report->projectId, $report->generatedByUid, $report->is_template, $report->versionName, $report->versionDescription);
         return $this->executeInsertStatement($stmt);
     }
 
@@ -49,8 +49,7 @@ class ReportRepository extends MysqlRepository
         $sql = <<<SQL
 SELECT
        r.*,
-       (SELECT id FROM attachment WHERE parent_type = 'report' AND parent_id = r.id AND file_mimetype = 'text/html') AS html_attachment_id,
-       (SELECT id FROM attachment WHERE parent_type = 'report' AND parent_id = r.id AND file_mimetype = 'application/pdf') AS pdf_attachment_id
+       (SELECT id FROM attachment WHERE parent_type = 'report' AND parent_id = r.id AND file_mimetype = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') AS docx_attachment_id
 FROM
     report r
 WHERE
@@ -62,8 +61,34 @@ SQL;
         $stmt = $this->db->prepare($sql);
         $stmt->bind_param('i', $projectId);
         $stmt->execute();
-        $rs = $stmt->get_result();
-        $reports = $rs->fetch_all(MYSQLI_ASSOC);
+        $result = $stmt->get_result();
+        $reports = $result->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+
+        return $reports;
+    }
+
+
+    public function findTemplates(): array
+    {
+        $sql = <<<SQL
+SELECT
+       r.*,
+       a.id AS attachment_id, a.insert_ts, a.parent_type, a.parent_id, a.submitter_uid, a.client_file_name, a.file_name, a.file_size, a.file_mimetype, a.file_hash
+FROM
+    report r
+INNER JOIN
+        attachment a ON (a.parent_id = r.id)
+WHERE
+    r.is_template
+ORDER BY
+    r.insert_ts DESC
+SQL;
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $reports = $result->fetch_all(MYSQLI_ASSOC);
         $stmt->close();
 
         return $reports;

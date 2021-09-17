@@ -10,6 +10,8 @@ class ReportsRouter
     public function mapRoutes(RouteCollectionInterface $router): void
     {
         $router->map('GET', '/reports', GetReportsController::class);
+        $router->map('GET', '/reports/templates', GetReportTemplatesController::class);
+        $router->map('POST', '/reports/templates', CreateReportTemplateController::class);
         $router->map('GET', '/reports/preview', GetReportPreviewController::class);
         $router->map('GET', '/reports/{projectId:number}/configuration', GetReportConfigurationController::class);
         $router->map('PUT', '/reports/{projectId:number}/configuration', ReplaceReportConfigurationController::class);

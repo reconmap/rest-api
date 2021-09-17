@@ -41,7 +41,7 @@ SQL;
     {
         $queryBuilder = new SelectQueryBuilder('attachment a');
         $queryBuilder->setColumns('a.*, u.full_name AS submitter_name');
-        $queryBuilder->addJoin('INNER JOIN user u ON (u.id = a.submitter_uid)');
+        $queryBuilder->addJoin('LEFT JOIN user u ON (u.id = a.submitter_uid)');
         $queryBuilder->setOrderBy('a.insert_ts DESC');
         $queryBuilder->setWhere('a.parent_type = ? AND a.parent_id = ?');
         if ($mimeType) {
@@ -56,8 +56,8 @@ SQL;
             $stmt->bind_param('si', $parentType, $parentId);
         }
         $stmt->execute();
-        $rs = $stmt->get_result();
-        $attachments = $rs->fetch_all(MYSQLI_ASSOC);
+        $result = $stmt->get_result();
+        $attachments = $result->fetch_all(MYSQLI_ASSOC);
         $stmt->close();
 
         return $attachments;

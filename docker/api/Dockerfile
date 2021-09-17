@@ -1,4 +1,4 @@
-FROM debian:buster-slim
+FROM debian:bullseye-slim
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -7,7 +7,7 @@ RUN apt-get install -y wget unzip lsb-release
 RUN wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
 RUN echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/php.list
 RUN apt-get update
-RUN apt-get install -y php8.0 php8.0-cli php8.0-fpm php8.0-mysqlnd php8.0-dom php8.0-mbstring php8.0-intl php8.0-xdebug php8.0-curl php8.0-gd
+RUN apt-get install -y php8.0 php8.0-cli php8.0-fpm php8.0-mysqlnd php8.0-dom php8.0-mbstring php8.0-intl php8.0-xdebug php8.0-curl php8.0-gd php8.0-zip
 RUN apt-get install -y nginx
 
 RUN apt-get update && apt-get install -y php8.0-dev php-pear && \
@@ -16,12 +16,6 @@ RUN apt-get update && apt-get install -y php8.0-dev php-pear && \
     bash -c "echo extension=redis.so | tee /etc/php/8.0/{fpm,cli}/conf.d/30-redis.ini > /dev/null"
 
 RUN wget --no-verbose https://getcomposer.org/installer -O - -q | php -- --install-dir=/usr/local/bin/ --filename=composer --quiet
-
-RUN apt-get install -y fontconfig xfonts-base xfonts-75dpi libxrender1 libxext6
-ARG wkhtml_filename=wkhtmltox_0.12.6-1.buster_amd64.deb
-RUN wget -q https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/$wkhtml_filename && \
-	dpkg -i $wkhtml_filename && \
-	rm $wkhtml_filename
 
 RUN apt-get install -y cron
 COPY docker/api/crontab.txt /tmp/crontab

@@ -2,16 +2,15 @@
 
 namespace Reconmap\Controllers\Reports;
 
+use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
-use Reconmap\Models\ReportConfiguration;
 use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Repositories\ProjectRepository;
-use Reconmap\Repositories\ReportConfigurationRepository;
 use Reconmap\Repositories\ReportRepository;
 use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\Filesystem\AttachmentFilePath;
-use Reconmap\Services\ReportGenerator;
+use Reconmap\Services\Reporting\ReportDataCollector;
 
 class CreateReportControllerTest extends TestCase
 {
@@ -24,11 +23,15 @@ class CreateReportControllerTest extends TestCase
             ->willReturn(9);
         $mockRequest->expects($this->once())
             ->method('getBody')
-            ->willReturn('{"projectId": 5, "name": "1.0", "description": "Draft"}');
+            ->willReturn('{"projectId": 5, "reportTemplateId": 1, "name": "1.0", "description": "Draft"}');
 
         $mockProject = ['name' => 'A project'];
 
         $mockAttachmentFilePath = $this->createMock(AttachmentFilePath::class);
+        $mockAttachmentFilePath->expects($this->once())
+            ->method('generateFilePathFromAttachment')
+            ->willReturn(dirname(__DIR__, 3) . '/resources/templates/reports/default.docx');
+
         $mockProjectRepository = $this->createMock(ProjectRepository::class);
         $mockProjectRepository->expects($this->once())
             ->method('findById')
@@ -36,33 +39,45 @@ class CreateReportControllerTest extends TestCase
             ->willReturn($mockProject);
         $mockReportRepository = $this->createMock(ReportRepository::class);
 
-        $mockReportConfig = new ReportConfiguration();
-        $mockReportConfig->include_cover = 'none';
-        $mockReportConfig->include_header = 'none';
-        $mockReportConfig->include_footer = 'none';
-
-        $mockReportConfigurationRepository = $this->createMock(ReportConfigurationRepository::class);
-        $mockReportConfigurationRepository->expects($this->once())
-            ->method('findByProjectId')
-            ->willReturn($mockReportConfig);
-
         $mockAttachmentRepository = $this->createMock(AttachmentRepository::class);
-
-        $mockReportSections = ['body' => 'foo/bar'];
-        $mockReportGenerator = $this->createMock(ReportGenerator::class);
-        $mockReportGenerator->expects($this->once())
-            ->method('generate')
-            ->with(5)
-            ->willReturn($mockReportSections);
+        $mockAttachmentRepository->expects($this->once())
+            ->method('findByParentId')
+            ->with('report', 1)
+            ->willReturn([
+                ['client_file_name' => 'default-template.docx']
+            ]);
 
         $mockApplicationConfig = $this->createMock(ApplicationConfig::class);
         $mockApplicationConfig->expects($this->once())
             ->method('getAppDir')
-            ->willReturn(__DIR__);
+            ->willReturn(dirname(__DIR__, 3));
 
-        $controller = new CreateReportController($mockAttachmentFilePath, $mockProjectRepository, $mockReportRepository, $mockReportConfigurationRepository, $mockAttachmentRepository, $mockReportGenerator, $mockApplicationConfig);
+        $vars = [
+            'configuration' => [],
+            'project' => [],
+            'org' => [],
+            'date' => date('Y-m-d'),
+            'reports' => [],
+            'markdownParser' => [],
+            'client' => null,
+            'targets' => [],
+            'tasks' => [],
+            'vulnerabilities' => [],
+            'findingsOverview' => [],
+            'users' => [],
+        ];
+
+        $mockReportDataCollector = $this->createMock(ReportDataCollector::class);
+        $mockReportDataCollector->expects($this->once())
+            ->method('collectForProject')
+            ->willReturn($vars);
+
+        $controller = new CreateReportController($mockAttachmentFilePath, $mockProjectRepository, $mockReportRepository, $mockAttachmentRepository, $mockReportDataCollector, $mockApplicationConfig);
+        $controller->setLogger($this->createMock(Logger::class));
         $response = $controller($mockRequest);
 
-        $this->assertEquals([0, 0], $response);
+        $expectedAttachmentIds = [0];
+
+        $this->assertEquals($expectedAttachmentIds, $response);
     }
 }

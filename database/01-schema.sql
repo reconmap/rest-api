@@ -262,6 +262,9 @@ CREATE TABLE report
     project_id          INT UNSIGNED NOT NULL REFERENCES project,
     generated_by_uid    INT UNSIGNED NOT NULL REFERENCES user,
     insert_ts           TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    is_template         BOOLEAN      NOT NULL DEFAULT FALSE,
+
     version_name        VARCHAR(50)  NOT NULL COMMENT 'eg 1.0, 202103',
     version_description VARCHAR(300) NOT NULL COMMENT 'eg Initial, Reviewed, In progress, Draft, Final',
 
@@ -272,18 +275,8 @@ DROP TABLE IF EXISTS report_configuration;
 
 CREATE TABLE report_configuration
 (
-    id                        INT UNSIGNED                       NOT NULL AUTO_INCREMENT,
-    project_id                INT UNSIGNED                       NOT NULL REFERENCES project,
-    include_toc               BOOL                               NOT NULL DEFAULT TRUE,
-    include_revisions_table   BOOL                               NOT NULL DEFAULT TRUE,
-    include_team_bios         BOOL                               NOT NULL DEFAULT TRUE,
-    include_findings_overview BOOL                               NOT NULL DEFAULT TRUE,
-    include_cover             ENUM ('default', 'none', 'custom') NOT NULL DEFAULT 'default',
-    include_header            ENUM ('default', 'none', 'custom') NOT NULL DEFAULT 'default',
-    include_footer            ENUM ('default', 'none', 'custom') NOT NULL DEFAULT 'default',
-    custom_cover              TEXT                               NULL,
-    custom_header             TEXT                               NULL,
-    custom_footer             TEXT                               NULL,
+    id         INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    project_id INT UNSIGNED NOT NULL REFERENCES project,
 
     PRIMARY KEY (id),
     UNIQUE (project_id)
@@ -342,3 +335,11 @@ CREATE TABLE attachment
 ) ENGINE = InnoDB;
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+INSERT INTO report (project_id, generated_by_uid, is_template, version_name, version_description)
+VALUES (0, 0, 1, 'Default', 'Default report template');
+
+INSERT INTO attachment (parent_type, parent_id, submitter_uid, client_file_name, file_name, file_size, file_mimetype,
+                        file_hash)
+VALUES ('report', LAST_INSERT_ID(), 0, 'default-report-template.docx', 'default-report-template.docx', 0,
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document', '');

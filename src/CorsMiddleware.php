@@ -11,7 +11,7 @@ use Reconmap\Services\ApplicationConfig;
 
 class CorsMiddleware implements MiddlewareInterface
 {
-    public function __construct(private Logger $logger,
+    public function __construct(private Logger            $logger,
                                 private ApplicationConfig $config)
     {
     }

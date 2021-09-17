@@ -2,6 +2,7 @@
 
 namespace Reconmap\Processors;
 
+use League\HTMLToMarkdown\HtmlConverter;
 use Reconmap\Models\Vulnerability;
 
 class BurpproOutputProcessor extends AbstractCommandParser implements VulnerabilityParser
@@ -12,6 +13,8 @@ class BurpproOutputProcessor extends AbstractCommandParser implements Vulnerabil
 
         $xml = simplexml_load_file($path);
         $this->logger->debug('Burp version: ' . (string)$xml['burpVersion']);
+
+        $markdown = new HtmlConverter();
 
         foreach ($xml->issue as $rawVulnerability) {
             $pluginName = (string)$rawVulnerability->plugin_name;
@@ -24,7 +27,9 @@ class BurpproOutputProcessor extends AbstractCommandParser implements Vulnerabil
 
             $vulnerability = new Vulnerability();
             $vulnerability->summary = (string)$rawVulnerability->name;
-            $vulnerability->description = preg_replace('/^ +/', '', (string)$rawVulnerability->issueDetail);
+            $htmlDescription = (string)$rawVulnerability->issueDetail;
+            $description = $markdown->convert($htmlDescription);
+            $vulnerability->description = preg_replace('/^ +/', '', $description);
             $vulnerability->risk = $risk;
             $vulnerability->remediation = $remediation;
 

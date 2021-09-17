@@ -6,7 +6,7 @@ use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Services\ReportGenerator;
+use Reconmap\Services\Reporting\ReportGenerator;
 
 class GetReportPreviewController extends Controller
 {
