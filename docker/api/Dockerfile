@@ -31,7 +31,7 @@ RUN sed -i 's/post_max_size = [[:digit:]]\+M/post_max_size = 28M/' /etc/php/8.0/
 WORKDIR /var/www/webapp
 COPY composer.json /var/www/webapp
 COPY composer.lock /var/www/webapp
-RUN composer install
+RUN composer install --no-progress --optimize-autoloader
 
 RUN mkdir -p data/attachments && chown www-data data/attachments
 RUN mkdir logs && chown www-data logs && chmod a+w logs
