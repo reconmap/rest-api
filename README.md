@@ -3,22 +3,15 @@
 [![codecov](https://codecov.io/gh/reconmap/rest-api/branch/master/graph/badge.svg?token=VTC6RAM41Q)](https://codecov.io/gh/reconmap/rest-api)
 [![Gitter](https://badges.gitter.im/reconmap/community.svg)](https://gitter.im/reconmap/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-![Reconmap logo](https://pasteall.org/media/4/7/4780c30723f90cfd56ec0d056555b7e6.png)
+# Reconmap Rest API
 
-# Reconmap
+The Reconmap API is a RESTful API that allows any of the clients (Web, CLI, Mobile) to manipulate any of the Reconmap's
+entities: projects, tasks, commands, reports, users, etc. With the API you can extend Reconmap in any way you can
+imagine.
 
-Project planning, implementation and documentation for security professionals and teams. From recon to report in the
-least possible time.
+This is a component of many in the [Reconmap's architecture](https://reconmap.org/development/architecture.html).
 
-## Demo
-
-A running demo is available for you to try here: https://demo.reconmap.org
-
-User: admin
-
-Password: admin123
-
-## Requirements
+## Runtime requirements
 
 - Docker
 - Docker compose
@@ -35,26 +28,26 @@ The first thing you need to do is build the containers and prepare the app. This
 make target:
 
 ```sh
-$ make
+make
 ```
 
 Once the containers are built, and the app prepared, you can run the docker services with the following command:
 
 ```sh
-$ make start
+make start
 ```
 
 If everything went ok you should be able to use curl or any other HTTP client (eg your browser) to call the API:
 
 ```sh
-$ curl http://localhost:8080
+curl http://localhost:8080
 ```
 
 Alternatively, you could run the Reconmap [frontend](https://github.com/Reconmap/web-client) against your local API with
 the following commands:
 
 ```sh
-$ cat <<EOF > environment.js
+cat <<EOF > environment.js
 window.env = {
 	// URL to the Reconmap API including protocol and port but not trailing slash
     REACT_APP_API_ENDPOINT: 'http://localhost:8080',
@@ -63,7 +56,7 @@ window.env = {
     REACT_APP_WS_ENDPOINT: 'ws://localhost:8765'
 };
 EOF
-$ docker run --rm -d -p 3001:80 \
+docker run --rm -d -p 3001:80 \
 	-v "$PWD/environment.js:/usr/share/nginx/html/environment.js" \
 	--name reconmap-web-client quay.io/reconmap/web-client:master
 ```
