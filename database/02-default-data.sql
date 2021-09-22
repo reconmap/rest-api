@@ -25,3 +25,11 @@ VALUES ('Access Controls', 'Related to authorization of users, and assessment of
 TRUNCATE TABLE organisation;
 INSERT INTO organisation (name, url, contact_email)
 VALUES ('Reconmap default org', 'https://reconmap.org', 'no-reply@reconmap.org');
+
+INSERT INTO report (project_id, generated_by_uid, is_template, version_name, version_description)
+VALUES (0, 0, 1, 'Default', 'Default report template');
+
+INSERT INTO attachment (parent_type, parent_id, submitter_uid, client_file_name, file_name, file_size, file_mimetype,
+                        file_hash)
+VALUES ('report', LAST_INSERT_ID(), 0, 'default-report-template.docx', 'default-report-template.docx', 0,
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document', '');

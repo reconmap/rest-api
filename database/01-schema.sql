@@ -92,7 +92,8 @@ CREATE TABLE project
     archive_ts            TIMESTAMP                                NULL,
 
     PRIMARY KEY (id),
-    UNIQUE KEY (name)
+    UNIQUE KEY (name),
+    KEY (is_template)
 ) ENGINE = InnoDB;
 
 DROP VIEW IF EXISTS project_template;
@@ -189,7 +190,9 @@ CREATE TABLE vulnerability
     substatus              ENUM ('reported', 'unresolved', 'unexploited', 'exploited', 'remediated', 'mitigated', 'rejected') NULL     DEFAULT 'reported',
     tags                   JSON                                                                                               NULL,
 
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    UNIQUE KEY (project_id, target_id, summary),
+    KEY (is_template)
 ) ENGINE = InnoDB;
 
 DROP VIEW IF EXISTS vulnerability_template;
@@ -268,7 +271,8 @@ CREATE TABLE report
     version_name        VARCHAR(50)  NOT NULL COMMENT 'eg 1.0, 202103',
     version_description VARCHAR(300) NOT NULL COMMENT 'eg Initial, Reviewed, In progress, Draft, Final',
 
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    KEY (is_template)
 ) ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS report_configuration;
@@ -335,11 +339,3 @@ CREATE TABLE attachment
 ) ENGINE = InnoDB;
 
 SET FOREIGN_KEY_CHECKS = 1;
-
-INSERT INTO report (project_id, generated_by_uid, is_template, version_name, version_description)
-VALUES (0, 0, 1, 'Default', 'Default report template');
-
-INSERT INTO attachment (parent_type, parent_id, submitter_uid, client_file_name, file_name, file_size, file_mimetype,
-                        file_hash)
-VALUES ('report', LAST_INSERT_ID(), 0, 'default-report-template.docx', 'default-report-template.docx', 0,
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document', '');
