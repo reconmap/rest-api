@@ -67,7 +67,7 @@ services:
     container_name: rmap-wss
     image: quay.io/reconmap/ws-server:latest
     ports:
-      - 8765:8765
+      - 4040:8765
     environment:
       VALID_ORIGINS: http://localhost:3001
       REDIS_HOST: redis://redis
