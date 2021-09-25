@@ -5,7 +5,7 @@ namespace Reconmap\Repositories;
 use Reconmap\Models\Target;
 use Reconmap\Repositories\QueryBuilders\SearchCriteria;
 use Reconmap\Repositories\QueryBuilders\SelectQueryBuilder;
-use Reconmap\Services\RequestPaginator;
+use Reconmap\Services\PaginationRequestHandler;
 
 class TargetRepository extends MysqlRepository implements Findable
 {
@@ -60,7 +60,7 @@ class TargetRepository extends MysqlRepository implements Findable
         return $target;
     }
 
-    public function search(SearchCriteria $searchCriteria, ?RequestPaginator $paginator = null): array
+    public function search(SearchCriteria $searchCriteria, ?PaginationRequestHandler $paginator = null): array
     {
         $queryBuilder = $this->getBaseSelectQueryBuilder();
         return $this->searchAll($queryBuilder, $searchCriteria, $paginator);

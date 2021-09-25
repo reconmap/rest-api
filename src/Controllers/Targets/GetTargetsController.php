@@ -8,7 +8,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\QueryBuilders\SearchCriteria;
 use Reconmap\Repositories\TargetRepository;
-use Reconmap\Services\RequestPaginator;
+use Reconmap\Services\PaginationRequestHandler;
 
 class GetTargetsController extends Controller
 {
@@ -26,7 +26,7 @@ class GetTargetsController extends Controller
             $searchCriteria->addCriterion('t.project_id = ?', [intval($params['projectId'])]);
         }
 
-        $paginator = new RequestPaginator($request);
+        $paginator = new PaginationRequestHandler($request);
         $targets = $this->repository->search($searchCriteria, $paginator);
         $count = $this->repository->countSearch($searchCriteria);
 

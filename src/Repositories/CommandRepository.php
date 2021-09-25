@@ -6,7 +6,7 @@ use Reconmap\Models\Command;
 use Reconmap\Repositories\QueryBuilders\InsertQueryBuilder;
 use Reconmap\Repositories\QueryBuilders\SearchCriteria;
 use Reconmap\Repositories\QueryBuilders\SelectQueryBuilder;
-use Reconmap\Services\RequestPaginator;
+use Reconmap\Services\PaginationRequestHandler;
 
 class CommandRepository extends MysqlRepository
 {
@@ -55,7 +55,7 @@ SQL;
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
-    public function search(SearchCriteria $searchCriteria, ?RequestPaginator $paginator = null): array
+    public function search(SearchCriteria $searchCriteria, ?PaginationRequestHandler $paginator = null): array
     {
         $queryBuilder = $this->getBaseSelectQueryBuilder();
         $queryBuilder->setOrderBy('c.name ASC');

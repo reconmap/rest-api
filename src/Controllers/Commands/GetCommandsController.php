@@ -6,7 +6,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\CommandRepository;
 use Reconmap\Repositories\SearchCriterias\CommandSearchCriteria;
-use Reconmap\Services\RequestPaginator;
+use Reconmap\Services\PaginationRequestHandler;
 
 class GetCommandsController extends Controller
 {
@@ -22,7 +22,7 @@ class GetCommandsController extends Controller
             $this->searchCriteria->addKeywordsCriterion($params['keywords']);
         }
 
-        $paginator = new RequestPaginator($request);
+        $paginator = new PaginationRequestHandler($request);
 
         return $this->repository->search($this->searchCriteria, $paginator);
     }

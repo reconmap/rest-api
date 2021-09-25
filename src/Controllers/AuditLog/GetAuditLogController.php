@@ -7,7 +7,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\AuditLogRepository;
-use Reconmap\Services\RequestPaginator;
+use Reconmap\Services\PaginationRequestHandler;
 
 class GetAuditLogController extends Controller
 {
@@ -19,7 +19,7 @@ class GetAuditLogController extends Controller
 
     public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
-        $paginator = new RequestPaginator($request);
+        $paginator = new PaginationRequestHandler($request);
         $params = $request->getQueryParams();
         $currentPage = $paginator->getCurrentPage();
         $limit = isset($params['limit']) ? intval($params['limit']) : self::PAGE_LIMIT;

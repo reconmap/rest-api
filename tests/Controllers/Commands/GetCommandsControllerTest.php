@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Repositories\CommandRepository;
 use Reconmap\Repositories\SearchCriterias\CommandSearchCriteria;
-use Reconmap\Services\RequestPaginator;
+use Reconmap\Services\PaginationRequestHandler;
 
 class GetCommandsControllerTest extends TestCase
 {
@@ -20,7 +20,7 @@ class GetCommandsControllerTest extends TestCase
         $mockRepository = $this->createMock(CommandRepository::class);
         $mockRepository->expects($this->once())
             ->method('search')
-            ->with($this->isInstanceOf(CommandSearchCriteria::class), $this->isInstanceOf(RequestPaginator::class))
+            ->with($this->isInstanceOf(CommandSearchCriteria::class), $this->isInstanceOf(PaginationRequestHandler::class))
             ->willReturn([]);
 
         $mockSearchCriteria = $this->createMock(CommandSearchCriteria::class);

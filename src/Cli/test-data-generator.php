@@ -20,12 +20,15 @@ set_error_handler(function ($errno, $errstr, $errfile, $errline) use ($logger) {
 $configFilePath = $applicationDir . '/config.json';
 $config = ApplicationConfig::load($configFilePath);
 $config->setAppDir($applicationDir);
-$config['database'] = [
-    'host' => 'rmap-mysql',
-    'username' => 'reconmapper',
-    'password' => 'reconmapped',
-    'name' => 'reconmap_test'
-];
+
+if (!in_array('--use-default-database', $argv)) {
+    $config['database'] = [
+        'host' => 'rmap-mysql',
+        'username' => 'reconmapper',
+        'password' => 'reconmapped',
+        'name' => 'reconmap_test'
+    ];
+}
 
 $container = new ApplicationContainer($config, $logger);
 

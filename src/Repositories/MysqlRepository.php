@@ -3,10 +3,10 @@
 namespace Reconmap\Repositories;
 
 use Reconmap\Repositories\QueryBuilders\DeleteQueryBuilder;
-use Reconmap\Repositories\QueryBuilders\QueryBuilder;
 use Reconmap\Repositories\QueryBuilders\SearchCriteria;
+use Reconmap\Repositories\QueryBuilders\SelectQueryBuilder;
 use Reconmap\Repositories\QueryBuilders\UpdateQueryBuilder;
-use Reconmap\Services\RequestPaginator;
+use Reconmap\Services\PaginationRequestHandler;
 
 abstract class MysqlRepository
 {
@@ -76,7 +76,7 @@ abstract class MysqlRepository
         return $success;
     }
 
-    protected function searchAll(QueryBuilder $queryBuilder, SearchCriteria $searchCriteria, ?RequestPaginator $paginator = null): array
+    protected function searchAll(SelectQueryBuilder $queryBuilder, SearchCriteria $searchCriteria, ?PaginationRequestHandler $paginator = null, ?string $orderBy = null): array
     {
         if ($searchCriteria->hasCriteria()) {
             $criteriaSql = implode(' AND ', $searchCriteria->getCriteria());
@@ -85,6 +85,10 @@ abstract class MysqlRepository
 
         if ($paginator) {
             $queryBuilder->setLimit('?, ?');
+        }
+
+        if ($orderBy) {
+            $queryBuilder->setOrderBy($orderBy);
         }
 
         $sql = $queryBuilder->toSql();

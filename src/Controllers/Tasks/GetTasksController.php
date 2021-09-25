@@ -6,7 +6,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\QueryBuilders\SearchCriteria;
 use Reconmap\Repositories\TaskRepository;
-use Reconmap\Services\RequestPaginator;
+use Reconmap\Services\PaginationRequestHandler;
 
 class GetTasksController extends Controller
 {
@@ -17,7 +17,7 @@ class GetTasksController extends Controller
     public function __invoke(ServerRequestInterface $request): array
     {
         $params = $request->getQueryParams();
-        $paginator = new RequestPaginator($request);
+        $paginator = new PaginationRequestHandler($request);
 
         $searchCriteria = new SearchCriteria();
 

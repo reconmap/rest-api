@@ -4,12 +4,12 @@ namespace Reconmap\Services;
 
 use Psr\Http\Message\ServerRequestInterface;
 
-class RequestPaginator
+class PaginationRequestHandler
 {
     private array $queryParams;
 
     public function __construct(ServerRequestInterface $request,
-                                private int $resultsPerPage = 20)
+                                private int            $resultsPerPage = 20)
     {
         $this->queryParams = $request->getQueryParams();
     }

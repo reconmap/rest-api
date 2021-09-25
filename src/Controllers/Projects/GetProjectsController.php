@@ -6,7 +6,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\ProjectRepository;
 use Reconmap\Repositories\SearchCriterias\ProjectSearchCriteria;
-use Reconmap\Services\RequestPaginator;
+use Reconmap\Services\PaginationRequestHandler;
 
 class GetProjectsController extends Controller
 {
@@ -44,7 +44,7 @@ class GetProjectsController extends Controller
             $searchCriteria->addCriterion('(p.visibility = "PUBLIC" OR ? IN (SELECT user_id FROM project_user WHERE project_id = p.id))', [$user->id]);
         }
 
-        $paginator = new RequestPaginator($request);
+        $paginator = new PaginationRequestHandler($request);
         return $this->projectRepository->search($searchCriteria, $paginator);
     }
 }

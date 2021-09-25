@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Repositories\QueryBuilders\SearchCriteria;
 use Reconmap\Repositories\TaskRepository;
-use Reconmap\Services\RequestPaginator;
+use Reconmap\Services\PaginationRequestHandler;
 
 class GetTasksControllerTest extends TestCase
 {
@@ -18,8 +18,8 @@ class GetTasksControllerTest extends TestCase
             ->willReturn([]);
 
         $searchCriteria = new SearchCriteria();
-		$searchCriteria->addCriterion('p.is_template = 0');
-        $paginator = new RequestPaginator($mockRequest);
+        $searchCriteria->addCriterion('p.is_template = 0');
+        $paginator = new PaginationRequestHandler($mockRequest);
 
         $mockRepository = $this->createMock(TaskRepository::class);
         $mockRepository->expects($this->once())

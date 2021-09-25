@@ -15,7 +15,7 @@ class RequestPaginatorTest extends TestCase
             ->method('getQueryParams')
             ->willReturn(['page' => 5]);
 
-        $paginator = new RequestPaginator($mockRequest);
+        $paginator = new PaginationRequestHandler($mockRequest);
         $this->assertEquals(5, $paginator->getCurrentPage());
     }
 
@@ -26,7 +26,7 @@ class RequestPaginatorTest extends TestCase
             ->method('getQueryParams')
             ->willReturn([]);
 
-        $paginator = new RequestPaginator($mockRequest);
+        $paginator = new PaginationRequestHandler($mockRequest);
         $this->assertEquals(45, $paginator->calculatePageCount(900));
     }
 
@@ -37,7 +37,7 @@ class RequestPaginatorTest extends TestCase
             ->method('getQueryParams')
             ->willReturn([]);
 
-        $paginator = new RequestPaginator($mockRequest);
+        $paginator = new PaginationRequestHandler($mockRequest);
         $this->assertEquals(20, $paginator->getLimitPerPage());
     }
 
@@ -48,7 +48,7 @@ class RequestPaginatorTest extends TestCase
             ->method('getQueryParams')
             ->willReturn(['limit' => 5]);
 
-        $paginator = new RequestPaginator($mockRequest);
+        $paginator = new PaginationRequestHandler($mockRequest);
         $this->assertEquals(5, $paginator->getLimitPerPage());
     }
 }

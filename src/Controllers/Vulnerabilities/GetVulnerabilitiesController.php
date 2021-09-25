@@ -9,7 +9,8 @@ use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\SearchCriterias\VulnerabilitySearchCriteria;
 use Reconmap\Repositories\VulnerabilityRepository;
 use Reconmap\Repositories\VulnerabilityStatsRepository;
-use Reconmap\Services\RequestPaginator;
+use Reconmap\Services\PaginationRequestHandler;
+use Reconmap\Services\QueryParams\OrderByRequestHandler;
 
 class GetVulnerabilitiesController extends Controller
 {
@@ -46,8 +47,9 @@ class GetVulnerabilitiesController extends Controller
             $this->searchCriteria->addPublicVisibilityCriterion();
         }
 
-        $paginator = new RequestPaginator($request);
-        $vulnerabilities = $this->repository->search($this->searchCriteria, $paginator);
+        $orderByParser = new OrderByRequestHandler($params, 'insert_ts', validColumns: $this->repository->getSortableColumns());
+        $paginator = new PaginationRequestHandler($request);
+        $vulnerabilities = $this->repository->search($this->searchCriteria, $paginator, $orderByParser->toSql());
 
         $count = $this->statsRepository->countAll();
         $pageCount = $paginator->calculatePageCount($count);
