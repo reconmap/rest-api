@@ -56,7 +56,11 @@ class CreateReportController extends Controller
 
         $versionName = $params['name'];
 
-        $reportTemplateAttachment = $this->attachmentRepository->findByParentId('report', $reportTemplateId)[0];
+        $attachments = $this->attachmentRepository->findByParentId('report', $reportTemplateId);
+        if (empty($attachments)) {
+            throw new \Exception("Report template with template id $reportTemplateId not found");
+        }
+        $reportTemplateAttachment = $attachments[0];
 
         $report = new Report();
         $report->generatedByUid = $userId;
@@ -78,8 +82,6 @@ class CreateReportController extends Controller
         $vars = $this->reportDataCollector->collectForProject($projectId);
 
         $attachmentIds = [];
-
-        $appDir = $this->applicationConfig->getAppDir();
 
         try {
             $templateFilePath = $this->attachmentFilePathService->generateFilePathFromAttachment($reportTemplateAttachment);
@@ -120,13 +122,17 @@ class CreateReportController extends Controller
             $template->cloneBlock('vulnerabilities', count($vars['vulnerabilities']), true, true);
             foreach ($vars['vulnerabilities'] as $index => $vulnerability) {
                 $template->setValue('vulnerability.name#' . ($index + 1), $vulnerability['summary']);
-                $description = $markdownParser->convertToHtml($vulnerability['description']);
 
-                $tempTable = $word->addSection()->addTable();
-                $cell = $tempTable->addRow()->addCell();
-                Html::addHtml($cell, $description);
+                if (!is_null($vulnerability['description'])) {
+                    $description = $markdownParser->convertToHtml($vulnerability['description']);
 
-                $template->setComplexBlock('vulnerability.description#' . ($index + 1), $tempTable);
+                    $tempTable = $word->addSection()->addTable();
+                    $cell = $tempTable->addRow()->addCell();
+                    Html::addHtml($cell, $description);
+
+                    $template->setComplexBlock('vulnerability.description#' . ($index + 1), $tempTable);
+                }
+
                 $template->setValue('vulnerability.category_name#' . ($index + 1), $vulnerability['category_name']);
                 $template->setValue('vulnerability.cvss_score#' . ($index + 1), $vulnerability['cvss_score']);
                 $template->setValue('vulnerability.severity#' . ($index + 1), $vulnerability['risk']);

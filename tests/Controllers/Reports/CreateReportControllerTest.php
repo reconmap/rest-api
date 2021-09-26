@@ -48,9 +48,6 @@ class CreateReportControllerTest extends TestCase
             ]);
 
         $mockApplicationConfig = $this->createMock(ApplicationConfig::class);
-        $mockApplicationConfig->expects($this->once())
-            ->method('getAppDir')
-            ->willReturn(dirname(__DIR__, 3));
 
         $vars = [
             'configuration' => [],
