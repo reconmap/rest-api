@@ -16,10 +16,8 @@ class ReportGenerator
     {
         $vars = $this->reportDataCollector->collectForProject($projectId);
 
-        $components = [
+        return [
             'body' => $this->templateEngine->render('reports/body', $vars)
         ];
-
-        return $components;
     }
 }

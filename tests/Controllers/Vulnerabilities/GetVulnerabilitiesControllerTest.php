@@ -37,6 +37,6 @@ class GetVulnerabilitiesControllerTest extends TestCase
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals(2, $response->getHeaderLine('X-Page-Count'));
-        $this->assertEquals('X-Page-Count', $response->getHeaderLine('Access-Control-Expose-Headers'));
+        $this->assertEquals('X-Total-Count,X-Page-Count', $response->getHeaderLine('Access-Control-Expose-Headers'));
     }
 }

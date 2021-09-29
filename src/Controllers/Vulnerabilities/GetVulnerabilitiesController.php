@@ -57,7 +57,8 @@ class GetVulnerabilitiesController extends Controller
         $response = new Response;
         $response->getBody()->write(json_encode($vulnerabilities));
         return $response
-            ->withHeader('Access-Control-Expose-Headers', 'X-Page-Count')
+            ->withHeader('Access-Control-Expose-Headers', 'X-Total-Count,X-Page-Count')
+            ->withHeader('X-Total-Count', $count)
             ->withHeader('X-Page-Count', $pageCount);
     }
 }
