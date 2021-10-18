@@ -69,9 +69,7 @@ class TargetRepository extends MysqlRepository implements Findable
     public function countSearch(SearchCriteria $searchCriteria): int
     {
         $queryBuilder = $this->getBaseSelectQueryBuilder();
-        $queryBuilder->setColumns('COUNT(*) AS total');
-        $results = $this->searchAll($queryBuilder, $searchCriteria);
-        return $results[0]['total'];
+        return $this->countSearchResults($queryBuilder, $searchCriteria);
     }
 
     public function deleteById(int $id): bool

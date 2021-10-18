@@ -6,7 +6,6 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Repositories\SearchCriterias\VulnerabilitySearchCriteria;
 use Reconmap\Repositories\VulnerabilityRepository;
-use Reconmap\Repositories\VulnerabilityStatsRepository;
 
 class GetVulnerabilitiesControllerTest extends TestCase
 {
@@ -21,22 +20,20 @@ class GetVulnerabilitiesControllerTest extends TestCase
         $mockRepository->expects($this->once())
             ->method('search')
             ->willReturn([]);
+        $mockRepository->expects($this->once())
+            ->method('count')
+            ->willReturn(16);
 
         $mockSearchCriteria = $this->createMock(VulnerabilitySearchCriteria::class);
         $mockSearchCriteria->expects($this->once())
             ->method('addKeywordsCriterion')
             ->with('foo');
 
-        $mockStatsRepository = $this->createMock(VulnerabilityStatsRepository::class);
-        $mockStatsRepository->expects($this->once())
-            ->method('countAll')
-            ->willReturn(32);
-
-        $controller = new GetVulnerabilitiesController($mockRepository, $mockSearchCriteria, $mockStatsRepository);
+        $controller = new GetVulnerabilitiesController($mockRepository, $mockSearchCriteria);
         $response = $controller($mockRequest);
 
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals(2, $response->getHeaderLine('X-Page-Count'));
+        $this->assertEquals(1, $response->getHeaderLine('X-Page-Count'));
         $this->assertEquals('X-Total-Count,X-Page-Count', $response->getHeaderLine('Access-Control-Expose-Headers'));
     }
 }

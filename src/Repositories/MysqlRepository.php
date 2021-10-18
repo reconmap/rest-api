@@ -3,6 +3,7 @@
 namespace Reconmap\Repositories;
 
 use Reconmap\Repositories\QueryBuilders\DeleteQueryBuilder;
+use Reconmap\Repositories\QueryBuilders\QueryBuilder;
 use Reconmap\Repositories\QueryBuilders\SearchCriteria;
 use Reconmap\Repositories\QueryBuilders\SelectQueryBuilder;
 use Reconmap\Repositories\QueryBuilders\UpdateQueryBuilder;
@@ -107,5 +108,12 @@ abstract class MysqlRepository
         $stmt->execute();
         $result = $stmt->get_result();
         return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    protected function countSearchResults(QueryBuilder $queryBuilder, SearchCriteria $searchCriteria): int
+    {
+        $queryBuilder->setColumns('COUNT(*) AS total');
+        $results = $this->searchAll($queryBuilder, $searchCriteria);
+        return $results[0]['total'];
     }
 }
