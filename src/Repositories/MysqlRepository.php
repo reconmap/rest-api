@@ -2,11 +2,11 @@
 
 namespace Reconmap\Repositories;
 
-use Reconmap\Repositories\QueryBuilders\DeleteQueryBuilder;
-use Reconmap\Repositories\QueryBuilders\QueryBuilder;
-use Reconmap\Repositories\QueryBuilders\SearchCriteria;
-use Reconmap\Repositories\QueryBuilders\SelectQueryBuilder;
-use Reconmap\Repositories\QueryBuilders\UpdateQueryBuilder;
+use Ponup\SqlBuilders\DeleteQueryBuilder;
+use Ponup\SqlBuilders\QueryBuilder;
+use Ponup\SqlBuilders\SearchCriteria;
+use Ponup\SqlBuilders\SelectQueryBuilder;
+use Ponup\SqlBuilders\UpdateQueryBuilder;
 use Reconmap\Services\PaginationRequestHandler;
 
 abstract class MysqlRepository

@@ -2,9 +2,9 @@
 
 namespace Reconmap\Controllers\Tasks;
 
+use Ponup\SqlBuilders\SearchCriteria;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Repositories\QueryBuilders\SearchCriteria;
 use Reconmap\Repositories\TaskRepository;
 use Reconmap\Services\PaginationRequestHandler;
 

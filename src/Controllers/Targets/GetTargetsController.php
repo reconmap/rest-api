@@ -6,7 +6,7 @@ use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Repositories\QueryBuilders\SearchCriteria;
+use Ponup\SqlBuilders\SearchCriteria;
 use Reconmap\Repositories\TargetRepository;
 use Reconmap\Services\PaginationRequestHandler;
 

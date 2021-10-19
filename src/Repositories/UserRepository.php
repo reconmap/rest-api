@@ -2,9 +2,9 @@
 
 namespace Reconmap\Repositories;
 
+use Ponup\SqlBuilders\InsertQueryBuilder;
+use Ponup\SqlBuilders\SelectQueryBuilder;
 use Reconmap\Models\User;
-use Reconmap\Repositories\QueryBuilders\InsertQueryBuilder;
-use Reconmap\Repositories\QueryBuilders\SelectQueryBuilder;
 
 class UserRepository extends MysqlRepository
 {

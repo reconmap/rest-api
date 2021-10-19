@@ -2,7 +2,7 @@
 
 namespace Reconmap\Repositories\SearchCriterias;
 
-use Reconmap\Repositories\QueryBuilders\SearchCriteria;
+use Ponup\SqlBuilders\SearchCriteria;
 
 class TaskSearchCriteria extends SearchCriteria
 {

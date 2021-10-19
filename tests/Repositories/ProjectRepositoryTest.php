@@ -2,9 +2,9 @@
 
 namespace Reconmap\Repositories;
 
+use Ponup\SqlBuilders\SearchCriteria;
 use Reconmap\DatabaseTestCase;
 use Reconmap\Models\Project;
-use Reconmap\Repositories\QueryBuilders\SearchCriteria;
 
 class ProjectRepositoryTest extends DatabaseTestCase
 {

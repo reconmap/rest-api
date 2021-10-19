@@ -2,10 +2,10 @@
 
 namespace Reconmap\Repositories;
 
+use Ponup\SqlBuilders\InsertQueryBuilder;
+use Ponup\SqlBuilders\SearchCriteria;
+use Ponup\SqlBuilders\SelectQueryBuilder;
 use Reconmap\Models\Command;
-use Reconmap\Repositories\QueryBuilders\InsertQueryBuilder;
-use Reconmap\Repositories\QueryBuilders\SearchCriteria;
-use Reconmap\Repositories\QueryBuilders\SelectQueryBuilder;
 use Reconmap\Services\PaginationRequestHandler;
 
 class CommandRepository extends MysqlRepository

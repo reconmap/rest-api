@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a4839b90672437fe962c2db43af3cd53",
+    "content-hash": "a32bb42a1f852607642904232eb8655c",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -2228,6 +2228,46 @@
                 "source": "https://github.com/PHPOffice/PHPWord/tree/0.18.2"
             },
             "time": "2021-06-04T20:58:45+00:00"
+        },
+        {
+            "name": "ponup/sql-builders",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Ponup/php-sql-builders.git",
+                "reference": "d68a26ea5400de6243ac97eeace4a83c2cfcab51"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Ponup/php-sql-builders/zipball/d68a26ea5400de6243ac97eeace4a83c2cfcab51",
+                "reference": "d68a26ea5400de6243ac97eeace4a83c2cfcab51",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Ponup\\SqlBuilders\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Santiago Lizardo",
+                    "email": "santiagolizardo@users.noreply.github.com"
+                }
+            ],
+            "description": "Library to ease the dynamic construction of SQL statements in PHP",
+            "support": {
+                "issues": "https://github.com/Ponup/php-sql-builders/issues",
+                "source": "https://github.com/Ponup/php-sql-builders/tree/1.0.0"
+            },
+            "time": "2021-10-19T11:36:56+00:00"
         },
         {
             "name": "pragmarx/google2fa",

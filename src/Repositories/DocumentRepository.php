@@ -2,8 +2,8 @@
 
 namespace Reconmap\Repositories;
 
+use Ponup\SqlBuilders\SelectQueryBuilder;
 use Reconmap\Models\Document;
-use Reconmap\Repositories\QueryBuilders\SelectQueryBuilder;
 
 class DocumentRepository extends MysqlRepository
 {

@@ -2,9 +2,9 @@
 
 namespace Reconmap\Repositories;
 
+use Ponup\SqlBuilders\InsertQueryBuilder;
+use Ponup\SqlBuilders\SelectQueryBuilder;
 use Reconmap\Models\Attachment;
-use Reconmap\Repositories\QueryBuilders\InsertQueryBuilder;
-use Reconmap\Repositories\QueryBuilders\SelectQueryBuilder;
 
 class AttachmentRepository extends MysqlRepository
 {

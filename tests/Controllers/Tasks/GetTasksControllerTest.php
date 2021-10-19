@@ -3,8 +3,8 @@
 namespace Reconmap\Controllers\Tasks;
 
 use PHPUnit\Framework\TestCase;
+use Ponup\SqlBuilders\SearchCriteria;
 use Psr\Http\Message\ServerRequestInterface;
-use Reconmap\Repositories\QueryBuilders\SearchCriteria;
 use Reconmap\Repositories\TaskRepository;
 use Reconmap\Services\PaginationRequestHandler;
 

@@ -2,9 +2,9 @@
 
 namespace Reconmap\Repositories;
 
+use Ponup\SqlBuilders\SearchCriteria;
+use Ponup\SqlBuilders\SelectQueryBuilder;
 use Reconmap\Models\Task;
-use Reconmap\Repositories\QueryBuilders\SearchCriteria;
-use Reconmap\Repositories\QueryBuilders\SelectQueryBuilder;
 use Reconmap\Services\PaginationRequestHandler;
 
 class TaskRepository extends MysqlRepository implements Findable
