@@ -29,6 +29,7 @@
         "monolog/monolog": "^2.1",
         "netresearch/jsonmapper": "^4.0",
         "phpoffice/phpword": "^0.18.2",
+        "ponup/sql-builders": "^1.0",
         "pragmarx/google2fa": "^8.0",
         "swiftmailer/swiftmailer": "^6.2",
         "symfony/filesystem": "^5.2",
