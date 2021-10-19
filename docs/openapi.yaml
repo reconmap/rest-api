@@ -409,6 +409,7 @@ paths:
       responses:
         '200':
           description: OK
+
   '/projects/{id}':
     get:
       tags:
@@ -434,6 +435,25 @@ paths:
       responses:
         '200':
           description: Succesfully deleted
+
+  '/projects/{id}/tasks':
+    get:
+      description: 'List all tasks for this project'
+      tags:
+        - Projects
+      parameters:
+        - $ref: '#/components/parameters/resourceId'
+      security:
+        - BearerAuth: [ ]
+      responses:
+        '200':
+          description: Succesfully retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: './schemas/Task.yaml'
 
   /reports:
     get:

@@ -89,23 +89,6 @@ class TaskRepository extends MysqlRepository implements Findable
         return $task;
     }
 
-    public function findByProjectId(int $projectId): array
-    {
-        $selectQueryBuilder = $this->getBaseSelectQueryBuilder();
-        $selectQueryBuilder->setWhere('project_id = ?');
-        $selectQueryBuilder->setLimit('20');
-        $sql = $selectQueryBuilder->toSql();
-
-        $stmt = $this->db->prepare($sql);
-        $stmt->bind_param('i', $projectId);
-        $stmt->execute();
-        $rs = $stmt->get_result();
-        $tasks = $rs->fetch_all(MYSQLI_ASSOC);
-        $stmt->close();
-
-        return $tasks;
-    }
-
     public function deleteById(int $id): bool
     {
         return $this->deleteByTableId('task', $id);
