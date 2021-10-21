@@ -65,6 +65,7 @@ class TaskResultProcessor implements ItemProcessor
                         } else {
                             $vulnerability->tags = [$outputParserName];
                         }
+
                         $vulnerability->tags = json_encode($vulnerability->tags);
                         $vulnerability->project_id = $task['project_id'];
                         if (empty($vulnerability->risk)) {
@@ -79,7 +80,6 @@ class TaskResultProcessor implements ItemProcessor
 
                         $vulnerability->target_id = $targetId;
 
-                        $this->logger->debug("AAA : " . get_class($vulnerability));
                         $this->vulnerabilityRepository->insert($vulnerability);
                     } catch (Exception $e) {
                         $this->logger->error($e->getMessage());

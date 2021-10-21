@@ -6,18 +6,16 @@ use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
 use Reconmap\CommandOutputParsers\NmapOutputProcessor;
 use Reconmap\CommandOutputParsers\ProcessorFactory;
-use Reconmap\Models\Vulnerability;
+use Reconmap\CommandOutputParsers\Vulnerability;
 use Reconmap\Repositories\TargetRepository;
 use Reconmap\Repositories\TaskRepository;
 use Reconmap\Repositories\VulnerabilityRepository;
-use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\RedisServer;
 
 class TaskResultProcessorTest extends TestCase
 {
     public function testSuccess()
     {
-        $mockAppConfig = $this->createMock(ApplicationConfig::class);
         $mockLogger = $this->createMock(Logger::class);
         $mockRedisServer = $this->createMock(RedisServer::class);
         $mockRedisServer->expects($this->once())
@@ -52,7 +50,7 @@ class TaskResultProcessorTest extends TestCase
         $mockItem->taskId = 4;
         $mockItem->userId = 1;
 
-        $controller = new TaskResultProcessor($mockAppConfig, $mockLogger, $mockRedisServer, $mockVulnerabilityRepository, $mockTaskRepository, $mockTargetRepository, $mockProcessorFactory);
+        $controller = new TaskResultProcessor($mockLogger, $mockRedisServer, $mockVulnerabilityRepository, $mockTaskRepository, $mockTargetRepository, $mockProcessorFactory);
         $controller->process($mockItem);
     }
 }
