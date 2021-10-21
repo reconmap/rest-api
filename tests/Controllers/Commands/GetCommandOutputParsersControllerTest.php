@@ -4,7 +4,7 @@ namespace Reconmap\Controllers\Commands;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
-use Reconmap\Processors\ProcessorFactory;
+use Reconmap\CommandOutputParsers\ProcessorFactory;
 
 class GetCommandOutputParsersControllerTest extends TestCase
 {

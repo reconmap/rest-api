@@ -4,9 +4,9 @@ namespace Reconmap\Tasks;
 
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
+use Reconmap\CommandOutputParsers\NmapOutputProcessor;
+use Reconmap\CommandOutputParsers\ProcessorFactory;
 use Reconmap\Models\Vulnerability;
-use Reconmap\Processors\NmapOutputProcessor;
-use Reconmap\Processors\ProcessorFactory;
 use Reconmap\Repositories\TargetRepository;
 use Reconmap\Repositories\TaskRepository;
 use Reconmap\Repositories\VulnerabilityRepository;
@@ -19,7 +19,6 @@ class TaskResultProcessorTest extends TestCase
     {
         $mockAppConfig = $this->createMock(ApplicationConfig::class);
         $mockLogger = $this->createMock(Logger::class);
-        $mockMysql = $this->createMock(\mysqli::class);
         $mockRedisServer = $this->createMock(RedisServer::class);
         $mockRedisServer->expects($this->once())
             ->method('lPush');
@@ -53,7 +52,7 @@ class TaskResultProcessorTest extends TestCase
         $mockItem->taskId = 4;
         $mockItem->userId = 1;
 
-        $controller = new TaskResultProcessor($mockAppConfig, $mockLogger, $mockMysql, $mockRedisServer, $mockVulnerabilityRepository, $mockTaskRepository, $mockTargetRepository, $mockProcessorFactory);
+        $controller = new TaskResultProcessor($mockAppConfig, $mockLogger, $mockRedisServer, $mockVulnerabilityRepository, $mockTaskRepository, $mockTargetRepository, $mockProcessorFactory);
         $controller->process($mockItem);
     }
 }

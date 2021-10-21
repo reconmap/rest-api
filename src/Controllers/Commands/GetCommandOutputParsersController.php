@@ -3,8 +3,8 @@
 namespace Reconmap\Controllers\Commands;
 
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\CommandOutputParsers\ProcessorFactory;
 use Reconmap\Controllers\Controller;
-use Reconmap\Processors\ProcessorFactory;
 
 class GetCommandOutputParsersController extends Controller
 {

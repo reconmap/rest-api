@@ -2,6 +2,7 @@
 
 namespace Reconmap\Repositories;
 
+use Reconmap\CommandOutputParsers\ProcessorFactory;
 use Reconmap\Integrations\GitterIntegration;
 use Reconmap\Integrations\Integration;
 use Reconmap\Services\ApplicationConfig;
@@ -10,11 +11,44 @@ class IntegrationsRepository
 {
     private array $integrations;
 
-    public function __construct(ApplicationConfig $config)
+    public function __construct(ApplicationConfig $config, ProcessorFactory $processorFactory)
     {
         $this->integrations = [
             new GitterIntegration($config)
         ];
+        foreach ($processorFactory->getAll() as $parser) {
+            $this->integrations[] = new class($parser['name']) implements Integration {
+
+                public function __construct(private string $parserName)
+                {
+                }
+
+                public function getName(): string
+                {
+                    return $this->parserName;
+                }
+
+                public function getDescription(): string
+                {
+                    return '-';
+                }
+
+                public function getConfiguration(): array
+                {
+                    return [];
+                }
+
+                public function hasConfiguration(): bool
+                {
+                    return true;
+                }
+
+                public function getExternalUrl(): string
+                {
+                    return 'https://github.com/reconmap/php-command-output-parsers';
+                }
+            };
+        }
     }
 
     public function findAll(): array
