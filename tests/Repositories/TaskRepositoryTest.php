@@ -4,7 +4,6 @@ namespace Reconmap\Repositories;
 
 use Reconmap\DatabaseTestCase;
 use Reconmap\Models\Task;
-use Reconmap\Repositories\SearchCriterias\TaskSearchCriteria;
 
 class TaskRepositoryTest extends DatabaseTestCase
 {
@@ -33,9 +32,7 @@ class TaskRepositoryTest extends DatabaseTestCase
 
     public function testSearchByProject()
     {
-        $searchCriteria = new TaskSearchCriteria();
-        $searchCriteria->addProjectCriterion(1);
-        $tasks = $this->subject->search($searchCriteria);
+        $tasks = $this->subject->findByProjectId(1);
         $this->assertCount(3, $tasks);
     }
 

@@ -5,6 +5,7 @@ namespace Reconmap\Repositories;
 use Ponup\SqlBuilders\SearchCriteria;
 use Ponup\SqlBuilders\SelectQueryBuilder;
 use Reconmap\Models\Task;
+use Reconmap\Repositories\SearchCriterias\TaskSearchCriteria;
 use Reconmap\Services\PaginationRequestHandler;
 
 class TaskRepository extends MysqlRepository implements Findable
@@ -48,6 +49,13 @@ class TaskRepository extends MysqlRepository implements Findable
         $stmt->execute();
         $result = $stmt->get_result();
         return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function findByProjectId(int $projectId): array
+    {
+        $searchCriteria = new TaskSearchCriteria();
+        $searchCriteria->addProjectCriterion($projectId);
+        return $this->search($searchCriteria);
     }
 
     public function search(SearchCriteria $searchCriteria, ?PaginationRequestHandler $paginator = null): array

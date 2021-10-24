@@ -5,7 +5,6 @@ namespace Reconmap\Controllers\Projects;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Models\Task;
-use Reconmap\Repositories\SearchCriterias\TaskSearchCriteria;
 use Reconmap\Repositories\TaskRepository;
 
 class GetProjectTasksControllerTest extends TestCase
@@ -14,15 +13,12 @@ class GetProjectTasksControllerTest extends TestCase
     {
         $mockTaskRepository = $this->createMock(TaskRepository::class);
         $mockTaskRepository->expects($this->once())
-            ->method('search')
+            ->method('findByProjectId')
+            ->with(1)
             ->willReturn([new Task(), new Task()]);
-        $mockSearchCriteria = $this->createMock(TaskSearchCriteria::class);
-        $mockSearchCriteria->expects($this->once())
-            ->method('addProjectCriterion')
-            ->with(1);
         $mockServerRequest = $this->createMock(ServerRequestInterface::class);
 
-        $subject = new GetProjectTasksController($mockTaskRepository, $mockSearchCriteria);
+        $subject = new GetProjectTasksController($mockTaskRepository);
         $tasks = $subject($mockServerRequest, ['projectId' => 1]);
         $this->assertCount(2, $tasks);
     }
