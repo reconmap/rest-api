@@ -11,7 +11,7 @@ class VulnerabilitiesExporter implements Exportable
     {
     }
 
-    public function export(string $entityType): array
+    public function export(): array
     {
         $searchCriteria = new VulnerabilitySearchCriteria();
         $searchCriteria->addIsNotTemplateCriterion();

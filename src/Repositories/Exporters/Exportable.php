@@ -4,5 +4,5 @@ namespace Reconmap\Repositories\Exporters;
 
 interface Exportable
 {
-    public function export(string $entityType): array;
+    public function export(): array;
 }

@@ -8,17 +8,8 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditLogAction;
-use Reconmap\Repositories\Exporters\AuditLogExporter;
-use Reconmap\Repositories\Exporters\ClientsExporter;
-use Reconmap\Repositories\Exporters\CommandsExporter;
-use Reconmap\Repositories\Exporters\DocumentsExporter;
+use Reconmap\Models\Exportables;
 use Reconmap\Repositories\Exporters\Exportable;
-use Reconmap\Repositories\Exporters\ProjectsExporter;
-use Reconmap\Repositories\Exporters\ProjectTemplatesExporter;
-use Reconmap\Repositories\Exporters\TasksExporter;
-use Reconmap\Repositories\Exporters\UsersExporter;
-use Reconmap\Repositories\Exporters\VulnerabilitiesExporter;
-use Reconmap\Repositories\Exporters\VulnerabilityTemplatesExporter;
 use Reconmap\Services\AuditLogService;
 
 class ExportDataController extends Controller
@@ -36,29 +27,18 @@ class ExportDataController extends Controller
 
         $fileName = 'reconmap-data-' . date('Ymd-His') . '.json';
 
-        $exportables = [
-            'auditlog' => AuditLogExporter::class,
-            'clients' => ClientsExporter::class,
-            'commands' => CommandsExporter::class,
-            'documents' => DocumentsExporter::class,
-            'projects' => ProjectsExporter::class,
-            'project_templates' => ProjectTemplatesExporter::class,
-            'tasks' => TasksExporter::class,
-            'users' => UsersExporter::class,
-            'vulnerabilities' => VulnerabilitiesExporter::class,
-            'vulnerability_templates' => VulnerabilityTemplatesExporter::class,
-        ];
 
-        $body = new CallbackStream(function () use ($exportables, $entities) {
+        $body = new CallbackStream(function () use ($entities) {
             $data = [];
 
             $outputStream = fopen('php://output', 'w');
 
-            foreach ($exportables as $exportableKey => $exportable) {
+            foreach (Exportables::List as $exportable) {
+                $exportableKey = $exportable['key'];
                 if (in_array($exportableKey, $entities)) {
                     /** @var Exportable $exporter */
-                    $exporter = $this->container->get($exportable);
-                    $data[$exportableKey] = $exporter->export($exportableKey);
+                    $exporter = $this->container->get($exportable['className']);
+                    $data[$exportableKey] = $exporter->export();
                 }
             }
 

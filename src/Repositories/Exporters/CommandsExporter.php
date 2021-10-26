@@ -10,7 +10,7 @@ class CommandsExporter implements Exportable
     {
     }
 
-    public function export(string $entityType): array
+    public function export(): array
     {
         return $this->repository->findAll();
     }
