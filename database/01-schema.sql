@@ -341,3 +341,22 @@ CREATE TABLE attachment
 ) ENGINE = InnoDB;
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+DROP FUNCTION IF EXISTS PARENT_CHILD_NAME;
+
+DELIMITER $$
+
+CREATE FUNCTION PARENT_CHILD_NAME(
+    parent_name VARCHAR(100),
+    child_name VARCHAR(100)
+)
+    RETURNS VARCHAR(202)
+    DETERMINISTIC
+BEGIN
+    IF parent_name IS NULL THEN
+        RETURN child_name;
+    END IF;
+    RETURN CONCAT(parent_name, ', ', child_name);
+END$$
+
+DELIMITER ;
