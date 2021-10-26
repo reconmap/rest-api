@@ -14,6 +14,6 @@ class VulnerabilitiesExporterTest extends TestCase
             ->method('search')
             ->willReturn([]);
         $exporter = new VulnerabilitiesExporter($mockRepository);
-        $this->assertEquals([], $exporter->export('vulnerabilities'));
+        $this->assertEquals([], $exporter->export());
     }
 }

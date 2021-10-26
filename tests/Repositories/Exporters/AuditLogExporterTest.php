@@ -14,6 +14,6 @@ class AuditLogExporterTest extends TestCase
             ->method('findAll')
             ->willReturn([]);
         $exporter = new AuditLogExporter($mockRepository);
-        $this->assertEquals([], $exporter->export('auditlog'));
+        $this->assertEquals([], $exporter->export());
     }
 }

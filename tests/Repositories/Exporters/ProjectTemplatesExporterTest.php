@@ -14,6 +14,6 @@ class ProjectTemplatesExporterTest extends TestCase
             ->method('search')
             ->willReturn([]);
         $exporter = new ProjectsExporter($mockRepository);
-        $this->assertEquals([], $exporter->export('project_templates'));
+        $this->assertEquals([], $exporter->export());
     }
 }

@@ -14,6 +14,6 @@ class CommandsExporterTest extends TestCase
             ->method('findAll')
             ->willReturn([]);
         $exporter = new CommandsExporter($mockRepository);
-        $this->assertEquals([], $exporter->export('commands'));
+        $this->assertEquals([], $exporter->export());
     }
 }

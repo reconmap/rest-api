@@ -15,6 +15,6 @@ class TasksExporterTest extends TestCase
             ->with(false, null)
             ->willReturn([]);
         $exporter = new TasksExporter($mockRepository);
-        $this->assertEquals([], $exporter->export('tasks'));
+        $this->assertEquals([], $exporter->export());
     }
 }
