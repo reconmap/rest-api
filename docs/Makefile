@@ -3,7 +3,7 @@ SHELL = bash
 
 .PHONY: runswagger
 runswagger:
-	docker run -p 80:8080 -e SWAGGER_JSON=/local/openapi.yaml -v $(PWD):/local swaggerapi/swagger-ui
+	docker run -p 8080:8080 -e SWAGGER_JSON=/local/openapi.yaml -v $(PWD):/local swaggerapi/swagger-ui
 
 .PHONY: generateapidocs
 generateapidocs:

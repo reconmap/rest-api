@@ -1,6 +1,6 @@
 server {
-        listen [::]:80;
-        listen 80;
+        listen [::]:5510;
+        listen 5510;
 
         server_tokens off;
         server_name localhost;

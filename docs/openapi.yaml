@@ -6,7 +6,7 @@ info:
   version: 0.9.5
 
 servers:
-  - url: 'http://localhost:3001'
+  - url: 'http://localhost:5510'
   - url: 'https://api.reconmap.org'
 
 security:
