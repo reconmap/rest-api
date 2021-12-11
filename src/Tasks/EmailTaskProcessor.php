@@ -26,6 +26,10 @@ class EmailTaskProcessor implements ItemProcessor
             ->setUsername($smtpSettings['username'])
             ->setPassword($smtpSettings['password']);
 
+        if (isset($smtpSettings['streamOptions'])) {
+            $transport->setStreamOptions($smtpSettings['streamOptions']);
+        }
+
         $mailer = new Swift_Mailer($transport);
 
         try {
