@@ -331,16 +331,16 @@
         },
         {
             "name": "endroid/qr-code",
-            "version": "4.4.1",
+            "version": "4.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/endroid/qr-code.git",
-                "reference": "963d88b6c6dca7145beaa53ad1d4c0cbe2c39c22"
+                "reference": "5b079799eae5ce58b9936de5eb15adeb43ff2cb1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/endroid/qr-code/zipball/963d88b6c6dca7145beaa53ad1d4c0cbe2c39c22",
-                "reference": "963d88b6c6dca7145beaa53ad1d4c0cbe2c39c22",
+                "url": "https://api.github.com/repos/endroid/qr-code/zipball/5b079799eae5ce58b9936de5eb15adeb43ff2cb1",
+                "reference": "5b079799eae5ce58b9936de5eb15adeb43ff2cb1",
                 "shasum": ""
             },
             "require": {
@@ -391,7 +391,7 @@
             ],
             "support": {
                 "issues": "https://github.com/endroid/qr-code/issues",
-                "source": "https://github.com/endroid/qr-code/tree/4.4.1"
+                "source": "https://github.com/endroid/qr-code/tree/4.4.2"
             },
             "funding": [
                 {
@@ -399,7 +399,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-11-03T10:05:01+00:00"
+            "time": "2021-12-12T10:25:34+00:00"
         },
         {
             "name": "fig/http-message-util",
@@ -2832,20 +2832,21 @@
         },
         {
             "name": "reconmap/command-output-parsers",
-            "version": "1.0.1",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/reconmap/php-command-output-parsers.git",
-                "reference": "894b0e7f41c29f83212751f6d889e1dfcd7ee9e0"
+                "reference": "f92bc62a16cc7e0c79ecb0136c54a16dd53f03f7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/reconmap/php-command-output-parsers/zipball/894b0e7f41c29f83212751f6d889e1dfcd7ee9e0",
-                "reference": "894b0e7f41c29f83212751f6d889e1dfcd7ee9e0",
+                "url": "https://api.github.com/repos/reconmap/php-command-output-parsers/zipball/f92bc62a16cc7e0c79ecb0136c54a16dd53f03f7",
+                "reference": "f92bc62a16cc7e0c79ecb0136c54a16dd53f03f7",
                 "shasum": ""
             },
             "require": {
-                "league/html-to-markdown": "^5"
+                "league/html-to-markdown": "^5",
+                "php": "^8"
             },
             "require-dev": {
                 "phpunit/phpunit": "^9.5"
@@ -2869,9 +2870,9 @@
             "description": "Parsers for many security command outputs in the form of a PHP library",
             "support": {
                 "issues": "https://github.com/reconmap/php-command-output-parsers/issues",
-                "source": "https://github.com/reconmap/php-command-output-parsers/tree/1.0.1"
+                "source": "https://github.com/reconmap/php-command-output-parsers/tree/1.1.0"
             },
-            "time": "2021-10-21T13:58:10+00:00"
+            "time": "2021-12-12T10:40:58+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
