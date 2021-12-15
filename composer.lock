@@ -331,16 +331,16 @@
         },
         {
             "name": "endroid/qr-code",
-            "version": "4.4.2",
+            "version": "4.4.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/endroid/qr-code.git",
-                "reference": "5b079799eae5ce58b9936de5eb15adeb43ff2cb1"
+                "reference": "361b43bbdfa4360442369d0a236e7d8756160523"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/endroid/qr-code/zipball/5b079799eae5ce58b9936de5eb15adeb43ff2cb1",
-                "reference": "5b079799eae5ce58b9936de5eb15adeb43ff2cb1",
+                "url": "https://api.github.com/repos/endroid/qr-code/zipball/361b43bbdfa4360442369d0a236e7d8756160523",
+                "reference": "361b43bbdfa4360442369d0a236e7d8756160523",
                 "shasum": ""
             },
             "require": {
@@ -391,7 +391,7 @@
             ],
             "support": {
                 "issues": "https://github.com/endroid/qr-code/issues",
-                "source": "https://github.com/endroid/qr-code/tree/4.4.2"
+                "source": "https://github.com/endroid/qr-code/tree/4.4.4"
             },
             "funding": [
                 {
@@ -399,7 +399,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-12-12T10:25:34+00:00"
+            "time": "2021-12-13T11:01:54+00:00"
         },
         {
             "name": "fig/http-message-util",
@@ -2223,16 +2223,16 @@
         },
         {
             "name": "ponup/sql-builders",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Ponup/php-sql-builders.git",
-                "reference": "d68a26ea5400de6243ac97eeace4a83c2cfcab51"
+                "reference": "b35368fa849dc9a0a0d53f7ea06e64ccddd1501f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Ponup/php-sql-builders/zipball/d68a26ea5400de6243ac97eeace4a83c2cfcab51",
-                "reference": "d68a26ea5400de6243ac97eeace4a83c2cfcab51",
+                "url": "https://api.github.com/repos/Ponup/php-sql-builders/zipball/b35368fa849dc9a0a0d53f7ea06e64ccddd1501f",
+                "reference": "b35368fa849dc9a0a0d53f7ea06e64ccddd1501f",
                 "shasum": ""
             },
             "require-dev": {
@@ -2257,9 +2257,9 @@
             "description": "Library to ease the dynamic construction of SQL statements in PHP",
             "support": {
                 "issues": "https://github.com/Ponup/php-sql-builders/issues",
-                "source": "https://github.com/Ponup/php-sql-builders/tree/1.0.0"
+                "source": "https://github.com/Ponup/php-sql-builders/tree/1.1.0"
             },
-            "time": "2021-10-19T11:36:56+00:00"
+            "time": "2021-12-15T21:54:17+00:00"
         },
         {
             "name": "pragmarx/google2fa",
@@ -2832,16 +2832,16 @@
         },
         {
             "name": "reconmap/command-output-parsers",
-            "version": "1.1.0",
+            "version": "1.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/reconmap/php-command-output-parsers.git",
-                "reference": "f92bc62a16cc7e0c79ecb0136c54a16dd53f03f7"
+                "reference": "b2449e643844074ba9957936a1c84d86bbcaa72b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/reconmap/php-command-output-parsers/zipball/f92bc62a16cc7e0c79ecb0136c54a16dd53f03f7",
-                "reference": "f92bc62a16cc7e0c79ecb0136c54a16dd53f03f7",
+                "url": "https://api.github.com/repos/reconmap/php-command-output-parsers/zipball/b2449e643844074ba9957936a1c84d86bbcaa72b",
+                "reference": "b2449e643844074ba9957936a1c84d86bbcaa72b",
                 "shasum": ""
             },
             "require": {
@@ -2870,9 +2870,9 @@
             "description": "Parsers for many security command outputs in the form of a PHP library",
             "support": {
                 "issues": "https://github.com/reconmap/php-command-output-parsers/issues",
-                "source": "https://github.com/reconmap/php-command-output-parsers/tree/1.1.0"
+                "source": "https://github.com/reconmap/php-command-output-parsers/tree/1.1.2"
             },
-            "time": "2021-12-12T10:40:58+00:00"
+            "time": "2021-12-15T21:12:08+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",

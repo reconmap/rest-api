@@ -16,10 +16,12 @@ class GetVulnerabilitiesStatsController extends Controller
     {
         $params = $request->getQueryParams();
 
+        $projectId = isset($params['projectId']) ? intval($params['projectId']) : null;
+
         if (!isset($params['groupBy']) || $params['groupBy'] === 'risk') {
-            $stats = $this->repository->findCountByRisk();
+            $stats = $this->repository->findCountByRisk($projectId);
         } else {
-            $stats = $this->repository->findCountByCategory();
+            $stats = $this->repository->findCountByCategory($projectId);
         }
 
         return $stats;
