@@ -11,6 +11,11 @@ class ProjectSearchCriteria extends SearchCriteria
         $this->addCriterion('p.is_template = ?', [$isTemplate]);
     }
 
+    public function addArchivedCriterion(bool $archived)
+    {
+        $this->addCriterion('p.archived = ?', [$archived]);
+    }
+
     public function addIsNotTemplateCriterion()
     {
         $this->addTemplateCriterion(0);
