@@ -24,6 +24,15 @@ $configFilePath = $applicationDir . '/config.json';
 $config = ApplicationConfig::load($configFilePath);
 $config->setAppDir($applicationDir);
 
+if (!isset($argv['--use-default-database'])) {
+    $config['database'] = [
+        'host' => 'rmap-mysql',
+        'username' => 'reconmapper',
+        'password' => 'reconmapped',
+        'name' => 'reconmap_test'
+    ];
+}
+
 $container = new ApplicationContainer($config, $logger);
 
 $app = new Application('Reconmap internal CLI');

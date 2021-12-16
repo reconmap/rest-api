@@ -3,7 +3,6 @@
 namespace Reconmap\Cli\Commands;
 
 use Reconmap\Database\TestDataGenerator;
-use Reconmap\DatabaseFactory;
 use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\ApplicationContainer;
 use Symfony\Component\Console\Command\Command;
@@ -29,16 +28,6 @@ class TestDataGeneratorCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        if (!$input->getOption('use-default-database')) {
-            $this->applicationConfig['database'] = [
-                'host' => 'rmap-mysql',
-                'username' => 'reconmapper',
-                'password' => 'reconmapped',
-                'name' => 'reconmap_test'
-            ];
-            $this->applicationContainer->add(\mysqli::class, DatabaseFactory::createConnection($this->applicationConfig));
-
-        }
         $this->testDataGenerator->generate();
 
         return self::SUCCESS;

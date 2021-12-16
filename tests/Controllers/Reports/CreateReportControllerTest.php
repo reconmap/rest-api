@@ -30,7 +30,7 @@ class CreateReportControllerTest extends TestCase
         $mockAttachmentFilePath = $this->createMock(AttachmentFilePath::class);
         $mockAttachmentFilePath->expects($this->once())
             ->method('generateFilePathFromAttachment')
-            ->willReturn(dirname(__DIR__, 3) . '/resources/templates/reports/default.docx');
+            ->willReturn(dirname(__DIR__, 3) . '/data/attachments/default-report-template.docx');
 
         $mockProjectRepository = $this->createMock(ProjectRepository::class);
         $mockProjectRepository->expects($this->once())
