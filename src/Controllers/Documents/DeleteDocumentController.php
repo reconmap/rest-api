@@ -2,22 +2,27 @@
 
 namespace Reconmap\Controllers\Documents;
 
-use Psr\Http\Message\ServerRequestInterface;
-use Reconmap\Controllers\Controller;
+use Reconmap\Controllers\DeleteEntityController;
+use Reconmap\Models\DocumentAuditActions;
 use Reconmap\Repositories\DocumentRepository;
+use Reconmap\Services\ActivityPublisherService;
+use Reconmap\Services\Security\AuthorisationService;
 
-class DeleteDocumentController extends Controller
+class DeleteDocumentController extends DeleteEntityController
 {
-    public function __construct(private DocumentRepository $repository)
+    public function __construct(
+        private AuthorisationService     $authorisationService,
+        private ActivityPublisherService $activityPublisherService,
+        private DocumentRepository       $repository,
+    )
     {
-    }
-
-    public function __invoke(ServerRequestInterface $request, array $args): array
-    {
-        $documentId = (int)$args['documentId'];
-
-        $success = $this->repository->deleteById($documentId);
-
-        return ['success' => $success];
+        parent::__construct(
+            $this->authorisationService,
+            $this->activityPublisherService,
+            $this->repository,
+            'document',
+            DocumentAuditActions::DELETED,
+            'documentId'
+        );
     }
 }

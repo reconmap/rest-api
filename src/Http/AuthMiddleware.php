@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Reconmap;
+namespace Reconmap\Http;
 
 use Fig\Http\Message\StatusCodeInterface;
 use Firebase\JWT\ExpiredException;
@@ -19,7 +19,7 @@ use Reconmap\Services\ApplicationConfig;
 
 class AuthMiddleware implements MiddlewareInterface
 {
-    public function __construct(private Logger $logger,
+    public function __construct(private Logger            $logger,
                                 private ApplicationConfig $config)
     {
     }
@@ -52,7 +52,7 @@ class AuthMiddleware implements MiddlewareInterface
             $request = $request->withAttribute('userId', $token->data->id)
                 ->withAttribute('role', $token->data->role);
             return $handler->handle($request);
-        } catch (ForbiddenException | ExpiredException $e) {
+        } catch (ForbiddenException|ExpiredException $e) {
             $this->logger->warning($e->getMessage());
             return (new Response)->withStatus(StatusCodeInterface::STATUS_UNAUTHORIZED)
                 ->withBody(Utils::streamFor($e->getMessage()));

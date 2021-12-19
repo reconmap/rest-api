@@ -5,7 +5,7 @@ namespace Reconmap\Repositories;
 use Ponup\SqlBuilders\SelectQueryBuilder;
 use Reconmap\Models\Document;
 
-class DocumentRepository extends MysqlRepository
+class DocumentRepository extends MysqlRepository implements Deletable
 {
     public const UPDATABLE_COLUMNS_TYPES = [
         'title' => 's',

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Reconmap;
+namespace Reconmap\Http;
 
 use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface;

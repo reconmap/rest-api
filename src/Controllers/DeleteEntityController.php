@@ -2,6 +2,9 @@
 
 namespace Reconmap\Controllers;
 
+use Fig\Http\Message\StatusCodeInterface;
+use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Repositories\Deletable;
 use Reconmap\Services\ActivityPublisherService;
@@ -20,25 +23,29 @@ abstract class DeleteEntityController extends Controller
     {
     }
 
-    public function __invoke(ServerRequestInterface $request, array $args): array
+    public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
     {
         $operation = $this->entityName . '.delete';
 
         $role = $request->getAttribute('role');
         if (!$this->authorisationService->isRoleAllowed($role, $operation)) {
             $this->logger->warning("Unauthorised action '" . $operation . "' called for role '$role'");
-            return ['success' => false];
+
+            return (new Response())->withStatus(StatusCodeInterface::STATUS_FORBIDDEN);
         }
 
-        $entityId = (int)$args[$this->idParamName];
+        $entityId = intval($args[$this->idParamName]);
 
         $success = $this->repository->deleteById($entityId);
 
-        $userId = $request->getAttribute('userId');
+        if ($success) {
+            $userId = $request->getAttribute('userId');
+            $this->auditAction($userId, $entityId);
 
-        $this->auditAction($userId, $entityId);
+            return (new Response())->withStatus(StatusCodeInterface::STATUS_NO_CONTENT);
+        }
 
-        return ['success' => $success];
+        return (new Response())->withStatus(StatusCodeInterface::STATUS_BAD_REQUEST);
     }
 
     private function auditAction(int $loggedInUserId, int $entityId): void

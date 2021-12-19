@@ -9,6 +9,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Reconmap\Http\AuthMiddleware;
 use Reconmap\Services\JwtPayloadCreator;
 
 class AuthMiddlewareTest extends TestCase

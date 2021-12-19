@@ -11,13 +11,14 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Reconmap\Http\CorsMiddleware;
 use Reconmap\Services\ApplicationConfig;
 
 class ApiStrategy extends JsonStrategy
 {
-    public function __construct(ResponseFactoryInterface $responseFactory,
+    public function __construct(ResponseFactoryInterface  $responseFactory,
                                 private ApplicationConfig $config,
-                                private Logger $logger)
+                                private Logger            $logger)
     {
         parent::__construct($responseFactory);
     }
@@ -28,13 +29,13 @@ class ApiStrategy extends JsonStrategy
         return new class ($this->responseFactory->createResponse(), $corsMiddleware, $this->logger) implements MiddlewareInterface {
 
             public function __construct(private ResponseInterface $response,
-                                        private CorsMiddleware $corsMiddleware,
-                                        private Logger $logger)
+                                        private CorsMiddleware    $corsMiddleware,
+                                        private Logger            $logger)
             {
             }
 
             public function process(
-                ServerRequestInterface $request,
+                ServerRequestInterface  $request,
                 RequestHandlerInterface $handler
             ): ResponseInterface
             {

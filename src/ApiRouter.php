@@ -22,6 +22,9 @@ use Reconmap\{Controllers\AuditLog\AuditLogRouter,
     Controllers\Tasks\TasksRouter,
     Controllers\Users\UsersRouter,
     Controllers\Vulnerabilities\VulnerabilitiesRouter,
+    Http\AuthMiddleware,
+    Http\CorsMiddleware,
+    Http\SecurityMiddleware,
     Services\ApplicationConfig
 };
 use Reconmap\Controllers\Attachments\AttachmentsRouter;
@@ -52,6 +55,7 @@ class ApiRouter extends Router
 
         $authMiddleware = $container->get(AuthMiddleware::class);
         $corsMiddleware = $container->get(CorsMiddleware::class);
+        $securityMiddleware = $container->get(SecurityMiddleware::class);
 
         $this->map('POST', '/users/login', LoginController::class)
             ->middleware($corsMiddleware);
@@ -60,7 +64,7 @@ class ApiRouter extends Router
             foreach (self::ROUTER_CLASSES as $mappable) {
                 (new $mappable)->mapRoutes($router);
             }
-        })->middlewares([$corsMiddleware, $authMiddleware]);
+        })->middlewares([$corsMiddleware, $authMiddleware, $securityMiddleware]);
     }
 
     private function setupStrategy(Container $container, ApplicationConfig $applicationConfig)

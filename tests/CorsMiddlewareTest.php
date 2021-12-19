@@ -7,6 +7,7 @@ use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Reconmap\Http\CorsMiddleware;
 use Reconmap\Services\ApplicationConfig;
 
 class CorsMiddlewareTest extends TestCase
