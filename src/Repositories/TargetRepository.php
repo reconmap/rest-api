@@ -34,6 +34,8 @@ class TargetRepository extends MysqlRepository implements Findable
     {
         $queryBuilder = $this->getBaseSelectQueryBuilder();
         $queryBuilder->setWhere('t.project_id = ?');
+        $queryBuilder->setOrderBy('ORDER BY PARENT_CHILD_NAME(parent_name, t.name)');
+
         $stmt = $this->db->prepare($queryBuilder->toSql());
 
         $stmt->bind_param('i', $projectId);
@@ -45,19 +47,31 @@ class TargetRepository extends MysqlRepository implements Findable
         return $targets;
     }
 
-    public function findByProjectIdAndName(int $projectId, string $name): ?object
+    public function findOrInsert(Target $target): int
     {
         $queryBuilder = $this->getBaseSelectQueryBuilder();
-        $queryBuilder->setWhere('t.project_id = ? AND t.name = ?');
+        if ($target->hasParent()) {
+            $queryBuilder->setWhere('t.project_id = ? AND t.parent_id = ? AND t.name = ?');
+        } else {
+            $queryBuilder->setWhere('t.project_id = ? AND t.parent_id IS NULL AND t.name = ?');
+        }
 
         $stmt = $this->db->prepare($queryBuilder->toSql());
-        $stmt->bind_param('is', $projectId, $name);
+        if ($target->hasParent()) {
+            $stmt->bind_param('iis', $target->project_id, $target->parent_id, $target->name);
+        } else {
+            $stmt->bind_param('is', $target->project_id, $target->name);
+        }
         $stmt->execute();
         $result = $stmt->get_result();
-        $target = $result->fetch_object();
+        $dbTarget = $result->fetch_object();
         $stmt->close();
 
-        return $target;
+        if ($dbTarget) {
+            return $dbTarget->id;
+        }
+
+        return $this->insert($target);
     }
 
     public function search(SearchCriteria $searchCriteria, ?PaginationRequestHandler $paginator = null): array
@@ -79,16 +93,19 @@ class TargetRepository extends MysqlRepository implements Findable
 
     public function insert(Target $target): int
     {
-        $stmt = $this->db->prepare('INSERT INTO target (project_id, name, kind, tags) VALUES (?, ?, ?, ?)');
-        $stmt->bind_param('isss', $target->projectId, $target->name, $target->kind, $target->tags);
+        $stmt = $this->db->prepare('INSERT INTO target (project_id, parent_id, name, kind, tags) VALUES (?, ?, ?, ?, ?)');
+        $stmt->bind_param('iisss', $target->project_id, $target->parent_id, $target->name, $target->kind, $target->tags);
         return $this->executeInsertStatement($stmt);
     }
 
     private function getBaseSelectQueryBuilder(): SelectQueryBuilder
     {
         $queryBuilder = new SelectQueryBuilder('target t');
+        $queryBuilder->addJoin('LEFT JOIN target parent_t ON (parent_t.id = t.parent_id)');
         $queryBuilder->setColumns('
             t.*,
+            t.id, t.name,
+            t.parent_id, parent_t.name AS parent_name,
             (SELECT COUNT(*) FROM vulnerability WHERE target_id = t.id) AS num_vulnerabilities
         ');
         $queryBuilder->setOrderBy('t.insert_ts DESC, t.name ASC');

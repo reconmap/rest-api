@@ -6,6 +6,7 @@ use Reconmap\QueueProcessor;
 use Reconmap\Tasks\TaskResultProcessor;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class TaskProcessorCommand extends Command
@@ -19,7 +20,8 @@ class TaskProcessorCommand extends Command
     protected function configure()
     {
         $this->setName('task:process')
-            ->setDescription('Process pending task results');
+            ->setDescription('Process pending task results')
+            ->addOption('use-default-database', null, InputOption::VALUE_NONE, 'Whether to use the default or test database');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

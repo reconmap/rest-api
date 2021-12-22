@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1b555b1b97d53f0efbb635913484f447",
+    "content-hash": "4891400876572f5e0746b51b05bdc1b0",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -833,68 +833,6 @@
             "time": "2021-10-05T13:56:00+00:00"
         },
         {
-            "name": "hassankhan/config",
-            "version": "2.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/hassankhan/config.git",
-                "reference": "62b0fd17540136efa94ab6b39f04044c6dc5e4a7"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/hassankhan/config/zipball/62b0fd17540136efa94ab6b39f04044c6dc5e4a7",
-                "reference": "62b0fd17540136efa94ab6b39f04044c6dc5e4a7",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.5.9"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "~4.8.36 || ~5.7 || ~6.5 || ~7.5",
-                "scrutinizer/ocular": "~1.1",
-                "squizlabs/php_codesniffer": "~2.2",
-                "symfony/yaml": "~3.4"
-            },
-            "suggest": {
-                "symfony/yaml": "~3.4"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Noodlehaus\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Hassan Khan",
-                    "homepage": "http://hassankhan.me/",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Lightweight configuration file loader that supports PHP, INI, XML, JSON, and YAML files",
-            "homepage": "http://hassankhan.me/config/",
-            "keywords": [
-                "config",
-                "configuration",
-                "ini",
-                "json",
-                "microphp",
-                "unframework",
-                "xml",
-                "yaml",
-                "yml"
-            ],
-            "support": {
-                "issues": "https://github.com/hassankhan/config/issues",
-                "source": "https://github.com/hassankhan/config/tree/2.2.0"
-            },
-            "time": "2020-12-07T16:04:15+00:00"
-        },
-        {
             "name": "laminas/laminas-diactoros",
             "version": "2.8.0",
             "source": {
@@ -1128,16 +1066,16 @@
         },
         {
             "name": "laminas/laminas-zendframework-bridge",
-            "version": "1.4.0",
+            "version": "1.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-zendframework-bridge.git",
-                "reference": "bf180a382393e7db5c1e8d0f2ec0c4af9c724baf"
+                "reference": "88bf037259869891afce6504cacc4f8a07b24d0f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-zendframework-bridge/zipball/bf180a382393e7db5c1e8d0f2ec0c4af9c724baf",
-                "reference": "bf180a382393e7db5c1e8d0f2ec0c4af9c724baf",
+                "url": "https://api.github.com/repos/laminas/laminas-zendframework-bridge/zipball/88bf037259869891afce6504cacc4f8a07b24d0f",
+                "reference": "88bf037259869891afce6504cacc4f8a07b24d0f",
                 "shasum": ""
             },
             "require": {
@@ -1186,7 +1124,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2021-09-03T17:53:30+00:00"
+            "time": "2021-12-21T14:34:37+00:00"
         },
         {
             "name": "league/commonmark",
@@ -2832,21 +2770,22 @@
         },
         {
             "name": "reconmap/command-output-parsers",
-            "version": "1.1.2",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/reconmap/php-command-output-parsers.git",
-                "reference": "b2449e643844074ba9957936a1c84d86bbcaa72b"
+                "reference": "d6c0f3d0892efdbdef503d4a04f2dc532db2ac4a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/reconmap/php-command-output-parsers/zipball/b2449e643844074ba9957936a1c84d86bbcaa72b",
-                "reference": "b2449e643844074ba9957936a1c84d86bbcaa72b",
+                "url": "https://api.github.com/repos/reconmap/php-command-output-parsers/zipball/d6c0f3d0892efdbdef503d4a04f2dc532db2ac4a",
+                "reference": "d6c0f3d0892efdbdef503d4a04f2dc532db2ac4a",
                 "shasum": ""
             },
             "require": {
+                "ext-simplexml": "*",
                 "league/html-to-markdown": "^5",
-                "php": "^8"
+                "php": "^8.1"
             },
             "require-dev": {
                 "phpunit/phpunit": "^9.5"
@@ -2870,9 +2809,9 @@
             "description": "Parsers for many security command outputs in the form of a PHP library",
             "support": {
                 "issues": "https://github.com/reconmap/php-command-output-parsers/issues",
-                "source": "https://github.com/reconmap/php-command-output-parsers/tree/1.1.2"
+                "source": "https://github.com/reconmap/php-command-output-parsers/tree/2.0.0"
             },
-            "time": "2021-12-15T21:12:08+00:00"
+            "time": "2021-12-21T23:04:27+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -4156,9 +4095,6 @@
             },
             "require": {
                 "php": "^7.1 || ^8.0"
-            },
-            "replace": {
-                "myclabs/deep-copy": "self.version"
             },
             "require-dev": {
                 "doctrine/collections": "^1.0",
@@ -6092,7 +6028,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.0",
+        "php": "^8.1",
         "ext-curl": "*",
         "ext-dom": "*",
         "ext-gd": "*",
@@ -6106,5 +6042,5 @@
         "ext-zip": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.2.0"
 }

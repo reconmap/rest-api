@@ -7,6 +7,7 @@ class Client
     public ?int $id;
     public int $creator_uid;
     public ?string $name;
+    public ?string $address;
     public ?string $url;
     public ?string $contact_name;
     public ?string $contact_email;

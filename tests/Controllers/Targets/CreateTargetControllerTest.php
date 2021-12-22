@@ -15,10 +15,10 @@ class CreateTargetControllerTest extends ControllerTestCase
         $request = $this->createMock(ServerRequestInterface::class);
         $request->expects($this->once())
             ->method('getBody')
-            ->willReturn(json_encode(['projectId' => 1, 'name' => '192.168.0.1', 'kind' => 'host']));
+            ->willReturn(json_encode(['project_id' => 1, 'name' => '192.168.0.1', 'kind' => 'host']));
 
         $target = new Target();
-        $target->projectId = 1;
+        $target->project_id = 1;
         $target->name = '192.168.0.1';
         $target->kind = 'host';
 

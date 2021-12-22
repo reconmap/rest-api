@@ -42,7 +42,7 @@ class BulkUpdateTargetsController extends Controller
                     $targetKind = 2 === $columnCount ? $columns[1] : 'hostname';
 
                     $target = new Target();
-                    $target->projectId = intval($body->projectId);
+                    $target->project_id = intval($body->projectId);
                     $target->name = $targetName;
                     $target->kind = $targetKind;
                     try {

@@ -3,7 +3,7 @@
 namespace Reconmap\Services;
 
 use PHPUnit\Framework\TestCase;
-use Reconmap\CommandOutputParsers\Vulnerability;
+use Reconmap\CommandOutputParsers\Models\Vulnerability;
 
 class ObjectCasterTest extends TestCase
 {

@@ -4,9 +4,8 @@ namespace Reconmap\Tasks;
 
 use Exception;
 use Monolog\Logger;
-use Reconmap\CommandOutputParsers\HostParser;
+use Reconmap\CommandOutputParsers\Models\Asset;
 use Reconmap\CommandOutputParsers\ProcessorFactory;
-use Reconmap\CommandOutputParsers\VulnerabilityParser;
 use Reconmap\Models\Target;
 use Reconmap\Models\Vulnerability;
 use Reconmap\Repositories\TargetRepository;
@@ -36,10 +35,26 @@ class TaskResultProcessor implements ItemProcessor
 
         $processor = $this->processorFactory->createFromOutputParserName($outputParserName);
         if ($processor) {
-            if ($processor instanceof HostParser) {
-                $hosts = $processor->parseHost($path);
+            $result = $processor->process($path);
+            $hosts = $result->getAssets();
+            if (!empty($hosts)) {
                 foreach ($hosts as $host) {
-                    $this->findOrCreateHost($task['project_id'], $host->name, $outputParserName);
+                    /** @var Asset $host */
+                    $parentTarget = new Target();
+                    $parentTarget->project_id = $task['project_id'];
+                    $parentTarget->kind = 'hostname';
+                    $parentTarget->name = $host->getValue();
+                    $parentTarget->tags = json_encode(array_merge($host->getTags(), [$outputParserName]));
+                    $parentId = $this->findOrCreateHost($parentTarget);
+                    foreach ($host->getChildren() as $childAsset) {
+                        $childTarget = new Target();
+                        $childTarget->project_id = $task['project_id'];
+                        $childTarget->parent_id = $parentId;
+                        $childTarget->kind = 'port';
+                        $childTarget->name = $childAsset->getValue();
+                        $childTarget->tags = json_encode(array_merge($childAsset->getTags(), [$outputParserName]));
+                        $this->findOrCreateHost($childTarget);
+                    }
                 }
                 $numHosts = count($hosts);
 
@@ -52,38 +67,43 @@ class TaskResultProcessor implements ItemProcessor
                     ])
                 );
             }
-            if ($processor instanceof VulnerabilityParser) {
-                $vulnerabilities = $processor->parseVulnerabilities($path);
-                $numVulnerabilities = count($vulnerabilities);
-                $this->logger->debug("Number of vulnerabilities in uploaded file: " . $numVulnerabilities);
 
-                foreach ($vulnerabilities as $parsedVulnerability) {
-                    try {
-                        $vulnerability = ObjectCaster::cast(new Vulnerability(), $parsedVulnerability);
-                        if (is_array($vulnerability->tags)) {
-                            $vulnerability->tags[] = $outputParserName;
-                        } else {
-                            $vulnerability->tags = [$outputParserName];
-                        }
+            $vulnerabilities = $result->getVulnerabilities();
+            $numVulnerabilities = count($vulnerabilities);
+            $this->logger->debug("Number of vulnerabilities in uploaded file: " . $numVulnerabilities);
 
-                        $vulnerability->tags = json_encode($vulnerability->tags);
-                        $vulnerability->project_id = $task['project_id'];
-                        if (empty($vulnerability->risk)) {
-                            $vulnerability->risk = 'medium';
-                        }
-                        $vulnerability->creator_uid = $item->userId;
-
-                        $targetId = null;
-                        if (!empty($vulnerability->host)) {
-                            $targetId = $this->findOrCreateHost($task['project_id'], $vulnerability->host->name, $outputParserName);
-                        }
-
-                        $vulnerability->target_id = $targetId;
-
-                        $this->vulnerabilityRepository->insert($vulnerability);
-                    } catch (Exception $e) {
-                        $this->logger->error($e->getMessage());
+            foreach ($vulnerabilities as $parsedVulnerability) {
+                try {
+                    /** @var Vulnerability $vulnerability */
+                    $vulnerability = ObjectCaster::cast(new Vulnerability(), $parsedVulnerability);
+                    if (is_array($vulnerability->tags)) {
+                        $vulnerability->tags[] = $outputParserName;
+                    } else {
+                        $vulnerability->tags = [$outputParserName];
                     }
+
+                    $vulnerability->tags = json_encode($vulnerability->tags);
+                    $vulnerability->project_id = $task['project_id'];
+                    if (empty($vulnerability->risk)) {
+                        $vulnerability->risk = 'medium';
+                    }
+                    $vulnerability->creator_uid = $item->userId;
+
+                    $targetId = null;
+                    if (!empty($vulnerability->asset)) {
+                        $parentTarget = new Target();
+                        $parentTarget->project_id = $task['project_id'];
+                        $parentTarget->kind = 'hostname';
+                        $parentTarget->name = $vulnerability->asset->getValue();
+                        $parentTarget->tags = json_encode(array_merge($vulnerability->asset->getTags(), [$outputParserName]));
+                        $targetId = $this->findOrCreateHost($parentTarget);
+                    }
+
+                    $vulnerability->target_id = $targetId;
+
+                    $this->vulnerabilityRepository->insert($vulnerability);
+                } catch (Exception $e) {
+                    $this->logger->error($e->getMessage());
                 }
 
                 $this->redis->lPush("notifications:queue",
@@ -100,22 +120,8 @@ class TaskResultProcessor implements ItemProcessor
         }
     }
 
-    private function findOrCreateHost(int $projectId, string $hostName, string $parserName): int
+    private function findOrCreateHost(Target $target): int
     {
-        $target = $this->targetRepository->findByProjectIdAndName($projectId, $hostName);
-        if ($target) {
-            return $target->id;
-        }
-
-        $target = new Target();
-        $target->tags = json_encode([$parserName]);
-        $target->projectId = $projectId;
-        $target->name = $hostName;
-        $target->kind = 'hostname';
-
-        $targetId = $this->targetRepository->insert($target);
-        $this->logger->debug("New target added: " . $target->name);
-
-        return $targetId;
+        return $this->targetRepository->findOrInsert($target);
     }
 }

@@ -30,12 +30,12 @@ class BulkUpdateTargetsControllerTest extends ControllerTestCase
             ->willReturn('CREATE');
 
         $target = new Target();
-        $target->projectId = $fakeProjectId;
+        $target->project_id = $fakeProjectId;
         $target->name = '192.168.0.1';
         $target->kind = 'ip_address';
 
         $target2 = new Target();
-        $target2->projectId = $fakeProjectId;
+        $target2->project_id = $fakeProjectId;
         $target2->name = '127.0.0.1';
         $target2->kind = 'hostname';
 

@@ -4,9 +4,13 @@ namespace Reconmap\Tasks;
 
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
+use Reconmap\CommandOutputParsers\Models\Asset;
+use Reconmap\CommandOutputParsers\Models\AssetKind;
+use Reconmap\CommandOutputParsers\Models\ProcessorResult;
+use Reconmap\CommandOutputParsers\Models\Vulnerability;
 use Reconmap\CommandOutputParsers\NmapOutputProcessor;
 use Reconmap\CommandOutputParsers\ProcessorFactory;
-use Reconmap\CommandOutputParsers\Vulnerability;
+use Reconmap\Models\Target;
 use Reconmap\Repositories\TargetRepository;
 use Reconmap\Repositories\TaskRepository;
 use Reconmap\Repositories\VulnerabilityRepository;
@@ -26,19 +30,29 @@ class TaskResultProcessorTest extends TestCase
             ->method('findById')
             ->with(4)
             ->willReturn(['command_name' => 'Nmap', 'output_parser' => 'nmap', 'project_id' => 5]);
+
+        $target = new Target();
+        $target->project_id = 5;
+        $target->name = 'new-host.local';
+        $target->kind = AssetKind::Hostname->value;
+        $target->tags = '["nmap"]';
+
         $mockTargetRepository = $this->createMock(TargetRepository::class);
         $mockTargetRepository->expects($this->once())
-            ->method('insert');
+            ->method('findOrInsert')
+            ->with($target);
 
         $mockProcessorFactory = $this->createMock(ProcessorFactory::class);
 
+        $mockProcessorResult = new ProcessorResult();
         $mockVulnerability = new Vulnerability();
-        $mockVulnerability->host = (object)['name' => 'new-host.local'];
+        $mockVulnerability->asset = new Asset(kind: AssetKind::Hostname, value: 'new-host.local');
+        $mockProcessorResult->addVulnerability($mockVulnerability);
 
         $mockNmapResultProcessor = $this->createMock(NmapOutputProcessor::class);
         $mockNmapResultProcessor->expects($this->once())
-            ->method('parseVulnerabilities')
-            ->willReturn([$mockVulnerability]);
+            ->method('process')
+            ->willReturn($mockProcessorResult);
 
         $mockProcessorFactory->expects($this->once())
             ->method('createFromOutputParserName')

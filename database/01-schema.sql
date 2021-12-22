@@ -63,6 +63,7 @@ CREATE TABLE client
     update_ts     TIMESTAMP    NULL ON UPDATE CURRENT_TIMESTAMP,
     creator_uid   INT UNSIGNED NOT NULL REFERENCES user,
     name          VARCHAR(80)  NOT NULL COMMENT 'eg Company name',
+    address       VARCHAR(400) NULL COMMENT 'eg 1 Hacker Way, Menlo Park, California',
     url           VARCHAR(255) NULL,
     contact_name  VARCHAR(200) NOT NULL,
     contact_email VARCHAR(200) NOT NULL,
@@ -130,11 +131,12 @@ DROP TABLE IF EXISTS target;
 CREATE TABLE target
 (
     id         INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    parent_id  INT UNSIGNED NULL REFERENCES target,
     project_id INT UNSIGNED NOT NULL REFERENCES project,
     insert_ts  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_ts  TIMESTAMP    NULL ON UPDATE CURRENT_TIMESTAMP,
     name       VARCHAR(200) NOT NULL,
-    kind       ENUM ('hostname', 'ip_address', 'cidr_range', 'url', 'binary'),
+    kind       ENUM ('hostname', 'ip_address', 'port', 'cidr_range', 'url', 'binary', 'path', 'file'),
     tags       JSON         NULL,
 
     PRIMARY KEY (id),

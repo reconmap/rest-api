@@ -18,7 +18,7 @@ class TargetRepositoryTest extends DatabaseTestCase
     public function testInsert()
     {
         $target = new Target();
-        $target->projectId = 5;
+        $target->project_id = 5;
         $target->name = '192.168.0.1';
         $target->kind = 'hostname';
 
