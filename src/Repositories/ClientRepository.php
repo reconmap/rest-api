@@ -8,6 +8,7 @@ class ClientRepository extends MysqlRepository implements Findable
 {
     public const UPDATABLE_COLUMNS_TYPES = [
         'name' => 's',
+        'address' => 's',
         'url' => 's',
         'contact_name' => 's',
         'contact_email' => 's',
@@ -16,7 +17,7 @@ class ClientRepository extends MysqlRepository implements Findable
 
     public function findAll(): array
     {
-        $result = $this->db->query('SELECT * FROM client LIMIT 20');
+        $result = $this->db->query('SELECT * FROM client');
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
@@ -49,8 +50,8 @@ SQL;
 
     public function insert(Client $client): int
     {
-        $stmt = $this->db->prepare('INSERT INTO client (creator_uid, name, url, contact_name, contact_email, contact_phone) VALUES (?, ?, ?, ?, ?, ?)');
-        $stmt->bind_param('isssss', $client->creator_uid, $client->name, $client->url, $client->contact_name, $client->contact_email, $client->contact_phone);
+        $stmt = $this->db->prepare('INSERT INTO client (creator_uid, name, address, url, contact_name, contact_email, contact_phone) VALUES (?, ?, ?, ?, ?, ?, ?)');
+        $stmt->bind_param('issssss', $client->creator_uid, $client->name, $client->address, $client->url, $client->contact_name, $client->contact_email, $client->contact_phone);
         return $this->executeInsertStatement($stmt);
     }
 
