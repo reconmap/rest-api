@@ -30,11 +30,11 @@
         "phpoffice/phpword": "^0.18.2",
         "ponup/sql-builders": "^1.0",
         "pragmarx/google2fa": "^8.0",
-        "swiftmailer/swiftmailer": "^6.2",
         "symfony/filesystem": "^6.0",
         "twig/twig": "^3.0",
         "reconmap/command-output-parsers": "^2.0",
-        "symfony/console": "^6.0"
+        "symfony/console": "^6.0",
+        "symfony/mailer": "^6.0"
     },
     "autoload": {
         "psr-4": {

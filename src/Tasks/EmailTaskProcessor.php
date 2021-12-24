@@ -4,15 +4,16 @@ namespace Reconmap\Tasks;
 
 use Monolog\Logger;
 use Reconmap\Services\ApplicationConfig;
-use Swift_Attachment;
-use Swift_Mailer;
-use Swift_Message;
-use Swift_SmtpTransport;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mailer\Transport;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email;
 
 class EmailTaskProcessor implements ItemProcessor
 {
     public function __construct(private ApplicationConfig $config,
-                                private Logger $logger)
+                                private Logger            $logger)
     {
     }
 
@@ -22,31 +23,29 @@ class EmailTaskProcessor implements ItemProcessor
 
         $smtpSettings = $this->config->getSettings('smtp');
 
-        $transport = (new Swift_SmtpTransport($smtpSettings['host'], $smtpSettings['port'], 'tls'))
-            ->setUsername($smtpSettings['username'])
-            ->setPassword($smtpSettings['password']);
+        $dsn = sprintf('smtp://%s:%s@%s:%d?encryption=tls&auth_mode=login&verify_peer=%s',
+            $smtpSettings['username'], $smtpSettings['password'],
+            $smtpSettings['host'], $smtpSettings['port'], $smtpSettings['verifyPeer']);
+        $transport = Transport::fromDsn($dsn);
 
-        if (isset($smtpSettings['streamOptions'])) {
-            $transport->setStreamOptions($smtpSettings['streamOptions']);
-        }
-
-        $mailer = new Swift_Mailer($transport);
+        $mailer = new Mailer($transport);
 
         try {
-            $email = (new Swift_Message('[Reconmap] ' . $message->subject))
-                ->setFrom([$smtpSettings['fromEmail'] => $smtpSettings['fromName']])
-                ->setTo($message->to)
-                ->setBody($message->body);
+            $email = (new Email())
+                ->subject('[Reconmap] ' . $message->subject)
+                ->from(new Address($smtpSettings['fromEmail'], $smtpSettings['fromName']))
+                ->to($message->to)
+                ->text($message->body);
 
             if (!empty($message->attachmentPath)) {
-                $attachment = Swift_Attachment::fromPath($message->attachmentPath);
-                $email->attach($attachment);
+                $email = $email->attachFromPath($message->attachmentPath);
             }
 
-            if (!$mailer->send($email, $errors)) {
-                $this->logger->error('Unable to send email', $errors);
-            } else {
+            try {
+                $mailer->send($email);
                 $this->logger->debug('Email sent', ['to' => $message->to]);
+            } catch (TransportExceptionInterface $e) {
+                $this->logger->error('Unable to send email: ' . $e->getMessage());
             }
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage(), $e->getTrace());

@@ -21,6 +21,7 @@
     "port": 587,
     "username": "smtpuser",
     "password": "smtpsecret",
+    "verifyPeer": "true",
     "fromEmail": "no-reply@reconmap.org",
     "fromName": "Reconmap"
   },

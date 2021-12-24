@@ -10,7 +10,7 @@ class EmailTaskProcessorTest extends TestCase
 {
     public function testSuccess()
     {
-        $mockSettings = ['host' => '', 'port' => '', 'username' => '', 'password' => ''];
+        $mockSettings = ['host' => 'amazonses', 'port' => 589, 'username' => 'foo', 'password' => 'bar', 'verifyPeer' => 'false'];
 
         $mockAppConfig = $this->createMock(ApplicationConfig::class);
         $mockAppConfig->expects($this->once())
