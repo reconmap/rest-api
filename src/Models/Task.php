@@ -10,6 +10,9 @@ class Task
     public ?int $assignee_uid;
     public ?string $insert_ts;
     public ?string $update_ts;
+
+    public string $priority;
+
     public string $summary;
     public ?string $description;
     public string $status;
@@ -18,4 +21,9 @@ class Task
 
     public ?string $command;
     public ?string $command_parser;
+
+    public function __construct()
+    {
+        $this->priority = TaskPriority::Medium->value;
+    }
 }

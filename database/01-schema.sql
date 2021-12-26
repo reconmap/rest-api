@@ -222,17 +222,18 @@ DROP TABLE IF EXISTS task;
 
 CREATE TABLE task
 (
-    id           INT UNSIGNED                   NOT NULL AUTO_INCREMENT,
-    project_id   INT UNSIGNED                   NOT NULL,
-    creator_uid  INT UNSIGNED                   NOT NULL REFERENCES user,
-    assignee_uid INT UNSIGNED                   NULL REFERENCES user,
-    insert_ts    TIMESTAMP                      NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    update_ts    TIMESTAMP                      NULL ON UPDATE CURRENT_TIMESTAMP,
-    summary      VARCHAR(200)                   NOT NULL,
-    description  VARCHAR(2000)                  NULL,
-    status       ENUM ('todo', 'doing', 'done') NOT NULL DEFAULT 'todo',
-    due_date     DATE                           NULL,
-    command_id   INT UNSIGNED                   NULL REFERENCES command,
+    id           INT UNSIGNED                                        NOT NULL AUTO_INCREMENT,
+    project_id   INT UNSIGNED                                        NOT NULL,
+    creator_uid  INT UNSIGNED                                        NOT NULL REFERENCES user,
+    assignee_uid INT UNSIGNED                                        NULL REFERENCES user,
+    insert_ts    TIMESTAMP                                           NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_ts    TIMESTAMP                                           NULL ON UPDATE CURRENT_TIMESTAMP,
+    priority     ENUM ('highest', 'high', 'medium', 'low', 'lowest') NOT NULL,
+    summary      VARCHAR(200)                                        NOT NULL,
+    description  VARCHAR(2000)                                       NULL,
+    status       ENUM ('todo', 'doing', 'done')                      NOT NULL DEFAULT 'todo',
+    due_date     DATE                                                NULL,
+    command_id   INT UNSIGNED                                        NULL REFERENCES command,
 
     PRIMARY KEY (id),
     FOREIGN KEY (project_id) REFERENCES project (id) ON DELETE CASCADE

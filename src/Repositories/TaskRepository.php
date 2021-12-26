@@ -2,6 +2,7 @@
 
 namespace Reconmap\Repositories;
 
+use Ponup\SqlBuilders\InsertQueryBuilder;
 use Ponup\SqlBuilders\SearchCriteria;
 use Ponup\SqlBuilders\SelectQueryBuilder;
 use Reconmap\Models\Task;
@@ -12,10 +13,11 @@ class TaskRepository extends MysqlRepository implements Findable
 {
     public const UPDATABLE_COLUMNS_TYPES = [
         'project_id' => 'i',
+        'assignee_uid' => 'i',
+        'priority' => 's',
         'summary' => 's',
         'description' => 's',
         'command_id' => 'i',
-        'assignee_uid' => 'i',
         'status' => 's',
         'due_date' => 's'
     ];
@@ -68,7 +70,7 @@ class TaskRepository extends MysqlRepository implements Findable
     {
         $queryBuilder = new SelectQueryBuilder('task t');
         $queryBuilder->setColumns('
-            t.id, t.project_id, p.name AS project_name, t.insert_ts, t.update_ts, t.summary, t.description, t.status, t.due_date,
+            t.id, t.project_id, p.name AS project_name, t.insert_ts, t.update_ts, t.priority, t.summary, t.description, t.status, t.due_date,
             t.creator_uid, creator.full_name AS creator_full_name,
             t.assignee_uid, assignee.full_name AS assignee_full_name,
             c.id AS command_id, c.name AS command_name, c.output_parser, c.docker_image AS command_docker_image, c.arguments AS command_container_args
@@ -114,8 +116,10 @@ class TaskRepository extends MysqlRepository implements Findable
 
     public function insert(Task $task): int
     {
-        $stmt = $this->db->prepare('INSERT INTO task (creator_uid, project_id, summary, description, due_date, command_id) VALUES (?, ?, ?, ?, ?, ?)');
-        $stmt->bind_param('iisssi', $task->creator_uid, $task->project_id, $task->summary, $task->description, $task->due_date, $task->command_id);
+        $insertStmt = new InsertQueryBuilder('task');
+        $insertStmt->setColumns('creator_uid, project_id, priority, summary, description, due_date, command_id');
+        $stmt = $this->db->prepare($insertStmt->toSql());
+        $stmt->bind_param('iissssi', $task->creator_uid, $task->project_id, $task->priority, $task->summary, $task->description, $task->due_date, $task->command_id);
         return $this->executeInsertStatement($stmt);
     }
 }
