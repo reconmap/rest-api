@@ -18,13 +18,13 @@ class UserRepository extends MysqlRepository
         'password' => 's',
         'mfa_enabled' => 'i',
         'mfa_secret' => 's',
-        'timezone' => 's'
+        'timezone' => 's',
+        'preferences' => 's',
     ];
 
     public function findAll(): array
     {
         $queryBuilder = $this->getBaseSelectQueryBuilder();
-        $queryBuilder->setLimit(20);
 
         $result = $this->db->query($queryBuilder->toSql());
         return $result->fetch_all(MYSQLI_ASSOC);
@@ -49,7 +49,7 @@ class UserRepository extends MysqlRepository
     private function getBaseSelectQueryBuilder(): SelectQueryBuilder
     {
         $queryBuilder = new SelectQueryBuilder('user u');
-        $queryBuilder->setColumns('u.id, u.insert_ts, u.update_ts, u.active, u.full_name, u.short_bio, u.username, u.email, u.role, u.timezone, u.mfa_enabled');
+        $queryBuilder->setColumns('u.id, u.insert_ts, u.update_ts, u.active, u.full_name, u.short_bio, u.username, u.email, u.role, u.timezone, u.preferences, u.mfa_enabled');
         return $queryBuilder;
     }
 

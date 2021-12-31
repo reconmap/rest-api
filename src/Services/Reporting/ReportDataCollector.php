@@ -8,6 +8,7 @@ use Reconmap\Repositories\OrganisationRepository;
 use Reconmap\Repositories\ProjectRepository;
 use Reconmap\Repositories\ReportConfigurationRepository;
 use Reconmap\Repositories\ReportRepository;
+use Reconmap\Repositories\SearchCriterias\TargetSearchCriteria;
 use Reconmap\Repositories\SearchCriterias\VulnerabilitySearchCriteria;
 use Reconmap\Repositories\TargetRepository;
 use Reconmap\Repositories\TaskRepository;
@@ -46,6 +47,9 @@ class ReportDataCollector
 
         $organisation = $this->organisationRepository->findRootOrganisation();
 
+        $searchCriteria = new TargetSearchCriteria();
+        $targets = $this->targetRepository->search($searchCriteria);
+
         $vars = [
             'configuration' => $configuration,
             'project' => $project,
@@ -54,7 +58,7 @@ class ReportDataCollector
             'reports' => $reports,
             'markdownParser' => $markdownParser,
             'client' => $project['client_id'] ? $this->clientRepository->findById($project['client_id']) : null,
-            'targets' => $this->targetRepository->findByProjectId($projectId),
+            'targets' => $targets,
             'tasks' => $this->taskRepository->findByProjectId($projectId),
             'vulnerabilities' => $vulnerabilities,
             'findingsOverview' => $this->createFindingsOverview($vulnerabilities),

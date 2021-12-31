@@ -6,7 +6,7 @@ use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Ponup\SqlBuilders\SearchCriteria;
+use Reconmap\Repositories\SearchCriterias\TargetSearchCriteria;
 use Reconmap\Repositories\TargetRepository;
 use Reconmap\Services\PaginationRequestHandler;
 
@@ -20,10 +20,10 @@ class GetTargetsController extends Controller
     {
         $params = $request->getQueryParams();
 
-        $searchCriteria = new SearchCriteria();
+        $searchCriteria = new TargetSearchCriteria();
 
         if (isset($params['projectId'])) {
-            $searchCriteria->addCriterion('t.project_id = ?', [intval($params['projectId'])]);
+            $searchCriteria->addProjectCriterion(intval($params['projectId']));
         }
 
         $paginator = new PaginationRequestHandler($request);

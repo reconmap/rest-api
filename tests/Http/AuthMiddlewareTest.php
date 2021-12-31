@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Reconmap;
+namespace Reconmap\Http;
 
 use Firebase\JWT\JWT;
 use League\Route\Http\Exception\ForbiddenException;
@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Reconmap\Http\AuthMiddleware;
+use Reconmap\ApplicationConfigTestingTrait;
 use Reconmap\Services\JwtPayloadCreator;
 
 class AuthMiddlewareTest extends TestCase

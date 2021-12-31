@@ -22,8 +22,8 @@ SQL;
         $stmt = $this->db->prepare($sql);
         $stmt->bind_param('i', $projectId);
         $stmt->execute();
-        $rs = $stmt->get_result();
-        $configuration = $rs->fetch_object(ReportConfiguration::class);
+        $result = $stmt->get_result();
+        $configuration = $result->fetch_object(ReportConfiguration::class);
         $stmt->close();
 
         if (is_null($configuration)) {
@@ -38,10 +38,8 @@ SQL;
         /**
          * @var ReportConfiguration $reportConfiguration
          */
-        $stmt = $this->db->prepare('REPLACE INTO report_configuration
-    (project_id, include_toc, include_revisions_table, include_team_bios, include_findings_overview, include_cover, include_header, include_footer,  custom_cover, custom_header, custom_footer) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-        $stmt->bind_param('iiiiissssss', $reportConfiguration->project_id, $reportConfiguration->include_toc, $reportConfiguration->include_revisions_table, $reportConfiguration->include_team_bios, $reportConfiguration->include_findings_overview,
-            $reportConfiguration->include_cover, $reportConfiguration->include_header, $reportConfiguration->include_footer, $reportConfiguration->custom_cover, $reportConfiguration->custom_header, $reportConfiguration->custom_footer);
+        $stmt = $this->db->prepare('REPLACE INTO report_configuration (project_id) VALUES (?)');
+        $stmt->bind_param('i', $reportConfiguration->project_id);
         return $this->executeInsertStatement($stmt);
     }
 }

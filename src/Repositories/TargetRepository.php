@@ -30,23 +30,6 @@ class TargetRepository extends MysqlRepository implements Findable
         return $target;
     }
 
-    public function findByProjectId(int $projectId): array
-    {
-        $queryBuilder = $this->getBaseSelectQueryBuilder();
-        $queryBuilder->setWhere('t.project_id = ?');
-        $queryBuilder->setOrderBy('ORDER BY PARENT_CHILD_NAME(parent_name, t.name)');
-
-        $stmt = $this->db->prepare($queryBuilder->toSql());
-
-        $stmt->bind_param('i', $projectId);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $targets = $result->fetch_all(MYSQLI_ASSOC);
-        $stmt->close();
-
-        return $targets;
-    }
-
     public function findOrInsert(Target $target): int
     {
         $queryBuilder = $this->getBaseSelectQueryBuilder();
@@ -77,6 +60,7 @@ class TargetRepository extends MysqlRepository implements Findable
     public function search(SearchCriteria $searchCriteria, ?PaginationRequestHandler $paginator = null): array
     {
         $queryBuilder = $this->getBaseSelectQueryBuilder();
+        $queryBuilder->setOrderBy('PARENT_CHILD_NAME(parent_name, t.name)');
         return $this->searchAll($queryBuilder, $searchCriteria, $paginator);
     }
 

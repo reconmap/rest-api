@@ -4,6 +4,7 @@ namespace Reconmap\Repositories;
 
 use Reconmap\DatabaseTestCase;
 use Reconmap\Models\Target;
+use Reconmap\Repositories\SearchCriterias\TargetSearchCriteria;
 
 class TargetRepositoryTest extends DatabaseTestCase
 {
@@ -36,5 +37,13 @@ class TargetRepositoryTest extends DatabaseTestCase
     {
         $target = $this->subject->findById(-5);
         $this->assertNull($target);
+    }
+
+    public function testSearch()
+    {
+        $serchCriteria = new TargetSearchCriteria();
+        $serchCriteria->addProjectCriterion(1);
+        $targets = $this->subject->search($serchCriteria);
+        $this->assertCount(1, $targets);
     }
 }

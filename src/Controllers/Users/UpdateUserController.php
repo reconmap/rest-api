@@ -4,7 +4,7 @@ namespace Reconmap\Controllers\Users;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Models\AuditLogAction;
+use Reconmap\Models\UserAuditActions;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\ActivityPublisherService;
 use Reconmap\Services\EmailService;
@@ -12,8 +12,8 @@ use Reconmap\Services\EmailService;
 class UpdateUserController extends Controller
 {
     public function __construct(
-        private UserRepository $userRepository,
-        private EmailService $emailService,
+        private UserRepository           $userRepository,
+        private EmailService             $emailService,
         private ActivityPublisherService $activityPublisherService)
     {
     }
@@ -31,6 +31,10 @@ class UpdateUserController extends Controller
 
         $success = false;
         if (!empty($newColumnValues)) {
+            if (isset($newColumnValues['preferences']) && !is_string($newColumnValues['preferences'])) {
+                $newColumnValues['preferences'] = json_encode($newColumnValues['preferences']);
+            }
+
             $success = $this->userRepository->updateById($userId, $newColumnValues);
 
             $loggedInUserId = $request->getAttribute('userId');
@@ -50,6 +54,6 @@ class UpdateUserController extends Controller
 
     private function auditAction(int $loggedInUserId, int $userId): void
     {
-        $this->activityPublisherService->publish($loggedInUserId, AuditLogAction::USER_MODIFIED, ['type' => 'user', 'id' => $userId]);
+        $this->activityPublisherService->publish($loggedInUserId, UserAuditActions::USER_MODIFIED, ['type' => 'user', 'id' => $userId]);
     }
 }
