@@ -10,6 +10,7 @@ use Reconmap\Repositories\Importers\CommandsImporter;
 use Reconmap\Repositories\Importers\DocumentsImporter;
 use Reconmap\Repositories\Importers\Importable;
 use Reconmap\Repositories\Importers\ProjectsImporter;
+use Reconmap\Repositories\Importers\TargetsImporter;
 use Reconmap\Repositories\Importers\VulnerabilitiesImporter;
 use Reconmap\Repositories\Importers\VulnerabilityTemplatesImporter;
 use Reconmap\Services\AuditLogService;
@@ -51,6 +52,7 @@ class ImportDataController extends Controller
             'project_templates' => ProjectsImporter::class,
             'commands' => CommandsImporter::class,
             'documents' => DocumentsImporter::class,
+            'targets' => TargetsImporter::class,
             'vulnerabilities' => VulnerabilitiesImporter::class,
             'vulnerability_templates' => VulnerabilityTemplatesImporter::class,
         ];

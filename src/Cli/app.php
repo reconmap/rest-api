@@ -12,6 +12,7 @@ use Reconmap\Cli\Commands\WeeklyEmailReportSenderCommand;
 use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\ApplicationContainer;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Input\ArgvInput;
 
 $logger = new Logger('cron');
 $logger->pushHandler(new StreamHandler($applicationDir . '/logs/application.log', Logger::DEBUG));
@@ -23,13 +24,15 @@ set_error_handler(function ($errno, $errstr, $errfile, $errline) use ($logger) {
 $configFilePath = $applicationDir . '/config.json';
 $config = ApplicationConfig::load($configFilePath);
 $config->setAppDir($applicationDir);
-if (!in_array('--use-default-database', $argv)) {
+if (in_array('--use-test-database', $argv)) {
+
     $config['database'] = [
         'host' => 'rmap-mysql',
         'username' => 'reconmapper',
         'password' => 'reconmapped',
         'name' => 'reconmap_test'
     ];
+    unset($argv[array_search('--use-test-database', $argv)]);
 }
 
 $container = new ApplicationContainer($config, $logger);
@@ -39,4 +42,4 @@ $app->add($container->get(EmailProcessorCommand::class));
 $app->add($container->get(TaskProcessorCommand::class));
 $app->add($container->get(TestDataGeneratorCommand::class));
 $app->add($container->get(WeeklyEmailReportSenderCommand::class));
-$app->run();
+$app->run(new ArgvInput($argv));

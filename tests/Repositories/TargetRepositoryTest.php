@@ -46,4 +46,11 @@ class TargetRepositoryTest extends DatabaseTestCase
         $targets = $this->subject->search($serchCriteria);
         $this->assertCount(1, $targets);
     }
+
+    public function testFindAll()
+    {
+        $targets = $this->subject->findAll();
+        $this->assertCount(3, $targets);
+    }
+
 }

@@ -33,8 +33,8 @@ class TaskRepository extends MysqlRepository implements Findable
         }
         $sql = $selectQueryBuilder->toSql();
 
-        $rs = $this->db->query($sql);
-        return $rs->fetch_all(MYSQLI_ASSOC);
+        $result = $this->db->query($sql);
+        return $result->fetch_all(MYSQLI_ASSOC);
     }
 
     public function findByKeywords(string $keywords): array

@@ -24,6 +24,7 @@ class ExportDataControllerTest extends ControllerTestCase
         $controller = $this->injectController(new ExportDataController($mockAuditLogService));
         $response = $controller($request);
 
+        $this->assertStringContainsString('attachment; filename="reconmap-clients-', $response->getHeaderLine('Content-Disposition'));
         $this->assertEquals('application/json; charset=UTF-8', $response->getHeaderLine('Content-Type'));
     }
 }

@@ -25,8 +25,12 @@ class ExportDataController extends Controller
         $userId = $request->getAttribute('userId');
         $this->auditAction($userId, $entities);
 
-        $fileName = 'reconmap-data-' . date('Ymd-His') . '.json';
+        $packageName = match (count($entities)) {
+            1 => $entities[0],
+            default => 'data',
+        };
 
+        $fileName = 'reconmap-' . $packageName . '-' . date('Ymd-His') . '.json';
 
         $body = new CallbackStream(function () use ($entities) {
             $data = [];

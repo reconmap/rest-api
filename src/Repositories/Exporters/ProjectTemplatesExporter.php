@@ -2,8 +2,8 @@
 
 namespace Reconmap\Repositories\Exporters;
 
+use Ponup\SqlBuilders\SearchCriteria;
 use Reconmap\Repositories\ProjectTemplateRepository;
-use Reconmap\Repositories\SearchCriterias\ProjectSearchCriteria;
 
 class ProjectTemplatesExporter implements Exportable
 {
@@ -13,7 +13,7 @@ class ProjectTemplatesExporter implements Exportable
 
     public function export(): array
     {
-        $searchCriteria = new ProjectSearchCriteria();
+        $searchCriteria = new SearchCriteria();
         return $this->repository->search($searchCriteria);
     }
 }

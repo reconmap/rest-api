@@ -8,6 +8,7 @@ use Reconmap\Repositories\Exporters\CommandsExporter;
 use Reconmap\Repositories\Exporters\DocumentsExporter;
 use Reconmap\Repositories\Exporters\ProjectsExporter;
 use Reconmap\Repositories\Exporters\ProjectTemplatesExporter;
+use Reconmap\Repositories\Exporters\TargetsExporter;
 use Reconmap\Repositories\Exporters\TasksExporter;
 use Reconmap\Repositories\Exporters\UsersExporter;
 use Reconmap\Repositories\Exporters\VulnerabilitiesExporter;
@@ -24,6 +25,7 @@ class Exportables
         ['key' => 'projects', 'description' => 'Projects', 'className' => ProjectsExporter::class],
         ['key' => 'project_templates', 'description' => 'Project templates', 'className' => ProjectTemplatesExporter::class],
         ['key' => 'tasks', 'description' => 'Tasks', 'className' => TasksExporter::class],
+        ['key' => 'targets', 'description' => 'Targets', 'className' => TargetsExporter::class],
         ['key' => 'users', 'description' => 'Users', 'className' => UsersExporter::class],
         ['key' => 'vulnerabilities', 'description' => 'Vulnerabilities', 'className' => VulnerabilitiesExporter::class],
         ['key' => 'vulnerability_category', 'description' => 'Vulnerability categories', 'className' => VulnerabilityCategoriesExporter::class],

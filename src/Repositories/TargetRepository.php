@@ -30,6 +30,13 @@ class TargetRepository extends MysqlRepository implements Findable
         return $target;
     }
 
+    public function findAll(): array
+    {
+        $queryBuilder = $this->getBaseSelectQueryBuilder();
+        $result = $this->db->query($queryBuilder->toSql());
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
     public function findOrInsert(Target $target): int
     {
         $queryBuilder = $this->getBaseSelectQueryBuilder();
