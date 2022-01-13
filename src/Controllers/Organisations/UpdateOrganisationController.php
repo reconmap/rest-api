@@ -4,14 +4,14 @@ namespace Reconmap\Controllers\Organisations;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Models\AuditLogAction;
+use Reconmap\Models\AuditActions\AuditLogAction;
 use Reconmap\Models\Organisation;
 use Reconmap\Repositories\OrganisationRepository;
 use Reconmap\Services\ActivityPublisherService;
 
 class UpdateOrganisationController extends Controller
 {
-    public function __construct(private OrganisationRepository $repository,
+    public function __construct(private OrganisationRepository   $repository,
                                 private ActivityPublisherService $activityPublisherService)
     {
     }

@@ -5,15 +5,15 @@ namespace Reconmap\Controllers\Users;
 use League\Route\Http\Exception\UnauthorizedException;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Models\AuditLogAction;
+use Reconmap\Models\AuditActions\AuditLogAction;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\AuditLogService;
 use Reconmap\Services\EmailService;
 
 class UpdateUserPasswordController extends Controller
 {
-    public function __construct(private UserRepository $userRepository,
-                                private EmailService $emailService,
+    public function __construct(private UserRepository  $userRepository,
+                                private EmailService    $emailService,
                                 private AuditLogService $auditLogService)
     {
     }

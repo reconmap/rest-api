@@ -364,3 +364,18 @@ BEGIN
 END$$
 
 DELIMITER ;
+
+DROP TABLE IF EXISTS notification;
+
+CREATE TABLE notification
+(
+    id        INT UNSIGNED            NOT NULL AUTO_INCREMENT,
+    insert_ts TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_ts TIMESTAMP               NULL ON UPDATE CURRENT_TIMESTAMP,
+    title     VARCHAR(200)            NULL,
+    content   VARCHAR(4000)           NOT NULL,
+    status    ENUM ('unread', 'read') NOT NULL DEFAULT 'unread',
+
+    PRIMARY KEY (id)
+) ENGINE = InnoDB
+  CHARSET = utf8mb4;

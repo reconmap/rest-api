@@ -4,7 +4,7 @@ namespace Reconmap\Controllers\Auth;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Models\AuditLogAction;
+use Reconmap\Models\AuditActions\AuditLogAction;
 use Reconmap\Services\AuditLogService;
 
 class LogoutController extends Controller

@@ -5,7 +5,7 @@ namespace Reconmap\Controllers\Attachments;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Models\Attachment;
-use Reconmap\Models\AuditLogAction;
+use Reconmap\Models\AuditActions\AuditLogAction;
 use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Services\AuditLogService;
 use Reconmap\Services\Filesystem\AttachmentFilePath;

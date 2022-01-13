@@ -26,6 +26,7 @@ services:
     volumes:
       - ./data-mysql:/var/lib/mysql
       - ./database:/docker-entrypoint-initdb.d
+      - ./docker/mysql/overrides.cnf:/etc/mysql/conf.d/overrides.cnf:ro
     ports:
       - 3306:3306
     environment:
@@ -67,7 +68,7 @@ services:
     container_name: rmap-agent
     image: quay.io/reconmap/agent:latest
     ports:
-      - 4040:2020
+      - 5520:5520
     environment:
       VALID_ORIGINS: http://localhost:5500
       REDIS_HOST: redis

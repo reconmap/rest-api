@@ -4,7 +4,7 @@ namespace Reconmap\Repositories;
 
 use Reconmap\Models\Client;
 
-class ClientRepository extends MysqlRepository implements Findable
+class ClientRepository extends MysqlRepository implements Updateable, Findable
 {
     public const UPDATABLE_COLUMNS_TYPES = [
         'name' => 's',

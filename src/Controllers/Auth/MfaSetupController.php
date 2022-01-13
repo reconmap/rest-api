@@ -10,15 +10,15 @@ use Endroid\QrCode\Writer\PngWriter;
 use PragmaRX\Google2FA\Google2FA;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Models\AuditLogAction;
+use Reconmap\Models\AuditActions\AuditLogAction;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\AuditLogService;
 
 class MfaSetupController extends Controller
 {
     public function __construct(
-        private Google2FA $google2FA,
-        private UserRepository $userRepository,
+        private Google2FA       $google2FA,
+        private UserRepository  $userRepository,
         private AuditLogService $auditLogService)
     {
     }

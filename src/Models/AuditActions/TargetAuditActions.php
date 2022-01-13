@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Reconmap\Models;
+namespace Reconmap\Models\AuditActions;
 
 interface TargetAuditActions
 {

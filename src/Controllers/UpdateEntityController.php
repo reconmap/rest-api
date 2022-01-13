@@ -2,50 +2,52 @@
 
 namespace Reconmap\Controllers;
 
-use Fig\Http\Message\StatusCodeInterface;
-use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Reconmap\Repositories\Deletable;
+use Reconmap\Repositories\Updateable;
 use Reconmap\Services\ActivityPublisherService;
 use Reconmap\Services\Security\AuthorisationService;
 
-abstract class DeleteEntityController extends Controller
+abstract class UpdateEntityController extends Controller
 {
     public function __construct(
         private AuthorisationService     $authorisationService,
         private ActivityPublisherService $activityPublisherService,
-        private Deletable                $repository,
+        private Updateable               $repository,
         private string                   $entityName,
         private string                   $auditLogAction,
-        private string                   $idParamName
-    )
+        private string                   $idParamName)
     {
     }
 
     public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
     {
-        $operation = $this->entityName . '.delete';
+        $operation = $this->entityName . '.update';
 
         $role = $request->getAttribute('role');
         if (!$this->authorisationService->isRoleAllowed($role, $operation)) {
             $this->logger->warning("Unauthorised action '" . $operation . "' called for role '$role'");
 
-            return (new Response())->withStatus(StatusCodeInterface::STATUS_FORBIDDEN);
+            return $this->createForbiddenResponse();
         }
 
         $entityId = intval($args[$this->idParamName]);
 
-        $success = $this->repository->deleteById($entityId);
+        $requestBody = $this->getJsonBodyDecodedAsArray($request);
+        $newColumnValues = array_filter(
+            $requestBody,
+            fn(string $key) => in_array($key, array_keys($this->repository::UPDATABLE_COLUMNS_TYPES)),
+            ARRAY_FILTER_USE_KEY
+        );
 
-        if ($success) {
-            $userId = $request->getAttribute('userId');
-            $this->auditAction($userId, $entityId);
+        if (!empty($newColumnValues)) {
+            $this->repository->updateById($entityId, $newColumnValues);
 
-            return $this->createNoContentResponse();
+            $loggedInUserId = $request->getAttribute('userId');
+            $this->auditAction($loggedInUserId, $entityId);
         }
 
-        return (new Response())->withStatus(StatusCodeInterface::STATUS_BAD_REQUEST);
+        return $this->createNoContentResponse();
     }
 
     private function auditAction(int $loggedInUserId, int $entityId): void

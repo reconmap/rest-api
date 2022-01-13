@@ -4,7 +4,7 @@ namespace Reconmap\Controllers\Clients;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
-use Reconmap\Models\AuditLogAction;
+use Reconmap\Models\AuditActions\ClientAuditActions;
 use Reconmap\Repositories\ClientRepository;
 use Reconmap\Services\ActivityPublisherService;
 
@@ -23,7 +23,7 @@ class DeleteClientControllerTest extends TestCase
         $mockPublisherService = $this->createMock(ActivityPublisherService::class);
         $mockPublisherService->expects($this->once())
             ->method('publish')
-            ->with(9, AuditLogAction::CLIENT_DELETED, ['type' => 'client', 'id' => $fakeClientId]);
+            ->with(9, ClientAuditActions::DELETED, ['type' => 'client', 'id' => $fakeClientId]);
 
         $mockRequest = $this->createMock(ServerRequestInterface::class);
         $mockRequest->expects($this->once())

@@ -5,13 +5,13 @@ namespace Reconmap\Controllers\Tasks;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Database\NullColumnReplacer;
-use Reconmap\Models\AuditLogAction;
+use Reconmap\Models\AuditActions\AuditLogAction;
 use Reconmap\Repositories\TaskRepository;
 use Reconmap\Services\ActivityPublisherService;
 
 class UpdateTaskController extends Controller
 {
-    public function __construct(private TaskRepository $repository,
+    public function __construct(private TaskRepository           $repository,
                                 private ActivityPublisherService $activityPublisherService)
     {
     }

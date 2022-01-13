@@ -4,7 +4,7 @@ namespace Reconmap\Controllers\Users;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Models\AuditLogAction;
+use Reconmap\Models\AuditActions\AuditLogAction;
 use Reconmap\Models\User;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\AuditLogService;
@@ -14,10 +14,10 @@ use Reconmap\Services\PasswordGenerator;
 class CreateUserController extends Controller
 {
     public function __construct(
-        private UserRepository $userRepository,
+        private UserRepository    $userRepository,
         private PasswordGenerator $passwordGenerator,
-        private EmailService $emailService,
-        private AuditLogService $auditLogService
+        private EmailService      $emailService,
+        private AuditLogService   $auditLogService
     )
     {
     }

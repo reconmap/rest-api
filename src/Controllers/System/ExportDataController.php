@@ -7,7 +7,7 @@ use Laminas\Diactoros\CallbackStream;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Models\AuditLogAction;
+use Reconmap\Models\AuditActions\AuditLogAction;
 use Reconmap\Models\Exportables;
 use Reconmap\Repositories\Exporters\Exportable;
 use Reconmap\Services\AuditLogService;

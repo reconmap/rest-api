@@ -139,3 +139,5 @@ VALUES (1, 'Goohost',
          "database"
        ]', 'sqlmap');
 
+INSERT INTO notification (title, content)
+VALUES ('Command completed', '100 vulnerabilities have been found');

@@ -1,6 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Reconmap\Models;
+namespace Reconmap\Models\AuditActions;
+
+use Reconmap\Models\VulnerabilityCategoryLogActions;
 
 class AuditLogAction implements
     ClientAuditActions,

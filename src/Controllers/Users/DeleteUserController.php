@@ -4,13 +4,13 @@ namespace Reconmap\Controllers\Users;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Models\AuditLogAction;
+use Reconmap\Models\AuditActions\AuditLogAction;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\ActivityPublisherService;
 
 class DeleteUserController extends Controller
 {
-    public function __construct(private UserRepository $repository,
+    public function __construct(private UserRepository           $repository,
                                 private ActivityPublisherService $activityPublisherService)
     {
     }

@@ -4,14 +4,14 @@ namespace Reconmap\Controllers\Projects;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Models\AuditLogAction;
+use Reconmap\Models\AuditActions\AuditLogAction;
 use Reconmap\Repositories\ProjectRepository;
 use Reconmap\Services\AuditLogService;
 
 class DeleteProjectController extends Controller
 {
     public function __construct(private ProjectRepository $projectRepository,
-                                private AuditLogService $auditLogService)
+                                private AuditLogService   $auditLogService)
     {
     }
 

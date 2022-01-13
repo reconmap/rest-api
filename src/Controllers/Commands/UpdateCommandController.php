@@ -4,13 +4,13 @@ namespace Reconmap\Controllers\Commands;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Models\AuditLogAction;
+use Reconmap\Models\AuditActions\AuditLogAction;
 use Reconmap\Repositories\CommandRepository;
 use Reconmap\Services\ActivityPublisherService;
 
 class UpdateCommandController extends Controller
 {
-    public function __construct(private CommandRepository $repository,
+    public function __construct(private CommandRepository        $repository,
                                 private ActivityPublisherService $activityPublisherService)
     {
     }

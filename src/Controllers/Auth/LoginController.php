@@ -8,7 +8,7 @@ use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Models\AuditLogAction;
+use Reconmap\Models\AuditActions\AuditLogAction;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\AuditLogService;
@@ -18,9 +18,9 @@ use Reconmap\Services\Security\Permissions;
 class LoginController extends Controller
 {
     public function __construct(
-        private UserRepository $userRepository,
+        private UserRepository    $userRepository,
         private ApplicationConfig $applicationConfig,
-        private AuditLogService $auditLogService,
+        private AuditLogService   $auditLogService,
         private JwtPayloadCreator $jwtPayloadCreator)
     {
     }

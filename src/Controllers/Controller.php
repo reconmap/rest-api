@@ -47,6 +47,16 @@ abstract class Controller implements ContainerConsumer
         return json_decode((string)$request->getBody(), true);
     }
 
+    protected function createForbiddenResponse(): ResponseInterface
+    {
+        return (new Response())->withStatus(StatusCodeInterface::STATUS_FORBIDDEN);
+    }
+
+    protected function createNoContentResponse(): ResponseInterface
+    {
+        return (new Response())->withStatus(StatusCodeInterface::STATUS_NO_CONTENT);
+    }
+
     protected function createStatusCreatedResponse(string|array|object $body): ResponseInterface
     {
         $jsonBody = is_string($body) ? $body : json_encode($body);

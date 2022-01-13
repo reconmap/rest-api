@@ -4,7 +4,7 @@ namespace Reconmap\Controllers\Auth;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
-use Reconmap\Models\AuditLogAction;
+use Reconmap\Models\AuditActions\AuditLogAction;
 use Reconmap\Services\AuditLogService;
 
 class LogoutControllerTest extends TestCase

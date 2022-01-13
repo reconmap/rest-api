@@ -1,28 +1,28 @@
 <?php declare(strict_types=1);
 
-namespace Reconmap\Controllers\Documents;
+namespace Reconmap\Controllers\Notifications;
 
 use Reconmap\Controllers\DeleteEntityController;
-use Reconmap\Models\AuditActions\DocumentAuditActions;
-use Reconmap\Repositories\DocumentRepository;
+use Reconmap\Models\AuditActions\NotificationAuditActions;
+use Reconmap\Repositories\NotificationsRepository;
 use Reconmap\Services\ActivityPublisherService;
 use Reconmap\Services\Security\AuthorisationService;
 
-class DeleteDocumentController extends DeleteEntityController
+class DeleteNotificationController extends DeleteEntityController
 {
     public function __construct(
         private AuthorisationService     $authorisationService,
         private ActivityPublisherService $activityPublisherService,
-        private DocumentRepository       $repository,
+        private NotificationsRepository  $repository,
     )
     {
         parent::__construct(
             $this->authorisationService,
             $this->activityPublisherService,
             $this->repository,
-            'document',
-            DocumentAuditActions::DELETED,
-            'documentId'
+            'notification',
+            NotificationAuditActions::DELETED,
+            'notificationId'
         );
     }
 }

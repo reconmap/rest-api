@@ -7,7 +7,7 @@ use GuzzleHttp\Psr7\Stream;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Models\AuditLogAction;
+use Reconmap\Models\AuditActions\AuditLogAction;
 use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Services\AuditLogService;
 use Reconmap\Services\Filesystem\AttachmentFilePath;

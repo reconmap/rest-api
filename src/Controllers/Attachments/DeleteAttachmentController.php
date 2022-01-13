@@ -4,7 +4,7 @@ namespace Reconmap\Controllers\Attachments;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Models\AuditLogAction;
+use Reconmap\Models\AuditActions\AuditLogAction;
 use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Services\ActivityPublisherService;
 use Reconmap\Services\Filesystem\AttachmentFilePath;
