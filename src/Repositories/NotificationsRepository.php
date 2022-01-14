@@ -2,8 +2,10 @@
 
 namespace Reconmap\Repositories;
 
+use Ponup\SqlBuilders\SearchCriteria;
 use Ponup\SqlBuilders\SelectQueryBuilder;
 use Reconmap\Models\Notification;
+use Reconmap\Services\PaginationRequestHandler;
 
 class NotificationsRepository extends MysqlRepository implements Updateable, Deletable
 {
@@ -11,28 +13,27 @@ class NotificationsRepository extends MysqlRepository implements Updateable, Del
         'status' => 's',
     ];
 
-    public function findAll(): array
-    {
-        $queryBuilder = $this->getBaseSelectQueryBuilder();
-        $result = $this->db->query($queryBuilder->toSql());
-        return $result->fetch_all(MYSQLI_ASSOC);
-    }
-
-    public function deleteById(int $id): bool
-    {
-        return $this->deleteByTableId('notification', $id);
-    }
-
     public function insert(Notification $notification): int
     {
-        $stmt = $this->db->prepare('INSERT INTO notification (title, content) VALUES (?, ?)');
-        $stmt->bind_param('ss', $notification->title, $notification->content);
+        $stmt = $this->db->prepare('INSERT INTO notification (to_user_id, title, content) VALUES (?, ?, ?)');
+        $stmt->bind_param('iss', $notification->toUserId, $notification->title, $notification->content);
         return $this->executeInsertStatement($stmt);
+    }
+
+    public function search(SearchCriteria $searchCriteria, ?PaginationRequestHandler $paginator = null): array
+    {
+        $queryBuilder = $this->getBaseSelectQueryBuilder();
+        return $this->searchAll($queryBuilder, $searchCriteria, $paginator);
     }
 
     public function updateById(int $id, array $newColumnValues): bool
     {
         return $this->updateByTableId('notification', $id, $newColumnValues);
+    }
+
+    public function deleteById(int $id): bool
+    {
+        return $this->deleteByTableId('notification', $id);
     }
 
     private function getBaseSelectQueryBuilder(): SelectQueryBuilder

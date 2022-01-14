@@ -4,7 +4,8 @@ namespace Reconmap\Models;
 
 class Notification
 {
-    public function __construct(public ?string $title,
+    public function __construct(public int     $toUserId,
+                                public ?string $title,
                                 public string  $content)
     {
     }

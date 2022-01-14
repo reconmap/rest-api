@@ -11,6 +11,7 @@ use Reconmap\CommandOutputParsers\Models\Vulnerability;
 use Reconmap\CommandOutputParsers\NmapOutputProcessor;
 use Reconmap\CommandOutputParsers\ProcessorFactory;
 use Reconmap\Models\Target;
+use Reconmap\Repositories\NotificationsRepository;
 use Reconmap\Repositories\TargetRepository;
 use Reconmap\Repositories\TaskRepository;
 use Reconmap\Repositories\VulnerabilityRepository;
@@ -30,6 +31,10 @@ class TaskResultProcessorTest extends TestCase
             ->method('findById')
             ->with(4)
             ->willReturn(['command_name' => 'Nmap', 'output_parser' => 'nmap', 'project_id' => 5]);
+
+        $mockNotificationRepository = $this->createMock(NotificationsRepository::class);
+        $mockNotificationRepository->expects($this->once())
+            ->method('insert');
 
         $target = new Target();
         $target->project_id = 5;
@@ -64,7 +69,7 @@ class TaskResultProcessorTest extends TestCase
         $mockItem->taskId = 4;
         $mockItem->userId = 1;
 
-        $controller = new TaskResultProcessor($mockLogger, $mockRedisServer, $mockVulnerabilityRepository, $mockTaskRepository, $mockTargetRepository, $mockProcessorFactory);
+        $controller = new TaskResultProcessor($mockLogger, $mockRedisServer, $mockVulnerabilityRepository, $mockNotificationRepository, $mockTaskRepository, $mockTargetRepository, $mockProcessorFactory);
         $controller->process($mockItem);
     }
 }
