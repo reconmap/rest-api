@@ -7,7 +7,6 @@ on:
 
 jobs:
     build-test:
-        needs: configure
         runs-on: ubuntu-latest
         env:
           DOCKER_COMPOSE_VERSION: 1.26.2
