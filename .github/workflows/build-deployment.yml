@@ -1,0 +1,40 @@
+name: Build and deployment workflow
+
+on:
+    push:
+        branches:
+            - master
+
+jobs:
+    build-test:
+        needs: configure
+        runs-on: ubuntu-latest
+        env:
+          DOCKER_COMPOSE_VERSION: 1.26.2
+        steps:
+            - name: Echo user values
+              run: |
+                  echo $USER
+                  id -u
+                  id -g
+            - uses: actions/checkout@v2
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
+            - name: Login to Quay
+              run: echo "${{ secrets.QUAY_ROBOT_TOKEN }}" | docker login -u "${{ secrets.QUAY_ROBOT_USERNAME }}" --password-stdin quay.io
+            - name: Build
+              run: |
+                  curl -L https://github.com/docker/compose/releases/download/${{ env.DOCKER_COMPOSE_VERSION }}/docker-compose-`uname -s`-`uname -m` > docker-compose
+                  chmod +x docker-compose
+                  sudo mv docker-compose /usr/local/bin
+                  cp config-template.json config.json
+                  make
+            - name: Run tests
+              run: make tests
+            - name: Run security tests
+              run: make security-tests
+            - name: Upload CC report
+              run: bash <(curl -s https://codecov.io/bash) -f tests/clover.xml
+            - name: Deploy
+              run: ./docker/push_image.sh
+
