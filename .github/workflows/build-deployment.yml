@@ -6,10 +6,10 @@ on:
             - master
 
 jobs:
-    build-test:
+    main:
         runs-on: ubuntu-latest
         env:
-          DOCKER_COMPOSE_VERSION: 1.26.2
+          DOCKER_COMPOSE_VERSION: 1.29.2
         steps:
             - uses: actions/checkout@v2
               with:
