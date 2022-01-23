@@ -11,11 +11,6 @@ jobs:
         env:
           DOCKER_COMPOSE_VERSION: 1.26.2
         steps:
-            - name: Echo user values
-              run: |
-                  echo $USER
-                  id -u
-                  id -g
             - uses: actions/checkout@v2
               with:
                   token: ${{ secrets.GITHUB_TOKEN }}
