@@ -8,7 +8,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Repositories\ProjectRepository;
 use Reconmap\Repositories\ReportRepository;
-use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\Filesystem\AttachmentFilePath;
 use Reconmap\Services\Reporting\ReportDataCollector;
 
@@ -47,8 +46,6 @@ class CreateReportControllerTest extends TestCase
                 ['client_file_name' => 'default-template.docx']
             ]);
 
-        $mockApplicationConfig = $this->createMock(ApplicationConfig::class);
-
         $vars = [
             'configuration' => [],
             'project' => [],
@@ -69,7 +66,7 @@ class CreateReportControllerTest extends TestCase
             ->method('collectForProject')
             ->willReturn($vars);
 
-        $controller = new CreateReportController($mockAttachmentFilePath, $mockProjectRepository, $mockReportRepository, $mockAttachmentRepository, $mockReportDataCollector, $mockApplicationConfig);
+        $controller = new CreateReportController($mockAttachmentFilePath, $mockProjectRepository, $mockReportRepository, $mockAttachmentRepository, $mockReportDataCollector);
         $controller->setLogger($this->createMock(Logger::class));
         $response = $controller($mockRequest);
 
