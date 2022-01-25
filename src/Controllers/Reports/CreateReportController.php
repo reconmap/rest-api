@@ -13,7 +13,6 @@ use Reconmap\Models\Report;
 use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Repositories\ProjectRepository;
 use Reconmap\Repositories\ReportRepository;
-use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\Filesystem\AttachmentFilePath;
 use Reconmap\Services\Reporting\ReportDataCollector;
 
@@ -40,8 +39,7 @@ class CreateReportController extends Controller
         private ProjectRepository    $projectRepository,
         private ReportRepository     $reportRepository,
         private AttachmentRepository $attachmentRepository,
-        private ReportDataCollector  $reportDataCollector,
-        private ApplicationConfig    $applicationConfig
+        private ReportDataCollector  $reportDataCollector
     )
     {
     }
@@ -72,8 +70,6 @@ class CreateReportController extends Controller
 
         $reportId = $this->reportRepository->insert($report);
 
-        $basePath = $this->attachmentFilePathService->generateBasePath();
-
         $attachment = new Attachment();
         $attachment->parent_type = 'report';
         $attachment->parent_id = $reportId;
@@ -99,17 +95,25 @@ class CreateReportController extends Controller
                 $template->setValue($key, $value);
             }
 
-            $template->cloneBlock('users', count($vars['users']), true, true);
-            foreach ($vars['users'] as $index => $user) {
-                $template->setValue('user.full_name#' . ($index + 1), $user['full_name']);
-                $template->setValue('user.short_bio#' . ($index + 1), $user['short_bio']);
+            try {
+                $template->cloneBlock('users', count($vars['users']), true, true);
+                foreach ($vars['users'] as $index => $user) {
+                    $template->setValue('user.full_name#' . ($index + 1), $user['full_name']);
+                    $template->setValue('user.short_bio#' . ($index + 1), $user['short_bio']);
+                }
+            } catch (\Exception $e) {
+                $this->logger->warning($e->getMessage());
             }
 
-            $template->cloneRow('target.name', count($vars['targets']));
-            foreach ($vars['targets'] as $index => $target) {
-                $indexPlusOne = $index + 1;
-                $template->setValue('target.name#' . $indexPlusOne, $target['name']);
-                $template->setValue('target.kind#' . $indexPlusOne, $target['kind']);
+            try {
+                $template->cloneRow('target.name', count($vars['targets']));
+                foreach ($vars['targets'] as $index => $target) {
+                    $indexPlusOne = $index + 1;
+                    $template->setValue('target.name#' . $indexPlusOne, $target['name']);
+                    $template->setValue('target.kind#' . $indexPlusOne, $target['kind']);
+                }
+            } catch (\Exception $e) {
+                $this->logger->warning($e->getMessage());
             }
 
             foreach ($vars['findingsOverview'] as $stat) {
@@ -119,36 +123,45 @@ class CreateReportController extends Controller
             $markdownParser = new GithubFlavoredMarkdownConverter();
             $word = new PhpWord();
 
-            $template->cloneBlock('vulnerabilities', count($vars['vulnerabilities']), true, true);
-            foreach ($vars['vulnerabilities'] as $index => $vulnerability) {
-                $template->setValue('vulnerability.name#' . ($index + 1), $vulnerability['summary']);
+            try {
+                $template->cloneBlock('vulnerabilities', count($vars['vulnerabilities']), true, true);
+                foreach ($vars['vulnerabilities'] as $index => $vulnerability) {
+                    $template->setValue('vulnerability.name#' . ($index + 1), $vulnerability['summary']);
 
-                if (!is_null($vulnerability['description'])) {
-                    $description = $markdownParser->convertToHtml($vulnerability['description']);
+                    if (!is_null($vulnerability['description'])) {
+                        $description = $markdownParser->convert($vulnerability['description']);
 
-                    $tempTable = $word->addSection()->addTable();
-                    $cell = $tempTable->addRow()->addCell();
-                    Html::addHtml($cell, $description);
+                        $tempTable = $word->addSection()->addTable();
+                        $cell = $tempTable->addRow()->addCell();
+                        Html::addHtml($cell, $description);
 
-                    $template->setComplexBlock('vulnerability.description#' . ($index + 1), $tempTable);
+                        $template->setComplexBlock('vulnerability.description#' . ($index + 1), $tempTable);
+                    }
+
+                    $template->setValue('vulnerability.category_name#' . ($index + 1), $vulnerability['category_name']);
+                    $template->setValue('vulnerability.cvss_score#' . ($index + 1), $vulnerability['cvss_score']);
+                    $template->setValue('vulnerability.severity#' . ($index + 1), $vulnerability['risk']);
+                    $template->setValue('vulnerability.proof_of_concept#' . ($index + 1), $vulnerability['proof_of_concept']);
+                    $template->setValue('vulnerability.remediation#' . ($index + 1), $vulnerability['remediation']);
                 }
-
-                $template->setValue('vulnerability.category_name#' . ($index + 1), $vulnerability['category_name']);
-                $template->setValue('vulnerability.cvss_score#' . ($index + 1), $vulnerability['cvss_score']);
-                $template->setValue('vulnerability.severity#' . ($index + 1), $vulnerability['risk']);
-                $template->setValue('vulnerability.proof_of_concept#' . ($index + 1), $vulnerability['proof_of_concept']);
-                $template->setValue('vulnerability.remediation#' . ($index + 1), $vulnerability['remediation']);
+            } catch (\Exception $e) {
+                $this->logger->warning($e->getMessage());
             }
 
-            $template->cloneRow('revisionHistoryDateTime', count($vars['reports']));
-            foreach ($vars['reports'] as $index => $reportRevision) {
-                $indexPlusOne = $index + 1;
-                $template->setValue('revisionHistoryDateTime#' . $indexPlusOne, $reportRevision['insert_ts']);
-                $template->setValue('revisionHistoryVersionName#' . $indexPlusOne, $reportRevision['version_name']);
-                $template->setValue('revisionHistoryVersionDescription#' . $indexPlusOne, $reportRevision['version_description']);
+            try {
+                $template->cloneRow('revisionHistoryDateTime', count($vars['reports']));
+                foreach ($vars['reports'] as $index => $reportRevision) {
+                    $indexPlusOne = $index + 1;
+                    $template->setValue('revisionHistoryDateTime#' . $indexPlusOne, $reportRevision['insert_ts']);
+                    $template->setValue('revisionHistoryVersionName#' . $indexPlusOne, $reportRevision['version_name']);
+                    $template->setValue('revisionHistoryVersionDescription#' . $indexPlusOne, $reportRevision['version_description']);
+                }
+            } catch (\Exception $e) {
+                $this->logger->warning($e->getMessage());
             }
 
             $fileName = uniqid(gethostname());
+            $basePath = $this->attachmentFilePathService->generateBasePath();
             $filePath = $basePath . $fileName;
 
             $template->saveAs($filePath);
@@ -165,7 +178,6 @@ class CreateReportController extends Controller
             $attachmentIds[] = $this->attachmentRepository->insert($attachment);
 
         } catch (\Exception $e) {
-            die($e->getMessage());
             $this->logger->error($e->getMessage());
         }
 
