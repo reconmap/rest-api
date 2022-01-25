@@ -5,6 +5,7 @@ namespace Reconmap\Http;
 use Fig\Http\Message\StatusCodeInterface;
 use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Utils;
 use League\Route\Http\Exception;
@@ -37,7 +38,7 @@ class AuthMiddleware implements MiddlewareInterface
         $jwtConfig = $this->config->getSettings('jwt');
 
         try {
-            $token = JWT::decode($jwt, $jwtConfig['key'], ['HS256']);
+            $token = JWT::decode($jwt, new Key($jwtConfig['key'], 'HS256'));
 
             if ($token->iss !== $jwtConfig['issuer']) {
                 throw new ForbiddenException("Invalid JWT issuer");
