@@ -28,7 +28,7 @@ class UpdateProjectController extends Controller
 
         $success = false;
         if (!empty($newColumnValues)) {
-            NullColumnReplacer::replaceEmptyWithNulls(['engagement_type', 'engagement_start_date', 'engagement_end_date'], $newColumnValues);
+            NullColumnReplacer::replaceEmptyWithNulls(['engagement_type', 'engagement_start_date', 'engagement_end_date', 'external_id'], $newColumnValues);
 
             $success = $this->repository->updateById($projectId, $newColumnValues);
 

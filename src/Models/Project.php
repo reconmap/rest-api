@@ -13,4 +13,5 @@ class Project
     public ?string $engagement_type;
     public ?string $engagement_start_date;
     public ?string $engagement_end_date;
+    public ?string $external_id;
 }
