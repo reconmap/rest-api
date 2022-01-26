@@ -10,3 +10,4 @@ clover.xml
 tests/data/*
 environment.js
 tags
+*.code-workspace
