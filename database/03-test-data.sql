@@ -48,21 +48,23 @@ VALUES (1,
         'N/A',
         '+1 951-692-7703');
 
-INSERT INTO project (id, creator_uid, client_id, name, description, is_template, visibility)
+INSERT INTO project (id, creator_uid, client_id, name, description, is_template, visibility, external_id)
 VALUES (1,
         @admin_user_id,
         NULL,
         'Linux host template',
         'Project template to show general linux host reconnaissance tasks',
         TRUE,
-        'public'),
+        'public',
+        NULL),
        (2,
         @admin_user_id,
         1,
         'Web server pentest project',
         'Test project to show pentest tasks and reports',
         FALSE,
-        'private'),
+        'private',
+        'C8D6355A-5F54-43FC-A947-C4C960CDD4F6'),
        (3,
         @admin_user_id,
         2,
@@ -78,7 +80,8 @@ CTFs and as a guinea pig for security tools! Juice Shop encompasses vulnerabilit
         ' WebGoat (test project)',
         ' WebGoat is a deliberately insecure application that allows interested developers just like you to test vulnerabilities commonly found in Java-based applications that use common and popular open source components.',
         FALSE,
-        'private');
+        'private',
+        NULL);
 
 INSERT INTO report (project_id,
                     insert_ts,

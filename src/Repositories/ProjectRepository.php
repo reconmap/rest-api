@@ -19,7 +19,8 @@ class ProjectRepository extends MysqlRepository
         'engagement_type' => 's',
         'engagement_start_date' => 's',
         'engagement_end_date' => 's',
-        'archived' => 'i'
+        'archived' => 'i',
+        'external_id' => 's'
     ];
 
     public function isVisibleToUser(int $projectId, int $userId): bool
@@ -101,10 +102,10 @@ SQL;
     public function insert(Project $project): int
     {
         $insertStmt = new InsertQueryBuilder('project');
-        $insertStmt->setColumns('creator_uid, client_id, name, description, is_template, engagement_type, engagement_start_date, engagement_end_date, visibility');
+        $insertStmt->setColumns('creator_uid, client_id, name, description, is_template, engagement_type, engagement_start_date, engagement_end_date, visibility, external_id');
 
         $stmt = $this->db->prepare($insertStmt->toSql());
-        $stmt->bind_param('iississss', $project->creator_uid, $project->client_id, $project->name, $project->description, $project->is_template, $project->engagement_type, $project->engagement_start_date, $project->engagement_end_date, $project->visibility);
+        $stmt->bind_param('iississsss', $project->creator_uid, $project->client_id, $project->name, $project->description, $project->is_template, $project->engagement_type, $project->engagement_start_date, $project->engagement_end_date, $project->visibility, $project->external_id);
         return $this->executeInsertStatement($stmt);
     }
 

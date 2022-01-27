@@ -92,6 +92,7 @@ CREATE TABLE project
     engagement_end_date   DATE,
     archived              BOOLEAN                                  NOT NULL DEFAULT FALSE,
     archive_ts            TIMESTAMP                                NULL,
+    external_id           VARCHAR(40)                              NULL,
 
     PRIMARY KEY (id),
     UNIQUE KEY (name),
