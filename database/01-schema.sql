@@ -93,6 +93,7 @@ CREATE TABLE project
     archived              BOOLEAN                                  NOT NULL DEFAULT FALSE,
     archive_ts            TIMESTAMP                                NULL,
     external_id           VARCHAR(40)                              NULL,
+    vulnerability_metrics ENUM ('CVSS', 'OWASP_RR')                NULL,
 
     PRIMARY KEY (id),
     UNIQUE KEY (name),
@@ -195,6 +196,10 @@ CREATE TABLE vulnerability
     status                 ENUM ('open', 'confirmed', 'resolved', 'closed')                                                   NOT NULL DEFAULT 'open',
     substatus              ENUM ('reported', 'unresolved', 'unexploited', 'exploited', 'remediated', 'mitigated', 'rejected') NULL     DEFAULT 'reported',
     tags                   JSON                                                                                               NULL,
+    owasp_vector           VARCHAR(80)                                                                                        NULL,
+    owasp_likehood         DECIMAL(3, 1)                                                                                      NULL,
+    owasp_impact           DECIMAL(3, 1)                                                                                      NULL,
+    owasp_overall          DECIMAL(3, 1)                                                                                      NULL,
 
     PRIMARY KEY (id),
     UNIQUE KEY (project_id, target_id, summary),
