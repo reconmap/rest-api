@@ -6,13 +6,8 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditActions\AuditLogAction;
-use Reconmap\Repositories\Importers\CommandsImporter;
-use Reconmap\Repositories\Importers\DocumentsImporter;
 use Reconmap\Repositories\Importers\Importable;
-use Reconmap\Repositories\Importers\ProjectsImporter;
-use Reconmap\Repositories\Importers\TargetsImporter;
-use Reconmap\Repositories\Importers\VulnerabilitiesImporter;
-use Reconmap\Repositories\Importers\VulnerabilityTemplatesImporter;
+use Reconmap\Repositories\Importers\Importables;
 use Reconmap\Services\AuditLogService;
 
 class ImportDataController extends Controller
@@ -47,24 +42,14 @@ class ImportDataController extends Controller
 
         $userId = $request->getAttribute('userId');
 
-        $importables = [
-            'projects' => ProjectsImporter::class,
-            'project_templates' => ProjectsImporter::class,
-            'commands' => CommandsImporter::class,
-            'documents' => DocumentsImporter::class,
-            'targets' => TargetsImporter::class,
-            'vulnerabilities' => VulnerabilitiesImporter::class,
-            'vulnerability_templates' => VulnerabilityTemplatesImporter::class,
-        ];
-
         foreach ($json as $entityType => $entities) {
-            if (isset($importables[$entityType])) {
+            if (isset(Importables::List[$entityType])) {
                 /** @var Importable $importer */
-                $importer = $this->container->get($importables[$entityType]);
+                $importer = $this->container->get(Importables::List[$entityType]);
                 $response['results'][] = array_merge(['name' => $entityType], $importer->import($userId, $entities));
             } else {
                 $this->logger->warning("Trying to import invalid entity type: $entityType");
-                $response['errors'][] = "Invalid entity '$entityType' found in file. Expected one of: " . implode(', ', array_keys($importables));
+                $response['errors'][] = "Invalid entity '$entityType' found in file. Expected one of: " . implode(', ', array_keys(Importables::List));
             }
         }
 
