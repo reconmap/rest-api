@@ -33,6 +33,10 @@ class VulnerabilitiesImporter implements Importable
                 $vulnerability->cvss_score = $jsonDoc->cvss_score;
                 $vulnerability->cvss_vector = $jsonDoc->cvss_vector;
                 $vulnerability->tags = $jsonDoc->tags ?? null;
+                $vulnerability->owasp_vector = $jsonDoc->owasp_vector;
+                $vulnerability->owasp_overall = $jsonDoc->owasp_overall ? floatval($jsonDoc->owasp_overall) : null;
+                $vulnerability->owasp_impact = $jsonDoc->owasp_impact ? floatval($jsonDoc->owasp_impact) : null;
+                $vulnerability->owasp_likehood = $jsonDoc->owasp_likehood ? floatval($jsonDoc->owasp_likehood) : null;
 
                 $this->repository->insert($vulnerability);
 
