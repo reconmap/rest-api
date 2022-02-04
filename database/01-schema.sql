@@ -197,9 +197,9 @@ CREATE TABLE vulnerability
     substatus              ENUM ('reported', 'unresolved', 'unexploited', 'exploited', 'remediated', 'mitigated', 'rejected') NULL     DEFAULT 'reported',
     tags                   JSON                                                                                               NULL,
     owasp_vector           VARCHAR(80)                                                                                        NULL,
-    owasp_likehood         DECIMAL(3, 1)                                                                                      NULL,
-    owasp_impact           DECIMAL(3, 1)                                                                                      NULL,
-    owasp_overall          DECIMAL(3, 1)                                                                                      NULL,
+    owasp_likehood         DECIMAL(5, 3)                                                                                      NULL,
+    owasp_impact           DECIMAL(5, 3)                                                                                      NULL,
+    owasp_overall          ENUM ('critical','high','medium','low','note')                                                     NULL,
 
     PRIMARY KEY (id),
     UNIQUE KEY (project_id, target_id, summary),
