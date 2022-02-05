@@ -8,8 +8,8 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditActions\AuditLogAction;
-use Reconmap\Models\Exportables;
 use Reconmap\Repositories\Exporters\Exportable;
+use Reconmap\Repositories\Exporters\Exportables;
 use Reconmap\Services\AuditLogService;
 
 class ExportDataController extends Controller

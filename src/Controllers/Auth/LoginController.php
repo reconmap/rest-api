@@ -8,7 +8,7 @@ use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Models\AuditActions\AuditLogAction;
+use Reconmap\Models\AuditActions\UserAuditActions;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\AuditLogService;
@@ -36,7 +36,7 @@ class LoginController extends Controller
         $response = new Response;
 
         if (is_null($user) || !password_verify($password, $user['password'])) {
-            $this->audit(0, AuditLogAction::USER_LOGIN_FAILED, ['username' => $username]);
+            $this->audit(0, UserAuditActions::USER_LOGIN_FAILED, ['username' => $username]);
             return $response->withStatus(StatusCodeInterface::STATUS_FORBIDDEN);
         }
 
@@ -47,7 +47,7 @@ class LoginController extends Controller
             default => 'disabled'
         };
 
-        $this->audit($user['id'], AuditLogAction::USER_LOGGED_IN);
+        $this->audit($user['id'], UserAuditActions::USER_LOGGED_IN);
 
         $jwtPayload = $this->jwtPayloadCreator->createFromUserArray($user);
 
