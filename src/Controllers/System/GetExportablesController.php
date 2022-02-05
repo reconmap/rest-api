@@ -4,7 +4,7 @@ namespace Reconmap\Controllers\System;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Models\Exportables;
+use Reconmap\Repositories\Exporters\Exportables;
 
 class GetExportablesController extends Controller
 {

@@ -31,6 +31,10 @@ class GetVulnerabilitiesController extends Controller
             $projectId = intval($params['projectId']);
             $this->searchCriteria->addProjectCriterion($projectId);
         }
+        if (isset($params['categoryId'])) {
+            $categoryId = intval($params['categoryId']);
+            $this->searchCriteria->addCategoryCriterion($categoryId);
+        }
         if (isset($params['targetId'])) {
             $targetId = intval($params['targetId']);
             $this->searchCriteria->addTargetCriterion($targetId);
@@ -38,6 +42,12 @@ class GetVulnerabilitiesController extends Controller
         if (isset($params['isTemplate'])) {
             $isTemplate = intval($params['isTemplate']);
             $this->searchCriteria->addTemplateCriterion($isTemplate);
+        }
+        if (isset($params['risk'])) {
+            $this->searchCriteria->addRiskCriterion($params['risk']);
+        }
+        if (isset($params['status'])) {
+            $this->searchCriteria->addStatusCriterion($params['status']);
         }
 
         $role = $request->getAttribute('role');
