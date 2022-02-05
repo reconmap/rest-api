@@ -221,7 +221,11 @@ SELECT id,
        risk,
        cvss_score,
        cvss_vector,
-       tags
+       tags,
+       owasp_vector,
+       owasp_likehood,
+       owasp_impact,
+       owasp_overall
 FROM vulnerability
 WHERE is_template = 1;
 

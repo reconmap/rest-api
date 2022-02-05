@@ -106,7 +106,7 @@ SQL;
         $insertStmt->setColumns('creator_uid, client_id, name, description, is_template, engagement_type, engagement_start_date, engagement_end_date, visibility, external_id, vulnerability_metrics');
 
         $stmt = $this->db->prepare($insertStmt->toSql());
-        $stmt->bind_param('iississsss', $project->creator_uid, $project->client_id, $project->name, $project->description, $project->is_template, $project->engagement_type, $project->engagement_start_date, $project->engagement_end_date, $project->visibility, $project->external_id, $project->vulnerability_metrics);
+        $stmt->bind_param('iississssss', $project->creator_uid, $project->client_id, $project->name, $project->description, $project->is_template, $project->engagement_type, $project->engagement_start_date, $project->engagement_end_date, $project->visibility, $project->external_id, $project->vulnerability_metrics);
         return $this->executeInsertStatement($stmt);
     }
 
