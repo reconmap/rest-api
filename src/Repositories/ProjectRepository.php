@@ -20,7 +20,8 @@ class ProjectRepository extends MysqlRepository
         'engagement_start_date' => 's',
         'engagement_end_date' => 's',
         'archived' => 'i',
-        'external_id' => 's'
+        'external_id' => 's',
+        'vulnerability_metrics' => 's'
     ];
 
     public function isVisibleToUser(int $projectId, int $userId): bool
@@ -78,7 +79,7 @@ SQL;
         $this->db->begin_transaction();
 
         $projectSql = <<<SQL
-        INSERT INTO project (creator_uid, name, description, engagement_type, engagement_start_date, engagement_end_date) SELECT ?, CONCAT(name, ' - ', CURRENT_TIMESTAMP()), description, engagement_type, engagement_start_date, engagement_end_date FROM project WHERE id = ?
+        INSERT INTO project (creator_uid, name, description, engagement_type, engagement_start_date, engagement_end_date, vulnerability_metrics) SELECT ?, CONCAT(name, ' - ', CURRENT_TIMESTAMP()), description, engagement_type, engagement_start_date, engagement_end_date, vulnerability_metrics FROM project WHERE id = ?
         SQL;
         $stmt = $this->db->prepare($projectSql);
         $stmt->bind_param('ii', $userId, $templateId);
@@ -102,10 +103,10 @@ SQL;
     public function insert(Project $project): int
     {
         $insertStmt = new InsertQueryBuilder('project');
-        $insertStmt->setColumns('creator_uid, client_id, name, description, is_template, engagement_type, engagement_start_date, engagement_end_date, visibility, external_id');
+        $insertStmt->setColumns('creator_uid, client_id, name, description, is_template, engagement_type, engagement_start_date, engagement_end_date, visibility, external_id, vulnerability_metrics');
 
         $stmt = $this->db->prepare($insertStmt->toSql());
-        $stmt->bind_param('iississsss', $project->creator_uid, $project->client_id, $project->name, $project->description, $project->is_template, $project->engagement_type, $project->engagement_start_date, $project->engagement_end_date, $project->visibility, $project->external_id);
+        $stmt->bind_param('iississsss', $project->creator_uid, $project->client_id, $project->name, $project->description, $project->is_template, $project->engagement_type, $project->engagement_start_date, $project->engagement_end_date, $project->visibility, $project->external_id, $project->vulnerability_metrics);
         return $this->executeInsertStatement($stmt);
     }
 
