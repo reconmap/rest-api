@@ -12,8 +12,8 @@ use Symfony\Component\Mime\Email;
 
 class EmailTaskProcessor implements ItemProcessor
 {
-    public function __construct(private ApplicationConfig $config,
-                                private Logger            $logger)
+    public function __construct(private readonly ApplicationConfig $config,
+                                private readonly Logger $logger)
     {
     }
 
@@ -25,7 +25,7 @@ class EmailTaskProcessor implements ItemProcessor
 
         $dsn = sprintf('smtp://%s:%s@%s:%d?encryption=tls&auth_mode=login&verify_peer=%s',
             $smtpSettings['username'], $smtpSettings['password'],
-            $smtpSettings['host'], $smtpSettings['port'], $smtpSettings['verifyPeer']);
+            $smtpSettings['host'], $smtpSettings['port'], $smtpSettings['verifyPeer'] ?? true);
         $transport = Transport::fromDsn($dsn);
 
         $mailer = new Mailer($transport);
