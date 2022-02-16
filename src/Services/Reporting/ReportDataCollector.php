@@ -48,6 +48,7 @@ class ReportDataCollector
         $organisation = $this->organisationRepository->findRootOrganisation();
 
         $searchCriteria = new TargetSearchCriteria();
+        $searchCriteria->addProjectCriterion($projectId);
         $targets = $this->targetRepository->search($searchCriteria);
 
         $vars = [

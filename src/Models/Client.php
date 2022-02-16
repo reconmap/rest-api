@@ -12,6 +12,8 @@ class Client
     public ?string $contact_name;
     public ?string $contact_email;
     public ?string $contact_phone;
+    public ?string $logo;
+    public ?string $small_logo;
 
     public function getId(): int
     {
