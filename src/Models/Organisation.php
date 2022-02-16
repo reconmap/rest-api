@@ -10,4 +10,6 @@ class Organisation
     public ?string $contact_name = null;
     public ?string $contact_email = null;
     public ?string $contact_phone = null;
+    public ?string $logo = null;
+    public ?string $small_logo = null;
 }

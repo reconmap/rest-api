@@ -15,6 +15,7 @@ use Reconmap\Repositories\ProjectRepository;
 use Reconmap\Repositories\ReportRepository;
 use Reconmap\Services\Filesystem\AttachmentFilePath;
 use Reconmap\Services\Reporting\ReportDataCollector;
+use Monolog\Logger;
 
 function flatten($array, $prefix = '')
 {
@@ -102,7 +103,8 @@ class CreateReportController extends Controller
                     $template->setValue('user.short_bio#' . ($index + 1), $user['short_bio']);
                 }
             } catch (\Exception $e) {
-                $this->logger->warning($e->getMessage());
+                $message = $e->getMessage();
+                $this->logger->warning("Users block: [$message]");
             }
 
             try {
@@ -113,7 +115,8 @@ class CreateReportController extends Controller
                     $template->setValue('target.kind#' . $indexPlusOne, $target['kind']);
                 }
             } catch (\Exception $e) {
-                $this->logger->warning($e->getMessage());
+                $message = $e->getMessage();
+                $this->logger->warning("Targets: [$message]");
             }
 
             foreach ($vars['findingsOverview'] as $stat) {
@@ -145,7 +148,8 @@ class CreateReportController extends Controller
                     $template->setValue('vulnerability.remediation#' . ($index + 1), $vulnerability['remediation']);
                 }
             } catch (\Exception $e) {
-                $this->logger->warning($e->getMessage());
+                $message = $e->getMessage();
+                $this->logger->warning("Vulnerabilities block: [$message]");
             }
 
             try {
@@ -157,9 +161,11 @@ class CreateReportController extends Controller
                     $template->setValue('revisionHistoryVersionDescription#' . $indexPlusOne, $reportRevision['version_description']);
                 }
             } catch (\Exception $e) {
-                $this->logger->warning($e->getMessage());
+                $message = $e->getMessage();
+                $this->logger->warning("Revision history block: [$message]");
             }
 
+            
             $fileName = uniqid(gethostname());
             $basePath = $this->attachmentFilePathService->generateBasePath();
             $filePath = $basePath . $fileName;
@@ -178,7 +184,8 @@ class CreateReportController extends Controller
             $attachmentIds[] = $this->attachmentRepository->insert($attachment);
 
         } catch (\Exception $e) {
-            $this->logger->error($e->getMessage());
+            $message = $e->getMessage();
+            $this->logger->warning("Overall exception: [$message]");
         }
 
         return $attachmentIds;
