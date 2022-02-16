@@ -13,8 +13,6 @@ class ClientRepository extends MysqlRepository implements Updateable, Findable
         'contact_name' => 's',
         'contact_email' => 's',
         'contact_phone' => 's',
-        'logo' => 's',
-        'small_logo' => 's',
     ];
 
     public function findAll(): array
@@ -52,8 +50,8 @@ SQL;
 
     public function insert(Client $client): int
     {
-        $stmt = $this->db->prepare('INSERT INTO client (creator_uid, name, address, url, contact_name, contact_email, contact_phone, logo, small_logo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
-        $stmt->bind_param('issssssss', $client->creator_uid, $client->name, $client->address, $client->url, $client->contact_name, $client->contact_email, $client->contact_phone, $client->logo, $client->small_logo);
+        $stmt = $this->db->prepare('INSERT INTO client (creator_uid, name, address, url, contact_name, contact_email, contact_phone) VALUES (?, ?, ?, ?, ?, ?, ?)');
+        $stmt->bind_param('issssss', $client->creator_uid, $client->name, $client->address, $client->url, $client->contact_name, $client->contact_email, $client->contact_phone);
         return $this->executeInsertStatement($stmt);
     }
 

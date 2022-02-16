@@ -50,8 +50,6 @@ CREATE TABLE organisation
     contact_name  VARCHAR(200) NULL,
     contact_email VARCHAR(200) NULL,
     contact_phone VARCHAR(200) NULL,
-    small_logo    LONGBLOB NULL,
-    logo          LONGBLOB NULL,
 
     PRIMARY KEY (id),
     UNIQUE KEY (name)
@@ -71,8 +69,6 @@ CREATE TABLE client
     contact_name  VARCHAR(200) NOT NULL,
     contact_email VARCHAR(200) NOT NULL,
     contact_phone VARCHAR(200) NULL,
-    small_logo    LONGBLOB NULL,
-    logo          LONGBLOB NULL,
 
     PRIMARY KEY (id),
     UNIQUE KEY (name)
