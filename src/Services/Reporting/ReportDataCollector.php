@@ -18,21 +18,24 @@ use Reconmap\Repositories\VulnerabilityRepository;
 class ReportDataCollector
 {
     public function __construct(
-        private ProjectRepository             $projectRepository,
-        private ReportRepository              $reportRepository,
-        private ReportConfigurationRepository $reportConfigurationRepository,
-        private VulnerabilityRepository       $vulnerabilityRepository,
-        private OrganisationRepository        $organisationRepository,
-        private UserRepository                $userRepository,
-        private ClientRepository              $clientRepository,
-        private TaskRepository                $taskRepository,
-        private TargetRepository              $targetRepository)
+        private readonly ProjectRepository $projectRepository,
+        private readonly ReportRepository $reportRepository,
+        private readonly ReportConfigurationRepository $reportConfigurationRepository,
+        private readonly VulnerabilityRepository $vulnerabilityRepository,
+        private readonly OrganisationRepository $organisationRepository,
+        private readonly UserRepository $userRepository,
+        private readonly ClientRepository $clientRepository,
+        private readonly TaskRepository $taskRepository,
+        private readonly TargetRepository $targetRepository)
     {
     }
 
     public function collectForProject(int $projectId): array
     {
         $project = $this->projectRepository->findById($projectId);
+        if (is_null($project)) {
+            return [];
+        }
 
         $configuration = $this->reportConfigurationRepository->findByProjectId($projectId);
 
@@ -47,8 +50,9 @@ class ReportDataCollector
 
         $organisation = $this->organisationRepository->findRootOrganisation();
 
-        $searchCriteria = new TargetSearchCriteria();
-        $targets = $this->targetRepository->search($searchCriteria);
+        $targetSearchCriteria = new TargetSearchCriteria();
+        $targetSearchCriteria->addProjectCriterion($projectId);
+        $targets = $this->targetRepository->search($targetSearchCriteria);
 
         $vars = [
             'configuration' => $configuration,
@@ -57,7 +61,7 @@ class ReportDataCollector
             'date' => date('Y-m-d'),
             'reports' => $reports,
             'markdownParser' => $markdownParser,
-            'client' => $project['client_id'] ? $this->clientRepository->findById($project['client_id']) : null,
+            'client' => isset($project['client_id']) ? $this->clientRepository->findById($project['client_id']) : null,
             'targets' => $targets,
             'tasks' => $this->taskRepository->findByProjectId($projectId),
             'vulnerabilities' => $vulnerabilities,
