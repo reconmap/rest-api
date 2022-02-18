@@ -9,21 +9,27 @@ use Reconmap\Models\Vulnerability;
 use Reconmap\Repositories\DocumentRepository;
 use Reconmap\Repositories\NoteRepository;
 use Reconmap\Repositories\TaskRepository;
+use Reconmap\Repositories\UserRepository;
 use Reconmap\Repositories\VulnerabilityRepository;
 
 class TestDataGenerator
 {
     public function __construct(
+        private                         readonly UserRepository $userRepository,
         private TaskRepository          $taskRepository,
         private NoteRepository          $noteRepository,
         private DocumentRepository      $documentRepository,
-        private VulnerabilityRepository $vulnerabilityRepository)
+        private VulnerabilityRepository $vulnerabilityRepository,)
     {
-
     }
 
     public function generate()
     {
+        $this->userRepository->updateById(1, [
+            'full_name' => 'Jane Doe',
+            'short_bio' => 'CEO and CTO of Amazing Pentest Company Limited'
+        ]);
+
         echo 'Generating test note...';
         $notes = [
             ['description' => 'Credentials are stored in the secret server'],
@@ -78,6 +84,7 @@ class TestDataGenerator
         $task->summary = 'Run port scanner';
         $task->description = 'Use nmap to detect all open ports';
         $task->command_id = 2;
+        $this->taskRepository->insert($task);
 
         $task->creator_uid = 1;
         $task->project_id = 1;

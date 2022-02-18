@@ -3,8 +3,8 @@
 namespace Reconmap\Controllers\Tasks;
 
 use PHPUnit\Framework\TestCase;
-use Ponup\SqlBuilders\SearchCriteria;
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\Repositories\SearchCriterias\TaskSearchCriteria;
 use Reconmap\Repositories\TaskRepository;
 use Reconmap\Services\PaginationRequestHandler;
 
@@ -17,17 +17,20 @@ class GetTasksControllerTest extends TestCase
             ->method('getQueryParams')
             ->willReturn([]);
 
-        $searchCriteria = new SearchCriteria();
-        $searchCriteria->addCriterion('p.is_template = 0');
+        $mockSearchCriteria = $this->createMock(TaskSearchCriteria::class);
+        $mockSearchCriteria->expects($this->once())
+            ->method('addIsNotTemplateCriterion');
+
         $paginator = new PaginationRequestHandler($mockRequest);
 
         $mockRepository = $this->createMock(TaskRepository::class);
         $mockRepository->expects($this->once())
             ->method('search')
-            ->with($searchCriteria, $paginator)
+            ->with($mockSearchCriteria, $paginator)
             ->willReturn([]);
 
-        $controller = new GetTasksController($mockRepository);
+
+        $controller = new GetTasksController($mockRepository, $mockSearchCriteria);
         $response = $controller($mockRequest);
 
         $this->assertEquals([], $response);

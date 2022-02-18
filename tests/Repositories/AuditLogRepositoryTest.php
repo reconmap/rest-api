@@ -21,7 +21,8 @@ class AuditLogRepositoryTest extends DatabaseTestCase
 
     public function testFindByUserId()
     {
+        $this->subject->insert(1, 'firefox', '127.0.0.1', 'test');
         $logs = $this->subject->findByUserId(1);
-        $this->assertCount(5, $logs);
+        $this->assertCount(1, $logs);
     }
 }

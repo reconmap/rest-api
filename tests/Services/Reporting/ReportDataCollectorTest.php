@@ -62,7 +62,7 @@ class ReportDataCollectorTest extends TestCase
         $expectedResult = ['configuration' => $reportConfiguration,
             'project' => array(),
             'org' => null,
-            'date' => '2022-02-17',
+            'date' => date('Y-m-d'),
             'reports' => array(),
             'markdownParser' => new GithubFlavoredMarkdownConverter(),
             'client' => null,

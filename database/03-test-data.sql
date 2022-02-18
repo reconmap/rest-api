@@ -1,10 +1,5 @@
 SET @admin_user_id = 1;
 
-UPDATE user
-SET full_name = 'Jane Doe',
-    short_bio = 'CEO and CTO of Amazing Pentest Company Limited'
-WHERE id = @admin_user_id;
-
 INSERT INTO user (id, full_name, username, password, email, role)
 VALUES (2,
         'Lead pentester',
@@ -24,13 +19,6 @@ VALUES (2,
         '$2y$10$/VVITsgw9ByDoCTCKTuBtemc44SoP4691aIVVyd/OgLblXQK6Tnwq',
         'cust@localhost',
         'client');
-
-INSERT INTO audit_log (user_id, client_ip, action)
-VALUES (1, INET_ATON('127.0.0.1'), 'Logged in'),
-       (1, INET_ATON('127.0.0.1'), 'Logged in'),
-       (1, INET_ATON('127.0.0.1'), 'Logged in'),
-       (1, INET_ATON('127.0.0.1'), 'Logged in'),
-       (1, INET_ATON('127.0.0.1'), 'Logged in');
 
 INSERT INTO client (id, creator_uid, name, url, contact_name, contact_email, contact_phone)
 VALUES (1,
@@ -74,7 +62,7 @@ awareness demos,
 CTFs and as a guinea pig for security tools! Juice Shop encompasses vulnerabilities from the entire OWASP Top Ten along with many other security flaws found in real -world applications!',
         FALSE,
         'public',
-    	NULL),
+        NULL),
        (4,
         @admin_user_id,
         2,

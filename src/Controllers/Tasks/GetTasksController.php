@@ -2,15 +2,16 @@
 
 namespace Reconmap\Controllers\Tasks;
 
-use Ponup\SqlBuilders\SearchCriteria;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
+use Reconmap\Repositories\SearchCriterias\TaskSearchCriteria;
 use Reconmap\Repositories\TaskRepository;
 use Reconmap\Services\PaginationRequestHandler;
 
 class GetTasksController extends Controller
 {
-    public function __construct(private TaskRepository $repository)
+    public function __construct(private readonly TaskRepository $repository,
+                                private readonly TaskSearchCriteria $searchCriteria)
     {
     }
 
@@ -19,26 +20,31 @@ class GetTasksController extends Controller
         $params = $request->getQueryParams();
         $paginator = new PaginationRequestHandler($request);
 
-        $searchCriteria = new SearchCriteria();
-
         if (isset($params['isTemplate'])) {
-            $searchCriteria->addCriterion('p.is_template = ?', [(int)$params['isTemplate']]);
+            $isTemplate = intval($params['isTemplate']);
+            $this->searchCriteria->addTemplateCriterion($isTemplate);
         } else {
-            $searchCriteria->addCriterion('p.is_template = 0');
+            $this->searchCriteria->addIsNotTemplateCriterion();
         }
 
         if (isset($params['keywords'])) {
-            $keywords = $params['keywords'];
-            $keywordsLike = "%$keywords%";
-
-            $searchCriteria->addCriterion('t.summary LIKE ? OR t.description LIKE ?', [$keywordsLike, $keywordsLike]);
+            $this->searchCriteria->addKeywordsCriterion($params['keywords']);
         }
         if (isset($params['assigneeUid'])) {
             $assigneeUid = intval($params['assigneeUid']);
-
-            $searchCriteria->addCriterion('t.assignee_uid = ?', [$assigneeUid]);
+            $this->searchCriteria->addAssigneeCriterion($assigneeUid);
+        }
+        if (isset($params['projectId'])) {
+            $projectId = intval($params['projectId']);
+            $this->searchCriteria->addProjectCriterion($projectId);
+        }
+        if (isset($params['status'])) {
+            $this->searchCriteria->addStatusCriterion($params['status']);
+        }
+        if (isset($params['priority'])) {
+            $this->searchCriteria->addPriorityCriterion($params['priority']);
         }
 
-        return $this->repository->search($searchCriteria, $paginator);
+        return $this->repository->search($this->searchCriteria, $paginator);
     }
 }
