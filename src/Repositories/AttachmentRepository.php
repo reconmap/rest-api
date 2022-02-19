@@ -4,10 +4,21 @@ namespace Reconmap\Repositories;
 
 use Ponup\SqlBuilders\InsertQueryBuilder;
 use Ponup\SqlBuilders\SelectQueryBuilder;
+use Ponup\SqlBuilders\UpdateQueryBuilder;
 use Reconmap\Models\Attachment;
 
 class AttachmentRepository extends MysqlRepository
 {
+    private const TABLE_NAME = 'attachment';
+
+    public const UPDATABLE_COLUMNS_TYPES = [
+        "submitter_uid" => "i",
+        "client_file_name" => "s",
+        "file_hash" => "s",
+        "file_size" => "i",
+        "file_mimetype" => "s"
+    ];
+
     public function insert(Attachment $attachment): int
     {
         $insertQueryBuilder = new InsertQueryBuilder('attachment');
@@ -83,4 +94,10 @@ SQL;
 
         return $usage;
     }
+
+    public function updateById(int $id, array $newColumnValues): bool
+    {
+        return $this->updateByTableId(self::TABLE_NAME, $id, $newColumnValues);
+    }
+
 }
