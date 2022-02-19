@@ -95,6 +95,21 @@ SQL;
         return $usage;
     }
 
+    public function getFileNameById(int $id): string
+    {
+        $queryBuilder = new SelectQueryBuilder('attachment');
+        $queryBuilder->setColumns('file_name');
+        $queryBuilder->setWhere('id = ?');
+        $stmt = $this->db->prepare($queryBuilder->toSql());
+        $stmt->bind_param('i', $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $attachments = $result->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+
+        return $attachments[0]['file_name'];
+    }
+
     public function updateById(int $id, array $newColumnValues): bool
     {
         return $this->updateByTableId(self::TABLE_NAME, $id, $newColumnValues);

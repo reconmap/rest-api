@@ -31,7 +31,7 @@ class UploadAttachmentController extends Controller
             /** @var UploadedFileInterface $file */
             $this->logger->debug('file uploaded', ['filename' => $file->getClientFilename(), 'type' => $file->getClientMediaType(), 'size' => $file->getSize()]);
             $attachment = $this->uploadAttachment($file, $parentType, $parentId, $userId);
-            $result[$index] = [ "id" => $attachment->id, "filename" => $attachment->file_name];
+            $result[$index] = [ "id" => $attachment->id];
             $index = $index + 1;
         }
 

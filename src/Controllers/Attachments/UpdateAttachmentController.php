@@ -28,13 +28,12 @@ class UpdateAttachmentController extends Controller
         $userId = $request->getAttribute('userId');
         $files = $request->getUploadedFiles()['attachment'];
 
-        $attachmentName = $params['attachmentName'];
         $attachmentId = (int)$params['attachmentId'];
         foreach ($files as $file) {
             /** @var UploadedFileInterface $file */
             $this->logger->debug('file updated', ['filename' => $file->getClientFilename(), 'type' => $file->getClientMediaType(), 'size' => $file->getSize()]);
-            $this->updateAttachment($file, $parentType, $parentId, $userId, $attachmentName, $attachmentId);
-            $this->auditAction($userId, $attachmentId, $attachmentName);
+            $this->updateAttachment($file, $parentType, $parentId, $userId, $attachmentId);
+            $this->auditAction($userId, $attachmentId);
         }
 
         return ['success' => true];
@@ -43,10 +42,10 @@ class UpdateAttachmentController extends Controller
     /**
      * @throws \Exception
      */
-    protected function updateAttachment(UploadedFileInterface $uploadedFile, string $parentType, int $parentId, int $userId, string $attachmentName, int $attachmentId): bool
+    protected function updateAttachment(UploadedFileInterface $uploadedFile, string $parentType, int $parentId, int $userId, int $attachmentId): bool
     {
-
-        $pathName = $this->attachmentFilePathService->generateFilePath($attachmentName);
+        $filename = $this->attachmentRepository->getFileNameById($attachmentId);
+        $pathName = $this->attachmentFilePathService->generateFilePath($filename);
         $attachmentDir = $this->attachmentFilePathService->generateBasePath();
 
         if ($uploadedFile->getError() === UPLOAD_ERR_OK) {
@@ -74,8 +73,8 @@ class UpdateAttachmentController extends Controller
         return $this->attachmentRepository->updateById($attachmentId, $attachment);
     }
 
-    private function auditAction(int $loggedInUserId, int $attachmentId, string $attachmentName): void
+    private function auditAction(int $loggedInUserId, int $attachmentId): void
     {
-        $this->auditLogService->insert($loggedInUserId, AuditLogAction::ATTACHMENT_UPDATED, [$attachmentId, $attachmentName]);
+        $this->auditLogService->insert($loggedInUserId, AuditLogAction::ATTACHMENT_UPDATED, [$attachmentId]);
     }
 }
