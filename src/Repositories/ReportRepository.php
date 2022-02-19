@@ -81,6 +81,8 @@ INNER JOIN
         attachment a ON (a.parent_id = r.id)
 WHERE
     r.is_template
+AND
+    a.parent_type = 'report'
 ORDER BY
     r.insert_ts DESC
 SQL;
