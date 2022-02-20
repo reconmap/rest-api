@@ -20,22 +20,6 @@ VALUES (2,
         'cust@localhost',
         'client');
 
-INSERT INTO client (id, creator_uid, name, url, contact_name, contact_email, contact_phone)
-VALUES (1,
-        @admin_user_id,
-        'Insecure Co.',
-        'http://in.se.cure',
-        'John Doe',
-        'John.Doe@in.se.cure',
-        '+99 123 245 389'),
-       (2,
-        @admin_user_id,
-        'The OWASP Foundation',
-        'https://owasp.org',
-        'N/A',
-        'N/A',
-        '+1 951-692-7703');
-
 INSERT INTO project (id, creator_uid, client_id, name, description, is_template, visibility, external_id)
 VALUES (1,
         @admin_user_id,

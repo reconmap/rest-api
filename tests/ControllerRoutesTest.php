@@ -9,6 +9,7 @@ use Reconmap\Controllers\AuditLog\AuditLogRouter;
 use Reconmap\Controllers\Auth\AuthRouter;
 use Reconmap\Controllers\Clients\ClientsRouter;
 use Reconmap\Controllers\Commands\CommandsRouter;
+use Reconmap\Controllers\Contacts\ContactsRouter;
 use Reconmap\Controllers\Documents\DocumentsRouter;
 use Reconmap\Controllers\Notes\NotesRouter;
 use Reconmap\Controllers\Organisations\OrganisationsRouter;
@@ -29,6 +30,7 @@ class ControllerRoutesTest extends TestCase
             [AttachmentsRouter::class],
             [AuditLogRouter::class],
             [CommandsRouter::class],
+            [ContactsRouter::class],
             [ClientsRouter::class],
             [DocumentsRouter::class],
             [NotesRouter::class],

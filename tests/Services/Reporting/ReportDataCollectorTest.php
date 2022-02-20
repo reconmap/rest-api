@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 use Reconmap\Models\ReportConfiguration;
 use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Repositories\ClientRepository;
+use Reconmap\Repositories\ContactRepository;
 use Reconmap\Repositories\OrganisationRepository;
 use Reconmap\Repositories\ProjectRepository;
 use Reconmap\Repositories\ReportConfigurationRepository;
@@ -30,10 +31,11 @@ class ReportDataCollectorTest extends TestCase
         $clientRepository = $this->createMock(ClientRepository::class);
         $taskRepository = $this->createMock(TaskRepository::class);
         $targetRepository = $this->createMock(TargetRepository::class);
+        $contactRepository = $this->createMock(ContactRepository::class);
         $attachmentRepository = $this->createMock(AttachmentRepository::class);
         $attachmentFilePath = $this->createMock(AttachmentFilePath::class);
 
-        $dataCollector = new ReportDataCollector($projectRepository, $reportRepository, $reportConfigurationRepository, $vulnerabilityRepository, $organisationRepository, $userRepository, $clientRepository, $taskRepository, $targetRepository, $attachmentRepository, $attachmentFilePath);
+        $dataCollector = new ReportDataCollector($projectRepository, $reportRepository, $reportConfigurationRepository, $vulnerabilityRepository, $organisationRepository, $userRepository, $clientRepository, $taskRepository, $targetRepository, $contactRepository, $attachmentRepository, $attachmentFilePath);
         $result = $dataCollector->collectForProject(0);
         $this->assertEquals([], $result);
     }
@@ -59,10 +61,11 @@ class ReportDataCollectorTest extends TestCase
         $clientRepository = $this->createMock(ClientRepository::class);
         $taskRepository = $this->createMock(TaskRepository::class);
         $targetRepository = $this->createMock(TargetRepository::class);
+        $contactRepository = $this->createMock(ContactRepository::class);
         $attachmentRepository = $this->createMock(AttachmentRepository::class);
         $attachmentFilePath = $this->createMock(AttachmentFilePath::class);
 
-        $dataCollector = new ReportDataCollector($projectRepository, $reportRepository, $reportConfigurationRepository, $vulnerabilityRepository, $organisationRepository, $userRepository, $clientRepository, $taskRepository, $targetRepository, $attachmentRepository, $attachmentFilePath);
+        $dataCollector = new ReportDataCollector($projectRepository, $reportRepository, $reportConfigurationRepository, $vulnerabilityRepository, $organisationRepository, $userRepository, $clientRepository, $taskRepository, $targetRepository, $contactRepository, $attachmentRepository, $attachmentFilePath);
         $result = $dataCollector->collectForProject(0);
 
         $expectedResult = ['configuration' => $reportConfiguration,
@@ -82,7 +85,8 @@ class ReportDataCollectorTest extends TestCase
                 3 => ['severity' => 'critical', 'count' => 0],
             ],
             'users' => array(),
-            'logos' => array()
+            'contacts' => [],
+            'logos' => array(),
         ];
         $this->assertEquals($expectedResult, $result);
     }

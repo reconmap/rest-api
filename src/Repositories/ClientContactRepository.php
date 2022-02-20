@@ -2,18 +2,18 @@
 
 namespace Reconmap\Repositories;
 
-class ProjectUserRepository extends MysqlRepository
+class ClientContactRepository extends MysqlRepository
 {
-    public function create(int $projectId, int $userId): int
+    public function create(int $clientId, int $contactId): int
     {
-        $stmt = $this->db->prepare('INSERT INTO project_user (project_id, user_id) VALUES (?, ?)');
-        $stmt->bind_param('ii', $projectId, $userId);
+        $stmt = $this->db->prepare('INSERT INTO client_contact (client_id, contact_id) VALUES (?, ?)');
+        $stmt->bind_param('ii', $clientId, $contactId);
         return $this->executeInsertStatement($stmt);
     }
 
     public function deleteById(int $id): bool
     {
-        $stmt = $this->db->prepare('DELETE FROM project_user WHERE id = ?');
+        $stmt = $this->db->prepare('DELETE FROM client_contact WHERE id = ?');
         $stmt->bind_param('i', $id);
         $result = $stmt->execute();
         $success = $result && 1 === $stmt->affected_rows;

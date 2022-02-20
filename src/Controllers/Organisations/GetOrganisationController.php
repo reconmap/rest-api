@@ -8,11 +8,8 @@ use Reconmap\Repositories\OrganisationRepository;
 
 class GetOrganisationController extends Controller
 {
-    private OrganisationRepository $repository;
-
-    public function __construct(OrganisationRepository $repository)
+    public function __construct(private readonly OrganisationRepository $repository)
     {
-        $this->repository = $repository;
     }
 
     public function __invoke(ServerRequestInterface $request): object

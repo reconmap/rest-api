@@ -9,9 +9,6 @@ class Client
     public ?string $name;
     public ?string $address;
     public ?string $url;
-    public ?string $contact_name;
-    public ?string $contact_email;
-    public ?string $contact_phone;
     public ?int $logo_attachment_id = null;
     public ?int $small_logo_attachment_id = null;
 

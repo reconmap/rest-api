@@ -22,9 +22,12 @@ VALUES ('Access Controls', 'Related to authorization of users, and assessment of
        ('Session Management', 'Related to the identification of authenticated users.'),
        ('Timing', 'Related to race conditions, locking, or order of operations.');
 
+TRUNCATE TABLE contact;
+INSERT INTO contact (name, email) VALUES ('Contributors', 'no-reply@reconmap.com');
+
 TRUNCATE TABLE organisation;
-INSERT INTO organisation (name, url, contact_email)
-VALUES ('Reconmap default org', 'https://reconmap.org', 'no-reply@reconmap.org');
+INSERT INTO organisation (name, url, contact_id)
+VALUES ('Reconmap open-source organisation', 'https://reconmap.org', LAST_INSERT_ID());
 
 INSERT INTO report (project_id, generated_by_uid, is_template, version_name, version_description)
 VALUES (0, 0, 1, 'Default', 'Default report template');

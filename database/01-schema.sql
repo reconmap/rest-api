@@ -1,5 +1,20 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
+DROP TABLE IF EXISTS contact;
+
+CREATE TABLE contact
+(
+    id    INT UNSIGNED                             NOT NULL AUTO_INCREMENT,
+    kind  ENUM ('general', 'technical', 'billing') NOT NULL DEFAULT 'general',
+    name  VARCHAR(200)                             NOT NULL,
+    email VARCHAR(200)                             NOT NULL,
+    phone VARCHAR(200)                             NULL,
+    role  VARCHAR(200)                             NULL,
+
+    PRIMARY KEY (id)
+) ENGINE = InnoDB
+  CHARSET = utf8mb4;
+
 DROP TABLE IF EXISTS user;
 
 CREATE TABLE user
@@ -42,16 +57,15 @@ DROP TABLE IF EXISTS organisation;
 
 CREATE TABLE organisation
 (
-    id                          INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    insert_ts                   TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    update_ts                   TIMESTAMP    NULL ON UPDATE CURRENT_TIMESTAMP,
-    name                        VARCHAR(200) NOT NULL,
-    url                         VARCHAR(255) NULL,
-    contact_name                VARCHAR(200) NULL,
-    contact_email               VARCHAR(200) NULL,
-    contact_phone               VARCHAR(200) NULL,
+    id         INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    insert_ts  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_ts  TIMESTAMP    NULL ON UPDATE CURRENT_TIMESTAMP,
+    name       VARCHAR(200) NOT NULL,
+    url        VARCHAR(255) NULL,
     logo_attachment_id          INT UNSIGNED NULL REFERENCES attachment,
     small_logo_attachment_id    INT UNSIGNED NULL REFERENCES attachment,
+
+    contact_id INT UNSIGNED NOT NULL REFERENCES contact,
 
     PRIMARY KEY (id),
     UNIQUE KEY (name)
@@ -61,21 +75,30 @@ DROP TABLE IF EXISTS client;
 
 CREATE TABLE client
 (
-    id                          INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    insert_ts                   TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    update_ts                   TIMESTAMP    NULL ON UPDATE CURRENT_TIMESTAMP,
-    creator_uid                 INT UNSIGNED NOT NULL REFERENCES user,
-    name                        VARCHAR(80)  NOT NULL COMMENT 'eg Company name',
-    address                     VARCHAR(400) NULL COMMENT 'eg 1 Hacker Way, Menlo Park, California',
-    url                         VARCHAR(255) NULL,
-    contact_name                VARCHAR(200) NOT NULL,
-    contact_email               VARCHAR(200) NOT NULL,
-    contact_phone               VARCHAR(200) NULL,
+    id          INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    insert_ts   TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_ts   TIMESTAMP    NULL ON UPDATE CURRENT_TIMESTAMP,
+    creator_uid INT UNSIGNED NOT NULL REFERENCES user,
+    name        VARCHAR(80)  NOT NULL COMMENT 'eg Company name',
+    address     VARCHAR(400) NULL COMMENT 'eg 1 Hacker Way, Menlo Park, California',
+    url         VARCHAR(255) NULL,
     logo_attachment_id          INT UNSIGNED NULL REFERENCES attachment,
     small_logo_attachment_id    INT UNSIGNED NULL REFERENCES attachment,
 
     PRIMARY KEY (id),
     UNIQUE KEY (name)
+) ENGINE = InnoDB;
+
+DROP TABLE IF EXISTS client_contact;
+
+CREATE TABLE client_contact
+(
+    id         INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    client_id  INT UNSIGNED NOT NULL REFERENCES client ON DELETE CASCADE,
+    contact_id INT UNSIGNED NOT NULL REFERENCES contact ON DELETE CASCADE,
+
+    PRIMARY KEY (id),
+    UNIQUE KEY (client_id, contact_id)
 ) ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS project;

@@ -10,7 +10,17 @@ class OrganisationRepository extends MysqlRepository
 
     public function findRootOrganisation(): ?Organisation
     {
-        $stmt = $this->db->prepare('SELECT * FROM organisation WHERE id = ?');
+        $sql = <<<SQL
+SELECT
+    o.*, c.name AS contact_name, c.email AS contact_email, c.phone AS contact_phone
+FROM
+    organisation o
+INNER JOIN
+    contact c ON c.id = o.contact_id
+WHERE o.id = ?
+SQL;
+
+        $stmt = $this->db->prepare($sql);
         $stmt->bind_param('i', self::$rootOrganisationId);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -23,8 +33,16 @@ class OrganisationRepository extends MysqlRepository
 
     public function updateRootOrganisation(Organisation $organisation): bool
     {
-        $stmt = $this->db->prepare('UPDATE organisation SET name = ?, url = ?, contact_name = ?, contact_email = ?, contact_phone = ?, logo_attachment_id = ?, small_logo_attachment_id = ? WHERE id = ?');
-        $stmt->bind_param('sssssiii', $organisation->name, $organisation->url, $organisation->contact_name, $organisation->contact_email, $organisation->contact_phone, $organisation->logo_attachment_id, $organisation->small_logo_attachment_id, self::$rootOrganisationId);
+        $sql = <<<SQL
+UPDATE organisation o
+    INNER JOIN contact c ON c.id = o.contact_id
+SET
+    o.name = ?, o.url = ?, o.logo_attachment_id = ?, o.small_logo_attachment_id = ?,
+    c.name = ?, c.email = ?, c.phone = ? WHERE o.id = ?
+SQL;
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bind_param('ssiisssi', $organisation->name, $organisation->url, $organisation->logo_attachment_id, $organisation->small_logo_attachment_id, $organisation->contact_name, $organisation->contact_email, $organisation->contact_phone, self::$rootOrganisationId);
         $success = $stmt->execute();
         $stmt->close();
 
