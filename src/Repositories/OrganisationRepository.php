@@ -23,8 +23,8 @@ class OrganisationRepository extends MysqlRepository
 
     public function updateRootOrganisation(Organisation $organisation): bool
     {
-        $stmt = $this->db->prepare('UPDATE organisation SET name = ?, url = ?, contact_name = ?, contact_email = ?, contact_phone = ? WHERE id = ?');
-        $stmt->bind_param('sssssi', $organisation->name, $organisation->url, $organisation->contact_name, $organisation->contact_email, $organisation->contact_phone, self::$rootOrganisationId);
+        $stmt = $this->db->prepare('UPDATE organisation SET name = ?, url = ?, contact_name = ?, contact_email = ?, contact_phone = ?, logo_attachment_id = ?, small_logo_attachment_id = ? WHERE id = ?');
+        $stmt->bind_param('sssssiii', $organisation->name, $organisation->url, $organisation->contact_name, $organisation->contact_email, $organisation->contact_phone, $organisation->logo_attachment_id, $organisation->small_logo_attachment_id, self::$rootOrganisationId);
         $success = $stmt->execute();
         $stmt->close();
 
