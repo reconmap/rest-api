@@ -11,11 +11,8 @@ use Reconmap\Services\PaginationRequestHandler;
 
 abstract class MysqlRepository
 {
-    protected \mysqli $db;
-
-    public function __construct(\mysqli $db)
+    public function __construct(protected readonly \mysqli $db)
     {
-        $this->db = $db;
     }
 
     public function executeInsertStatement(\mysqli_stmt $stmt): int

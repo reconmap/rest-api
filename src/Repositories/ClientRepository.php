@@ -17,7 +17,13 @@ class ClientRepository extends MysqlRepository implements Updateable, Findable
 
     public function findAll(): array
     {
-        $result = $this->db->query('SELECT * FROM client');
+        $sql = <<<SQL
+SELECT *, (SELECT COUNT(*) FROM client_contact WHERE client_id = client.id) AS num_contacts
+FROM client
+ORDER BY name ASC
+SQL;
+
+        $result = $this->db->query($sql);
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
@@ -28,7 +34,7 @@ SELECT
        c.*,
        u.full_name AS creator_full_name
 FROM
-     client c
+    client c
     INNER JOIN user u ON (u.id = c.creator_uid)
 WHERE c.id = ?
 SQL;
@@ -50,8 +56,8 @@ SQL;
 
     public function insert(Client $client): int
     {
-        $stmt = $this->db->prepare('INSERT INTO client (creator_uid, name, address, url, contact_name, contact_email, contact_phone) VALUES (?, ?, ?, ?, ?, ?, ?)');
-        $stmt->bind_param('issssss', $client->creator_uid, $client->name, $client->address, $client->url, $client->contact_name, $client->contact_email, $client->contact_phone);
+        $stmt = $this->db->prepare('INSERT INTO client (creator_uid, name, address, url) VALUES (?, ?, ?, ?)');
+        $stmt->bind_param('isss', $client->creator_uid, $client->name, $client->address, $client->url);
         return $this->executeInsertStatement($stmt);
     }
 

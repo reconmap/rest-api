@@ -11,8 +11,8 @@ use Reconmap\Services\ActivityPublisherService;
 
 class UpdateOrganisationController extends Controller
 {
-    public function __construct(private OrganisationRepository   $repository,
-                                private ActivityPublisherService $activityPublisherService)
+    public function __construct(private readonly OrganisationRepository $repository,
+                                private readonly ActivityPublisherService $activityPublisherService)
     {
     }
 

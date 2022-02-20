@@ -15,22 +15,7 @@ use Reconmap\Repositories\ProjectRepository;
 use Reconmap\Repositories\ReportRepository;
 use Reconmap\Services\Filesystem\AttachmentFilePath;
 use Reconmap\Services\Reporting\ReportDataCollector;
-
-function flatten($array, $prefix = '')
-{
-    if (is_null($array)) {
-        return [];
-    }
-    $result = array();
-    foreach ($array as $key => $value) {
-        if (is_array($value)) {
-            $result = $result + flatten($value, $prefix . $key . '.');
-        } else {
-            $result[$prefix . $key] = $value;
-        }
-    }
-    return $result;
-}
+use Reconmap\Utils\ArrayUtils;
 
 class CreateReportController extends Controller
 {
@@ -85,13 +70,13 @@ class CreateReportController extends Controller
             $template->setUpdateFields(true);
 
             $template->setValue('date', $vars['date']);
-            foreach (flatten($vars['project'], 'project.') as $key => $value) {
+            foreach (ArrayUtils::flatten($vars['project'], 'project.') as $key => $value) {
                 $template->setValue($key, $value);
             }
-            foreach (flatten($vars['client'], 'client.') as $key => $value) {
+            foreach (ArrayUtils::flatten($vars['client'], 'client.') as $key => $value) {
                 $template->setValue($key, $value);
             }
-            foreach (flatten($vars['org'], 'org.') as $key => $value) {
+            foreach (ArrayUtils::flatten($vars['org'], 'org.') as $key => $value) {
                 $template->setValue($key, $value);
             }
 
@@ -147,6 +132,19 @@ class CreateReportController extends Controller
             } catch (\Exception $e) {
                 $this->logger->warning($e->getMessage());
             }
+
+            try {
+                $template->cloneBlock('contacts', count($vars['contacts']), true, true);
+                foreach ($vars['contacts'] as $index => $vulnerability) {
+                    $template->setValue('contact.kind#' . ($index + 1), $vulnerability['kind']);
+                    $template->setValue('contact.name#' . ($index + 1), $vulnerability['name']);
+                    $template->setValue('contact.phone#' . ($index + 1), $vulnerability['phone']);
+                    $template->setValue('contact.email#' . ($index + 1), $vulnerability['email']);
+                }
+            } catch (\Exception $e) {
+                $this->logger->warning($e->getMessage());
+            }
+
 
             try {
                 $template->cloneRow('revisionHistoryDateTime', count($vars['reports']));

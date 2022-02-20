@@ -33,7 +33,6 @@ class CreateReportTemplateController extends UploadAttachmentController
         $report->generatedByUid = $userId;
         $report->versionName = $params['version_name'];
         $report->versionDescription = $params['version_description'];
-        $this->logger->info('ccc');
 
         $report->is_template = true;
 

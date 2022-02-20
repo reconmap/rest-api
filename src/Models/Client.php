@@ -9,9 +9,6 @@ class Client
     public ?string $name;
     public ?string $address;
     public ?string $url;
-    public ?string $contact_name;
-    public ?string $contact_email;
-    public ?string $contact_phone;
 
     public function getId(): int
     {

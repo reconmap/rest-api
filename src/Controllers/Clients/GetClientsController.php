@@ -8,7 +8,7 @@ use Reconmap\Repositories\ClientRepository;
 
 class GetClientsController extends Controller
 {
-    public function __construct(private ClientRepository $repository)
+    public function __construct(private readonly ClientRepository $repository)
     {
     }
 

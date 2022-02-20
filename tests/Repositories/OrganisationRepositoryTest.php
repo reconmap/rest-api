@@ -24,6 +24,8 @@ class OrganisationRepositoryTest extends DatabaseTestCase
     {
         $memoryOrg = new Organisation();
         $memoryOrg->name = 'Updated org';
+        $memoryOrg->contact_name = 'Elliot Alderson';
+        $memoryOrg->contact_email = 'ealderson@fsociety.org';
 
         $this->subject->updateRootOrganisation($memoryOrg);
 

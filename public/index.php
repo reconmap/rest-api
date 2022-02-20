@@ -34,8 +34,12 @@ if (is_writable($logsDirectory)) {
     $logger->pushHandler(new StreamHandler($applicationLogPath, Logger::DEBUG));
 }
 
-set_error_handler(function ($errno, $errstr, $errfile, $errline) use ($logger) {
-    $logger->error("$errstr ($errno) on $errfile:$errline");
+set_error_handler(function (int $errno, string $errstr, string $errfile, int $errline) use ($logger) {
+    if (E_USER_ERROR === $errno) {
+        $logger->error("$errstr ($errno) on $errfile:$errline");
+    } else {
+        $logger->warning("$errstr ($errno) on $errfile:$errline");
+    }
 });
 
 $container = new ApplicationContainer($config, $logger);

@@ -4,6 +4,7 @@ namespace Reconmap\Services\Reporting;
 
 use League\CommonMark\GithubFlavoredMarkdownConverter;
 use Reconmap\Repositories\ClientRepository;
+use Reconmap\Repositories\ContactRepository;
 use Reconmap\Repositories\OrganisationRepository;
 use Reconmap\Repositories\ProjectRepository;
 use Reconmap\Repositories\ReportConfigurationRepository;
@@ -26,7 +27,9 @@ class ReportDataCollector
         private readonly UserRepository $userRepository,
         private readonly ClientRepository $clientRepository,
         private readonly TaskRepository $taskRepository,
-        private readonly TargetRepository $targetRepository)
+        private readonly TargetRepository $targetRepository,
+        private readonly ContactRepository $contactRepository,
+    )
     {
     }
 
@@ -54,9 +57,16 @@ class ReportDataCollector
         $targetSearchCriteria->addProjectCriterion($projectId);
         $targets = $this->targetRepository->search($targetSearchCriteria);
 
+        if (isset($project['client_id'])) {
+            $contacts = $this->contactRepository->findByClientId($project['client_id']);
+        } else {
+            $contacts = [];
+        }
+
         $vars = [
             'configuration' => $configuration,
             'project' => $project,
+            'contacts' => $contacts,
             'org' => $organisation,
             'date' => date('Y-m-d'),
             'reports' => $reports,
