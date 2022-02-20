@@ -54,11 +54,11 @@ class ReportDataCollector
 
         $organisation = $this->organisationRepository->findRootOrganisation();
         $logos = [];
-        if ($organisation->small_logo_attachment_id)
+        if ($organisation and $organisation->small_logo_attachment_id)
         {
             $logos['org_small_logo'] = $this->attachmentFilePathService->generateFilePath($this->attachmentRepository->getFileNameById($organisation->small_logo_attachment_id));
         }
-        if ($organisation->logo_attachment_id)
+        if ($organisation and $organisation->logo_attachment_id)
         {
             $logos['org_logo'] = $this->attachmentFilePathService->generateFilePath($this->attachmentRepository->getFileNameById($organisation->logo_attachment_id));
         }
@@ -67,11 +67,11 @@ class ReportDataCollector
         if (isset($project['client_id']))
         {
             $client = $this->clientRepository->findById($project['client_id']);
-            if ($client->small_logo_attachment_id)
+            if ($client and $client->small_logo_attachment_id)
             {
                 $logos['client_small_logo'] = $this->attachmentFilePathService->generateFilePath($this->attachmentRepository->getFileNameById($client->small_logo_attachment_id));
             }
-            if ($client->logo_attachment_id)
+            if ($client and $client->logo_attachment_id)
             {
                 $logos['client_logo']  = $this->attachmentFilePathService->generateFilePath($this->attachmentRepository->getFileNameById($client->logo_attachment_id));
             }
