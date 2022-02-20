@@ -8,7 +8,7 @@ use Reconmap\Repositories\DocumentRepository;
 
 class GetDocumentsController extends Controller
 {
-    public function __construct(private DocumentRepository $repository)
+    public function __construct(private readonly DocumentRepository $repository)
     {
     }
 

@@ -55,7 +55,7 @@ class ProjectRepositoryTest extends DatabaseTestCase
         $searchCriteria->addCriterion('p.is_template = 1');
         $projects = $this->subject->search($searchCriteria);
         $this->assertCount(1, $projects);
-        $this->assertEquals(3, $projects[0]['num_tasks']);
+        $this->assertEquals(4, $projects[0]['num_tasks']);
     }
 
     public function testIsVisibleToUser()
