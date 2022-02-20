@@ -29,14 +29,20 @@ class UpdateAttachmentController extends Controller
         $files = $request->getUploadedFiles()['attachment'];
 
         $attachmentId = (int)$params['attachmentId'];
+        $result = true;
         foreach ($files as $file) {
             /** @var UploadedFileInterface $file */
             $this->logger->debug('file updated', ['filename' => $file->getClientFilename(), 'type' => $file->getClientMediaType(), 'size' => $file->getSize()]);
-            $this->updateAttachment($file, $parentType, $parentId, $userId, $attachmentId);
-            $this->auditAction($userId, $attachmentId);
+            if ($this->updateAttachment($file, $parentType, $parentId, $userId, $attachmentId)) {
+                $this->auditAction($userId, $attachmentId);
+            } else {
+                $result = false;
+                $this->logger->error('Failed to update attachment\' attributes in DB', ['filename' => $file->getClientFilename(), 'type' => $file->getClientMediaType(), 'size' => $file->getSize()]);
+            }
         }
 
-        return ['success' => true];
+
+        return ['success' => $result];
     }
 
     /**
