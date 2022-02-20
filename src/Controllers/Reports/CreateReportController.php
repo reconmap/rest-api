@@ -106,6 +106,27 @@ class CreateReportController extends Controller
             }
 
             try {
+                if (isset($vars["logos"]["org_logo"]))
+                {
+                    $template->setImageValue('org.logo', $vars["logos"]["org_logo"]);
+                }
+                if (isset($vars["logos"]["org_small_logo"]))
+                {
+                    $template->setImageValue('org.small_logo', $vars["logos"]["org_small_logo"]);
+                }
+                if (isset($vars["logos"]["client_logo"]))
+                {
+                    $template->setImageValue('client.logo', $vars["logos"]["client_logo"]);
+                }
+                if (isset($vars["logos"]["client_small_logo"]))
+                {
+                    $template->setImageValue('client.small_logo', $vars["logos"]["client_small_logo"]);
+                }
+            } catch (\Exception $e) {
+                $this->logger->warning($e->getMessage());
+            }
+
+            try {
                 $template->cloneRow('target.name', count($vars['targets']));
                 foreach ($vars['targets'] as $index => $target) {
                     $indexPlusOne = $index + 1;

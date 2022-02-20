@@ -3,6 +3,8 @@
 namespace Reconmap\Services\Reporting;
 
 use League\CommonMark\GithubFlavoredMarkdownConverter;
+use Reconmap\Services\Filesystem\AttachmentFilePath;
+use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Repositories\ClientRepository;
 use Reconmap\Repositories\OrganisationRepository;
 use Reconmap\Repositories\ProjectRepository;
@@ -26,7 +28,9 @@ class ReportDataCollector
         private readonly UserRepository $userRepository,
         private readonly ClientRepository $clientRepository,
         private readonly TaskRepository $taskRepository,
-        private readonly TargetRepository $targetRepository)
+        private readonly TargetRepository $targetRepository,
+        private readonly AttachmentRepository $attachmentRepository,
+        private readonly AttachmentFilePath   $attachmentFilePathService)
     {
     }
 
@@ -49,6 +53,29 @@ class ReportDataCollector
         $markdownParser = new GithubFlavoredMarkdownConverter();
 
         $organisation = $this->organisationRepository->findRootOrganisation();
+        $logos = [];
+        if ($organisation->small_logo_attachment_id)
+        {
+            $logos['org_small_logo'] = $this->attachmentFilePathService->generateFilePath($this->attachmentRepository->getFileNameById($organisation->small_logo_attachment_id));
+        }
+        if ($organisation->logo_attachment_id)
+        {
+            $logos['org_logo'] = $this->attachmentFilePathService->generateFilePath($this->attachmentRepository->getFileNameById($organisation->logo_attachment_id));
+        }
+
+        $client = null;
+        if (isset($project['client_id']))
+        {
+            $client = $this->clientRepository->findById($project['client_id']);
+            if ($client->small_logo_attachment_id)
+            {
+                $logos['client_small_logo'] = $this->attachmentFilePathService->generateFilePath($this->attachmentRepository->getFileNameById($client->small_logo_attachment_id));
+            }
+            if ($client->logo_attachment_id)
+            {
+                $logos['client_logo']  = $this->attachmentFilePathService->generateFilePath($this->attachmentRepository->getFileNameById($client->logo_attachment_id));
+            }
+        }
 
         $targetSearchCriteria = new TargetSearchCriteria();
         $targetSearchCriteria->addProjectCriterion($projectId);
@@ -66,6 +93,7 @@ class ReportDataCollector
             'tasks' => $this->taskRepository->findByProjectId($projectId),
             'vulnerabilities' => $vulnerabilities,
             'findingsOverview' => $this->createFindingsOverview($vulnerabilities),
+            'logos' => $logos,
         ];
 
         if (!empty($reports)) {
