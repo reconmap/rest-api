@@ -59,7 +59,7 @@ SQL;
     public function insert(Client $client): int
     {
         $stmt = $this->db->prepare('INSERT INTO client (creator_uid, name, address, url, logo_attachment_id, small_logo_attachment_id) VALUES (?, ?, ?, ?, ?, ?)');
-        $stmt->bind_param('issssssii', $client->creator_uid, $client->name, $client->address, $client->url, $client->logo_attachment_id, $client->small_logo_attachment_id);
+        $stmt->bind_param('isssii', $client->creator_uid, $client->name, $client->address, $client->url, $client->logo_attachment_id, $client->small_logo_attachment_id);
         return $this->executeInsertStatement($stmt);
     }
 
