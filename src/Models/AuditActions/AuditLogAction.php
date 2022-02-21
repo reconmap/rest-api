@@ -5,6 +5,7 @@ namespace Reconmap\Models\AuditActions;
 use Reconmap\Models\VulnerabilityCategoryLogActions;
 
 class AuditLogAction implements
+    AttachmentAuditActions,
     ClientAuditActions,
     ProjectLogActions,
     TaskAuditActions,
@@ -19,7 +20,4 @@ class AuditLogAction implements
     public const DATA_EXPORTED = 'Exported data';
 
     public const ORGANISATION_UPDATED = 'Updated organisation';
-
-    public const ATTACHMENT_DELETED = 'Deleted attachment';
-    public const ATTACHMENT_DOWNLOADED = 'Downloaded attachment';
 }

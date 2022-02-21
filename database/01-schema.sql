@@ -62,6 +62,8 @@ CREATE TABLE organisation
     update_ts  TIMESTAMP    NULL ON UPDATE CURRENT_TIMESTAMP,
     name       VARCHAR(200) NOT NULL,
     url        VARCHAR(255) NULL,
+    logo_attachment_id          INT UNSIGNED NULL REFERENCES attachment,
+    small_logo_attachment_id    INT UNSIGNED NULL REFERENCES attachment,
 
     contact_id INT UNSIGNED NOT NULL REFERENCES contact,
 
@@ -80,6 +82,8 @@ CREATE TABLE client
     name        VARCHAR(80)  NOT NULL COMMENT 'eg Company name',
     address     VARCHAR(400) NULL COMMENT 'eg 1 Hacker Way, Menlo Park, California',
     url         VARCHAR(255) NULL,
+    logo_attachment_id          INT UNSIGNED NULL REFERENCES attachment,
+    small_logo_attachment_id    INT UNSIGNED NULL REFERENCES attachment,
 
     PRIMARY KEY (id),
     UNIQUE KEY (name)
@@ -363,16 +367,16 @@ DROP TABLE IF EXISTS attachment;
 
 CREATE TABLE attachment
 (
-    id               INT UNSIGNED                                                   NOT NULL AUTO_INCREMENT,
-    insert_ts        TIMESTAMP                                                      NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    parent_type      ENUM ('project', 'report', 'command', 'task', 'vulnerability') NOT NULL,
-    parent_id        INT UNSIGNED                                                   NOT NULL,
-    submitter_uid    INT UNSIGNED                                                   NOT NULL REFERENCES user,
-    client_file_name VARCHAR(200)                                                   NOT NULL,
-    file_name        VARCHAR(200)                                                   NOT NULL,
-    file_size        INT UNSIGNED                                                   NOT NULL,
-    file_mimetype    VARCHAR(200)                                                   NULL,
-    file_hash        VARCHAR(10000)                                                 NOT NULL,
+    id               INT UNSIGNED                                                                                   NOT NULL AUTO_INCREMENT,
+    insert_ts        TIMESTAMP                                                                                      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    parent_type      ENUM ('project', 'report', 'command', 'task', 'vulnerability', 'organisation', 'client')       NOT NULL,
+    parent_id        INT UNSIGNED                                                                                   NOT NULL,
+    submitter_uid    INT UNSIGNED                                                                                   NOT NULL REFERENCES user,
+    client_file_name VARCHAR(200)                                                                                   NOT NULL,
+    file_name        VARCHAR(200)                                                                                   NOT NULL,
+    file_size        INT UNSIGNED                                                                                   NOT NULL,
+    file_mimetype    VARCHAR(200)                                                                                   NULL,
+    file_hash        VARCHAR(10000)                                                                                 NOT NULL,
 
     PRIMARY KEY (id)
 ) ENGINE = InnoDB;

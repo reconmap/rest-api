@@ -8,8 +8,10 @@ use Reconmap\ControllerTestCase;
 use Reconmap\Models\Attachment;
 use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Services\Filesystem\AttachmentFilePath;
+use Reconmap\Services\AuditLogService;
+use Reconmap\Models\AuditActions\AuditLogAction;
 
-class UploadAttachmentControllerTest extends ControllerTestCase
+class UpdateAttachmentControllerTest extends ControllerTestCase
 {
     public function testHappyPath()
     {
@@ -17,13 +19,14 @@ class UploadAttachmentControllerTest extends ControllerTestCase
 
         $fakeAttachment = new Attachment();
         $fakeAttachment->client_file_name = 'something.jpeg';
-        $fakeAttachment->file_mimetype = 'image/jpeg';
 
         $mockAttachmentRepository = $this->createMock(AttachmentRepository::class);
         $mockAttachmentRepository->expects($this->once())
-            ->method('insert')
-            ->with($this->isInstanceOf(Attachment::class))
-            ->willReturn($fakeAttachmentId);
+            ->method('updateById')
+            ->willReturn(true);
+        $mockAttachmentRepository->expects($this->once())
+            ->method('getFileNameById')
+            ->willReturn('6498a0fff3bb17792efe446b098d0c95');
 
         $mockAttachmentFilePath = $this->createMock(AttachmentFilePath::class);
         $mockAttachmentFilePath->expects($this->once())
@@ -33,19 +36,15 @@ class UploadAttachmentControllerTest extends ControllerTestCase
             ->method('generateBasePath')
             ->willReturn(__DIR__);
 
+        $mockAuditLogService = $this->createMock(AuditLogService::class);
+        $mockAuditLogService->expects($this->once())
+            ->method('insert')
+            ->with(9, AuditLogAction::ATTACHMENT_UPDATED, [$fakeAttachmentId]);
+
         $fakeUploadedFile = $this->createMock(UploadedFileInterface::class);
         $fakeUploadedFile->expects($this->exactly(2))
             ->method('getClientFilename')
             ->willReturn('something.jpeg');
-        $fakeUploadedFile->expects($this->once())
-            ->method('getClientMediaType')
-            ->willReturn('image/jpg');
-        $fakeUploadedFile->expects($this->once())
-            ->method('getSize')
-            ->willReturn(94145);
-        $fakeUploadedFile->expects($this->once())
-            ->method('getError')
-            ->willReturn(UPLOAD_ERR_OK);
 
 
         $mockRequest = $this->createMock(ServerRequestInterface::class);
@@ -55,7 +54,7 @@ class UploadAttachmentControllerTest extends ControllerTestCase
             ->willReturn(9);
         $mockRequest->expects($this->once())
             ->method('getParsedBody')
-            ->willReturn(['parentType' => 'task', 'parentId' => 10]);
+            ->willReturn(['parentType' => 'task', 'parentId' => 10, 'attachmentId' => $fakeAttachmentId]);
         $mockRequest->expects($this->once())
             ->method('getUploadedFiles')
             ->willReturn(['attachment' => [
@@ -64,10 +63,9 @@ class UploadAttachmentControllerTest extends ControllerTestCase
 
         $args = ['attachmentId' => $fakeAttachmentId];
 
-        $controller = $this->injectController(new UploadAttachmentController($mockAttachmentRepository, $mockAttachmentFilePath));
+        $controller = $this->injectController(new UpdateAttachmentController($mockAttachmentRepository, $mockAttachmentFilePath, $mockAuditLogService));
         $response = $controller($mockRequest, $args);
 
         $this->assertTrue($response['success']);
-        $this->assertEquals($response[0]['id'], $fakeAttachmentId);
     }
 }

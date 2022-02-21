@@ -9,6 +9,8 @@ class Client
     public ?string $name;
     public ?string $address;
     public ?string $url;
+    public ?int $logo_attachment_id = null;
+    public ?int $small_logo_attachment_id = null;
 
     public function getId(): int
     {

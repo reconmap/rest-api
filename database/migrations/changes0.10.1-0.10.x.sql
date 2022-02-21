@@ -29,3 +29,12 @@ CREATE TABLE client_contact
     PRIMARY KEY (id),
     UNIQUE KEY (client_id, contact_id)
 ) ENGINE = InnoDB;
+
+ALTER TABLE attachment
+    MODIFY COLUMN parent_type ENUM ('project', 'report', 'command', 'task', 'vulnerability', 'organisation', 'client') NOT NULL;
+ALTER TABLE organisation
+    ADD COLUMN logo_attachment_id        INT UNSIGNED NULL REFERENCES attachment,
+    ADD COLUMN small_logo_attachment_id  INT UNSIGNED NULL REFERENCES attachment;
+ALTER TABLE client
+    ADD COLUMN logo_attachment_id        INT UNSIGNED NULL REFERENCES attachment,
+    ADD COLUMN small_logo_attachment_id  INT UNSIGNED NULL REFERENCES attachment;

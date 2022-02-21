@@ -37,12 +37,12 @@ SQL;
 UPDATE organisation o
     INNER JOIN contact c ON c.id = o.contact_id
 SET
-    o.name = ?, o.url = ?,
+    o.name = ?, o.url = ?, o.logo_attachment_id = ?, o.small_logo_attachment_id = ?,
     c.name = ?, c.email = ?, c.phone = ? WHERE o.id = ?
 SQL;
 
         $stmt = $this->db->prepare($sql);
-        $stmt->bind_param('sssssi', $organisation->name, $organisation->url, $organisation->contact_name, $organisation->contact_email, $organisation->contact_phone, self::$rootOrganisationId);
+        $stmt->bind_param('ssiisssi', $organisation->name, $organisation->url, $organisation->logo_attachment_id, $organisation->small_logo_attachment_id, $organisation->contact_name, $organisation->contact_email, $organisation->contact_phone, self::$rootOrganisationId);
         $success = $stmt->execute();
         $stmt->close();
 

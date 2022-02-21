@@ -6,9 +6,7 @@ use Fig\Http\Message\StatusCodeInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Models\Client;
-use Reconmap\Repositories\ClientContactRepository;
 use Reconmap\Repositories\ClientRepository;
-use Reconmap\Repositories\ContactRepository;
 
 class CreateClientControllerTest extends TestCase
 {
@@ -26,20 +24,16 @@ class CreateClientControllerTest extends TestCase
             ->with($expectedClient)
             ->willReturn(1);
 
-        $mockContactRepository = $this->createMock(ContactRepository::class);
-
-        $mockClientContactRepository = $this->createMock(ClientContactRepository::class);
-
         $mockRequest = $this->createMock(ServerRequestInterface::class);
         $mockRequest->expects($this->once())
             ->method('getAttribute')
             ->with('userId')
             ->willReturn(9);
-        $mockRequest->expects($this->exactly(2))
+        $mockRequest->expects($this->once())
             ->method('getBody')
-            ->willReturn('{"name":"exciting new client","address":"evergreen","url":"1.1.1.1","contact_name":"elliot","contact_phone":"0","contact_email":"e@fsoc","contact_kind":"technical","contact_role":"ciso"}');
+            ->willReturn('{"name":"exciting new client","address":"evergreen","url":"1.1.1.1"}');
 
-        $controller = new CreateClientController($mockProjectRepository, $mockContactRepository, $mockClientContactRepository);
+        $controller = new CreateClientController($mockProjectRepository);
         $response = $controller($mockRequest);
 
         $this->assertEquals(StatusCodeInterface::STATUS_CREATED, $response->getStatusCode());
