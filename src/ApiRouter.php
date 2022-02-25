@@ -23,6 +23,7 @@ use Reconmap\{Controllers\AuditLog\AuditLogRouter,
     Controllers\Targets\TargetsRouter,
     Controllers\Tasks\TasksRouter,
     Controllers\Users\UsersRouter,
+    Controllers\Vault\VaultRouter,
     Controllers\Vulnerabilities\VulnerabilitiesRouter,
     Http\AuthMiddleware,
     Http\CorsMiddleware,
@@ -50,6 +51,7 @@ class ApiRouter extends Router
         TargetsRouter::class,
         TasksRouter::class,
         UsersRouter::class,
+        VaultRouter::class,
         VulnerabilitiesRouter::class,
     ];
 
