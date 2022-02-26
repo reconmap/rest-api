@@ -2,9 +2,10 @@
 
 namespace Reconmap\Controllers\Attachments;
 
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Models\AuditActions\AuditLogAction;
+use Reconmap\Models\AuditActions\AttachmentAuditActions;
 use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Services\ActivityPublisherService;
 use Reconmap\Services\Filesystem\AttachmentFilePath;
@@ -13,14 +14,14 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class DeleteAttachmentController extends Controller
 {
-    public function __construct(private AttachmentRepository     $attachmentRepository,
-                                private AttachmentFilePath       $attachmentFilePathService,
-                                private ActivityPublisherService $activityPublisherService,
-                                private Filesystem               $filesystem)
+    public function __construct(private readonly AttachmentRepository $attachmentRepository,
+                                private readonly AttachmentFilePath $attachmentFilePathService,
+                                private readonly ActivityPublisherService $activityPublisherService,
+                                private readonly Filesystem $filesystem)
     {
     }
 
-    public function __invoke(ServerRequestInterface $request, array $args): array
+    public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
     {
         $attachmentId = (int)$args['attachmentId'];
 
@@ -34,16 +35,16 @@ class DeleteAttachmentController extends Controller
             $this->logger->warning($ioe->getMessage());
         }
 
-        $success = $this->attachmentRepository->deleteById($attachmentId);
+        $this->attachmentRepository->deleteById($attachmentId);
 
         $userId = $request->getAttribute('userId');
         $this->auditAction($userId, $attachmentId);
 
-        return ['success' => $success];
+        return $this->createDeletedResponse();
     }
 
     private function auditAction(int $loggedInUserId, int $attachmentId): void
     {
-        $this->activityPublisherService->publish($loggedInUserId, AuditLogAction::ATTACHMENT_DELETED, ['type' => 'attachment', 'id' => $attachmentId]);
+        $this->activityPublisherService->publish($loggedInUserId, AttachmentAuditActions::ATTACHMENT_DELETED, ['type' => 'attachment', 'id' => $attachmentId]);
     }
 }

@@ -11,8 +11,8 @@ use Reconmap\Services\Filesystem\AttachmentFilePath;
 
 class UploadAttachmentController extends Controller
 {
-    public function __construct(protected AttachmentRepository $attachmentRepository,
-                                protected AttachmentFilePath   $attachmentFilePathService)
+    public function __construct(protected readonly AttachmentRepository $attachmentRepository,
+                                protected readonly AttachmentFilePath $attachmentFilePathService)
     {
     }
 
@@ -31,7 +31,7 @@ class UploadAttachmentController extends Controller
             /** @var UploadedFileInterface $file */
             $this->logger->debug('file uploaded', ['filename' => $file->getClientFilename(), 'type' => $file->getClientMediaType(), 'size' => $file->getSize()]);
             $attachment = $this->uploadAttachment($file, $parentType, $parentId, $userId);
-            $result[$index] = [ "id" => $attachment->id];
+            $result[$index] = ["id" => $attachment->id];
             $index = $index + 1;
         }
 
