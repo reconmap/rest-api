@@ -5,7 +5,7 @@ namespace Reconmap\Controllers\Attachments;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Models\Attachment;
-use Reconmap\Models\AuditActions\AuditLogAction;
+use Reconmap\Models\AuditActions\AttachmentAuditActions;
 use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Services\AuditLogService;
 use Reconmap\Services\Filesystem\AttachmentFilePath;
@@ -34,7 +34,7 @@ class DownloadAttachmentControllerTest extends TestCase
         $mockAuditLogService = $this->createMock(AuditLogService::class);
         $mockAuditLogService->expects($this->once())
             ->method('insert')
-            ->with(9, AuditLogAction::ATTACHMENT_DOWNLOADED, ['foo.jpg']);
+            ->with(9, AttachmentAuditActions::ATTACHMENT_DOWNLOADED, ['foo.jpg']);
 
         $mockRequest = $this->createMock(ServerRequestInterface::class);
         $mockRequest->expects($this->once())

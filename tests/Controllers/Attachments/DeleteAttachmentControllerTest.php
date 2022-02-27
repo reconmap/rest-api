@@ -2,10 +2,11 @@
 
 namespace Reconmap\Controllers\Attachments;
 
+use Fig\Http\Message\StatusCodeInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Models\Attachment;
-use Reconmap\Models\AuditActions\AuditLogAction;
+use Reconmap\Models\AuditActions\AttachmentAuditActions;
 use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Services\ActivityPublisherService;
 use Reconmap\Services\Filesystem\AttachmentFilePath;
@@ -35,7 +36,7 @@ class DeleteAttachmentControllerTest extends TestCase
         $mockPublisherService = $this->createMock(ActivityPublisherService::class);
         $mockPublisherService->expects($this->once())
             ->method('publish')
-            ->with(9, AuditLogAction::ATTACHMENT_DELETED, ['type' => 'attachment', 'id' => $fakeAttachmentId]);
+            ->with(9, AttachmentAuditActions::ATTACHMENT_DELETED, ['type' => 'attachment', 'id' => $fakeAttachmentId]);
 
         $mockRequest = $this->createMock(ServerRequestInterface::class);
         $mockRequest->expects($this->once())
@@ -53,6 +54,6 @@ class DeleteAttachmentControllerTest extends TestCase
         $controller = new DeleteAttachmentController($mockAttachmentRepository, $mockAttachmentFilePath, $mockPublisherService, $mockFilesystem);
         $response = $controller($mockRequest, $args);
 
-        $this->assertTrue($response['success']);
+        $this->assertEquals(StatusCodeInterface::STATUS_NO_CONTENT, $response->getStatusCode());
     }
 }

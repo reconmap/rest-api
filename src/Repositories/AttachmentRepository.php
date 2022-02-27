@@ -4,7 +4,6 @@ namespace Reconmap\Repositories;
 
 use Ponup\SqlBuilders\InsertQueryBuilder;
 use Ponup\SqlBuilders\SelectQueryBuilder;
-use Ponup\SqlBuilders\UpdateQueryBuilder;
 use Reconmap\Models\Attachment;
 
 class AttachmentRepository extends MysqlRepository
@@ -41,8 +40,8 @@ SQL;
         $stmt = $this->db->prepare($sql);
         $stmt->bind_param('i', $attachmentId);
         $stmt->execute();
-        $rs = $stmt->get_result();
-        $attachment = $rs->fetch_object(Attachment::class);
+        $result = $stmt->get_result();
+        $attachment = $result->fetch_object(Attachment::class);
         $stmt->close();
 
         return $attachment;
@@ -95,7 +94,7 @@ SQL;
         return $usage;
     }
 
-    public function getFileNameById(int $id): string
+    public function getFileNameById(int $id): ?string
     {
         $queryBuilder = new SelectQueryBuilder('attachment');
         $queryBuilder->setColumns('file_name');
@@ -107,7 +106,10 @@ SQL;
         $attachments = $result->fetch_all(MYSQLI_ASSOC);
         $stmt->close();
 
-        return $attachments[0]['file_name'];
+        if (count($attachments) === 1) {
+            return $attachments[0]['file_name'];
+        }
+        return null;
     }
 
     public function updateById(int $id, array $newColumnValues): bool

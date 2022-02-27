@@ -7,16 +7,16 @@ use GuzzleHttp\Psr7\Stream;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Models\AuditActions\AuditLogAction;
+use Reconmap\Models\AuditActions\AttachmentAuditActions;
 use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Services\AuditLogService;
 use Reconmap\Services\Filesystem\AttachmentFilePath;
 
 class DownloadAttachmentController extends Controller
 {
-    public function __construct(private AttachmentRepository $attachmentRepository,
-                                private AttachmentFilePath   $attachmentFilePathService,
-                                private AuditLogService      $auditLogService)
+    public function __construct(private readonly AttachmentRepository $attachmentRepository,
+                                private readonly AttachmentFilePath $attachmentFilePathService,
+                                private readonly AuditLogService $auditLogService)
     {
     }
 
@@ -25,6 +25,9 @@ class DownloadAttachmentController extends Controller
         $attachmentId = (int)$args['attachmentId'];
 
         $attachment = $this->attachmentRepository->findById($attachmentId);
+        if (is_null($attachment)) {
+            return $this->createNotFoundResponse();
+        }
 
         $userId = $request->getAttribute('userId');
 
@@ -42,6 +45,6 @@ class DownloadAttachmentController extends Controller
 
     private function auditAction(int $loggedInUserId, string $fileName): void
     {
-        $this->auditLogService->insert($loggedInUserId, AuditLogAction::ATTACHMENT_DOWNLOADED, [$fileName]);
+        $this->auditLogService->insert($loggedInUserId, AttachmentAuditActions::ATTACHMENT_DOWNLOADED, [$fileName]);
     }
 }

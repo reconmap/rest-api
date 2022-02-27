@@ -17,7 +17,7 @@ class OrganisationRepositoryTest extends DatabaseTestCase
     public function testFindRootOrganisation()
     {
         $rootOrg = $this->subject->findRootOrganisation();
-        $this->assertEquals('https://reconmap.org', $rootOrg->url);
+        $this->assertEquals('https://reconmap.com', $rootOrg->url);
     }
 
     public function testUpdateRootOrganisation()
