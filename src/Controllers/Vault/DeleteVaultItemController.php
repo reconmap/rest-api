@@ -21,17 +21,17 @@ class DeleteVaultItemController extends Controller
     {
         $projectId = (int)$args['projectId'];
         $vaultId = (int)$args['vaultItemId'];
-        
-        // TODO: audit log the name of vaultId
+
+        $name = $this->repository->getVaultItemName($vaultId, $projectId);
         $success = $this->repository->deleteByIdAndProjectId($vaultId, $projectId);
         $userId = $request->getAttribute('userId');
-        $this->auditAction($userId, $projectId, $vaultId);
+        $this->auditAction($userId, $projectId, $vaultId, $name);
 
         return ['success' => $success];
     }
 
-    private function auditAction(int $loggedInUserId, int $projectId, int $vaultId): void
+    private function auditAction(int $loggedInUserId, int $projectId, int $vaultId, string $name): void
     {
-        $this->auditLogService->insert($loggedInUserId, VaultAuditActions::ITEM_DELETED, [$projectId, $vaultId]);
+        $this->auditLogService->insert($loggedInUserId, VaultAuditActions::ITEM_DELETED, [$projectId, $vaultId, $name]);
     }
 }

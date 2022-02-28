@@ -28,10 +28,31 @@ class VaultRepository extends MysqlRepository
         return false;
     }
 
+    public function getVaultItemName(int $id, int $projectId): string
+    {
+        $queryBuilder = new SelectQueryBuilder('vault');
+        $queryBuilder->setColumns('project_id, name');
+        $queryBuilder->setWhere('id = ?');
+
+        $stmt = $this->db->prepare($queryBuilder->toSql());
+        $stmt->bind_param('i', $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $vault_items = $result->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+
+        $name = null;
+        if ($vault_items && $vault_items[0] && ($vault_items[0]['project_id'] == $projectId)) {
+            $name = $vault_items[0]['name'];
+        }
+        return $name;
+    }
+
     private function checkIfProjectHasVaultId(int $id, int $projectId): bool
     {
         $queryBuilder = new SelectQueryBuilder('vault');
-        $queryBuilder->setColumns('id, project_id');
+        $queryBuilder->setColumns('project_id');
         $queryBuilder->setWhere('id = ?');
 
         $stmt = $this->db->prepare($queryBuilder->toSql());
