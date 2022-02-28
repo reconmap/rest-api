@@ -3,9 +3,10 @@
 namespace Reconmap\Repositories;
 
 use Ponup\SqlBuilders\InsertQueryBuilder;
+use Ponup\SqlBuilders\SelectQueryBuilder;
 use Reconmap\Models\Vault;
 
-class VaultRepository extends MysqlRepository implements Deletable
+class VaultRepository extends MysqlRepository
 {
     private const TABLE_NAME = 'vault';
 
@@ -18,8 +19,33 @@ class VaultRepository extends MysqlRepository implements Deletable
         return $this->executeInsertStatement($stmt);
     }
 
-    public function deleteById(int $id): bool
+    public function deleteByIdAndProjectId(int $id, int $projectId): bool
     {
-        return $this->deleteByTableId(self::TABLE_NAME, $id);
+        if ($this->checkIfProjectHasVaultId($id, $projectId))
+        {
+            return $this->deleteByTableId(self::TABLE_NAME, $id);
+        }
+        return false;
+    }
+
+    private function checkIfProjectHasVaultId(int $id, int $projectId): bool
+    {
+        $queryBuilder = new SelectQueryBuilder('vault');
+        $queryBuilder->setColumns('id, project_id');
+        $queryBuilder->setWhere('id = ?');
+
+        $stmt = $this->db->prepare($queryBuilder->toSql());
+        $stmt->bind_param('i', $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $vault_items = $result->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+
+        $exists = false;
+        if ($vault_items && $vault_items[0] && ($vault_items[0]['project_id'] == $projectId)) {
+            $exists = true;
+        }
+        return $exists;
     }
 }

@@ -22,9 +22,8 @@ class DeleteVaultItemController extends Controller
         $projectId = (int)$args['projectId'];
         $vaultId = (int)$args['vaultItemId'];
         
-        // TODO: check if vault item is in the correct project
-        //  Possibly also audit log the name of vaultId
-        $success = $this->repository->deleteById($vaultId);
+        // TODO: audit log the name of vaultId
+        $success = $this->repository->deleteByIdAndProjectId($vaultId, $projectId);
         $userId = $request->getAttribute('userId');
         $this->auditAction($userId, $projectId, $vaultId);
 
