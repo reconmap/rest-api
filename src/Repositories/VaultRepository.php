@@ -10,6 +10,14 @@ class VaultRepository extends MysqlRepository
 {
     private const TABLE_NAME = 'vault';
 
+    public const UPDATABLE_COLUMNS_TYPES = [
+        'name' => 's',
+        'value' => 's',
+        'note' => 's',
+        'type' => 's',
+        'reportable' => 'b'
+    ];
+
     public function insert(Vault $vault, string $password): int
     {
         $encrypted_data = $this->encryptRecord($vault->value, $password);
@@ -131,5 +139,27 @@ class VaultRepository extends MysqlRepository
             }
         }
         return null;
+    }
+
+    public function updateVaultItemById(int $id, int $project_id, string $password, array $new_column_values): bool
+    {
+        $queryBuilder = new SelectQueryBuilder('vault');
+        $queryBuilder->setColumns('record_iv, value');
+        $queryBuilder->setWhere('id = ? AND project_id = ?');
+
+        $stmt = $this->db->prepare($queryBuilder->toSql());
+        $stmt->bind_param('ii', $id, $project_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $vault_items = $result->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+        if ($vault_items && $vault_items[0]) {
+            $decrypted = $this->decryptRecord($vault_items[0]['value'], $vault_items[0]['record_iv'], $password);
+            if ($decrypted)
+            {
+                return $this->updateByTableId('vault', $id, $new_column_values);
+            }
+        }
+        return false;
     }
 }

@@ -12,5 +12,6 @@ class VaultRouter
         $router->map('DELETE', '/vault/{projectId:number}/{vaultItemId:number}', DeleteVaultItemController::class);
         $router->map('GET', '/vault/{projectId:number}', ReadProjectVaultController::class);
         $router->map('POST', '/vault/{projectId:number}/{vaultItemId:number}', ReadVaultItemController::class);
+        $router->map('PUT', '/vault/{projectId:number}/{vaultItemId:number}', UpdateVaultItemController::class);
     }
 }
