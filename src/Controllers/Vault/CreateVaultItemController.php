@@ -19,10 +19,16 @@ class CreateVaultItemController extends Controller
 
     public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
     {
-        $vault = $this->getJsonBodyDecodedAsClass($request, new Vault());
+        // TODO: improve this extraction of password from JSON
+        $request_array = $this->getJsonBodyDecodedAsArray($request);
+        $password = $request_array['password'];
+        unset($request_array['password']);
+        $json_request = json_decode(json_encode($request_array));
+        $json_mapper = new \JsonMapper();
+        $vault = $json_mapper->map($json_request, new Vault());
         $vault->project_id = (int)$args['projectId'];
         
-        $this->repository->insert($vault);
+        $this->repository->insert($vault, $password);
         $userId = $request->getAttribute('userId');
 
         $this->auditAction($userId, $vault->name);

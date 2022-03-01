@@ -13,5 +13,6 @@ class Vault
     public ?string $note = null;
     public string $type = 'password'; // password, note, token, key
     public ?int $project_id = null;
+    public ?string $record_iv = null;
 }
 

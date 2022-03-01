@@ -10,12 +10,13 @@ class VaultRepository extends MysqlRepository
 {
     private const TABLE_NAME = 'vault';
 
-    public function insert(Vault $vault): int
+    public function insert(Vault $vault, string $password): int
     {
+        $encrypted_data = $this->encryptRecord($vault->value, $password);
         $insertStmt = new InsertQueryBuilder(self::TABLE_NAME);
-        $insertStmt->setColumns('name, value, reportable, note, type, project_id');
+        $insertStmt->setColumns('name, value, reportable, note, type, project_id, record_iv');
         $stmt = $this->db->prepare($insertStmt->toSql());
-        $stmt->bind_param('ssissi', $vault->name, $vault->value, $vault->reportable, $vault->note, $vault->type, $vault->project_id);
+        $stmt->bind_param('ssissis', $vault->name, $encrypted_data['cipher_text'], $vault->reportable, $vault->note, $vault->type, $vault->project_id, $encrypted_data['iv']);
         return $this->executeInsertStatement($stmt);
     }
 
@@ -68,5 +69,15 @@ class VaultRepository extends MysqlRepository
             $exists = true;
         }
         return $exists;
+    }
+
+    private function encryptRecord(string $data, string $password): array
+    {
+        $cipher = 'AES-256-CTR';
+        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($cipher));
+        $result = [];
+        $result['cipher_text'] = openssl_encrypt($data, $cipher, $password, $options=0, $iv);
+        $result['iv'] = $iv;
+        return $result;
     }
 }
