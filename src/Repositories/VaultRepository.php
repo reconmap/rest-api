@@ -80,4 +80,17 @@ class VaultRepository extends MysqlRepository
         $result['iv'] = $iv;
         return $result;
     }
+
+    public function findAll(int $projectId): array
+    {
+        $queryBuilder = new SelectQueryBuilder('vault');
+        $queryBuilder->setColumns('id, insert_ts, update_ts, name, reportable, note, type');
+        $queryBuilder->setWhere('project_id = ?');
+
+        $stmt = $this->db->prepare($queryBuilder->toSql());
+        $stmt->bind_param('i', $projectId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
 }
