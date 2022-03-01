@@ -81,6 +81,13 @@ class VaultRepository extends MysqlRepository
         return $result;
     }
 
+    private function decryptRecord(string $cipher_text, string $iv, string $password)
+    {
+        # TODO: for some reason, this crashes when incorrect password is used
+        # based on the documentation, the openssl_decrypt should return false, but does not work
+        return openssl_decrypt($cipher_text, 'AES-256-CTR', $password, $options=0, $iv);
+    }
+
     public function findAll(int $projectId): array
     {
         $queryBuilder = new SelectQueryBuilder('vault');
@@ -92,5 +99,37 @@ class VaultRepository extends MysqlRepository
         $stmt->execute();
         $result = $stmt->get_result();
         return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function readVaultItem(int $projectId, int $vaultItemId, string $password): Vault|null
+    {
+        $queryBuilder = new SelectQueryBuilder('vault');
+        $queryBuilder->setColumns('id, insert_ts, update_ts, name, reportable, note, type, record_iv, value');
+        $queryBuilder->setWhere('id = ? AND project_id = ?');
+
+        $stmt = $this->db->prepare($queryBuilder->toSql());
+        $stmt->bind_param('ii', $vaultItemId, $projectId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $vault_items = $result->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+        
+        if ($vault_items && $vault_items[0]) {
+            $item = new Vault();
+            $item->name = $vault_items[0]['name'];
+            $item->id = $vault_items[0]['id'];
+            $item->insert_ts = $vault_items[0]['insert_ts'];
+            $item->update_ts = $vault_items[0]['update_ts'];
+            $item->reportable = (bool)($vault_items[0]['reportable']);
+            $item->note = $vault_items[0]['note'];
+
+            $decrypted = $this->decryptRecord($vault_items[0]['value'], $vault_items[0]['record_iv'], $password);
+            if ($decrypted)
+            {
+                $item->value = $decrypted;
+                return $item;
+            }
+        }
+        return null;
     }
 }
