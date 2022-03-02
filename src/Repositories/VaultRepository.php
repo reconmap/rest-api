@@ -42,7 +42,7 @@ class VaultRepository extends MysqlRepository
     protected function getBaseSelectQueryBuilder(): SelectQueryBuilder
     {
         $queryBuilder = new SelectQueryBuilder('vault v');
-        $queryBuilder->setColumns('v.id, v.name, v.value, v.reportable, v.note, v.insert_ts, v.update_ts, v.type');
+        $queryBuilder->setColumns('v.id, v.name, v.reportable, v.note, v.insert_ts, v.update_ts, v.type');
         return $queryBuilder;
     }
 
@@ -105,8 +105,6 @@ class VaultRepository extends MysqlRepository
 
     private function decryptRecord(string $cipher_text, string $iv, string $password)
     {
-        # TODO: for some reason, this crashes when incorrect password is used
-        # based on the documentation, the openssl_decrypt should return false, but does not work
         return openssl_decrypt($cipher_text, 'AES-256-CTR', $password, $options=0, $iv);
     }
 
@@ -128,13 +126,15 @@ class VaultRepository extends MysqlRepository
             $item = new Vault();
             $item->name = $vault_items[0]['name'];
             $item->id = $vault_items[0]['id'];
+            $item->project_id = $projectId;
             $item->insert_ts = $vault_items[0]['insert_ts'];
             $item->update_ts = $vault_items[0]['update_ts'];
             $item->reportable = (bool)($vault_items[0]['reportable']);
             $item->note = $vault_items[0]['note'];
 
-            $decrypted = $this->decryptRecord($vault_items[0]['value'], $vault_items[0]['record_iv'], $password);
-            if ($decrypted)
+            $decrypted = (string)$this->decryptRecord($vault_items[0]['value'], $vault_items[0]['record_iv'], $password);
+            // with the wrong password, the decrypted string contains also nonASCII characters which lead to crash
+            if (mb_detect_encoding($decrypted, 'ASCII', true))
             {
                 $item->value = $decrypted;
                 return $item;
@@ -151,7 +151,7 @@ class VaultRepository extends MysqlRepository
 
         if ($vault_items && $vault_items[0]) {
             $decrypted = $this->decryptRecord($vault_items[0]['value'], $vault_items[0]['record_iv'], $password);
-            if ($decrypted)
+            if (mb_detect_encoding($decrypted, 'ASCII', true))
             {
                 if ($new_column_values['value'])
                 {
