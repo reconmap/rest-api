@@ -40,9 +40,9 @@ class CreateVaultItemControllerTest extends TestCase
 
         $mockRepository = $this->createMock(VaultRepository::class);
         $mockRepository->expects($this->once())
-        ->method('insert')
-        ->with($vault, "UltimateP4ssw0rd!")
-        ->willReturn(2);
+            ->method('insert')
+            ->with($vault, "UltimateP4ssw0rd!")
+            ->willReturn(2);
 
         $args = ['projectId' => $project_id];
 
