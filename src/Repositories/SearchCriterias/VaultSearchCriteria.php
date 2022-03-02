@@ -11,6 +11,11 @@ class VaultSearchCriteria extends SearchCriteria
         $this->addCriterion('v.project_id = ?', [$projectId]);
     }
 
+    public function addReportableProjectCriterion(int $projectId)
+    {
+        $this->addCriterion('v.project_id = ? AND v.reportable = 1', [$projectId]);
+    }
+
     public function addVaultItemAndProjectCriterion(int $projectId, int $vaultItemId)
     {
         $this->addCriterion('v.id = ? AND v.project_id = ?', [$vaultItemId, $projectId]);

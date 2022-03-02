@@ -81,13 +81,14 @@ class CreateReportController extends Controller
             }
 
             try {
-                $template->cloneBlock('users', count($vars['users']), true, true);
+                $template->cloneRow('user.full_name', count($vars['users']), true, true);
                 foreach ($vars['users'] as $index => $user) {
                     $template->setValue('user.full_name#' . ($index + 1), $user['full_name']);
                     $template->setValue('user.short_bio#' . ($index + 1), $user['short_bio']);
                 }
             } catch (\Exception $e) {
-                $this->logger->warning($e->getMessage());
+                $msg = $e->getMessage();
+                $this->logger->warning("Error in user section: [$msg]");
             }
 
             try {
@@ -108,7 +109,21 @@ class CreateReportController extends Controller
                     $template->setImageValue('client.small_logo', $vars["logos"]["client_small_logo"]);
                 }
             } catch (\Exception $e) {
-                $this->logger->warning($e->getMessage());
+                $msg = $e->getMessage();
+                $this->logger->warning("Error in logo section: [$msg]");
+            }
+
+            try {
+                $template->cloneRow('vault.name', count($vars['vault']));
+                foreach ($vars['vault'] as $index => $item) {
+                    $indexPlusOne = $index + 1;
+                    $template->setValue('vault.name#' . $indexPlusOne, $item['name']);
+                    $template->setValue('vault.note#' . $indexPlusOne, $item['note']);
+                    $template->setValue('vault.type#' . $indexPlusOne, $item['type']);
+                }
+            } catch (\Exception $e) {
+                $msg = $e->getMessage();
+                $this->logger->warning("Error in vault section: [$msg]");
             }
 
             try {
@@ -119,7 +134,8 @@ class CreateReportController extends Controller
                     $template->setValue('target.kind#' . $indexPlusOne, $target['kind']);
                 }
             } catch (\Exception $e) {
-                $this->logger->warning($e->getMessage());
+                $msg = $e->getMessage();
+                $this->logger->warning("Error in target section: [$msg]");
             }
 
             foreach ($vars['findingsOverview'] as $stat) {
@@ -146,24 +162,29 @@ class CreateReportController extends Controller
 
                     $template->setValue('vulnerability.category_name#' . ($index + 1), $vulnerability['category_name']);
                     $template->setValue('vulnerability.cvss_score#' . ($index + 1), $vulnerability['cvss_score']);
+                    $template->setValue('vulnerability.owasp_vector#' . ($index + 1), $vulnerability['owasp_vector']);
+                    $template->setValue('vulnerability.owasp_overall#' . ($index + 1), $vulnerability['owasp_overall']);
                     $template->setValue('vulnerability.severity#' . ($index + 1), $vulnerability['risk']);
                     $template->setValue('vulnerability.proof_of_concept#' . ($index + 1), $vulnerability['proof_of_concept']);
                     $template->setValue('vulnerability.remediation#' . ($index + 1), $vulnerability['remediation']);
                 }
             } catch (\Exception $e) {
-                $this->logger->warning($e->getMessage());
+                $msg = $e->getMessage();
+                $this->logger->warning("Error in vulnerabilties section: [$msg]");
             }
 
             try {
-                $template->cloneBlock('contacts', count($vars['contacts']), true, true);
+                $template->cloneRow('contact.name', count($vars['contacts']), true, true);
                 foreach ($vars['contacts'] as $index => $vulnerability) {
                     $template->setValue('contact.kind#' . ($index + 1), $vulnerability['kind']);
                     $template->setValue('contact.name#' . ($index + 1), $vulnerability['name']);
                     $template->setValue('contact.phone#' . ($index + 1), $vulnerability['phone']);
                     $template->setValue('contact.email#' . ($index + 1), $vulnerability['email']);
+                    $template->setValue('contact.role#' . ($index + 1), $vulnerability['role']);
                 }
             } catch (\Exception $e) {
-                $this->logger->warning($e->getMessage());
+                $msg = $e->getMessage();
+                $this->logger->warning("Error in contacts section: [$msg]");
             }
 
 
@@ -176,7 +197,8 @@ class CreateReportController extends Controller
                     $template->setValue('revisionHistoryVersionDescription#' . $indexPlusOne, $reportRevision['version_description']);
                 }
             } catch (\Exception $e) {
-                $this->logger->warning($e->getMessage());
+                $msg = $e->getMessage();
+                $this->logger->warning("Error in reports section: [$msg");
             }
 
             $fileName = uniqid(gethostname());
@@ -197,7 +219,8 @@ class CreateReportController extends Controller
             $attachmentIds[] = $this->attachmentRepository->insert($attachment);
 
         } catch (\Exception $e) {
-            $this->logger->error($e->getMessage());
+            $msg = $e->getMessage();
+            $this->logger->error("General error: [$msg]");
         }
 
         return $attachmentIds;
