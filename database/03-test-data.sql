@@ -1,25 +1,5 @@
 SET @admin_user_id = 1;
 
-INSERT INTO user (id, full_name, username, password, email, role)
-VALUES (2,
-        'Lead pentester',
-        'su',
-        '$2y$10$7u3qUhud4prBZdFVmODvXOCBuQBgq6MYHvZT7N74cMG/mnVBwiu7W',
-        'su@localhost',
-        'superuser'),
-       (3,
-        'Infosec pro',
-        'user',
-        '$2y$10$pTgvYwR3Umwvb.cpIWw5kOpoqj49q.Q9tzHcRXcAnXdUaQe5C.Nom',
-        'user@localhost',
-        'user'),
-       (4,
-        'Dear Customer',
-        'cust',
-        '$2y$10$/VVITsgw9ByDoCTCKTuBtemc44SoP4691aIVVyd/OgLblXQK6Tnwq',
-        'cust@localhost',
-        'client');
-
 INSERT INTO project (id, creator_uid, client_id, name, description, is_template, visibility, external_id)
 VALUES (1,
         @admin_user_id,
