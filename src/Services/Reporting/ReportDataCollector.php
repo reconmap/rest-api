@@ -13,9 +13,11 @@ use Reconmap\Repositories\ReportConfigurationRepository;
 use Reconmap\Repositories\ReportRepository;
 use Reconmap\Repositories\SearchCriterias\TargetSearchCriteria;
 use Reconmap\Repositories\SearchCriterias\VulnerabilitySearchCriteria;
+use Reconmap\Repositories\SearchCriterias\VaultSearchCriteria;
 use Reconmap\Repositories\TargetRepository;
 use Reconmap\Repositories\TaskRepository;
 use Reconmap\Repositories\UserRepository;
+use Reconmap\Repositories\VaultRepository;
 use Reconmap\Repositories\VulnerabilityRepository;
 
 class ReportDataCollector
@@ -33,6 +35,7 @@ class ReportDataCollector
         private readonly ContactRepository $contactRepository,
         private readonly AttachmentRepository $attachmentRepository,
         private readonly AttachmentFilePath   $attachmentFilePathService,
+        private readonly VaultRepository $vaultRepository,
     )
     {
     }
@@ -90,6 +93,10 @@ class ReportDataCollector
             $contacts = [];
         }
 
+        $vaultSearchCriteria = new VaultSearchCriteria();
+        $vaultSearchCriteria->addReportableProjectCriterion($projectId);
+        $vaultItems = $this->vaultRepository->search($vaultSearchCriteria);
+
         $vars = [
             'configuration' => $configuration,
             'project' => $project,
@@ -103,6 +110,7 @@ class ReportDataCollector
             'tasks' => $this->taskRepository->findByProjectId($projectId),
             'vulnerabilities' => $vulnerabilities,
             'findingsOverview' => $this->createFindingsOverview($vulnerabilities),
+            'vault' => $vaultItems,
             'logos' => $logos,
         ];
 
