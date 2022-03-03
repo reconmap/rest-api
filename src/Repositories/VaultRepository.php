@@ -16,7 +16,7 @@ class VaultRepository extends MysqlRepository
         'value' => 's',
         'note' => 's',
         'type' => 's',
-        'reportable' => 'b',
+        'reportable' => 'i',
         'record_iv' => 's',
     ];
 
@@ -159,6 +159,7 @@ class VaultRepository extends MysqlRepository
                     $new_column_values['value'] = $encrypted_data['cipher_text'];
                     $new_column_values['record_iv'] = $encrypted_data['iv'];
                 }
+                $tmp =$new_column_values['reportable'];
                 return $this->updateByTableId('vault', $id, $new_column_values);
             }
         }
