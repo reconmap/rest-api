@@ -15,6 +15,7 @@ class TestDataGenerator
         private readonly UserTestDataGenerator $userTestDataGenerator,
         private readonly ContactRepository $contactRepository,
         private readonly ClientRepository $clientRepository,
+        private readonly ProjectTestDataGenerator $projectTestDataGenerator,
         private readonly NoteTestDataGenerator $noteTestDataGenerator,
         private readonly DocumentRepository $documentRepository,
         private readonly TaskTestDataGenerator $taskTestDataGenerator,
@@ -58,9 +59,9 @@ class TestDataGenerator
         $document->parent_type = 'library';
         $document->content = 'Some';
         $document->title = 'Thing';
-
         $this->documentRepository->insert($document);
 
+        $this->projectTestDataGenerator->run();;
         $this->userTestDataGenerator->run();
         $this->noteTestDataGenerator->run();
         $this->taskTestDataGenerator->run();

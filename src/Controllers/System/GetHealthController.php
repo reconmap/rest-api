@@ -11,10 +11,10 @@ use Reconmap\Services\Filesystem\DirectoryChecker;
 class GetHealthController extends Controller
 {
     public function __construct(
-        private AttachmentFilePath     $attachmentFilePath,
-        private ApplicationLogFilePath $applicationLogFilePath,
-        private DirectoryChecker       $directoryChecker,
-        private \mysqli                $dbConnection
+        private readonly AttachmentFilePath $attachmentFilePath,
+        private readonly ApplicationLogFilePath $applicationLogFilePath,
+        private readonly DirectoryChecker $directoryChecker,
+        private readonly \mysqli $dbConnection
     )
     {
     }

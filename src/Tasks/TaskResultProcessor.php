@@ -60,6 +60,7 @@ class TaskResultProcessor implements ItemProcessor
                     }
                 }
                 $numHosts = count($hosts);
+                $this->logger->debug("Number of hosts in uploaded file: " . $numHosts);
 
                 $notification = new Notification($item->userId, "New assets found", "A total of '$numHosts' new assets have been found by the '$outputParserName' command");
                 $this->notificationsRepository->insert($notification);

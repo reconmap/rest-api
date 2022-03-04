@@ -5,6 +5,7 @@ require $applicationDir . '/vendor/autoload.php';
 
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use Reconmap\Cli\Commands\DatabaseMigratorCommand;
 use Reconmap\Cli\Commands\EmailProcessorCommand;
 use Reconmap\Cli\Commands\TaskProcessorCommand;
 use Reconmap\Cli\Commands\TestDataGeneratorCommand;
@@ -38,6 +39,7 @@ if (in_array('--use-test-database', $argv)) {
 $container = new ApplicationContainer($config, $logger);
 
 $app = new Application('Reconmap internal CLI');
+$app->add($container->get(DatabaseMigratorCommand::class));
 $app->add($container->get(EmailProcessorCommand::class));
 $app->add($container->get(TaskProcessorCommand::class));
 $app->add($container->get(TestDataGeneratorCommand::class));

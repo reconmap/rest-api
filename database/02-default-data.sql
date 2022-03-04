@@ -7,6 +7,10 @@ TRUNCATE TABLE audit_log;
 INSERT INTO audit_log (user_id, client_ip, action)
 VALUES (0, INET_ATON('127.0.0.1'), 'Initialised system');
 
+TRUNCATE TABLE database_migration;
+INSERT INTO database_migration(from_version, to_version)
+VALUES (0, 10000);
+
 TRUNCATE TABLE vulnerability_category;
 INSERT INTO vulnerability_category (name, description)
 VALUES ('Access Controls', 'Related to authorization of users, and assessment of rights.'),

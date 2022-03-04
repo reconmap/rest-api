@@ -8,6 +8,7 @@ use Reconmap\ControllerTestCase;
 use Reconmap\Models\Attachment;
 use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Services\Filesystem\AttachmentFilePath;
+use Reconmap\Services\RedisServer;
 
 class UploadAttachmentControllerTest extends ControllerTestCase
 {
@@ -62,9 +63,11 @@ class UploadAttachmentControllerTest extends ControllerTestCase
                 $fakeUploadedFile
             ]]);
 
+        $mockRedisServer = $this->createMock(RedisServer::class);
+
         $args = ['attachmentId' => $fakeAttachmentId];
 
-        $controller = $this->injectController(new UploadAttachmentController($mockAttachmentRepository, $mockAttachmentFilePath));
+        $controller = $this->injectController(new UploadAttachmentController($mockAttachmentRepository, $mockAttachmentFilePath, $mockRedisServer));
         $response = $controller($mockRequest, $args);
 
         $this->assertTrue($response['success']);

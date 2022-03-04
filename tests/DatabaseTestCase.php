@@ -3,6 +3,7 @@
 namespace Reconmap;
 
 use PHPUnit\Framework\TestCase;
+use Reconmap\Database\ConnectionFactory;
 
 abstract class DatabaseTestCase extends TestCase
 {
@@ -20,6 +21,6 @@ abstract class DatabaseTestCase extends TestCase
         $config = $this->createEmptyApplicationConfig();
         $config['database'] = self::DATABASE_SETTINGS;
 
-        return DatabaseFactory::createConnection($config);
+        return ConnectionFactory::createConnection($config);
     }
 }

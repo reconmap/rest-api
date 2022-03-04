@@ -6,7 +6,7 @@ use League\Container\Container;
 use League\Container\ReflectionContainer;
 use Monolog\Logger;
 use Reconmap\Controllers\Controller;
-use Reconmap\DatabaseFactory;
+use Reconmap\Database\ConnectionFactory;
 use Reconmap\Repositories\MysqlRepository;
 
 class ApplicationContainer extends Container
@@ -24,7 +24,7 @@ class ApplicationContainer extends Container
 
         $this->add(Logger::class, $logger);
 
-        $this->add(\mysqli::class, DatabaseFactory::createConnection($config));
+        $this->add(\mysqli::class, ConnectionFactory::createConnection($config));
 
         $this->inflector(Controller::class)
             ->invokeMethod('setLogger', [$logger]);

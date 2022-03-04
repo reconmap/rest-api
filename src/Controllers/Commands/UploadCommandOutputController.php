@@ -4,19 +4,9 @@ namespace Reconmap\Controllers\Commands;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Attachments\UploadAttachmentController;
-use Reconmap\Repositories\AttachmentRepository;
-use Reconmap\Services\Filesystem\AttachmentFilePath;
-use Reconmap\Services\RedisServer;
 
 class UploadCommandOutputController extends UploadAttachmentController
 {
-    public function __construct(AttachmentRepository $attachmentRepository,
-                                AttachmentFilePath   $attachmentFilePathService,
-                                private RedisServer  $redisServer)
-    {
-        parent::__construct($attachmentRepository, $attachmentFilePathService);
-    }
-
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
         $params = $request->getParsedBody();

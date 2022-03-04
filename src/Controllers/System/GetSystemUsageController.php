@@ -8,7 +8,7 @@ use Reconmap\Repositories\AttachmentRepository;
 
 class GetSystemUsageController extends Controller
 {
-    public function __construct(private AttachmentRepository $attachmentRepository)
+    public function __construct(private readonly AttachmentRepository $attachmentRepository)
     {
     }
 
