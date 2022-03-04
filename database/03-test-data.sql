@@ -25,13 +25,6 @@ INSERT INTO project_user (project_id, user_id)
 VALUES (2, 1),
        (2, 2);
 
-INSERT INTO target (project_id, name, kind, tags)
-VALUES (1, ' https://test.com ', 'url', NULL),
-       (2, '127.0.0.1', 'hostname', '[
-         "linux",
-         "dev-environment"
-       ]');
-
 INSERT INTO command (creator_uid, name, description, docker_image, arguments, executable_type, output_filename,
                      more_info_url, tags, output_parser)
 VALUES (1, 'Goohost',
@@ -59,5 +52,3 @@ VALUES (1, 'Goohost',
          "database"
        ]', 'sqlmap');
 
-INSERT INTO notification (to_user_id, title, content)
-VALUES (@admin_user_id, 'Command completed', '100 vulnerabilities have been found');

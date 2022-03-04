@@ -37,6 +37,7 @@ RUN mkdir -p data/attachments && chown www-data data/attachments
 RUN mkdir logs && chown www-data logs && chmod a+w logs
 
 COPY public /var/www/webapp/public
+COPY database/ /var/www/webapp/database/
 COPY docs/openapi.yaml /var/www/webapp/public/docs/openapi.yaml
 COPY docs/schemas/ /var/www/webapp/public/docs/schemas/
 COPY resources/ /var/www/webapp/resources/
@@ -46,4 +47,3 @@ VOLUME /var/www/webapp
 COPY docker/api/entrypoint.sh /entrypoint
 ENTRYPOINT ["/entrypoint"]
 CMD nginx -g 'daemon off;' && bash
-
