@@ -26,15 +26,20 @@ class EmailTaskProcessor implements ItemProcessor
         $dsn = sprintf('smtp://%s:%s@%s:%d?encryption=tls&auth_mode=login&verify_peer=%s',
             $smtpSettings['username'], $smtpSettings['password'],
             $smtpSettings['host'], $smtpSettings['port'], $smtpSettings['verifyPeer'] ?? true);
-        $transport = Transport::fromDsn($dsn);
-
-        $mailer = new Mailer($transport);
 
         try {
+            $transport = Transport::fromDsn($dsn);
+            $mailer = new Mailer($transport);
+
+            $addresses = [];
+            foreach ($message->to as $toEmail => $toName) {
+                $addresses[] = new Address($toEmail, $toName);
+            }
+
             $email = (new Email())
                 ->subject('[Reconmap] ' . $message->subject)
                 ->from(new Address($smtpSettings['fromEmail'], $smtpSettings['fromName']))
-                ->to($message->to)
+                ->to(...$addresses)
                 ->text($message->body);
 
             if (!empty($message->attachmentPath)) {
