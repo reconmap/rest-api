@@ -8,14 +8,12 @@ use Reconmap\Repositories\ReportRepository;
 
 class GetReportTemplatesController extends Controller
 {
-    public function __construct(private ReportRepository $reportRepository)
+    public function __construct(private readonly ReportRepository $reportRepository)
     {
     }
 
     public function __invoke(ServerRequestInterface $request): array
     {
-        $params = $request->getQueryParams();
-
         return $this->reportRepository->findTemplates();
     }
 }

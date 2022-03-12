@@ -6,7 +6,7 @@ use Reconmap\DatabaseTestCase;
 
 class AuditLogRepositoryTest extends DatabaseTestCase
 {
-    private AuditLogRepository $subject;
+    private readonly AuditLogRepository $subject;
 
     public function setUp(): void
     {
@@ -23,6 +23,6 @@ class AuditLogRepositoryTest extends DatabaseTestCase
     {
         $this->subject->insert(1, 'firefox', '127.0.0.1', 'test');
         $logs = $this->subject->findByUserId(1);
-        $this->assertCount(1, $logs);
+        $this->assertCount(2, $logs);
     }
 }

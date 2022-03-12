@@ -1,17 +1,13 @@
-TRUNCATE TABLE user;
 INSERT INTO user (id, full_name, username, password, email, role)
 VALUES (1, 'Administrator', 'admin', '$2y$10$CrblfxMv8e1ynu9RG54Cau.8dcmz.SpT7nNERclfGMZSbYHoQQuuq', 'admin@localhost',
         'administrator');
 
-TRUNCATE TABLE audit_log;
 INSERT INTO audit_log (user_id, client_ip, action)
-VALUES (0, INET_ATON('127.0.0.1'), 'Initialised system');
+VALUES (1, INET_ATON('127.0.0.1'), 'Initialised system');
 
-TRUNCATE TABLE database_migration;
 INSERT INTO database_migration(from_version, to_version)
 VALUES (0, 10000);
 
-TRUNCATE TABLE vulnerability_category;
 INSERT INTO vulnerability_category (name, description)
 VALUES ('Access Controls', 'Related to authorization of users, and assessment of rights.'),
        ('Auditing and Logging', 'Related to auditing of actions, or logging of problems.'),
@@ -26,18 +22,16 @@ VALUES ('Access Controls', 'Related to authorization of users, and assessment of
        ('Session Management', 'Related to the identification of authenticated users.'),
        ('Timing', 'Related to race conditions, locking, or order of operations.');
 
-TRUNCATE TABLE contact;
 INSERT INTO contact (name, email)
 VALUES ('Contributors', 'no-reply@reconmap.com');
 
-TRUNCATE TABLE organisation;
 INSERT INTO organisation (name, url, contact_id)
 VALUES ('Reconmap organisation', 'https://reconmap.com', LAST_INSERT_ID());
 
 INSERT INTO report (project_id, generated_by_uid, is_template, version_name, version_description)
-VALUES (0, 0, 1, 'Default', 'Default report template');
+VALUES (NULL, 1, 1, 'Default', 'Default report template');
 
 INSERT INTO attachment (parent_type, parent_id, submitter_uid, client_file_name, file_name, file_size, file_mimetype,
                         file_hash)
-VALUES ('report', LAST_INSERT_ID(), 0, 'default-report-template.docx', 'default-report-template.docx', 0,
+VALUES ('report', LAST_INSERT_ID(), 1, 'default-report-template.docx', 'default-report-template.docx', 0,
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document', '');
