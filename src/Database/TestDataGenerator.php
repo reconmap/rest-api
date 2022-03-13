@@ -5,9 +5,16 @@ namespace Reconmap\Database;
 use Reconmap\Models\Client;
 use Reconmap\Models\Contact;
 use Reconmap\Models\Document;
+use Reconmap\Models\Notification;
+use Reconmap\Models\Report;
+use Reconmap\Models\Target;
 use Reconmap\Repositories\ClientRepository;
 use Reconmap\Repositories\ContactRepository;
 use Reconmap\Repositories\DocumentRepository;
+use Reconmap\Repositories\NotificationsRepository;
+use Reconmap\Repositories\ProjectUserRepository;
+use Reconmap\Repositories\ReportRepository;
+use Reconmap\Repositories\TargetRepository;
 
 class TestDataGenerator
 {
@@ -19,7 +26,11 @@ class TestDataGenerator
         private readonly NoteTestDataGenerator $noteTestDataGenerator,
         private readonly DocumentRepository $documentRepository,
         private readonly TaskTestDataGenerator $taskTestDataGenerator,
-        private readonly VulnerabilityTestDataGenerator $vulnerabilityTestDataGenerator)
+        private readonly VulnerabilityTestDataGenerator $vulnerabilityTestDataGenerator,
+        private readonly NotificationsRepository $notificationsRepository,
+        private readonly ReportRepository $reportRepository,
+        private readonly ProjectUserRepository $projectUserRepository,
+        private readonly TargetRepository $targetRepository)
     {
     }
 
@@ -61,10 +72,54 @@ class TestDataGenerator
         $document->title = 'Thing';
         $this->documentRepository->insert($document);
 
+        $notification = new Notification(toUserId: 1, title: 'Command completed', content: '100 vulnerabilities have been found');
+        $this->notificationsRepository->insert($notification);
+
         $this->projectTestDataGenerator->run();;
+        $target = new Target();
+        $target->project_id = 1;
+        $target->name = 'https://test.com';
+        $target->kind = 'url';
+        $target->tags = null;
+        $this->targetRepository->insert($target);
+
+        $target = new Target();
+        $target->project_id = 2;
+        $target->name = '127.0.0.1';
+        $target->kind = 'hostname';
+        $target->tags = '[
+         "linux",
+         "dev-environment"
+       ]';
+        $this->targetRepository->insert($target);
+
         $this->userTestDataGenerator->run();
         $this->noteTestDataGenerator->run();
         $this->taskTestDataGenerator->run();
         $this->vulnerabilityTestDataGenerator->run();
+
+        $report = new Report();
+        $report->projectId = 2;
+        $report->generatedByUid = 1;
+        $report->versionName = '1.0';
+        $report->versionDescription = 'Initial version';
+        $this->reportRepository->insert($report);
+
+        $report = new Report();
+        $report->projectId = 2;
+        $report->generatedByUid = 1;
+        $report->versionName = '1.1';
+        $report->versionDescription = 'Initial version after corrections';
+        $this->reportRepository->insert($report);
+
+        $report = new Report();
+        $report->projectId = 2;
+        $report->generatedByUid = 1;
+        $report->versionName = '1.2 reviewed';
+        $report->versionDescription = 'Report reviewed and sent to the client';
+        $this->reportRepository->insert($report);
+
+        $this->projectUserRepository->create(2, 1);
+        $this->projectUserRepository->create(2, 2);
     }
 }

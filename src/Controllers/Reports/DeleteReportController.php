@@ -12,10 +12,10 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class DeleteReportController extends Controller
 {
-    public function __construct(private AttachmentFilePath   $attachmentFilePathService,
-                                private ReportRepository     $reportRepository,
-                                private AttachmentRepository $attachmentRepository,
-                                private Filesystem           $filesystem)
+    public function __construct(private readonly AttachmentFilePath $attachmentFilePathService,
+                                private readonly ReportRepository $reportRepository,
+                                private readonly AttachmentRepository $attachmentRepository,
+                                private readonly Filesystem $filesystem)
     {
     }
 

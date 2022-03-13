@@ -10,9 +10,9 @@ use Reconmap\Services\Filesystem\AttachmentFilePath;
 
 class SendReportController extends Controller
 {
-    public function __construct(private AttachmentFilePath   $attachmentFilePathService,
-                                private AttachmentRepository $attachmentRepository,
-                                private EmailService         $emailService)
+    public function __construct(private readonly AttachmentFilePath $attachmentFilePathService,
+                                private readonly AttachmentRepository $attachmentRepository,
+                                private readonly EmailService $emailService)
     {
     }
 

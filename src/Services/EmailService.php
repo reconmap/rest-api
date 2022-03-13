@@ -7,10 +7,10 @@ use Monolog\Logger;
 class EmailService
 {
     public function __construct(
-        private TemplateEngine $templateEngine,
-        private RedisServer $redisServer,
-        private ApplicationConfig $applicationConfig,
-        private Logger $logger
+        private readonly TemplateEngine $templateEngine,
+        private readonly RedisServer $redisServer,
+        private readonly ApplicationConfig $applicationConfig,
+        private readonly Logger $logger
     )
     {
     }

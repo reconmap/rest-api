@@ -55,13 +55,14 @@ CREATE TABLE audit_log
 (
     id         INT UNSIGNED NOT NULL AUTO_INCREMENT,
     insert_ts  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    user_id    INT UNSIGNED NOT NULL COMMENT 'User 0 is system' REFERENCES user,
+    user_id    INT UNSIGNED NOT NULL COMMENT 'User 0 is system',
     user_agent VARCHAR(250) NULL,
     client_ip  INT UNSIGNED NOT NULL COMMENT 'IPv4 IP',
     action     VARCHAR(200) NOT NULL,
     object     JSON         NULL,
 
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE NO ACTION
 ) ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS organisation;
@@ -73,13 +74,16 @@ CREATE TABLE organisation
     update_ts                TIMESTAMP    NULL ON UPDATE CURRENT_TIMESTAMP,
     name                     VARCHAR(200) NOT NULL,
     url                      VARCHAR(255) NULL,
-    logo_attachment_id       INT UNSIGNED NULL REFERENCES attachment ON DELETE SET NULL,
-    small_logo_attachment_id INT UNSIGNED NULL REFERENCES attachment ON DELETE SET NULL,
+    logo_attachment_id       INT UNSIGNED NULL,
+    small_logo_attachment_id INT UNSIGNED NULL,
 
-    contact_id               INT UNSIGNED NOT NULL REFERENCES contact,
+    contact_id               INT UNSIGNED NOT NULL,
 
     PRIMARY KEY (id),
-    UNIQUE KEY (name)
+    UNIQUE KEY (name),
+    FOREIGN KEY (logo_attachment_id) REFERENCES attachment (id) ON DELETE SET NULL,
+    FOREIGN KEY (small_logo_attachment_id) REFERENCES attachment (id) ON DELETE SET NULL,
+    FOREIGN KEY (contact_id) REFERENCES contact (id) ON DELETE RESTRICT
 ) ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS client;
@@ -89,27 +93,34 @@ CREATE TABLE client
     id                       INT UNSIGNED NOT NULL AUTO_INCREMENT,
     insert_ts                TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_ts                TIMESTAMP    NULL ON UPDATE CURRENT_TIMESTAMP,
-    creator_uid              INT UNSIGNED NOT NULL REFERENCES user,
+    creator_uid              INT UNSIGNED NOT NULL,
     name                     VARCHAR(80)  NOT NULL COMMENT 'eg Company name',
     address                  VARCHAR(400) NULL COMMENT 'eg 1 Hacker Way, Menlo Park, California',
     url                      VARCHAR(255) NULL,
-    logo_attachment_id       INT UNSIGNED NULL REFERENCES attachment ON DELETE SET NULL,
-    small_logo_attachment_id INT UNSIGNED NULL REFERENCES attachment ON DELETE SET NULL,
+    logo_attachment_id       INT UNSIGNED NULL,
+    small_logo_attachment_id INT UNSIGNED NULL,
 
     PRIMARY KEY (id),
-    UNIQUE KEY (name)
+    UNIQUE KEY (name),
+    FOREIGN KEY (creator_uid) REFERENCES user (id) ON DELETE NO ACTION,
+    FOREIGN KEY (logo_attachment_id) REFERENCES attachment (id) ON DELETE SET NULL,
+    FOREIGN KEY (small_logo_attachment_id) REFERENCES attachment (id) ON DELETE SET NULL
 ) ENGINE = InnoDB;
+
+
 
 DROP TABLE IF EXISTS client_contact;
 
 CREATE TABLE client_contact
 (
     id         INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    client_id  INT UNSIGNED NOT NULL REFERENCES client ON DELETE CASCADE,
-    contact_id INT UNSIGNED NOT NULL REFERENCES contact ON DELETE CASCADE,
+    client_id  INT UNSIGNED NOT NULL,
+    contact_id INT UNSIGNED NOT NULL,
 
     PRIMARY KEY (id),
-    UNIQUE KEY (client_id, contact_id)
+    UNIQUE KEY (client_id, contact_id),
+    FOREIGN KEY (client_id) REFERENCES client (id) ON DELETE CASCADE,
+    FOREIGN KEY (contact_id) REFERENCES contact (id) ON DELETE CASCADE
 ) ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS vault;
@@ -124,12 +135,13 @@ CREATE TABLE vault
     reportable BOOLEAN                                NOT NULL,
     note       VARCHAR(1000)                          NULL,
     type       ENUM ('password','note','token','key') NOT NULL,
-    project_id INT UNSIGNED                           NOT NULL REFERENCES project,
+    project_id INT UNSIGNED                           NOT NULL,
     record_iv  BLOB                                   NOT NULL,
 
     PRIMARY KEY (id),
     UNIQUE KEY (project_id, name),
-    KEY (reportable)
+    KEY (reportable),
+    FOREIGN KEY (project_id) REFERENCES project (id) ON DELETE CASCADE
 ) Engine = InnoDB;
 
 DROP TABLE IF EXISTS project;
@@ -139,7 +151,7 @@ CREATE TABLE project
     id                    INT UNSIGNED                             NOT NULL AUTO_INCREMENT,
     insert_ts             TIMESTAMP                                NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_ts             TIMESTAMP                                NULL ON UPDATE CURRENT_TIMESTAMP,
-    creator_uid           INT UNSIGNED                             NOT NULL REFERENCES user,
+    creator_uid           INT UNSIGNED                             NOT NULL,
     client_id             INT UNSIGNED                             NULL COMMENT 'Null when project is template' REFERENCES client,
     is_template           BOOLEAN                                  NOT NULL DEFAULT FALSE,
     visibility            ENUM ('public', 'private')               NOT NULL DEFAULT 'public',
@@ -155,7 +167,8 @@ CREATE TABLE project
 
     PRIMARY KEY (id),
     UNIQUE KEY (name),
-    KEY (is_template)
+    KEY (is_template),
+    FOREIGN KEY (creator_uid) REFERENCES user (id) ON DELETE NO ACTION
 ) ENGINE = InnoDB;
 
 DROP VIEW IF EXISTS project_template;
@@ -180,11 +193,13 @@ CREATE TABLE project_user
 (
     id         INT UNSIGNED NOT NULL AUTO_INCREMENT,
     insert_ts  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    project_id INT UNSIGNED NOT NULL REFERENCES project,
-    user_id    INT UNSIGNED NOT NULL REFERENCES user,
+    project_id INT UNSIGNED NOT NULL,
+    user_id    INT UNSIGNED NOT NULL,
 
     PRIMARY KEY (id),
-    UNIQUE KEY (project_id, user_id)
+    UNIQUE KEY (project_id, user_id),
+    FOREIGN KEY (project_id) REFERENCES project (id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS target;
@@ -192,8 +207,8 @@ DROP TABLE IF EXISTS target;
 CREATE TABLE target
 (
     id         INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    parent_id  INT UNSIGNED NULL REFERENCES target,
-    project_id INT UNSIGNED NOT NULL REFERENCES project,
+    parent_id  INT UNSIGNED NULL,
+    project_id INT UNSIGNED NOT NULL,
     insert_ts  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_ts  TIMESTAMP    NULL ON UPDATE CURRENT_TIMESTAMP,
     name       VARCHAR(200) NOT NULL,
@@ -201,7 +216,9 @@ CREATE TABLE target
     tags       JSON         NULL,
 
     PRIMARY KEY (id),
-    UNIQUE KEY (project_id, name)
+    UNIQUE KEY (project_id, name),
+    FOREIGN KEY (parent_id) REFERENCES target (id) ON DELETE CASCADE,
+    FOREIGN KEY (project_id) REFERENCES project (id) ON DELETE CASCADE
 ) ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS vulnerability_category;
@@ -211,13 +228,14 @@ CREATE TABLE vulnerability_category
     id          INT UNSIGNED  NOT NULL AUTO_INCREMENT,
     insert_ts   TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_ts   TIMESTAMP     NULL ON UPDATE CURRENT_TIMESTAMP,
-    parent_id   INT UNSIGNED  NULL REFERENCES vulnerability_category,
+    parent_id   INT UNSIGNED  NULL,
     name        VARCHAR(200)  NOT NULL,
     description VARCHAR(2000) NULL,
 
     PRIMARY KEY (id),
     UNIQUE KEY (name),
-    KEY (parent_id)
+    KEY (parent_id),
+    FOREIGN KEY (parent_id) REFERENCES vulnerability_category (id) ON DELETE CASCADE
 ) ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS vulnerability;
@@ -227,14 +245,14 @@ CREATE TABLE vulnerability
     id                     INT UNSIGNED                                                                                       NOT NULL AUTO_INCREMENT,
     insert_ts              TIMESTAMP                                                                                          NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_ts              TIMESTAMP                                                                                          NULL ON UPDATE CURRENT_TIMESTAMP,
-    creator_uid            INT UNSIGNED                                                                                       NOT NULL REFERENCES user,
+    creator_uid            INT UNSIGNED                                                                                       NOT NULL,
 
     is_template            BOOLEAN                                                                                            NOT NULL DEFAULT FALSE,
 
     external_id            VARCHAR(50)                                                                                        NULL COMMENT 'External reference eg RMAP-CLIENT-001',
-    project_id             INT UNSIGNED                                                                                       NULL REFERENCES project,
-    target_id              INT UNSIGNED                                                                                       NULL REFERENCES target,
-    category_id            INT UNSIGNED                                                                                       NULL REFERENCES vulnerability_category,
+    project_id             INT UNSIGNED                                                                                       NULL,
+    target_id              INT UNSIGNED                                                                                       NULL,
+    category_id            INT UNSIGNED                                                                                       NULL,
 
     summary                VARCHAR(500)                                                                                       NOT NULL,
     description            TEXT                                                                                               NULL,
@@ -261,7 +279,11 @@ CREATE TABLE vulnerability
 
     PRIMARY KEY (id),
     UNIQUE KEY (project_id, target_id, summary),
-    KEY (is_template)
+    KEY (is_template),
+    FOREIGN KEY (creator_uid) REFERENCES user (id) ON DELETE NO ACTION,
+    FOREIGN KEY (project_id) REFERENCES project (id) ON DELETE SET NULL,
+    FOREIGN KEY (target_id) REFERENCES target (id) ON DELETE SET NULL,
+    FOREIGN KEY (category_id) REFERENCES vulnerability_category (id) ON DELETE SET NULL
 ) ENGINE = InnoDB;
 
 DROP VIEW IF EXISTS vulnerability_template;
@@ -293,8 +315,8 @@ CREATE TABLE task
 (
     id           INT UNSIGNED                                        NOT NULL AUTO_INCREMENT,
     project_id   INT UNSIGNED                                        NOT NULL,
-    creator_uid  INT UNSIGNED                                        NOT NULL REFERENCES user,
-    assignee_uid INT UNSIGNED                                        NULL REFERENCES user,
+    creator_uid  INT UNSIGNED                                        NOT NULL,
+    assignee_uid INT UNSIGNED                                        NULL,
     insert_ts    TIMESTAMP                                           NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_ts    TIMESTAMP                                           NULL ON UPDATE CURRENT_TIMESTAMP,
     priority     ENUM ('highest', 'high', 'medium', 'low', 'lowest') NOT NULL,
@@ -302,10 +324,13 @@ CREATE TABLE task
     description  VARCHAR(2000)                                       NULL,
     status       ENUM ('todo', 'doing', 'done')                      NOT NULL DEFAULT 'todo',
     due_date     DATE                                                NULL,
-    command_id   INT UNSIGNED                                        NULL REFERENCES command,
+    command_id   INT UNSIGNED                                        NULL,
 
     PRIMARY KEY (id),
-    FOREIGN KEY (project_id) REFERENCES project (id) ON DELETE CASCADE
+    FOREIGN KEY (project_id) REFERENCES project (id) ON DELETE CASCADE,
+    FOREIGN KEY (creator_uid) REFERENCES user (id) ON DELETE NO ACTION,
+    FOREIGN KEY (assignee_uid) REFERENCES user (id) ON DELETE SET NULL,
+    FOREIGN KEY (command_id) REFERENCES command (id) ON DELETE SET NULL
 ) ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS command;
@@ -313,7 +338,7 @@ DROP TABLE IF EXISTS command;
 CREATE TABLE command
 (
     id              INT UNSIGNED           NOT NULL AUTO_INCREMENT,
-    creator_uid     INT UNSIGNED           NOT NULL REFERENCES user,
+    creator_uid     INT UNSIGNED           NOT NULL,
     insert_ts       TIMESTAMP              NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_ts       TIMESTAMP              NULL ON UPDATE CURRENT_TIMESTAMP,
     name            VARCHAR(200)           NOT NULL,
@@ -328,7 +353,8 @@ CREATE TABLE command
     more_info_url   VARCHAR(200)           NULL,
     tags            JSON                   NULL,
 
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    FOREIGN KEY (creator_uid) REFERENCES user (id) ON DELETE NO ACTION
 ) ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS report;
@@ -336,8 +362,8 @@ DROP TABLE IF EXISTS report;
 CREATE TABLE report
 (
     id                  INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    project_id          INT UNSIGNED NOT NULL REFERENCES project,
-    generated_by_uid    INT UNSIGNED NOT NULL REFERENCES user,
+    project_id          INT UNSIGNED NULL COMMENT 'Templates have project id NULL',
+    generated_by_uid    INT UNSIGNED NOT NULL,
     insert_ts           TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     is_template         BOOLEAN      NOT NULL DEFAULT FALSE,
@@ -346,6 +372,8 @@ CREATE TABLE report
     version_description VARCHAR(300) NOT NULL COMMENT 'eg Initial, Reviewed, In progress, Draft, Final',
 
     PRIMARY KEY (id),
+    FOREIGN KEY (project_id) REFERENCES project (id) ON DELETE CASCADE,
+    FOREIGN KEY (generated_by_uid) REFERENCES user (id) ON DELETE NO ACTION,
     KEY (is_template)
 ) ENGINE = InnoDB;
 
@@ -354,10 +382,11 @@ DROP TABLE IF EXISTS report_configuration;
 CREATE TABLE report_configuration
 (
     id         INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    project_id INT UNSIGNED NOT NULL REFERENCES project,
+    project_id INT UNSIGNED NOT NULL,
 
     PRIMARY KEY (id),
-    UNIQUE (project_id)
+    UNIQUE (project_id),
+    FOREIGN KEY (project_id) REFERENCES project (id) ON DELETE CASCADE
 ) ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS document;
@@ -367,7 +396,7 @@ CREATE TABLE document
     id          INT UNSIGNED                                 NOT NULL AUTO_INCREMENT,
     insert_ts   TIMESTAMP                                    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_ts   TIMESTAMP                                    NULL ON UPDATE CURRENT_TIMESTAMP,
-    user_id     INT UNSIGNED                                 NOT NULL REFERENCES user,
+    user_id     INT UNSIGNED                                 NOT NULL,
     parent_type ENUM ('library', 'project', 'vulnerability') NOT NULL,
     parent_id   INT UNSIGNED                                 NULL,
     visibility  ENUM ('private', 'public')                   NOT NULL DEFAULT 'private',
@@ -375,7 +404,8 @@ CREATE TABLE document
     content     TEXT                                         NOT NULL,
 
     PRIMARY KEY (id),
-    INDEX (parent_type, parent_id)
+    INDEX (parent_type, parent_id),
+    FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE NO ACTION
 ) ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS note;
@@ -384,14 +414,15 @@ CREATE TABLE note
 (
     id          INT UNSIGNED                      NOT NULL AUTO_INCREMENT,
     insert_ts   TIMESTAMP                         NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    user_id     INT UNSIGNED                      NOT NULL REFERENCES user,
+    user_id     INT UNSIGNED                      NOT NULL,
     parent_type ENUM ('project', 'vulnerability') NOT NULL,
     parent_id   INT UNSIGNED                      NOT NULL,
     visibility  ENUM ('private', 'public')        NOT NULL DEFAULT 'private',
     content     TEXT                              NOT NULL,
 
     PRIMARY KEY (id),
-    INDEX (parent_type, parent_id)
+    INDEX (parent_type, parent_id),
+    FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE NO ACTION
 ) ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS attachment;
@@ -402,17 +433,16 @@ CREATE TABLE attachment
     insert_ts        TIMESTAMP                                                                                NOT NULL DEFAULT CURRENT_TIMESTAMP,
     parent_type      ENUM ('project', 'report', 'command', 'task', 'vulnerability', 'organisation', 'client') NOT NULL,
     parent_id        INT UNSIGNED                                                                             NOT NULL,
-    submitter_uid    INT UNSIGNED                                                                             NOT NULL REFERENCES user,
+    submitter_uid    INT UNSIGNED                                                                             NOT NULL,
     client_file_name VARCHAR(200)                                                                             NOT NULL,
     file_name        VARCHAR(200)                                                                             NOT NULL,
     file_size        INT UNSIGNED                                                                             NOT NULL,
     file_mimetype    VARCHAR(200)                                                                             NULL,
     file_hash        VARCHAR(10000)                                                                           NOT NULL,
 
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    FOREIGN KEY (submitter_uid) REFERENCES user (id) ON DELETE NO ACTION
 ) ENGINE = InnoDB;
-
-SET FOREIGN_KEY_CHECKS = 1;
 
 DROP FUNCTION IF EXISTS PARENT_CHILD_NAME;
 
@@ -440,11 +470,14 @@ CREATE TABLE notification
     id         INT UNSIGNED            NOT NULL AUTO_INCREMENT,
     insert_ts  TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_ts  TIMESTAMP               NULL ON UPDATE CURRENT_TIMESTAMP,
-    to_user_id INT UNSIGNED            NOT NULL REFERENCES user,
+    to_user_id INT UNSIGNED            NOT NULL,
     title      VARCHAR(200)            NULL,
     content    VARCHAR(4000)           NOT NULL,
     status     ENUM ('unread', 'read') NOT NULL DEFAULT 'unread',
 
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    FOREIGN KEY (to_user_id) REFERENCES user (id) ON DELETE CASCADE
 ) ENGINE = InnoDB
   CHARSET = utf8mb4;
+
+SET FOREIGN_KEY_CHECKS = 1;

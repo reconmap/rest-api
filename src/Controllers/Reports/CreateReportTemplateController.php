@@ -8,14 +8,17 @@ use Reconmap\Models\Report;
 use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Repositories\ReportRepository;
 use Reconmap\Services\Filesystem\AttachmentFilePath;
+use Reconmap\Services\RedisServer;
 
 class CreateReportTemplateController extends UploadAttachmentController
 {
-    public function __construct(AttachmentRepository     $attachmentRepository,
-                                AttachmentFilePath       $attachmentFilePathService,
-                                private ReportRepository $reportRepository)
+    public function __construct(AttachmentRepository $attachmentRepository,
+                                AttachmentFilePath   $attachmentFilePathService,
+                                RedisServer          $redisServer,
+                                private              readonly ReportRepository $reportRepository
+    )
     {
-        parent::__construct($attachmentRepository, $attachmentFilePathService);
+        parent::__construct($attachmentRepository, $attachmentFilePathService, $redisServer);
     }
 
     public function __invoke(ServerRequestInterface $request, array $args): array
@@ -29,7 +32,7 @@ class CreateReportTemplateController extends UploadAttachmentController
         $userId = $request->getAttribute('userId');
 
         $report = new Report();
-        $report->projectId = 0;
+        $report->projectId = null;
         $report->generatedByUid = $userId;
         $report->versionName = $params['version_name'];
         $report->versionDescription = $params['version_description'];
@@ -40,6 +43,6 @@ class CreateReportTemplateController extends UploadAttachmentController
 
         $attachment = $this->uploadAttachment($resultFile, 'report', $report->id, $userId);
 
-        return ['success' => true];
+        return ['success' => true, 'attachmentId' => $attachment->id];
     }
 }
