@@ -8,7 +8,6 @@ VALUES (1, INET_ATON('127.0.0.1'), 'Initialised system');
 INSERT INTO database_migration(from_version, to_version)
 VALUES (0, 10000);
 
-TRUNCATE TABLE vulnerability_category;
 INSERT INTO vulnerability_category (id, parent_id, name, description)
 VALUES (1,NULL,'General', 'General categories.'),
        (2,1,'Access Controls', 'Related to authorization of users, and assessment of rights.'),
