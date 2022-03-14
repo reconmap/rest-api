@@ -2,11 +2,11 @@
 
 namespace Reconmap\Controllers\System;
 
-use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\ControllerTestCase;
 use Reconmap\Services\ApplicationConfig;
 
-class GetApplicationLogsControllerTest extends TestCase
+class GetApplicationLogsControllerTest extends ControllerTestCase
 {
     private const LOG_DIR = __DIR__ . DIRECTORY_SEPARATOR . 'logs';
     private const LOG_FILE = self::LOG_DIR . DIRECTORY_SEPARATOR . 'application.log';
@@ -33,7 +33,9 @@ class GetApplicationLogsControllerTest extends TestCase
 
         $mockRequest = $this->createMock(ServerRequestInterface::class);
 
-        $controller = new GetApplicationLogsController($mockAppConfig);
+        $mockAuthorisationService = $this->createAuthorisationServiceMock();
+
+        $controller = new GetApplicationLogsController($mockAuthorisationService, $mockAppConfig);
         $response = $controller($mockRequest);
         $this->assertEquals('text/plain', $response->getHeaderLine('Content-type'));
         $this->assertEquals('2021-07-13 DEBUG A good thing happened', $response->getBody()->getContents());

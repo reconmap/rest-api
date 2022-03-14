@@ -8,8 +8,8 @@ use Reconmap\Repositories\Findable;
 
 abstract class GetEntityController extends Controller
 {
-    public function __construct(private Findable $repository,
-                                private string   $idParamName)
+    public function __construct(private readonly Findable $repository,
+                                private readonly string $idParamName)
     {
     }
 

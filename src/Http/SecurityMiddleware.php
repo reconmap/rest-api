@@ -10,7 +10,7 @@ use Reconmap\Services\ApplicationConfig;
 
 class SecurityMiddleware implements MiddlewareInterface
 {
-    public function __construct(private ApplicationConfig $applicationConfig)
+    public function __construct(private readonly ApplicationConfig $applicationConfig)
     {
     }
 

@@ -7,16 +7,19 @@ use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Stream;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Reconmap\Controllers\Controller;
+use Reconmap\SecureController;
 use Reconmap\Services\ApplicationConfig;
+use Reconmap\Services\Security\AuthorisationService;
 
-class GetApplicationLogsController extends Controller
+class GetApplicationLogsController extends SecureController
 {
-    public function __construct(private ApplicationConfig $applicationConfig)
+    public function __construct(AuthorisationService $authorisationService,
+                                private              readonly ApplicationConfig $applicationConfig)
     {
+        parent::__construct($authorisationService);
     }
 
-    public function __invoke(ServerRequestInterface $request): ResponseInterface
+    public function process(ServerRequestInterface $request): array|ResponseInterface
     {
         $appDir = $this->applicationConfig->getAppDir();
         $pathName = implode(DIRECTORY_SEPARATOR, [$appDir, 'logs', 'application.log']);

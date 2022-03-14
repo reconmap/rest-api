@@ -20,8 +20,8 @@ use Reconmap\Services\ApplicationConfig;
 
 class AuthMiddleware implements MiddlewareInterface
 {
-    public function __construct(private Logger            $logger,
-                                private ApplicationConfig $config)
+    public function __construct(private readonly Logger $logger,
+                                private readonly ApplicationConfig $config)
     {
     }
 
