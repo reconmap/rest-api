@@ -25,16 +25,15 @@ class AuthorisationServiceTest extends TestCase
             [false, 'client', 'projects.delete'],
             [false, 'client', 'users.delete'],
             [false, 'client', 'system.usage'],
+            [false, 'hacker', 'system.usage'],
+            [false, null, 'system.usage'],
         ];
     }
 
     /**
-     * @param bool $expected
-     * @param string $role
-     * @param string $action
      * @dataProvider dataProvider
      */
-    public function testIfRoleIsAllowed(bool $expected, string $role, string $action)
+    public function testIfRoleIsAllowed(bool $expected, ?string $role, string $action)
     {
         $subject = new AuthorisationService();
         $this->assertEquals($expected, $subject->isRoleAllowed($role, $action));

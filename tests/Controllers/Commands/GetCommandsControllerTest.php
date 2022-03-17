@@ -2,17 +2,21 @@
 
 namespace Reconmap\Controllers\Commands;
 
-use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\ControllerTestCase;
 use Reconmap\Repositories\CommandRepository;
 use Reconmap\Repositories\SearchCriterias\CommandSearchCriteria;
 use Reconmap\Services\PaginationRequestHandler;
 
-class GetCommandsControllerTest extends TestCase
+class GetCommandsControllerTest extends ControllerTestCase
 {
     public function testGetCommandsByKeywords()
     {
         $mockRequest = $this->createMock(ServerRequestInterface::class);
+        $mockRequest->expects($this->once())
+            ->method('getAttribute')
+            ->with('role')
+            ->willReturn('administrator');
         $mockRequest->expects($this->exactly(2))
             ->method('getQueryParams')
             ->willReturn(['limit' => 5, 'keywords' => 'foo']);
@@ -28,7 +32,9 @@ class GetCommandsControllerTest extends TestCase
             ->method('addKeywordsCriterion')
             ->with('foo');
 
-        $controller = new GetCommandsController($mockRepository, $mockSearchCriteria);
+        $mockAuthorisationService = $this->createAuthorisationServiceMock();
+
+        $controller = new GetCommandsController($mockAuthorisationService, $mockRepository, $mockSearchCriteria);
         $response = $controller($mockRequest);
 
         $this->assertEquals([], $response);

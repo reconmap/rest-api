@@ -5,19 +5,28 @@ namespace Reconmap\Controllers\AuditLog;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\AuditLogRepository;
+use Reconmap\SecureController;
 use Reconmap\Services\PaginationRequestHandler;
+use Reconmap\Services\Security\AuthorisationService;
 
-class GetAuditLogController extends Controller
+class GetAuditLogController extends SecureController
 {
     private const PAGE_LIMIT = 20;
 
-    public function __construct(private AuditLogRepository $repository)
+    public function __construct(AuthorisationService $authorisationService,
+                                private              readonly AuditLogRepository $repository
+    )
     {
+        parent::__construct($authorisationService);
     }
 
-    public function __invoke(ServerRequestInterface $request): ResponseInterface
+    public function getPermissionRequired(): string
+    {
+        return 'auditlog.get';
+    }
+
+    protected function process(ServerRequestInterface $request): array|ResponseInterface
     {
         $paginator = new PaginationRequestHandler($request);
         $params = $request->getQueryParams();

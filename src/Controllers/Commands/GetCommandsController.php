@@ -2,20 +2,24 @@
 
 namespace Reconmap\Controllers\Commands;
 
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\CommandRepository;
 use Reconmap\Repositories\SearchCriterias\CommandSearchCriteria;
+use Reconmap\SecureController;
 use Reconmap\Services\PaginationRequestHandler;
+use Reconmap\Services\Security\AuthorisationService;
 
-class GetCommandsController extends Controller
+class GetCommandsController extends SecureController
 {
-    public function __construct(private CommandRepository     $repository,
-                                private CommandSearchCriteria $searchCriteria)
+    public function __construct(AuthorisationService $authorisationService,
+                                private              readonly CommandRepository $repository,
+                                private              readonly CommandSearchCriteria $searchCriteria)
     {
+        parent::__construct($authorisationService);
     }
 
-    public function __invoke(ServerRequestInterface $request): array
+    public function process(ServerRequestInterface $request): array|ResponseInterface
     {
         $params = $request->getQueryParams();
         if (isset($params['keywords'])) {

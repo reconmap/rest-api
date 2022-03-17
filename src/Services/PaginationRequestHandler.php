@@ -6,7 +6,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class PaginationRequestHandler
 {
-    private array $queryParams;
+    private readonly array $queryParams;
 
     public function __construct(ServerRequestInterface $request,
                                 private int            $resultsPerPage = 20)

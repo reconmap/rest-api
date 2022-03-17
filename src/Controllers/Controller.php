@@ -18,8 +18,6 @@ abstract class Controller implements ContainerConsumer
     protected ?TemplateEngine $template = null;
     protected ?ContainerInterface $container = null;
 
-    // abstract public function __invoke(ServerRequestInterface $request, array $args): array|ResponseInterface;
-
     public function setLogger(Logger $logger): void
     {
         $this->logger = $logger;

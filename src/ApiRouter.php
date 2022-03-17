@@ -59,8 +59,8 @@ class ApiRouter extends Router
     {
         $this->setupStrategy($container, $applicationConfig);
 
-        $authMiddleware = $container->get(AuthMiddleware::class);
         $corsMiddleware = $container->get(CorsMiddleware::class);
+        $authMiddleware = $container->get(AuthMiddleware::class);
         $securityMiddleware = $container->get(SecurityMiddleware::class);
 
         $this->map('POST', '/users/login', LoginController::class)
@@ -70,7 +70,7 @@ class ApiRouter extends Router
             foreach (self::ROUTER_CLASSES as $mappable) {
                 (new $mappable)->mapRoutes($router);
             }
-        })->middlewares([$corsMiddleware, $authMiddleware, $securityMiddleware]);
+        })->middlewares([$corsMiddleware, $securityMiddleware, $authMiddleware]);
     }
 
     private function setupStrategy(Container $container, ApplicationConfig $applicationConfig)

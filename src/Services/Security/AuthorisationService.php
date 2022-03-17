@@ -4,8 +4,12 @@ namespace Reconmap\Services\Security;
 
 class AuthorisationService
 {
-    public function isRoleAllowed(string $role, string $action): bool
+    public function isRoleAllowed(?string $role, string $action): bool
     {
+        if (!isset(Permissions::ByRoles[$role])) {
+            return false;
+        }
+
         $granted = Permissions::ByRoles[$role];
         if (in_array($action, $granted) || in_array('*.*', $granted)) {
             return true;

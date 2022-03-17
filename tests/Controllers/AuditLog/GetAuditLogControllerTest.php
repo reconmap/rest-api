@@ -3,7 +3,7 @@
 namespace Reconmap\Controllers\AuditLog;
 
 use Fig\Http\Message\StatusCodeInterface;
-use GuzzleHttp\Psr7\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\ControllerTestCase;
 use Reconmap\Repositories\AuditLogRepository;
 
@@ -15,16 +15,23 @@ class GetAuditLogControllerTest extends ControllerTestCase
         $mockRepository->expects($this->once())
             ->method('findAll')
             ->with(1);
-        $request = (new ServerRequest('get', '/auditlog'))
-            ->withQueryParams([
-                'page' => 1
-            ]);
+
+        $mockRequest = $this->createMock(ServerRequestInterface::class);
+        $mockRequest->expects($this->once())
+            ->method('getAttribute')
+            ->with('role')
+            ->willReturn('administrator');
+        $mockRequest->expects($this->exactly(2))
+            ->method('getQueryParams')
+            ->willReturn(['page' => 1]);
+
+        $mockAuthorisationService = $this->createAuthorisationServiceMock();
 
         /**
          * @var $controller GetAuditLogController
          */
-        $controller = $this->injectController(new GetAuditLogController($mockRepository));
-        $response = $controller($request);
+        $controller = $this->injectController(new GetAuditLogController($mockAuthorisationService, $mockRepository));
+        $response = $controller($mockRequest);
         $this->assertEquals(StatusCodeInterface::STATUS_OK, $response->getStatusCode());
         $this->assertEquals(1, $response->getHeaderLine('X-Page-Count'));
         $this->assertEquals('X-Page-Count', $response->getHeaderLine('Access-Control-Expose-Headers'));

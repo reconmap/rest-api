@@ -13,12 +13,12 @@ use Reconmap\Services\Security\AuthorisationService;
 abstract class DeleteEntityController extends Controller
 {
     public function __construct(
-        private AuthorisationService     $authorisationService,
-        private ActivityPublisherService $activityPublisherService,
-        private Deletable                $repository,
-        private string                   $entityName,
-        private string                   $auditLogAction,
-        private string                   $idParamName
+        private readonly AuthorisationService $authorisationService,
+        private readonly ActivityPublisherService $activityPublisherService,
+        private readonly Deletable $repository,
+        private readonly string $entityName,
+        private readonly string $auditLogAction,
+        private readonly string $idParamName
     )
     {
     }
