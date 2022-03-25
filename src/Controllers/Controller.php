@@ -8,6 +8,7 @@ use Monolog\Logger;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\Models\Cleanable;
 use Reconmap\Models\User;
 use Reconmap\Services\ContainerConsumer;
 use Reconmap\Services\TemplateEngine;
@@ -37,12 +38,21 @@ abstract class Controller implements ContainerConsumer
     {
         $jsonMapper = new \JsonMapper();
         $jsonMapper->bStrictNullTypes = $strictNullTypes;
-        return $jsonMapper->map($this->getJsonBodyDecoded($request), $instance);
+        $object = $jsonMapper->map($this->getJsonBodyDecoded($request), $instance);
+        if ($object instanceof Cleanable) {
+            $object->clean();
+        }
+        return $object;
     }
 
     public function getJsonBodyDecodedAsArray(ServerRequestInterface $request): array
     {
         return json_decode((string)$request->getBody(), true);
+    }
+
+    protected function createInternalServerErrorResponse(): ResponseInterface
+    {
+        return (new Response())->withStatus(StatusCodeInterface::STATUS_INTERNAL_SERVER_ERROR);
     }
 
     protected function createForbiddenResponse(): ResponseInterface

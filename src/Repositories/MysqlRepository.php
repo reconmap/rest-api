@@ -13,6 +13,7 @@ use Reconmap\Services\PaginationRequestHandler;
 abstract class MysqlRepository
 {
     protected ?Logger $logger = null;
+
     public function setLogger(Logger $logger): void
     {
         $this->logger = $logger;
@@ -66,7 +67,9 @@ abstract class MysqlRepository
 
     protected function updateByTableId(string $tableName, int $id, array $newColumnValues): bool
     {
-        if (empty($newColumnValues)) return false;
+        if (empty($newColumnValues)) {
+            return false;
+        }
 
         $updateQueryBuilder = new UpdateQueryBuilder($tableName);
         $updateQueryBuilder->setColumnValues(array_map(fn() => '?', $newColumnValues));

@@ -15,7 +15,7 @@ class ConnectionFactory
         $dbSettings = $config->getSettings('database');
         $conn = new \mysqli;
         $conn->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, true);
-        $conn->real_connect($dbSettings['host'], $dbSettings['username'], $dbSettings['password'], $dbSettings['name']);
+        $conn->real_connect($dbSettings['host'], $dbSettings['username'], $dbSettings['password'], $dbSettings['name'], flags: MYSQLI_CLIENT_FOUND_ROWS);
 
         return $conn;
     }
