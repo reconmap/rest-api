@@ -101,6 +101,7 @@ class ReportDataCollector
         }
 
         $parentCategories = $this->vulnerabilityCategoryRepository->findMaxSeverityForEachParentCategory();
+        $categories = $this->vulnerabilityCategoryRepository->getStatuses();
 
         $vaultSearchCriteria = new VaultSearchCriteria();
         $vaultSearchCriteria->addReportableProjectCriterion($projectId);
@@ -121,7 +122,8 @@ class ReportDataCollector
             'findingsOverview' => $this->createFindingsOverview($vulnerabilities),
             'vault' => $vaultItems,
             'logos' => $logos,
-            'categories' => $parentCategories,
+            'parentCategories' => $parentCategories,
+            'categories' => $categories,
         ];
 
         if (!empty($reports)) {

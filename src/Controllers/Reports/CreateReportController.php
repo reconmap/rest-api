@@ -200,16 +200,26 @@ class CreateReportController extends Controller
             }
 
             try {
-                $template->cloneRow('category.group', count($vars['categories']), true, true);
-                foreach ($vars['categories'] as $index => $category) {
+                $template->cloneRow('category.group', count($vars['parentCategories']), true, true);
+                foreach ($vars['parentCategories'] as $index => $category) {
                     $template->setValue('category.group#' . ($index + 1), $category['name']);
                     $template->setValue('category.severity#' . ($index + 1), $category['owasp_overall']);
                 }
             } catch (\Exception $e) {
                 $msg = $e->getMessage();
-                $this->logger->warning("Error in categories section: [$msg]");
+                $this->logger->warning("Error in parent categories section: [$msg]");
             }
 
+            try {
+                $template->cloneRow('category.name', count($vars['categories']), true, true);
+                foreach ($vars['categories'] as $index => $category) {
+                    $template->setValue('category.name#' . ($index + 1), $category['name']);
+                    $template->setValue('category.status#' . ($index + 1), $category['status']);
+                }
+            } catch (\Exception $e) {
+                $msg = $e->getMessage();
+                $this->logger->warning("Error in categories section: [$msg]");
+            }
 
             try {
                 $template->cloneRow('revisionHistoryDateTime', count($vars['reports']));
