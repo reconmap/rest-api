@@ -18,6 +18,7 @@ use Reconmap\Repositories\TargetRepository;
 use Reconmap\Repositories\TaskRepository;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Repositories\VaultRepository;
+use Reconmap\Repositories\VulnerabilityCategoryRepository;
 use Reconmap\Repositories\VulnerabilityRepository;
 
 class ReportDataCollector
@@ -27,6 +28,7 @@ class ReportDataCollector
         private readonly ReportRepository $reportRepository,
         private readonly ReportConfigurationRepository $reportConfigurationRepository,
         private readonly VulnerabilityRepository $vulnerabilityRepository,
+        private readonly VulnerabilityCategoryRepository $vulnerabilityCategoryRepository,
         private readonly OrganisationRepository $organisationRepository,
         private readonly UserRepository $userRepository,
         private readonly ClientRepository $clientRepository,
@@ -98,6 +100,8 @@ class ReportDataCollector
             $contacts = [];
         }
 
+        $parentCategories = $this->vulnerabilityCategoryRepository->findMaxSeverityForEachParentCategory();
+
         $vaultSearchCriteria = new VaultSearchCriteria();
         $vaultSearchCriteria->addReportableProjectCriterion($projectId);
         $vaultItems = $this->vaultRepository->search($vaultSearchCriteria);
@@ -117,6 +121,7 @@ class ReportDataCollector
             'findingsOverview' => $this->createFindingsOverview($vulnerabilities),
             'vault' => $vaultItems,
             'logos' => $logos,
+            'categories' => $parentCategories,
         ];
 
         if (!empty($reports)) {
