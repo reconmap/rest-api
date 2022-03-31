@@ -8,7 +8,7 @@ use Reconmap\Repositories\UserRepository;
 
 class GetUserController extends Controller
 {
-    public function __construct(private UserRepository $userRepository)
+    public function __construct(private readonly UserRepository $userRepository)
     {
     }
 

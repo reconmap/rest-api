@@ -3,7 +3,7 @@
 namespace Reconmap;
 
 use Fig\Http\Message\StatusCodeInterface;
-use League\Route\Http\Exception;
+use League\Route\Http;
 use League\Route\Strategy\JsonStrategy;
 use Monolog\Logger;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -11,26 +11,24 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Reconmap\Http\CorsMiddleware;
-use Reconmap\Services\ApplicationConfig;
+use Reconmap\Http\CorsResponseDecorator;
 
 class ApiStrategy extends JsonStrategy
 {
-    public function __construct(ResponseFactoryInterface  $responseFactory,
-                                private ApplicationConfig $config,
-                                private Logger            $logger)
+    public function __construct(ResponseFactoryInterface $responseFactory,
+                                private                  readonly CorsResponseDecorator $corsResponseDecorator,
+                                private                  readonly Logger $logger)
     {
         parent::__construct($responseFactory);
     }
 
     public function getThrowableHandler(): MiddlewareInterface
     {
-        $corsMiddleware = $this->container->get(CorsMiddleware::class);
-        return new class ($this->responseFactory->createResponse(), $corsMiddleware, $this->logger) implements MiddlewareInterface {
+        return new class ($this->responseFactory->createResponse(), $this->corsResponseDecorator, $this->logger) implements MiddlewareInterface {
 
-            public function __construct(private ResponseInterface $response,
-                                        private CorsMiddleware    $corsMiddleware,
-                                        private Logger            $logger)
+            public function __construct(private readonly ResponseInterface $response,
+                                        private readonly CorsResponseDecorator $corsResponseDecorator,
+                                        private readonly Logger $logger)
             {
             }
 
@@ -40,14 +38,13 @@ class ApiStrategy extends JsonStrategy
             ): ResponseInterface
             {
                 try {
-                    return $this->corsMiddleware->process($request, $handler);
-
+                    return $handler->handle($request);
                 } catch (\Throwable $exception) {
                     $this->logger->error($exception->getMessage());
 
                     $response = $this->response;
 
-                    if ($exception instanceof Exception) {
+                    if ($exception instanceof Http\Exception) {
                         return $exception->buildJsonResponse($response);
                     }
 
@@ -57,7 +54,9 @@ class ApiStrategy extends JsonStrategy
                     ]));
 
                     $response = $response->withAddedHeader('content-type', 'application/json');
-                    return $response->withStatus(StatusCodeInterface::STATUS_INTERNAL_SERVER_ERROR, 'Internal server error');
+                    $response = $response->withStatus(StatusCodeInterface::STATUS_INTERNAL_SERVER_ERROR, 'Internal server error');
+
+                    return $this->corsResponseDecorator->decorate($request, $response);
                 }
             }
         };

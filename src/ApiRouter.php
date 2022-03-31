@@ -27,6 +27,7 @@ use Reconmap\{Controllers\AuditLog\AuditLogRouter,
     Controllers\Vulnerabilities\VulnerabilitiesRouter,
     Http\AuthMiddleware,
     Http\CorsMiddleware,
+    Http\CorsResponseDecorator,
     Http\SecurityMiddleware,
     Services\ApplicationConfig
 };
@@ -57,29 +58,28 @@ class ApiRouter extends Router
 
     public function mapRoutes(Container $container, ApplicationConfig $applicationConfig): void
     {
-        $this->setupStrategy($container, $applicationConfig);
+        $responseFactory = new ResponseFactory;
+
+        $corsResponseDecorator = $container->get(CorsResponseDecorator::class);
+        $logger = $container->get(Logger::class);
+
+        $strategy = new ApiStrategy($responseFactory, $corsResponseDecorator, $logger);
+        $strategy->setContainer($container);
+
+        $this->setStrategy($strategy);
 
         $corsMiddleware = $container->get(CorsMiddleware::class);
+        $this->prependMiddleware($corsMiddleware);
+
         $authMiddleware = $container->get(AuthMiddleware::class);
         $securityMiddleware = $container->get(SecurityMiddleware::class);
 
-        $this->map('POST', '/users/login', LoginController::class)
-            ->middleware($corsMiddleware);
+        $this->map('POST', '/users/login', LoginController::class);
 
         $this->group('', function (RouteGroup $router): void {
             foreach (self::ROUTER_CLASSES as $mappable) {
                 (new $mappable)->mapRoutes($router);
             }
-        })->middlewares([$corsMiddleware, $securityMiddleware, $authMiddleware]);
-    }
-
-    private function setupStrategy(Container $container, ApplicationConfig $applicationConfig)
-    {
-        $responseFactory = new ResponseFactory;
-
-        $strategy = new ApiStrategy($responseFactory, $applicationConfig, $container->get(Logger::class));
-        $strategy->setContainer($container);
-
-        $this->setStrategy($strategy);
+        })->middlewares([$securityMiddleware, $authMiddleware]);
     }
 }

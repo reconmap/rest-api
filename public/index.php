@@ -5,9 +5,7 @@ $applicationDir = realpath('../');
 require $applicationDir . '/vendor/autoload.php';
 
 use Fig\Http\Message\StatusCodeInterface;
-use GuzzleHttp\Psr7\Response;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
-use League\Route\Http\Exception\NotFoundException;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Reconmap\ApiRouter;
@@ -47,15 +45,7 @@ $container = new ApplicationContainer($config, $logger);
 $router = new ApiRouter();
 $router->mapRoutes($container, $config);
 
-try {
-    $request = GuzzleHttp\Psr7\ServerRequest::fromGlobals();
-    $response = $router->dispatch($request);
-} catch (NotFoundException $e) {
-    $logger->error($e->getMessage());
-    $response = (new Response)->withStatus(StatusCodeInterface::STATUS_NOT_FOUND);
-} catch (Exception $e) {
-    $logger->error($e->getMessage());
-    $response = (new Response)->withStatus(StatusCodeInterface::STATUS_INTERNAL_SERVER_ERROR);
-}
+$request = GuzzleHttp\Psr7\ServerRequest::fromGlobals();
+$response = $router->dispatch($request);
 
 (new SapiEmitter)->emit($response);
