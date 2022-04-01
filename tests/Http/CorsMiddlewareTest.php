@@ -3,75 +3,28 @@
 namespace Reconmap\Http;
 
 use GuzzleHttp\Psr7\Response;
-use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Reconmap\Services\ApplicationConfig;
 
 class CorsMiddlewareTest extends TestCase
 {
-    public function testAllowOneOrigin()
+    public function testBasic()
     {
-        $mockLogger = $this->createMock(Logger::class);
-        $mockApplicationConfig = $this->createMock(ApplicationConfig::class);
-        $mockApplicationConfig->expects($this->once())
-            ->method('getSettings')
-            ->with('cors')
-            ->willReturn(['allowedOrigins' => ['http://some.where']]);
+        $request = $this->createMock(ServerRequestInterface::class);
+        $response = new Response();
 
-        $mockResponse = new Response();
+        $mockCorsResponseDecorator = $this->createMock(CorsResponseDecorator::class);
+        $mockCorsResponseDecorator->expects($this->once())
+            ->method('decorate')
+            ->with($request, $response);
 
-        $mockRequest = $this->createMock(ServerRequestInterface::class);
-        $mockRequest->expects($this->once())
-            ->method('hasHeader')
-            ->with('Origin')
-            ->willReturn(true);
-        $mockRequest->expects($this->once())
-            ->method('getHeaderLine')
-            ->with('Origin')
-            ->willReturn('http://some.where');
-
-        $mockHandler = $this->createMock(RequestHandlerInterface::class);
-        $mockHandler->expects($this->once())
+        $mockRequestHandlerInterface = $this->createMock(RequestHandlerInterface::class);
+        $mockRequestHandlerInterface->expects($this->once())
             ->method('handle')
-            ->with($mockRequest)
-            ->willReturn($mockResponse);
+            ->willReturn($response);
 
-        $middleware = new CorsMiddleware($mockLogger, $mockApplicationConfig);
-        $response = $middleware->process($mockRequest, $mockHandler);
-
-        $this->assertTrue($response->hasHeader('Access-Control-Allow-Origin'));
-        $this->assertEquals('http://some.where', $response->getHeaderLine('Access-Control-Allow-Origin'));
-    }
-
-    public function testAllowAnyOrigin()
-    {
-        $mockLogger = $this->createMock(Logger::class);
-        $mockApplicationConfig = $this->createMock(ApplicationConfig::class);
-        $mockApplicationConfig->expects($this->once())
-            ->method('getSettings')
-            ->with('cors')
-            ->willReturn(['allowedOrigins' => ['*']]);
-
-        $mockResponse = new Response();
-
-        $mockRequest = $this->createMock(ServerRequestInterface::class);
-        $mockRequest->expects($this->never())
-            ->method('hasHeader');
-        $mockRequest->expects($this->never())
-            ->method('getHeaderLine');
-
-        $mockHandler = $this->createMock(RequestHandlerInterface::class);
-        $mockHandler->expects($this->once())
-            ->method('handle')
-            ->with($mockRequest)
-            ->willReturn($mockResponse);
-
-        $middleware = new CorsMiddleware($mockLogger, $mockApplicationConfig);
-        $response = $middleware->process($mockRequest, $mockHandler);
-
-        $this->assertTrue($response->hasHeader('Access-Control-Allow-Origin'));
-        $this->assertEquals('*', $response->getHeaderLine('Access-Control-Allow-Origin'));
+        $middleware = new CorsMiddleware($mockCorsResponseDecorator);
+        $middleware->process($request, $mockRequestHandlerInterface);
     }
 }
