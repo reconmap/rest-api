@@ -61,6 +61,7 @@ class CreateReportController extends Controller
         $attachment->submitter_uid = $userId;
 
         $vars = $this->reportDataCollector->collectForProject($projectId);
+        \PhpOffice\PhpWord\Settings::setOutputEscapingEnabled(true);
 
         $attachmentIds = [];
 
