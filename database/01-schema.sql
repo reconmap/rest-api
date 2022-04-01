@@ -164,6 +164,8 @@ CREATE TABLE project
     archive_ts            TIMESTAMP                                NULL,
     external_id           VARCHAR(40)                              NULL,
     vulnerability_metrics ENUM ('CVSS', 'OWASP_RR')                NULL,
+    management_summary    VARCHAR(2000)                            NULL,
+    management_conclusion VARCHAR(500)                             NULL,
 
     PRIMARY KEY (id),
     UNIQUE KEY (name),
