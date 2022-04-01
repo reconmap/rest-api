@@ -176,7 +176,7 @@ class CreateReportController extends Controller
                 $template->cloneRow('vuln', count($vars['vulnerabilities']));
                 foreach ($vars['vulnerabilities'] as $index => $item) {
                     $indexPlusOne = $index + 1;
-                    $template->setValue('vuln#' . $indexPlusOne, $item['name']);
+                    $template->setValue('vuln#' . $indexPlusOne, $item['summary']);
                     $template->setValue('vulnerability.owasp_overall#' . $indexPlusOne, $item['owasp_overall']);
                     $template->setValue('vulnerability.description#' . $indexPlusOne, $item['description']);
                     $template->setValue('vulnerability.category_name#' . $indexPlusOne, $item['category_name']);
