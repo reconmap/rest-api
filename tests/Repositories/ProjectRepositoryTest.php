@@ -35,7 +35,10 @@ class ProjectRepositoryTest extends DatabaseTestCase
             'client_name' => null,
             'creator_full_name' => 'Jane Doe',
             'external_id' => null,
-            'vulnerability_metrics' => null
+            'vulnerability_metrics' => null,
+            'management_summary' => null,
+            'management_conclusion' => null
+
         ];
 
         $project1 = $this->subject->findById(1);

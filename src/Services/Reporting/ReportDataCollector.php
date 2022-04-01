@@ -56,7 +56,7 @@ class ReportDataCollector
         $vulnerabilitySearchCriteria->addPublicVisibilityCriterion();
 
         $vulnerability_sort = "FIELD(v.risk, 'critical', 'high', 'medium', 'low', 'none')";
-        if (strcmp($project['vulnerability_metrics'], "OWASP_RR") === 0) {
+        if (isset($project['vulnerability_metrics']) && (strcmp($project['vulnerability_metrics'], "OWASP_RR") === 0)) {
             $vulnerability_sort = "FIELD(v.owasp_overall, 'critical','high','medium','low','note')";
         }
         $vulnerabilities = $this->vulnerabilityRepository->search($vulnerabilitySearchCriteria, null, $vulnerability_sort);
