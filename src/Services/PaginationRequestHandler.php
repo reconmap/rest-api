@@ -9,7 +9,7 @@ class PaginationRequestHandler
     private readonly array $queryParams;
 
     public function __construct(ServerRequestInterface $request,
-                                private int            $resultsPerPage = 20)
+                                private                readonly int $resultsPerPage = 20)
     {
         $this->queryParams = $request->getQueryParams();
     }

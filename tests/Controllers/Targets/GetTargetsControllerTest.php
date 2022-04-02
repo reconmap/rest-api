@@ -4,13 +4,14 @@ namespace Reconmap\Controllers\Targets;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\Repositories\SearchCriterias\TargetSearchCriteria;
 use Reconmap\Repositories\TargetRepository;
 
 class GetTargetsControllerTest extends TestCase
 {
     public function testHappyPath()
     {
-        $mockParams = ['projectId' => 5];
+        $mockParams = ['projectId' => 5, 'page' => 1];
 
         $mockRequest = $this->createMock(ServerRequestInterface::class);
         $mockRequest->expects($this->exactly(2))
@@ -27,7 +28,12 @@ class GetTargetsControllerTest extends TestCase
             ->method('countSearch')
             ->willReturn(4);
 
-        $controller = new GetTargetsController($mockTargetRepository);
+        $mockTargetSearchCriteria = $this->createMock(TargetSearchCriteria::class);
+        $mockTargetSearchCriteria->expects($this->once())
+            ->method('addProjectCriterion')
+            ->with(5);
+
+        $controller = new GetTargetsController($mockTargetRepository, $mockTargetSearchCriteria);
         $response = $controller($mockRequest);
 
         $this->assertEquals(200, $response->getStatusCode());

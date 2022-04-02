@@ -12,7 +12,8 @@ use Reconmap\Services\PaginationRequestHandler;
 
 class GetTargetsController extends Controller
 {
-    public function __construct(private TargetRepository $repository)
+    public function __construct(private readonly TargetRepository $repository,
+                                private readonly TargetSearchCriteria $searchCriteria)
     {
     }
 
@@ -20,23 +21,26 @@ class GetTargetsController extends Controller
     {
         $params = $request->getQueryParams();
 
-        $searchCriteria = new TargetSearchCriteria();
-
         if (isset($params['projectId'])) {
-            $searchCriteria->addProjectCriterion(intval($params['projectId']));
+            $this->searchCriteria->addProjectCriterion(intval($params['projectId']));
         }
 
-        $paginator = new PaginationRequestHandler($request);
-        $targets = $this->repository->search($searchCriteria, $paginator);
-        $count = $this->repository->countSearch($searchCriteria);
+        $paginateResults = isset($params['page']);
+        $paginator = $paginateResults ? new PaginationRequestHandler($request) : null;
 
-        $pageCount = $paginator->calculatePageCount($count);
+        $targets = $this->repository->search($this->searchCriteria, $paginator);
 
         $response = new Response;
         $response->getBody()->write(json_encode($targets));
-        return $response
-            ->withHeader('Access-Control-Expose-Headers', 'X-Page-Count')
-            ->withHeader('X-Page-Count', $pageCount);
 
+        if ($paginateResults) {
+            $count = $this->repository->countSearch($this->searchCriteria);
+            $pageCount = $paginator->calculatePageCount($count);
+            $response = $response
+                ->withHeader('Access-Control-Expose-Headers', 'X-Page-Count')
+                ->withHeader('X-Page-Count', $pageCount);
+        }
+
+        return $response;
     }
 }
