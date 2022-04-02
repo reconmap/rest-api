@@ -61,6 +61,7 @@ class CreateReportController extends Controller
         $attachment->submitter_uid = $userId;
 
         $vars = $this->reportDataCollector->collectForProject($projectId);
+        \PhpOffice\PhpWord\Settings::setOutputEscapingEnabled(true);
 
         $attachmentIds = [];
 
@@ -164,9 +165,21 @@ class CreateReportController extends Controller
                     $template->setValue('vulnerability.cvss_score#' . ($index + 1), $vulnerability['cvss_score']);
                     $template->setValue('vulnerability.owasp_vector#' . ($index + 1), $vulnerability['owasp_vector']);
                     $template->setValue('vulnerability.owasp_overall#' . ($index + 1), $vulnerability['owasp_overall']);
+                    $template->setValue('vulnerability.owasp_likelihood#' . ($index + 1), $vulnerability['owasp_likehood']);
+                    $template->setValue('vulnerability.owasp_impact#' . ($index + 1), $vulnerability['owasp_impact']);
                     $template->setValue('vulnerability.severity#' . ($index + 1), $vulnerability['risk']);
                     $template->setValue('vulnerability.proof_of_concept#' . ($index + 1), $vulnerability['proof_of_concept']);
                     $template->setValue('vulnerability.remediation#' . ($index + 1), $vulnerability['remediation']);
+                    $template->setValue('vulnerability.impact#' . ($index + 1), $vulnerability['impact']);
+                    $template->setValue('vulnerability.references#' . ($index + 1), $vulnerability['external_refs']);
+                }
+                $template->cloneRow('vuln', count($vars['vulnerabilities']));
+                foreach ($vars['vulnerabilities'] as $index => $item) {
+                    $indexPlusOne = $index + 1;
+                    $template->setValue('vuln#' . $indexPlusOne, $item['summary']);
+                    $template->setValue('vulnerability.owasp_overall#' . $indexPlusOne, $item['owasp_overall']);
+                    $template->setValue('vulnerability.description#' . $indexPlusOne, $item['description']);
+                    $template->setValue('vulnerability.category_name#' . $indexPlusOne, $item['category_name']);
                 }
             } catch (\Exception $e) {
                 $msg = $e->getMessage();
@@ -187,6 +200,27 @@ class CreateReportController extends Controller
                 $this->logger->warning("Error in contacts section: [$msg]");
             }
 
+            try {
+                $template->cloneRow('category.group', count($vars['parentCategories']), true, true);
+                foreach ($vars['parentCategories'] as $index => $category) {
+                    $template->setValue('category.group#' . ($index + 1), $category['name']);
+                    $template->setValue('category.severity#' . ($index + 1), $category['owasp_overall']);
+                }
+            } catch (\Exception $e) {
+                $msg = $e->getMessage();
+                $this->logger->warning("Error in parent categories section: [$msg]");
+            }
+
+            try {
+                $template->cloneRow('category.name', count($vars['categories']), true, true);
+                foreach ($vars['categories'] as $index => $category) {
+                    $template->setValue('category.name#' . ($index + 1), $category['name']);
+                    $template->setValue('category.status#' . ($index + 1), $category['status']);
+                }
+            } catch (\Exception $e) {
+                $msg = $e->getMessage();
+                $this->logger->warning("Error in categories section: [$msg]");
+            }
 
             try {
                 $template->cloneRow('revisionHistoryDateTime', count($vars['reports']));

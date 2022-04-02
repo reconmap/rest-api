@@ -18,6 +18,7 @@ use Reconmap\Repositories\TargetRepository;
 use Reconmap\Repositories\TaskRepository;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Repositories\VaultRepository;
+use Reconmap\Repositories\VulnerabilityCategoryRepository;
 use Reconmap\Repositories\VulnerabilityRepository;
 
 class ReportDataCollector
@@ -27,6 +28,7 @@ class ReportDataCollector
         private readonly ReportRepository $reportRepository,
         private readonly ReportConfigurationRepository $reportConfigurationRepository,
         private readonly VulnerabilityRepository $vulnerabilityRepository,
+        private readonly VulnerabilityCategoryRepository $vulnerabilityCategoryRepository,
         private readonly OrganisationRepository $organisationRepository,
         private readonly UserRepository $userRepository,
         private readonly ClientRepository $clientRepository,
@@ -52,7 +54,12 @@ class ReportDataCollector
         $vulnerabilitySearchCriteria = new VulnerabilitySearchCriteria();
         $vulnerabilitySearchCriteria->addProjectCriterion($projectId);
         $vulnerabilitySearchCriteria->addPublicVisibilityCriterion();
-        $vulnerabilities = $this->vulnerabilityRepository->search($vulnerabilitySearchCriteria);
+
+        $vulnerability_sort = "FIELD(v.risk, 'critical', 'high', 'medium', 'low', 'none')";
+        if (isset($project['vulnerability_metrics']) && (strcmp($project['vulnerability_metrics'], "OWASP_RR") === 0)) {
+            $vulnerability_sort = "FIELD(v.owasp_overall, 'critical','high','medium','low','note')";
+        }
+        $vulnerabilities = $this->vulnerabilityRepository->search($vulnerabilitySearchCriteria, null, $vulnerability_sort);
 
         $reports = $this->reportRepository->findByProjectId($projectId);
 
@@ -93,6 +100,9 @@ class ReportDataCollector
             $contacts = [];
         }
 
+        $parentCategories = $this->vulnerabilityCategoryRepository->findMaxSeverityForEachParentCategory();
+        $categories = $this->vulnerabilityCategoryRepository->getStatuses();
+
         $vaultSearchCriteria = new VaultSearchCriteria();
         $vaultSearchCriteria->addReportableProjectCriterion($projectId);
         $vaultItems = $this->vaultRepository->search($vaultSearchCriteria);
@@ -112,6 +122,8 @@ class ReportDataCollector
             'findingsOverview' => $this->createFindingsOverview($vulnerabilities),
             'vault' => $vaultItems,
             'logos' => $logos,
+            'parentCategories' => $parentCategories,
+            'categories' => $categories,
         ];
 
         if (!empty($reports)) {

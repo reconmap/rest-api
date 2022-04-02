@@ -15,4 +15,6 @@ class Project
     public ?string $engagement_end_date;
     public ?string $external_id;
     public ?string $vulnerability_metrics;
+    public ?string $management_summary;
+    public ?string $management_conclusion;
 }
