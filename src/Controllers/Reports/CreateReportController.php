@@ -29,6 +29,23 @@ class CreateReportController extends Controller
     {
     }
 
+    protected function getHTMLElements($xpath, $xpathquery)
+    {
+    	$elements = $xpath->query($xpathquery);
+
+    	if (!is_null($elements)) {
+    		$resultarray=array();
+    		foreach ($elements as $element) {
+    		    $nodes = $element->childNodes;
+    		    foreach ($nodes as $node) {
+    		      $resultarray[] = $node->nodeValue;
+    		    }
+    		}
+    		return $resultarray;
+    	}
+    }
+
+
     public function __invoke(ServerRequestInterface $request): array
     {
         $params = $this->getJsonBodyDecodedAsArray($request);
@@ -79,6 +96,12 @@ class CreateReportController extends Controller
             }
             foreach (ArrayUtils::flatten($vars['org'], 'org.') as $key => $value) {
                 $template->setValue($key, $value);
+            }
+
+            $attachments = $vars['project']['attachments'];
+            $template->cloneBlock('attachments', count($attachments), true, true);
+            foreach ($attachments as $index => $attach) {
+                $template->setImageValue('attachment.image#' . ($index + 1), $attach);
             }
 
             try {
@@ -144,7 +167,7 @@ class CreateReportController extends Controller
             }
 
             $markdownParser = new GithubFlavoredMarkdownConverter();
-            $word = new PhpWord();
+            $word = new PhpWord();            
 
             try {
                 $template->cloneBlock('vulnerabilities', count($vars['vulnerabilities']), true, true);
@@ -161,6 +184,33 @@ class CreateReportController extends Controller
                         $template->setComplexBlock('vulnerability.description#' . ($index + 1), $tempTable);
                     }
 
+                    $attachments = $vulnerability['attachments'];
+                    $template->cloneBlock('vulnerability.attachments#' . ($index + 1), count($attachments), true, true);
+                    foreach ($attachments as $i => $attach) {
+                        $name = 'vulnerability.attachment.image#' . ($index + 1) . "#" . ($i + 1);
+                        $template->setImageValue($name, $attach);
+                    }
+
+                    if (!is_null($vulnerability['proof_of_concept'])) {
+                        $description = $markdownParser->convert($vulnerability['proof_of_concept']);
+                        $dom = new \DomDocument();
+                        $dom->loadHTML(strval($description));
+                        $xpath = new \DOMXpath($dom);
+
+                        // uses only code examples (``` in MD)
+                        $codeExamples = $this->getHTMLElements($xpath, '//code');
+                        $tempTable = $word->addSection()->addTable();
+
+                        $codeFontStyle = array('align' => 'center', 'name' => 'Courier', 'size' => 9);
+                        foreach ($codeExamples as $key => $example) {
+                            $tempTable->addRow()->addCell()->addText($example, $codeFontStyle, array('align' => 'left'));
+                        }
+
+                        
+
+                        $template->setComplexBlock('vulnerability.proof_of_concept#' . ($index + 1), $tempTable);
+                    }
+
                     $template->setValue('vulnerability.category_name#' . ($index + 1), $vulnerability['category_name']);
                     $template->setValue('vulnerability.cvss_score#' . ($index + 1), $vulnerability['cvss_score']);
                     $template->setValue('vulnerability.owasp_vector#' . ($index + 1), $vulnerability['owasp_vector']);
@@ -168,7 +218,6 @@ class CreateReportController extends Controller
                     $template->setValue('vulnerability.owasp_likelihood#' . ($index + 1), $vulnerability['owasp_likehood']);
                     $template->setValue('vulnerability.owasp_impact#' . ($index + 1), $vulnerability['owasp_impact']);
                     $template->setValue('vulnerability.severity#' . ($index + 1), $vulnerability['risk']);
-                    $template->setValue('vulnerability.proof_of_concept#' . ($index + 1), $vulnerability['proof_of_concept']);
                     $template->setValue('vulnerability.remediation#' . ($index + 1), $vulnerability['remediation']);
                     $template->setValue('vulnerability.impact#' . ($index + 1), $vulnerability['impact']);
                     $template->setValue('vulnerability.references#' . ($index + 1), $vulnerability['external_refs']);

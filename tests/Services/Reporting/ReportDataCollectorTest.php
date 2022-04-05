@@ -77,7 +77,9 @@ class ReportDataCollectorTest extends TestCase
         $result = $dataCollector->collectForProject(0);
 
         $expectedResult = ['configuration' => $reportConfiguration,
-            'project' => array(),
+            'project' => array(
+                'attachments' => array()
+            ),
             'org' => null,
             'date' => date('Y-m-d'),
             'reports' => array(),

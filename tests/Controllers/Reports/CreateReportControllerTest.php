@@ -70,7 +70,7 @@ class CreateReportControllerTest extends TestCase
         $controller->setLogger($this->createMock(Logger::class));
         $response = $controller($mockRequest);
 
-        $expectedAttachmentIds = [0];
+        $expectedAttachmentIds = [];
 
         $this->assertEquals($expectedAttachmentIds, $response);
     }
