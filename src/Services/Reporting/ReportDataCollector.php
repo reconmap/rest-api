@@ -60,6 +60,17 @@ class ReportDataCollector
             $vulnerability_sort = "FIELD(v.owasp_overall, 'critical','high','medium','low','note')";
         }
         $vulnerabilities = $this->vulnerabilityRepository->search($vulnerabilitySearchCriteria, null, $vulnerability_sort);
+        foreach ($vulnerabilities as $key => $vuln) {
+            $pngs = $projectAttachments = $this->attachmentRepository->findByParentId('vulnerability', $vuln['id'], 'image/png');
+            $jpegs = $projectAttachments = $this->attachmentRepository->findByParentId('vulnerability', $vuln['id'], 'image/jpeg');
+            $gifs = $projectAttachments = $this->attachmentRepository->findByParentId('vulnerability', $vuln['id'], 'image/gif');
+            $attachments = array_merge($pngs, $jpegs, $gifs);
+            $att = [];
+            foreach ($attachments as $k => $value) {
+                $att[$k] = $this->attachmentFilePathService->generateFilePath($value['file_name']);
+            }
+            $vulnerabilities[$key]['attachments'] = $att;
+        }
 
         $reports = $this->reportRepository->findByProjectId($projectId);
 
@@ -106,6 +117,16 @@ class ReportDataCollector
         $vaultSearchCriteria = new VaultSearchCriteria();
         $vaultSearchCriteria->addReportableProjectCriterion($projectId);
         $vaultItems = $this->vaultRepository->search($vaultSearchCriteria);
+
+        $pngs = $this->attachmentRepository->findByParentId('project', $projectId, 'image/png');
+        $jpegs = $this->attachmentRepository->findByParentId('project', $projectId, 'image/jpeg');
+        $gifs = $this->attachmentRepository->findByParentId('project', $projectId, 'image/gif');
+        $attachments = array_merge($pngs, $jpegs, $gifs);
+        $att = [];
+        foreach ($attachments as $k => $value) {
+            $att[$k] = $this->attachmentFilePathService->generateFilePath($value['file_name']);
+        }
+        $project['attachments'] = $att;
 
         $vars = [
             'configuration' => $configuration,

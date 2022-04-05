@@ -81,6 +81,12 @@ class CreateReportController extends Controller
                 $template->setValue($key, $value);
             }
 
+            $attachments = $vars['project']['attachments'];
+            $template->cloneBlock('attachments', count($attachments), true, true);
+            foreach ($attachments as $index => $attach) {
+                $template->setImageValue('attachment.image#' . ($index + 1), $attach);
+            }
+
             try {
                 $template->cloneRow('user.full_name', count($vars['users']), true, true);
                 foreach ($vars['users'] as $index => $user) {
@@ -144,7 +150,7 @@ class CreateReportController extends Controller
             }
 
             $markdownParser = new GithubFlavoredMarkdownConverter();
-            $word = new PhpWord();
+            $word = new PhpWord();            
 
             try {
                 $template->cloneBlock('vulnerabilities', count($vars['vulnerabilities']), true, true);
@@ -159,6 +165,13 @@ class CreateReportController extends Controller
                         Html::addHtml($cell, $description);
 
                         $template->setComplexBlock('vulnerability.description#' . ($index + 1), $tempTable);
+                    }
+
+                    $attachments = $vulnerability['attachments'];
+                    $template->cloneBlock('vulnerability.attachments#' . ($index + 1), count($attachments), true, true);
+                    foreach ($attachments as $i => $attach) {
+                        $name = 'vulnerability.attachment.image#' . ($index + 1) . "#" . ($i + 1);
+                        $template->setImageValue($name, $attach);
                     }
 
                     $template->setValue('vulnerability.category_name#' . ($index + 1), $vulnerability['category_name']);
