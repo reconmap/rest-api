@@ -14,13 +14,21 @@ use Reconmap\Services\AuditLogService;
 
 class ExportDataController extends Controller
 {
-    public function __construct(private AuditLogService $auditLogService)
+    public function __construct(private readonly AuditLogService $auditLogService)
     {
     }
 
     public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
-        $entities = explode(',', $request->getQueryParams()['entities']);
+        $entitiesParam = explode(',', $request->getQueryParams()['entities']);
+        $entities = array_filter($entitiesParam, fn($entity) => in_array($entity, array_column(Exportables::List, 'key')));
+        $invalidEntities = array_diff($entitiesParam, $entities);
+
+        if (!empty($invalidEntities)) {
+            $this->logger->warning("Trying to export invalid entities", $invalidEntities);
+
+            return $this->createBadRequestResponse();
+        }
 
         $userId = $request->getAttribute('userId');
         $this->auditAction($userId, $entities);
@@ -39,11 +47,9 @@ class ExportDataController extends Controller
 
             foreach (Exportables::List as $exportable) {
                 $exportableKey = $exportable['key'];
-                if (in_array($exportableKey, $entities)) {
-                    /** @var Exportable $exporter */
-                    $exporter = $this->container->get($exportable['className']);
-                    $data[$exportableKey] = $exporter->export();
-                }
+                /** @var Exportable $exporter */
+                $exporter = $this->container->get($exportable['className']);
+                $data[$exportableKey] = $exporter->export();
             }
 
             fwrite($outputStream, json_encode($data));

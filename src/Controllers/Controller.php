@@ -65,6 +65,11 @@ abstract class Controller implements ContainerConsumer
         return (new Response())->withStatus(StatusCodeInterface::STATUS_NO_CONTENT);
     }
 
+    protected function createBadRequestResponse(): ResponseInterface
+    {
+        return (new Response())->withStatus(StatusCodeInterface::STATUS_BAD_REQUEST);
+    }
+
     protected function createNotFoundResponse(): ResponseInterface
     {
         return (new Response())->withStatus(StatusCodeInterface::STATUS_NOT_FOUND);
