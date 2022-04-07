@@ -1,0 +1,5 @@
+ALTER TABLE command
+    MODIFY COLUMN arguments VARCHAR(2000) NULL;
+
+ALTER TABLE audit_log
+    MODIFY COLUMN user_id INT UNSIGNED NULL COMMENT 'Null is system';

@@ -2,7 +2,6 @@
 
 namespace Reconmap\Controllers\Auth;
 
-use Fig\Http\Message\StatusCodeInterface;
 use Firebase\JWT\JWT;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
@@ -18,10 +17,10 @@ use Reconmap\Services\Security\Permissions;
 class LoginController extends Controller
 {
     public function __construct(
-        private UserRepository    $userRepository,
-        private ApplicationConfig $applicationConfig,
-        private AuditLogService   $auditLogService,
-        private JwtPayloadCreator $jwtPayloadCreator)
+        private readonly UserRepository $userRepository,
+        private readonly ApplicationConfig $applicationConfig,
+        private readonly AuditLogService $auditLogService,
+        private readonly JwtPayloadCreator $jwtPayloadCreator)
     {
     }
 
@@ -33,11 +32,9 @@ class LoginController extends Controller
 
         $user = $this->userRepository->findByUsername($username);
 
-        $response = new Response;
-
         if (is_null($user) || !password_verify($password, $user['password'])) {
-            $this->audit(0, UserAuditActions::USER_LOGIN_FAILED, ['username' => $username]);
-            return $response->withStatus(StatusCodeInterface::STATUS_FORBIDDEN);
+            $this->audit(null, UserAuditActions::USER_LOGIN_FAILED, ['username' => $username]);
+            return $this->createForbiddenResponse();
         }
 
         unset($user['password']); // DO NOT leak password in the response.
@@ -56,11 +53,12 @@ class LoginController extends Controller
         $user['access_token'] = JWT::encode($jwtPayload, $jwtConfig['key'], 'HS256');
         $user['permissions'] = Permissions::ByRoles[$user['role']];
 
+        $response = new Response;
         $response->getBody()->write(json_encode($user));
         return $response->withHeader('Content-type', 'application/json');
     }
 
-    private function audit(int $userId, string $action, ?array $object = null): void
+    private function audit(?int $userId, string $action, ?array $object = null): void
     {
         $this->auditLogService->insert($userId, $action, $object);
     }

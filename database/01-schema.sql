@@ -55,7 +55,7 @@ CREATE TABLE audit_log
 (
     id         INT UNSIGNED NOT NULL AUTO_INCREMENT,
     insert_ts  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    user_id    INT UNSIGNED NOT NULL COMMENT 'User 0 is system',
+    user_id    INT UNSIGNED NULL COMMENT 'Null is system',
     user_agent VARCHAR(250) NULL,
     client_ip  INT UNSIGNED NOT NULL COMMENT 'IPv4 IP',
     action     VARCHAR(200) NOT NULL,
@@ -283,7 +283,7 @@ CREATE TABLE vulnerability
     UNIQUE KEY (project_id, target_id, summary),
     KEY (is_template),
     FOREIGN KEY (creator_uid) REFERENCES user (id) ON DELETE NO ACTION,
-    FOREIGN KEY (project_id) REFERENCES project (id) ON DELETE SET NULL,
+    CONSTRAINT vulnerability_fk_project_id FOREIGN KEY (project_id) REFERENCES project (id) ON DELETE CASCADE,
     FOREIGN KEY (target_id) REFERENCES target (id) ON DELETE SET NULL,
     FOREIGN KEY (category_id) REFERENCES vulnerability_category (id) ON DELETE SET NULL
 ) ENGINE = InnoDB;
@@ -349,7 +349,7 @@ CREATE TABLE command
     executable_type ENUM ('custom','rmap') NOT NULL DEFAULT 'custom',
     executable_path VARCHAR(255)           NULL,
     docker_image    VARCHAR(300)           NULL,
-    arguments       VARCHAR(240)           NULL,
+    arguments       VARCHAR(2000)          NULL,
     configuration   JSON                   NULL,
     output_filename VARCHAR(100)           NULL,
     more_info_url   VARCHAR(200)           NULL,

@@ -13,7 +13,7 @@ class AuditLogService
     {
     }
 
-    public function insert(int $loggedInUserId, string $action, ?array $object = null): int
+    public function insert(?int $loggedInUserId, string $action, ?array $object = null): int
     {
         $clientIp = $this->networkService->getClientIp();
         $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? null;

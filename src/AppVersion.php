@@ -4,7 +4,7 @@ namespace Reconmap;
 
 class AppVersion
 {
-    public const Current = 1_02_00;
+    public const Current = 1_03_00;
 
     /**
      * @param int $numeric
