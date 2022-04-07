@@ -20,31 +20,30 @@ use Reconmap\Utils\ArrayUtils;
 class CreateReportController extends Controller
 {
     public function __construct(
-        private AttachmentFilePath   $attachmentFilePathService,
-        private ProjectRepository    $projectRepository,
-        private ReportRepository     $reportRepository,
-        private AttachmentRepository $attachmentRepository,
-        private ReportDataCollector  $reportDataCollector
+        private readonly AttachmentFilePath $attachmentFilePathService,
+        private readonly ProjectRepository $projectRepository,
+        private readonly ReportRepository $reportRepository,
+        private readonly AttachmentRepository $attachmentRepository,
+        private readonly ReportDataCollector $reportDataCollector
     )
     {
     }
 
     protected function getHTMLElements($xpath, $xpathquery)
     {
-    	$elements = $xpath->query($xpathquery);
+        $elements = $xpath->query($xpathquery);
 
-    	if (!is_null($elements)) {
-    		$resultarray=array();
-    		foreach ($elements as $element) {
-    		    $nodes = $element->childNodes;
-    		    foreach ($nodes as $node) {
-    		      $resultarray[] = $node->nodeValue;
-    		    }
-    		}
-    		return $resultarray;
-    	}
+        if (!is_null($elements)) {
+            $resultarray = array();
+            foreach ($elements as $element) {
+                $nodes = $element->childNodes;
+                foreach ($nodes as $node) {
+                    $resultarray[] = $node->nodeValue;
+                }
+            }
+            return $resultarray;
+        }
     }
-
 
     public function __invoke(ServerRequestInterface $request): array
     {
@@ -116,20 +115,16 @@ class CreateReportController extends Controller
             }
 
             try {
-                if (isset($vars["logos"]["org_logo"]))
-                {
+                if (isset($vars["logos"]["org_logo"])) {
                     $template->setImageValue('org.logo', $vars["logos"]["org_logo"]);
                 }
-                if (isset($vars["logos"]["org_small_logo"]))
-                {
+                if (isset($vars["logos"]["org_small_logo"])) {
                     $template->setImageValue('org.small_logo', $vars["logos"]["org_small_logo"]);
                 }
-                if (isset($vars["logos"]["client_logo"]))
-                {
+                if (isset($vars["logos"]["client_logo"])) {
                     $template->setImageValue('client.logo', $vars["logos"]["client_logo"]);
                 }
-                if (isset($vars["logos"]["client_small_logo"]))
-                {
+                if (isset($vars["logos"]["client_small_logo"])) {
                     $template->setImageValue('client.small_logo', $vars["logos"]["client_small_logo"]);
                 }
             } catch (\Exception $e) {
@@ -167,7 +162,7 @@ class CreateReportController extends Controller
             }
 
             $markdownParser = new GithubFlavoredMarkdownConverter();
-            $word = new PhpWord();            
+            $word = new PhpWord();
 
             try {
                 $template->cloneBlock('vulnerabilities', count($vars['vulnerabilities']), true, true);
@@ -205,8 +200,6 @@ class CreateReportController extends Controller
                         foreach ($codeExamples as $key => $example) {
                             $tempTable->addRow()->addCell()->addText($example, $codeFontStyle, array('align' => 'left'));
                         }
-
-                        
 
                         $template->setComplexBlock('vulnerability.proof_of_concept#' . ($index + 1), $tempTable);
                     }

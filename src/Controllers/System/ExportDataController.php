@@ -43,16 +43,16 @@ class ExportDataController extends Controller
         $body = new CallbackStream(function () use ($entities) {
             $data = [];
 
-            $outputStream = fopen('php://output', 'w');
-
             foreach (Exportables::List as $exportable) {
                 $exportableKey = $exportable['key'];
-                /** @var Exportable $exporter */
-                $exporter = $this->container->get($exportable['className']);
-                $data[$exportableKey] = $exporter->export();
+                if (in_array($exportableKey, $entities)) {
+                    /** @var Exportable $exporter */
+                    $exporter = $this->container->get($exportable['className']);
+                    $data[$exportableKey] = $exporter->export();
+                }
             }
 
-            fwrite($outputStream, json_encode($data));
+            return json_encode($data);
         });
 
         $response = new Response;

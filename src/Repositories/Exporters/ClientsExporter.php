@@ -6,7 +6,7 @@ use Reconmap\Repositories\ClientRepository;
 
 class ClientsExporter implements Exportable
 {
-    public function __construct(private ClientRepository $repository)
+    public function __construct(private readonly ClientRepository $repository)
     {
     }
 
