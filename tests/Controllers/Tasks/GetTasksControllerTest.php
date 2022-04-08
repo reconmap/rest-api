@@ -13,6 +13,10 @@ class GetTasksControllerTest extends TestCase
     public function testHappyPath()
     {
         $mockRequest = $this->createMock(ServerRequestInterface::class);
+        $mockRequest->expects($this->exactly(2))
+            ->method('getAttribute')
+            ->withConsecutive(['userId'], ['role'])
+            ->willReturnOnConsecutiveCalls(9, 'superuser');
         $mockRequest->expects($this->exactly(3))
             ->method('getQueryParams')
             ->willReturn([]);

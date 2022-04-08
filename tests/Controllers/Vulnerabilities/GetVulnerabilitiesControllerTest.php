@@ -12,6 +12,10 @@ class GetVulnerabilitiesControllerTest extends TestCase
     public function testFindingVulnerabilitiesByKeywords()
     {
         $mockRequest = $this->createMock(ServerRequestInterface::class);
+        $mockRequest->expects($this->exactly(2))
+            ->method('getAttribute')
+            ->withConsecutive(['userId'], ['role'])
+            ->willReturnOnConsecutiveCalls(9, 'superuser');
         $mockRequest->expects($this->atLeastOnce())
             ->method('getQueryParams')
             ->willReturn(['keywords' => 'foo', 'page' => 5]);

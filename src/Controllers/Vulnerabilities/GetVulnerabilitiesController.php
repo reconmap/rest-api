@@ -14,8 +14,8 @@ use Reconmap\Services\QueryParams\OrderByRequestHandler;
 class GetVulnerabilitiesController extends Controller
 {
     public function __construct(
-        private VulnerabilityRepository     $repository,
-        private VulnerabilitySearchCriteria $searchCriteria,
+        private readonly VulnerabilityRepository $repository,
+        private readonly VulnerabilitySearchCriteria $searchCriteria,
     )
     {
     }
@@ -24,6 +24,14 @@ class GetVulnerabilitiesController extends Controller
     {
         $params = $request->getQueryParams();
 
+        $user = $this->getUserFromRequest($request);
+
+        if (!$user->isAdministrator()) {
+            $this->searchCriteria->addUserCriterion($user->id);
+        }
+        if ('client' === $user->role) {
+            $this->searchCriteria->addPublicVisibilityCriterion();
+        }
         if (isset($params['keywords'])) {
             $this->searchCriteria->addKeywordsCriterion($params['keywords']);
         }
@@ -48,11 +56,6 @@ class GetVulnerabilitiesController extends Controller
         }
         if (isset($params['status'])) {
             $this->searchCriteria->addStatusCriterion($params['status']);
-        }
-
-        $role = $request->getAttribute('role');
-        if ('client' === $role) {
-            $this->searchCriteria->addPublicVisibilityCriterion();
         }
 
         $orderByParser = new OrderByRequestHandler($params, 'insert_ts', validColumns: $this->repository->getSortableColumns());

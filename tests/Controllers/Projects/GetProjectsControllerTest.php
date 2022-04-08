@@ -32,7 +32,7 @@ class GetProjectsControllerTest extends TestCase
             ->with($searchCriteria)
             ->willReturn($mockProjects);
 
-        $controller = new GetProjectsController($mockRepository);
+        $controller = new GetProjectsController($mockRepository, $searchCriteria);
         $response = $controller($mockRequest);
 
         $this->assertEquals($mockProjects, $response);

@@ -10,7 +10,8 @@ use Reconmap\Services\PaginationRequestHandler;
 
 class GetProjectsController extends Controller
 {
-    public function __construct(private ProjectRepository $projectRepository)
+    public function __construct(private readonly ProjectRepository $projectRepository,
+                                private readonly ProjectSearchCriteria $projectSearchCriteria)
     {
     }
 
@@ -20,31 +21,26 @@ class GetProjectsController extends Controller
 
         $user = $this->getUserFromRequest($request);
 
-        $searchCriteria = new ProjectSearchCriteria();
         if (isset($params['keywords'])) {
-            $keywords = $params['keywords'];
-            $keywordsLike = "%$keywords%";
-
-            $searchCriteria->addCriterion('(p.name LIKE ? OR p.description LIKE ?)', [$keywordsLike, $keywordsLike]);
+            $this->projectSearchCriteria->addKeywordsCriterion($params['keywords']);
         }
         if (isset($params['clientId'])) {
-            $searchCriteria->addCriterion('p.client_id = ?', [intval($params['clientId'])]);
+            $this->projectSearchCriteria->addClientCriterion(intval($params['clientId']));
         }
         if (isset($params['status'])) {
             $archived = 'archived' === $params['status'];
-            $searchCriteria->addCriterion('p.archived = ?', [$archived]);
+            $this->projectSearchCriteria->addArchivedCriterion($archived);
         }
         if (isset($params['isTemplate'])) {
-            $searchCriteria->addTemplateCriterion(intval($params['isTemplate']));
+            $this->projectSearchCriteria->addTemplateCriterion(intval($params['isTemplate']));
         } else {
-            $searchCriteria->addIsNotTemplateCriterion();
+            $this->projectSearchCriteria->addIsNotTemplateCriterion();
         }
-
         if (!$user->isAdministrator()) {
-            $searchCriteria->addCriterion('(p.visibility = "PUBLIC" OR ? IN (SELECT user_id FROM project_user WHERE project_id = p.id))', [$user->id]);
+            $this->projectSearchCriteria->addUserCriterion($user->id);
         }
 
         $paginator = new PaginationRequestHandler($request);
-        return $this->projectRepository->search($searchCriteria, $paginator);
+        return $this->projectRepository->search($this->projectSearchCriteria, $paginator);
     }
 }

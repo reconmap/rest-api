@@ -3,16 +3,24 @@
 namespace Reconmap\Controllers\Users;
 
 use Psr\Http\Message\ServerRequestInterface;
-use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\UserRepository;
+use Reconmap\SecureController;
+use Reconmap\Services\Security\AuthorisationService;
 
-class GetUsersController extends Controller
+class GetUsersController extends SecureController
 {
-    public function __construct(private readonly UserRepository $userRepository)
+    public function __construct(AuthorisationService $authorisationService,
+                                private              readonly UserRepository $userRepository)
     {
+        parent::__construct($authorisationService);
     }
 
-    public function __invoke(ServerRequestInterface $request): array
+    protected function getPermissionRequired(): string
+    {
+        return 'users.*';
+    }
+
+    public function process(ServerRequestInterface $request): array
     {
         return $this->userRepository->findAll();
     }

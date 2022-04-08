@@ -5,6 +5,7 @@ namespace Reconmap\Controllers\Clients;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Repositories\ClientRepository;
+use Reconmap\Services\Security\AuthorisationService;
 
 class GetClientsControllerTest extends TestCase
 {
@@ -17,7 +18,12 @@ class GetClientsControllerTest extends TestCase
             ->method('findAll')
             ->willReturn([]);
 
-        $controller = new GetClientsController($mockRepository);
+        $mockAuthorisationService = $this->createMock(AuthorisationService::class);
+        $mockAuthorisationService->expects($this->once())
+            ->method('isRoleAllowed')
+            ->willReturn(true);
+
+        $controller = new GetClientsController($mockAuthorisationService, $mockRepository);
         $response = $controller($mockRequest);
 
         $this->assertEquals([], $response);

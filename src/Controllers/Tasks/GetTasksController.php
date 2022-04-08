@@ -18,15 +18,20 @@ class GetTasksController extends Controller
     public function __invoke(ServerRequestInterface $request): array
     {
         $params = $request->getQueryParams();
+
+        $user = $this->getUserFromRequest($request);
+
         $paginator = new PaginationRequestHandler($request);
 
+        if (!$user->isAdministrator()) {
+            $this->searchCriteria->addUserCriterion($user->id);
+        }
         if (isset($params['isTemplate'])) {
             $isTemplate = intval($params['isTemplate']);
             $this->searchCriteria->addTemplateCriterion($isTemplate);
         } else {
             $this->searchCriteria->addIsNotTemplateCriterion();
         }
-
         if (isset($params['keywords'])) {
             $this->searchCriteria->addKeywordsCriterion($params['keywords']);
         }
