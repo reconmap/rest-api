@@ -2,6 +2,7 @@
 
 namespace Reconmap\Controllers\Commands;
 
+use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Repositories\CommandRepository;
@@ -19,7 +20,7 @@ class GetCommandsController extends SecureController
         parent::__construct($authorisationService);
     }
 
-    public function process(ServerRequestInterface $request): array|ResponseInterface
+    public function process(ServerRequestInterface $request): ResponseInterface
     {
         $params = $request->getQueryParams();
         if (isset($params['keywords'])) {
@@ -28,6 +29,15 @@ class GetCommandsController extends SecureController
 
         $paginator = new PaginationRequestHandler($request);
 
-        return $this->repository->search($this->searchCriteria, $paginator);
+        $commands = $this->repository->search($this->searchCriteria, $paginator);
+        $count = $this->repository->count($this->searchCriteria);
+        $pageCount = $paginator->calculatePageCount($count);
+
+        $response = new Response;
+        $response->getBody()->write(json_encode($commands));
+        return $response
+            ->withHeader('Access-Control-Expose-Headers', 'X-Total-Count,X-Page-Count')
+            ->withHeader('X-Total-Count', $count)
+            ->withHeader('X-Page-Count', $pageCount);
     }
 }

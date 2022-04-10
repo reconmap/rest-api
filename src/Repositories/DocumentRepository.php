@@ -62,7 +62,7 @@ class DocumentRepository extends MysqlRepository implements Deletable
         return $this->executeInsertStatement($stmt);
     }
 
-    private function getBaseSelectQueryBuilder(): SelectQueryBuilder
+    protected function getBaseSelectQueryBuilder(): SelectQueryBuilder
     {
         $queryBuilder = new SelectQueryBuilder('document AS n');
         $queryBuilder->addJoin('INNER JOIN user u ON (u.id = n.user_id)');

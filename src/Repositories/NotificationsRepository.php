@@ -36,7 +36,7 @@ class NotificationsRepository extends MysqlRepository implements Updateable, Del
         return $this->deleteByTableId('notification', $id);
     }
 
-    private function getBaseSelectQueryBuilder(): SelectQueryBuilder
+    protected function getBaseSelectQueryBuilder(): SelectQueryBuilder
     {
         $queryBuilder = new SelectQueryBuilder('notification n');
         $queryBuilder->setOrderBy('n.insert_ts DESC');

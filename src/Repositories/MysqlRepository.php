@@ -14,13 +14,13 @@ abstract class MysqlRepository
 {
     protected ?Logger $logger = null;
 
+    public function __construct(protected readonly \mysqli $db)
+    {
+    }
+
     public function setLogger(Logger $logger): void
     {
         $this->logger = $logger;
-    }
-
-    public function __construct(protected readonly \mysqli $db)
-    {
     }
 
     public function executeInsertStatement(\mysqli_stmt $stmt): int
@@ -122,5 +122,16 @@ abstract class MysqlRepository
         $queryBuilder->setColumns('COUNT(*) AS total');
         $results = $this->searchAll($queryBuilder, $searchCriteria);
         return $results[0]['total'];
+    }
+
+    protected function getBaseSelectQueryBuilder(): SelectQueryBuilder
+    {
+        throw new \BadMethodCallException("Unimplemented");
+    }
+
+    public function count(SearchCriteria $searchCriteria): int
+    {
+        $queryBuilder = $this->getBaseSelectQueryBuilder();
+        return $this->countSearchResults($queryBuilder, $searchCriteria);
     }
 }

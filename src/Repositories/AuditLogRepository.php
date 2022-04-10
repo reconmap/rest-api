@@ -68,7 +68,7 @@ class AuditLogRepository extends MysqlRepository
         return $this->executeInsertStatement($stmt);
     }
 
-    private function getBaseSelectQueryBuilder(): SelectQueryBuilder
+    protected function getBaseSelectQueryBuilder(): SelectQueryBuilder
     {
         $queryBuilder = new SelectQueryBuilder('audit_log al');
         $queryBuilder->setColumns('al.id, al.insert_ts, al.user_agent, INET_NTOA(al.client_ip) AS client_ip, al.action, al.object,

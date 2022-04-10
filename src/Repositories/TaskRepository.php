@@ -66,7 +66,7 @@ class TaskRepository extends MysqlRepository implements Findable
         return $this->searchAll($queryBuilder, $searchCriteria, $paginator);
     }
 
-    private function getBaseSelectQueryBuilder(): SelectQueryBuilder
+    protected function getBaseSelectQueryBuilder(): SelectQueryBuilder
     {
         $queryBuilder = new SelectQueryBuilder('task t');
         $queryBuilder->setColumns('

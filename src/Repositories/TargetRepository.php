@@ -89,7 +89,7 @@ class TargetRepository extends MysqlRepository implements Findable
         return $this->executeInsertStatement($stmt);
     }
 
-    private function getBaseSelectQueryBuilder(): SelectQueryBuilder
+    protected function getBaseSelectQueryBuilder(): SelectQueryBuilder
     {
         $queryBuilder = new SelectQueryBuilder('target t');
         $queryBuilder->addJoin('LEFT JOIN target parent_t ON (parent_t.id = t.parent_id)');

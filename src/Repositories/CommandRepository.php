@@ -62,7 +62,7 @@ SQL;
         return $this->searchAll($queryBuilder, $searchCriteria, $paginator);
     }
 
-    private function getBaseSelectQueryBuilder(): SelectQueryBuilder
+    protected function getBaseSelectQueryBuilder(): SelectQueryBuilder
     {
         return new SelectQueryBuilder('command c');
     }

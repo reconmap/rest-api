@@ -46,7 +46,7 @@ class UserRepository extends MysqlRepository
         return $user;
     }
 
-    private function getBaseSelectQueryBuilder(): SelectQueryBuilder
+    protected function getBaseSelectQueryBuilder(): SelectQueryBuilder
     {
         $queryBuilder = new SelectQueryBuilder('user u');
         $queryBuilder->setColumns('u.id, u.insert_ts, u.update_ts, u.active, u.full_name, u.short_bio, u.username, u.email, u.role, u.timezone, u.preferences, u.mfa_enabled');
