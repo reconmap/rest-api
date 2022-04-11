@@ -10,7 +10,7 @@ use Reconmap\Services\PaginationRequestHandler;
 
 class GetTasksControllerTest extends TestCase
 {
-    public function testHappyPath()
+    public function testGetRegularTasks()
     {
         $mockRequest = $this->createMock(ServerRequestInterface::class);
         $mockRequest->expects($this->exactly(2))
@@ -23,7 +23,37 @@ class GetTasksControllerTest extends TestCase
 
         $mockSearchCriteria = $this->createMock(TaskSearchCriteria::class);
         $mockSearchCriteria->expects($this->once())
-            ->method('addIsNotTemplateCriterion');
+            ->method('addProjectIsNotTemplateCriterion');
+
+        $paginator = new PaginationRequestHandler($mockRequest);
+
+        $mockRepository = $this->createMock(TaskRepository::class);
+        $mockRepository->expects($this->once())
+            ->method('search')
+            ->with($mockSearchCriteria, $paginator)
+            ->willReturn([]);
+
+        $controller = new GetTasksController($mockRepository, $mockSearchCriteria);
+        $response = $controller($mockRequest);
+
+        $this->assertEquals([], $response);
+    }
+
+    public function testGetTemplateProjectTasks()
+    {
+        $mockRequest = $this->createMock(ServerRequestInterface::class);
+        $mockRequest->expects($this->exactly(2))
+            ->method('getAttribute')
+            ->withConsecutive(['userId'], ['role'])
+            ->willReturnOnConsecutiveCalls(9, 'superuser');
+        $mockRequest->expects($this->exactly(3))
+            ->method('getQueryParams')
+            ->willReturn(['isTemplate' => 'true']);
+
+        $mockSearchCriteria = $this->createMock(TaskSearchCriteria::class);
+        $mockSearchCriteria->expects($this->once())
+            ->method('addProjectTemplateCriterion')
+            ->with(true);
 
         $paginator = new PaginationRequestHandler($mockRequest);
 

@@ -9,7 +9,7 @@ class TaskSearchCriteriaTest extends TestCase
     public function testTemplate()
     {
         $subject = new TaskSearchCriteria();
-        $subject->addIsNotTemplateCriterion();
+        $subject->addProjectIsNotTemplateCriterion();
         $this->assertEquals(['p.is_template = ?'], $subject->getCriteria());
     }
 }

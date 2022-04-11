@@ -32,7 +32,8 @@ class GetProjectsController extends Controller
             $this->projectSearchCriteria->addArchivedCriterion($archived);
         }
         if (isset($params['isTemplate'])) {
-            $this->projectSearchCriteria->addTemplateCriterion(intval($params['isTemplate']));
+            $isTemplate = filter_var($params['isTemplate'], FILTER_VALIDATE_BOOL);
+            $this->projectSearchCriteria->addTemplateCriterion($isTemplate);
         } else {
             $this->projectSearchCriteria->addIsNotTemplateCriterion();
         }

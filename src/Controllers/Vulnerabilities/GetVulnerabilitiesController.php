@@ -48,7 +48,7 @@ class GetVulnerabilitiesController extends Controller
             $this->searchCriteria->addTargetCriterion($targetId);
         }
         if (isset($params['isTemplate'])) {
-            $isTemplate = intval($params['isTemplate']);
+            $isTemplate = filter_var($params['isTemplate'], FILTER_VALIDATE_BOOL);
             $this->searchCriteria->addTemplateCriterion($isTemplate);
         }
         if (isset($params['risk'])) {

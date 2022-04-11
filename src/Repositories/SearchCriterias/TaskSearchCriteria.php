@@ -16,14 +16,14 @@ class TaskSearchCriteria extends SearchCriteria
         $this->addCriterion('t.status = ?', [$status]);
     }
 
-    public function addTemplateCriterion(int $isTemplate)
+    public function addProjectTemplateCriterion(bool $isTemplate)
     {
         $this->addCriterion('p.is_template = ?', [$isTemplate]);
     }
 
-    public function addIsNotTemplateCriterion()
+    public function addProjectIsNotTemplateCriterion()
     {
-        $this->addTemplateCriterion(0);
+        $this->addProjectTemplateCriterion(false);
     }
 
     public function addAssigneeCriterion(int $assigneeUid)

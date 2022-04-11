@@ -6,7 +6,7 @@ use Ponup\SqlBuilders\SearchCriteria;
 
 class ProjectSearchCriteria extends SearchCriteria
 {
-    public function addTemplateCriterion(int $isTemplate)
+    public function addTemplateCriterion(bool $isTemplate)
     {
         $this->addCriterion('p.is_template = ?', [$isTemplate]);
     }
@@ -35,11 +35,11 @@ class ProjectSearchCriteria extends SearchCriteria
 
     public function addIsNotTemplateCriterion()
     {
-        $this->addTemplateCriterion(0);
+        $this->addTemplateCriterion(false);
     }
 
     public function addIsTemplateCriterion()
     {
-        $this->addTemplateCriterion(1);
+        $this->addTemplateCriterion(true);
     }
 }

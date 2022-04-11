@@ -27,10 +27,10 @@ class GetTasksController extends Controller
             $this->searchCriteria->addUserCriterion($user->id);
         }
         if (isset($params['isTemplate'])) {
-            $isTemplate = intval($params['isTemplate']);
-            $this->searchCriteria->addTemplateCriterion($isTemplate);
+            $isTemplate = filter_var($params['isTemplate'], FILTER_VALIDATE_BOOL);
+            $this->searchCriteria->addProjectTemplateCriterion($isTemplate);
         } else {
-            $this->searchCriteria->addIsNotTemplateCriterion();
+            $this->searchCriteria->addProjectIsNotTemplateCriterion();
         }
         if (isset($params['keywords'])) {
             $this->searchCriteria->addKeywordsCriterion($params['keywords']);
