@@ -3,8 +3,8 @@
 namespace Reconmap\Controllers\Users;
 
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\Controllers\SecureController;
 use Reconmap\Repositories\UserRepository;
-use Reconmap\SecureController;
 use Reconmap\Services\Security\AuthorisationService;
 
 class GetUsersController extends SecureController

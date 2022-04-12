@@ -5,8 +5,8 @@ namespace Reconmap\Controllers\AuditLog;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\Controllers\SecureController;
 use Reconmap\Repositories\AuditLogRepository;
-use Reconmap\SecureController;
 use Reconmap\Services\PaginationRequestHandler;
 use Reconmap\Services\Security\AuthorisationService;
 

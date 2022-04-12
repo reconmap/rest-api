@@ -3,8 +3,8 @@
 namespace Reconmap\Controllers\Clients;
 
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\Controllers\SecureController;
 use Reconmap\Repositories\ClientRepository;
-use Reconmap\SecureController;
 use Reconmap\Services\Security\AuthorisationService;
 
 class GetClientsController extends SecureController

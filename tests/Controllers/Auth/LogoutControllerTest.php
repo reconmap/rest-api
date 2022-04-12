@@ -2,9 +2,10 @@
 
 namespace Reconmap\Controllers\Auth;
 
+use Fig\Http\Message\StatusCodeInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
-use Reconmap\Models\AuditActions\AuditLogAction;
+use Reconmap\Models\AuditActions\UserAuditActions;
 use Reconmap\Services\AuditLogService;
 
 class LogoutControllerTest extends TestCase
@@ -12,19 +13,19 @@ class LogoutControllerTest extends TestCase
     public function testLogout()
     {
         $mockRequest = $this->createMock(ServerRequestInterface::class);
-        $mockRequest->expects($this->once())
+        $mockRequest->expects($this->exactly(2))
             ->method('getAttribute')
-            ->with('userId')
-            ->willReturn(509);
+            ->withConsecutive(['userId'], ['role'])
+            ->willReturnOnConsecutiveCalls(509, 'client');
 
         $mockAuditLogService = $this->createMock(AuditLogService::class);
         $mockAuditLogService->expects($this->once())
             ->method('insert')
-            ->with(509, AuditLogAction::USER_LOGGED_OUT);
+            ->with(509, UserAuditActions::USER_LOGGED_OUT);
 
         $controller = new LogoutController($mockAuditLogService);
         $response = $controller($mockRequest);
 
-        $this->assertTrue($response['success']);
+        $this->assertEquals(StatusCodeInterface::STATUS_OK, $response->getStatusCode());
     }
 }

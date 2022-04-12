@@ -7,7 +7,7 @@ use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Stream;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Reconmap\SecureController;
+use Reconmap\Controllers\SecureController;
 use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\Security\AuthorisationService;
 

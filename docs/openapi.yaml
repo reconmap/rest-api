@@ -3,11 +3,11 @@ openapi: 3.0.3
 info:
   title: Reconmap API
   description: Reconmap API documentation
-  version: 0.9.5
+  version: 1.2.0
 
 servers:
   - url: 'http://localhost:5510'
-  - url: 'https://api.reconmap.org'
+  - url: 'https://demo.api.reconmap.com'
 
 security:
   - BearerAuth: [ ]
@@ -121,10 +121,10 @@ paths:
     post:
       tags:
         - Auth
-      description: Close user session
+      description: Terminate user session
       responses:
         '200':
-          description: OK
+          description: User session terminated
 
   '/auth/mfa-setup':
     get:
@@ -556,18 +556,18 @@ paths:
                     type: object
                   logsDirectory:
                     type: string
-              examples:
-                default:
-                  attachmentsDirectory:
-                    location: '/var/www/webapp/data/attachments/'
-                    exists: true
-                    writeable: true
-                  logsDirectory:
-                    location: '/var/www/webapp/logs'
-                    exists: true
-                    writeable: true
-                  dbConnection:
-                    ping: true
+                example:
+                  default:
+                    attachmentsDirectory:
+                      location: '/var/www/webapp/data/attachments/'
+                      exists: true
+                      writeable: true
+                    logsDirectory:
+                      location: '/var/www/webapp/logs'
+                      exists: true
+                      writeable: true
+                    dbConnection:
+                      ping: true
 
   /system/logs:
     get:

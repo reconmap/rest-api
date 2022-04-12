@@ -5,9 +5,9 @@ namespace Reconmap\Controllers\Commands;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\Controllers\SecureController;
 use Reconmap\Repositories\CommandRepository;
 use Reconmap\Repositories\SearchCriterias\CommandSearchCriteria;
-use Reconmap\SecureController;
 use Reconmap\Services\PaginationRequestHandler;
 use Reconmap\Services\Security\AuthorisationService;
 

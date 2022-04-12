@@ -1,10 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace Reconmap;
+namespace Reconmap\Controllers;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Reconmap\Controllers\Controller;
 use Reconmap\Services\Security\AuthorisationService;
 
 abstract class SecureController extends Controller

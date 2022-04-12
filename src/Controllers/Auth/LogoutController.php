@@ -2,23 +2,24 @@
 
 namespace Reconmap\Controllers\Auth;
 
-use Psr\Http\Message\ServerRequestInterface;
-use Reconmap\Controllers\Controller;
-use Reconmap\Models\AuditActions\AuditLogAction;
+use Psr\Http\Message\ResponseInterface;
+use Reconmap\Controllers\ControllerV2;
+use Reconmap\Http\ApplicationRequest;
+use Reconmap\Models\AuditActions\UserAuditActions;
 use Reconmap\Services\AuditLogService;
 
-class LogoutController extends Controller
+class LogoutController extends ControllerV2
 {
-    public function __construct(private AuditLogService $auditLogService)
+    public function __construct(private readonly AuditLogService $auditLogService)
     {
     }
 
-    public function __invoke(ServerRequestInterface $request): array
+    protected function process(ApplicationRequest $request): ResponseInterface
     {
-        $userId = $request->getAttribute('userId');
+        $user = $request->getUser();
 
-        $this->auditLogService->insert($userId, AuditLogAction::USER_LOGGED_OUT);
+        $this->auditLogService->insert($user->id, UserAuditActions::USER_LOGGED_OUT);
 
-        return ['success' => true];
+        return $this->createOkResponse();
     }
 }
