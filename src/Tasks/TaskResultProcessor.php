@@ -19,13 +19,13 @@ use Reconmap\Services\RedisServer;
 class TaskResultProcessor implements ItemProcessor
 {
     public function __construct(
-        private Logger                  $logger,
-        private RedisServer             $redis,
-        private VulnerabilityRepository $vulnerabilityRepository,
-        private NotificationsRepository $notificationsRepository,
-        private TaskRepository          $taskRepository,
-        private TargetRepository        $targetRepository,
-        private ProcessorFactory        $processorFactory)
+        private readonly Logger $logger,
+        private readonly RedisServer $redis,
+        private readonly VulnerabilityRepository $vulnerabilityRepository,
+        private readonly NotificationsRepository $notificationsRepository,
+        private readonly TaskRepository $taskRepository,
+        private readonly TargetRepository $targetRepository,
+        private readonly ProcessorFactory $processorFactory)
     {
     }
 
@@ -62,9 +62,11 @@ class TaskResultProcessor implements ItemProcessor
                 $numHosts = count($hosts);
                 $this->logger->debug("Number of hosts in uploaded file: " . $numHosts);
 
-                $notification = new Notification($item->userId, "New assets found", "A total of '$numHosts' new assets have been found by the '$outputParserName' command");
-                $this->notificationsRepository->insert($notification);
-                $this->redis->lPush("notifications:queue", json_encode(['type' => 'message']));
+                if ($numHosts > 0) {
+                    $notification = new Notification($item->userId, "New assets found", "A total of '$numHosts' new assets have been found by the '$outputParserName' command");
+                    $this->notificationsRepository->insert($notification);
+                    $this->redis->lPush("notifications:queue", json_encode(['type' => 'message']));
+                }
             }
 
             $vulnerabilities = $result->getVulnerabilities();
@@ -106,9 +108,11 @@ class TaskResultProcessor implements ItemProcessor
                 }
             }
 
-            $notification = new Notification($item->userId, "New vulnerabilities found", "A total of '$numVulnerabilities' new vulnerabilities have been found by the '$outputParserName' command");
-            $this->notificationsRepository->insert($notification);
-            $this->redis->lPush("notifications:queue", json_encode(['type' => 'message']));
+            if ($numVulnerabilities > 0) {
+                $notification = new Notification($item->userId, "New vulnerabilities found", "A total of '$numVulnerabilities' new vulnerabilities have been found by the '$outputParserName' command");
+                $this->notificationsRepository->insert($notification);
+                $this->redis->lPush("notifications:queue", json_encode(['type' => 'message']));
+            }
         } else {
             $this->logger->warning("Task type has no processor: ${task['command_short_name']}");
         }
