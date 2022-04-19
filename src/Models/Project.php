@@ -4,6 +4,7 @@ namespace Reconmap\Models;
 
 class Project
 {
+    public ?int $id = null;
     public int $creator_uid;
     public ?int $client_id;
     public string $name;

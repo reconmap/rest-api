@@ -2,6 +2,7 @@
 
 namespace Reconmap\Controllers\Projects;
 
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\Project;
@@ -9,17 +10,17 @@ use Reconmap\Repositories\ProjectRepository;
 
 class CreateProjectController extends Controller
 {
-    public function __construct(private ProjectRepository $projectRepository)
+    public function __construct(private readonly ProjectRepository $projectRepository)
     {
     }
 
-    public function __invoke(ServerRequestInterface $request): array
+    public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
         $project = $this->getJsonBodyDecodedAsClass($request, new Project());
         $project->creator_uid = $request->getAttribute('userId');
 
-        $this->projectRepository->insert($project);
+        $project->id = $this->projectRepository->insert($project);
 
-        return ['success' => true];
+        return $this->createStatusCreatedResponse($project);
     }
 }

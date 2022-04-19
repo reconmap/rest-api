@@ -152,7 +152,7 @@ CREATE TABLE project
     insert_ts             TIMESTAMP                                NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_ts             TIMESTAMP                                NULL ON UPDATE CURRENT_TIMESTAMP,
     creator_uid           INT UNSIGNED                             NOT NULL,
-    client_id             INT UNSIGNED                             NULL COMMENT 'Null when project is template' REFERENCES client,
+    client_id             INT UNSIGNED                             NULL COMMENT 'Null when project is template',
     is_template           BOOLEAN                                  NOT NULL DEFAULT FALSE,
     visibility            ENUM ('public', 'private')               NOT NULL DEFAULT 'public',
     name                  VARCHAR(200)                             NOT NULL,
@@ -170,7 +170,8 @@ CREATE TABLE project
     PRIMARY KEY (id),
     UNIQUE KEY (name),
     KEY (is_template),
-    FOREIGN KEY (creator_uid) REFERENCES user (id) ON DELETE NO ACTION
+    FOREIGN KEY (creator_uid) REFERENCES user (id) ON DELETE NO ACTION,
+    CONSTRAINT project_fk_client_id FOREIGN KEY (client_id) REFERENCES client (id) ON DELETE SET NULL
 ) ENGINE = InnoDB;
 
 DROP VIEW IF EXISTS project_template;

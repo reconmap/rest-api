@@ -1,9 +1,9 @@
-openapi: 3.0.3
+openapi: 3.1.0
 
 info:
   title: Reconmap API
   description: Reconmap API documentation
-  version: 1.2.0
+  version: 1.4.0
 
 servers:
   - url: 'http://localhost:5510'
@@ -28,7 +28,7 @@ paths:
               $ref: '#/components/schemas/Attachment'
       responses:
         '200':
-          description: Attachment succesfully created response
+          description: Attachment successfully created response
           content:
             application/json:
               schema:
@@ -51,7 +51,7 @@ paths:
         - BearerAuth: [ ]
       responses:
         '200':
-          description: Succesfully retrieved
+          description: Successfully retrieved
     delete:
       tags:
         - Attachments
@@ -61,7 +61,7 @@ paths:
         - BearerAuth: [ ]
       responses:
         '200':
-          description: Succesfully deleted
+          description: Successfully deleted
 
   /auditlog:
     get:
@@ -157,7 +157,7 @@ paths:
               $ref: './schemas/Client.yaml'
       responses:
         '201':
-          description: Client succesfully created response
+          description: Client successfully created response
           content:
             application/json:
               schema:
@@ -186,7 +186,7 @@ paths:
               $ref: './schemas/Client.yaml'
       responses:
         '200':
-          description: Client succesfully created response
+          description: Client successfully created response
           content:
             application/json:
               schema:
@@ -200,7 +200,7 @@ paths:
         - BearerAuth: [ ]
       responses:
         '200':
-          description: Succesfully retrieved
+          description: Successfully retrieved
           content:
             application/json:
               schema:
@@ -214,7 +214,7 @@ paths:
         - BearerAuth: [ ]
       responses:
         '200':
-          description: Succesfully deleted
+          description: Successfully deleted
 
   /commands:
     post:
@@ -230,7 +230,7 @@ paths:
               $ref: '#/components/schemas/Command'
       responses:
         '200':
-          description: Command succesfully created response
+          description: Command successfully created response
           content:
             application/json:
               schema:
@@ -279,7 +279,7 @@ paths:
               $ref: '#/components/schemas/Command'
       responses:
         '200':
-          description: Command succesfully created response
+          description: Command successfully created response
           content:
             application/json:
               schema:
@@ -293,7 +293,7 @@ paths:
         - BearerAuth: [ ]
       responses:
         '200':
-          description: Succesfully retrieved
+          description: Successfully retrieved
     delete:
       tags:
         - Commands
@@ -303,7 +303,7 @@ paths:
         - BearerAuth: [ ]
       responses:
         '200':
-          description: Succesfully deleted
+          description: Successfully deleted
 
   /documents:
     get:
@@ -382,7 +382,7 @@ paths:
               $ref: '#/components/schemas/Organisation'
       responses:
         '200':
-          description: Organisation succesfully created response
+          description: Organisation successfully created response
           content:
             application/json:
               schema:
@@ -409,6 +409,30 @@ paths:
       responses:
         '200':
           description: OK
+    post:
+      tags:
+        - Targets
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Project'
+      responses:
+        '201':
+          description: Project successfully created response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                  password:
+                    type: string
+
 
   '/projects/{id}':
     get:
@@ -420,7 +444,7 @@ paths:
         - BearerAuth: [ ]
       responses:
         '200':
-          description: Succesfully retrieved
+          description: Successfully retrieved
           content:
             application/json:
               schema:
@@ -434,7 +458,7 @@ paths:
         - BearerAuth: [ ]
       responses:
         '200':
-          description: Succesfully deleted
+          description: Successfully deleted
 
   '/projects/{id}/tasks':
     get:
@@ -447,7 +471,7 @@ paths:
         - BearerAuth: [ ]
       responses:
         '200':
-          description: Succesfully retrieved
+          description: Successfully retrieved
           content:
             application/json:
               schema:
@@ -556,7 +580,7 @@ paths:
                     type: object
                   logsDirectory:
                     type: string
-                example:
+                examples:
                   default:
                     attachmentsDirectory:
                       location: '/var/www/webapp/data/attachments/'
@@ -638,7 +662,7 @@ paths:
               $ref: '#/components/schemas/Target'
       responses:
         '201':
-          description: Target succesfully created response
+          description: Target successfully created response
           content:
             application/json:
               schema:
@@ -658,7 +682,7 @@ paths:
         - BearerAuth: [ ]
       responses:
         '200':
-          description: Succesfully retrieved
+          description: Successfully retrieved
     delete:
       tags:
         - Targets
@@ -668,7 +692,7 @@ paths:
         - BearerAuth: [ ]
       responses:
         '200':
-          description: Succesfully deleted
+          description: Successfully deleted
 
   /tasks:
     post:
@@ -701,7 +725,7 @@ paths:
         - BearerAuth: [ ]
       responses:
         '200':
-          description: Succesfully retrieved
+          description: Successfully retrieved
     patch:
       tags:
         - Tasks
@@ -717,7 +741,7 @@ paths:
         - BearerAuth: [ ]
       responses:
         '200':
-          description: Succesfully deleted
+          description: Successfully deleted
 
   /users:
     get:
@@ -756,7 +780,7 @@ paths:
               $ref: '#/components/schemas/User'
       responses:
         '200':
-          description: User succesfully created response
+          description: User successfully created response
           content:
             application/json:
               schema:
@@ -803,7 +827,7 @@ paths:
         - BearerAuth: [ ]
       responses:
         '200':
-          description: Succesfully deleted
+          description: Successfully deleted
 
   '/users/{id}/activity':
     get:
@@ -848,7 +872,7 @@ paths:
               $ref: './schemas/Vulnerability.yaml'
       responses:
         '201':
-          description: Vulnerability succesfully created response
+          description: Vulnerability successfully created response
           content:
             application/json:
               schema:
@@ -864,7 +888,7 @@ paths:
         - BearerAuth: [ ]
       responses:
         '200':
-          description: Succesfully retrieved
+          description: Successfully retrieved
     put:
       tags:
         - Vulnerabilities
@@ -890,7 +914,7 @@ paths:
         - BearerAuth: [ ]
       responses:
         '200':
-          description: Succesfully deleted
+          description: Successfully deleted
 
   /vulnerabilities/categories:
     get:
@@ -912,7 +936,7 @@ paths:
               $ref: './schemas/VulnerabilityCategory.yaml'
       responses:
         '201':
-          description: Vulnerability succesfully created response
+          description: Vulnerability successfully created response
           content:
             application/json:
               schema:
@@ -928,7 +952,7 @@ paths:
         - BearerAuth: [ ]
       responses:
         '200':
-          description: Succesfully deleted
+          description: Successfully deleted
 
   /vulnerabilities/stats:
     get:
