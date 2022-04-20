@@ -2,6 +2,8 @@
 
 namespace Reconmap\Controllers\Projects;
 
+use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\ProjectRepository;
@@ -15,7 +17,7 @@ class GetProjectsController extends Controller
     {
     }
 
-    public function __invoke(ServerRequestInterface $request): array
+    public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
         $params = $request->getQueryParams();
 
@@ -42,6 +44,15 @@ class GetProjectsController extends Controller
         }
 
         $paginator = new PaginationRequestHandler($request);
-        return $this->projectRepository->search($this->projectSearchCriteria, $paginator);
+        $projects = $this->projectRepository->search($this->projectSearchCriteria, $paginator);
+        $count = $this->projectRepository->count($this->projectSearchCriteria);
+        $pageCount = $paginator->calculatePageCount($count);
+
+        $response = new Response;
+        $response->getBody()->write(json_encode($projects));
+        return $response
+            ->withHeader('Access-Control-Expose-Headers', 'X-Total-Count,X-Page-Count')
+            ->withHeader('X-Total-Count', $count)
+            ->withHeader('X-Page-Count', $pageCount);
     }
 }

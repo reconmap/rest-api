@@ -35,7 +35,7 @@ class GetProjectsControllerTest extends TestCase
         $controller = new GetProjectsController($mockRepository, $searchCriteria);
         $response = $controller($mockRequest);
 
-        $this->assertEquals($mockProjects, $response);
+        $this->assertEquals(json_encode($mockProjects), (string)$response->getBody());
     }
 
     public function testGetProjectTemplates()
@@ -64,6 +64,6 @@ class GetProjectsControllerTest extends TestCase
         $controller = new GetProjectsController($mockRepository, $searchCriteria);
         $response = $controller($mockRequest);
 
-        $this->assertEquals($mockProjects, $response);
+        $this->assertEquals(json_encode($mockProjects), (string)$response->getBody());
     }
 }
