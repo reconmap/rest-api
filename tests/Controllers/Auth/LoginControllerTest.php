@@ -36,8 +36,8 @@ class LoginControllerTest extends TestCase
 
         $mockServerRequestInterface = $this->createMock(ServerRequestInterface::class);
         $mockServerRequestInterface->expects($this->once())
-            ->method('getParsedBody')
-            ->willReturn(['username' => 'me', 'password' => 'su123']);
+            ->method('getBody')
+            ->willReturn(json_encode(['username' => 'me', 'password' => 'su123']));
 
         $controller = new LoginController($mockUserRepository, $mockApplicationConfig, $mockAuditLogService, $mockJwtPayloadCreator);
         $response = $controller($mockServerRequestInterface);

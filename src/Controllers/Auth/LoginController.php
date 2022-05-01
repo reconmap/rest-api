@@ -26,7 +26,7 @@ class LoginController extends Controller
 
     public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
-        $json = $request->getParsedBody();
+        $json = $this->getJsonBodyDecodedAsArray($request);
         $username = $json['username'];
         $password = $json['password'];
 

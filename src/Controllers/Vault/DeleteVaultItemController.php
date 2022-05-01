@@ -2,13 +2,11 @@
 
 namespace Reconmap\Controllers\Vault;
 
-use Reconmap\Controllers\Controller;
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditActions\VaultAuditActions;
 use Reconmap\Repositories\VaultRepository;
 use Reconmap\Services\AuditLogService;
-use Reconmap\Services\ActivityPublisherService;
-use Reconmap\Services\Security\AuthorisationService;
 
 class DeleteVaultItemController extends Controller
 {
