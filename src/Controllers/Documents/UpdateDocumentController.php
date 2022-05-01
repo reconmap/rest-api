@@ -4,7 +4,7 @@ namespace Reconmap\Controllers\Documents;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Models\AuditActions\AuditLogAction;
+use Reconmap\Models\AuditActions\DocumentAuditActions;
 use Reconmap\Repositories\DocumentRepository;
 use Reconmap\Services\ActivityPublisherService;
 
@@ -40,6 +40,6 @@ class UpdateDocumentController extends Controller
 
     private function auditAction(int $loggedInUserId, int $commandId): void
     {
-        $this->activityPublisherService->publish($loggedInUserId, AuditLogAction::COMMAND_UPDATED, ['type' => 'document', 'id' => $commandId]);
+        $this->activityPublisherService->publish($loggedInUserId, DocumentAuditActions::MODIFIED, ['type' => 'document', 'id' => $commandId]);
     }
 }

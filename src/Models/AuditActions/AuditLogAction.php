@@ -14,8 +14,6 @@ class AuditLogAction implements
     VulnerabilityLogActions,
     VulnerabilityCategoryLogActions
 {
-    public const COMMAND_UPDATED = 'Updated command';
-
     public const DATA_IMPORTED = 'Imported data';
     public const DATA_EXPORTED = 'Exported data';
 

@@ -9,7 +9,7 @@ use Reconmap\Repositories\DocumentRepository;
 
 class CreateDocumentController extends Controller
 {
-    public function __construct(private DocumentRepository $repository)
+    public function __construct(private readonly DocumentRepository $repository)
     {
     }
 

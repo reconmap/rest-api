@@ -4,7 +4,7 @@ namespace Reconmap\Controllers\Users;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
-use Reconmap\Models\AuditActions\AuditLogAction;
+use Reconmap\Models\AuditActions\UserAuditActions;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\ActivityPublisherService;
 use Reconmap\Services\EmailService;
@@ -39,7 +39,7 @@ class UpdateUserControllerTest extends TestCase
         $mockPublisherService = $this->createMock(ActivityPublisherService::class);
         $mockPublisherService->expects($this->once())
             ->method('publish')
-            ->with(9, AuditLogAction::USER_MODIFIED, ['type' => 'user', 'id' => $fakeUserId]);
+            ->with(9, UserAuditActions::USER_MODIFIED, ['type' => 'user', 'id' => $fakeUserId]);
 
         $args = ['userId' => $fakeUserId];
 

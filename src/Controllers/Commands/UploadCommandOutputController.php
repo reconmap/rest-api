@@ -6,7 +6,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Attachments\UploadAttachmentController;
 use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Repositories\CommandRepository;
-use Reconmap\Repositories\TaskRepository;
 use Reconmap\Services\Filesystem\AttachmentFilePath;
 use Reconmap\Services\RedisServer;
 
@@ -15,7 +14,6 @@ class UploadCommandOutputController extends UploadAttachmentController
     public function __construct(AttachmentRepository $attachmentRepository,
                                 AttachmentFilePath   $attachmentFilePathService,
                                 RedisServer          $redisServer,
-                                private              readonly TaskRepository $taskRepository,
                                 private              readonly CommandRepository $commandRepository,
     )
     {
@@ -26,14 +24,13 @@ class UploadCommandOutputController extends UploadAttachmentController
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
         $params = $request->getParsedBody();
-        $taskId = (int)$params['taskId'];
+        $commandId = (int)$params['commandId'];
+        $taskId = isset($params['taskId']) ? intval($params['taskId']) : null;
 
         $files = $request->getUploadedFiles();
-
-        $task = $this->taskRepository->findById($taskId);
-        $command = $this->commandRepository->findById($task['command_id']);
-
         $resultFile = $files['resultFile'];
+
+        $command = $this->commandRepository->findById($commandId);
 
         $userId = $request->getAttribute('userId');
 
