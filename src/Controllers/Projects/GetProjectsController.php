@@ -43,16 +43,24 @@ class GetProjectsController extends Controller
             $this->projectSearchCriteria->addUserCriterion($user->id);
         }
 
-        $paginator = new PaginationRequestHandler($request);
+        $paginateResults = isset($params['page']);
+        $paginator = $paginateResults ? new PaginationRequestHandler($request) : null;
+
         $projects = $this->projectRepository->search($this->projectSearchCriteria, $paginator);
-        $count = $this->projectRepository->count($this->projectSearchCriteria);
-        $pageCount = $paginator->calculatePageCount($count);
 
         $response = new Response;
         $response->getBody()->write(json_encode($projects));
-        return $response
-            ->withHeader('Access-Control-Expose-Headers', 'X-Total-Count,X-Page-Count')
-            ->withHeader('X-Total-Count', $count)
-            ->withHeader('X-Page-Count', $pageCount);
+
+        if ($paginateResults) {
+            $count = $this->projectRepository->count($this->projectSearchCriteria);
+            $pageCount = $paginator->calculatePageCount($count);
+
+            return $response
+                ->withHeader('Access-Control-Expose-Headers', 'X-Total-Count,X-Page-Count')
+                ->withHeader('X-Total-Count', $count)
+                ->withHeader('X-Page-Count', $pageCount);
+        }
+
+        return $response;
     }
 }

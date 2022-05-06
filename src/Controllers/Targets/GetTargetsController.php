@@ -36,7 +36,8 @@ class GetTargetsController extends Controller
         if ($paginateResults) {
             $count = $this->repository->countSearch($this->searchCriteria);
             $pageCount = $paginator->calculatePageCount($count);
-            $response = $response
+
+            return $response
                 ->withHeader('Access-Control-Expose-Headers', 'X-Page-Count')
                 ->withHeader('X-Page-Count', $pageCount);
         }

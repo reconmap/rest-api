@@ -16,7 +16,7 @@ class GetProjectsControllerTest extends TestCase
         $mockRequest = $this->createMock(ServerRequestInterface::class);
         $mockRequest->expects($this->exactly(2))
             ->method('getQueryParams')
-            ->willReturn(['status' => 'archived']);
+            ->willReturn(['status' => 'archived', 'page' => 0]);
         $mockRequest->expects($this->exactly(2))
             ->method('getAttribute')
             ->withConsecutive(['userId'], ['role'])
@@ -45,7 +45,7 @@ class GetProjectsControllerTest extends TestCase
         $mockRequest = $this->createMock(ServerRequestInterface::class);
         $mockRequest->expects($this->exactly(2))
             ->method('getQueryParams')
-            ->willReturn(['status' => 'archived', 'isTemplate' => true]);
+            ->willReturn(['status' => 'archived', 'isTemplate' => true, 'page' => 0]);
         $mockRequest->expects($this->exactly(2))
             ->method('getAttribute')
             ->withConsecutive(['userId'], ['role'])

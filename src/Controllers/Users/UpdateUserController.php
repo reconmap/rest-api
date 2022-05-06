@@ -12,9 +12,9 @@ use Reconmap\Services\EmailService;
 class UpdateUserController extends Controller
 {
     public function __construct(
-        private UserRepository           $userRepository,
-        private EmailService             $emailService,
-        private ActivityPublisherService $activityPublisherService)
+        private readonly UserRepository $userRepository,
+        private readonly EmailService $emailService,
+        private readonly ActivityPublisherService $activityPublisherService)
     {
     }
 
