@@ -4,29 +4,25 @@ namespace Reconmap\Controllers;
 
 use Fig\Http\Message\StatusCodeInterface;
 use GuzzleHttp\Psr7\Response;
+use League\Container\ContainerAwareInterface;
+use League\Container\ContainerAwareTrait;
 use Monolog\Logger;
-use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Models\Cleanable;
 use Reconmap\Models\User;
-use Reconmap\Services\ContainerConsumer;
 use Reconmap\Services\TemplateEngine;
 
-abstract class Controller implements ContainerConsumer
+abstract class Controller implements ContainerAwareInterface
 {
+    use ContainerAwareTrait;
+
     protected ?Logger $logger = null;
     protected ?TemplateEngine $template = null;
-    protected ?ContainerInterface $container = null;
 
     public function setLogger(Logger $logger): void
     {
         $this->logger = $logger;
-    }
-
-    public function setContainer(ContainerInterface $container): void
-    {
-        $this->container = $container;
     }
 
     public function getJsonBodyDecoded(ServerRequestInterface $request): object

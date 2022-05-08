@@ -141,3 +141,21 @@ INSERT INTO attachment (parent_type, parent_id, submitter_uid, client_file_name,
                         file_hash)
 VALUES ('report', LAST_INSERT_ID(), 1, 'default-report-template.docx', 'default-report-template.docx', 0,
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document', '');
+
+INSERT INTO project_category (name, description)
+VALUES ('Managed security monitoring',
+        'Includes the day-to-day monitoring and investigation of system events throughout the network as well as security events, such as user permission changes and user logins.'),
+       ('Vulnerability risk assessment',
+        'Determines the state of the organization''s existing security readiness, and provides insights into potential vulnerabilities for minimizing exposure.'),
+       ('Compliance monitoring',
+        'Involves checking how well the organization complies with data security policies and procedures. The MSSP typically performs ongoing scans of security devices and infrastructure to determine if any changes need to be made to boost compliance. And with the compliance landscape becoming more complex all the time, this service is especially valuable to organizations that need to comply with GDPR, CCPA, HIPAA, PCI DSS, and others.'),
+       ('Threat intelligence',
+        'Involves gathering information to help the organization determine which threats have, will, or are currently targeting the organization and its employees, as well as which of these threats represent a viable risk.'),
+       ('Security consultation',
+        'for several domains including executing a detailed assessment of the network to identify potential and real-world vulnerabilities, finding security lacunae, and providing recommendations on how to fix them.'),
+       ('Security program development',
+        'Includes policy development for helping to protect the organization’s infrastructure, systems, network, and devices.'),
+       ('Perimeter management',
+        'Protects the defenses around the network from external attackers as well as from bad insiders.Relevant activities including establishing the controls and processes that limit access to sensitive data in the network and on the end point.'),
+       ('Penetration testing',
+        'Also known as pentesting, which entails simulating a cyberattack against the organization’s information and technology assets to check for exploitable vulnerabilities. This service constitutes a form of ethical hacking that can be very effective at uncovering the vulnerabilities that may be successfully targeted by hackers ');

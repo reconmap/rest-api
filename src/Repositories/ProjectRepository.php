@@ -12,11 +12,11 @@ class ProjectRepository extends MysqlRepository
 {
     public const UPDATABLE_COLUMNS_TYPES = [
         'client_id' => 'i',
+        'category_id' => 'i',
         'name' => 's',
         'description' => 's',
         'visibility' => 's',
         'is_template' => 'i',
-        'engagement_type' => 's',
         'engagement_start_date' => 's',
         'engagement_end_date' => 's',
         'archived' => 'i',
@@ -47,22 +47,11 @@ SQL;
 
     public function findById(int $id): ?array
     {
-        $sql = <<<SQL
-SELECT
-       p.*,
-       c.name AS client_name,
-       u.full_name AS creator_full_name
-FROM
-    project p
-    INNER JOIN user u ON (u.id = p.creator_uid)
-    LEFT JOIN client c ON (c.id = p.client_id)
-WHERE
-      p.id = ?
-SQL;
+        $queryBuilder = $this->getBaseSelectQueryBuilder();
+        $queryBuilder->setWhere('p.id = ?');
 
-        $stmt = $this->db->prepare($sql);
-        $stmt->bind_param('i', $id);
-        $stmt->execute();
+        $stmt = $this->db->prepare($queryBuilder->toSql());
+        $stmt->execute([$id]);
         $result = $stmt->get_result();
         $project = $result->fetch_assoc();
         $stmt->close();
@@ -81,7 +70,7 @@ SQL;
         $this->db->begin_transaction();
 
         $projectSql = <<<SQL
-        INSERT INTO project (creator_uid, name, description, engagement_type, engagement_start_date, engagement_end_date, vulnerability_metrics, management_summary, management_conclusion) SELECT ?, CONCAT(name, ' - ', CURRENT_TIMESTAMP()), description, engagement_type, engagement_start_date, engagement_end_date, vulnerability_metrics, management_summary, management_conclusion FROM project WHERE id = ?
+        INSERT INTO project (creator_uid, name, description, category_id, engagement_start_date, engagement_end_date, vulnerability_metrics, management_summary, management_conclusion) SELECT ?, CONCAT(name, ' - ', CURRENT_TIMESTAMP()), description, category_id, engagement_start_date, engagement_end_date, vulnerability_metrics, management_summary, management_conclusion FROM project WHERE id = ?
         SQL;
         $stmt = $this->db->prepare($projectSql);
         $stmt->bind_param('ii', $userId, $templateId);
@@ -105,10 +94,10 @@ SQL;
     public function insert(Project $project): int
     {
         $insertStmt = new InsertQueryBuilder('project');
-        $insertStmt->setColumns('creator_uid, client_id, name, description, is_template, engagement_type, engagement_start_date, engagement_end_date, visibility, external_id, vulnerability_metrics, management_summary, management_conclusion');
+        $insertStmt->setColumns('creator_uid, client_id, name, description, is_template, category_id, engagement_start_date, engagement_end_date, visibility, external_id, vulnerability_metrics, management_summary, management_conclusion');
 
         $stmt = $this->db->prepare($insertStmt->toSql());
-        $stmt->bind_param('iississssssss', $project->creator_uid, $project->client_id, $project->name, $project->description, $project->is_template, $project->engagement_type, $project->engagement_start_date, $project->engagement_end_date, $project->visibility, $project->external_id, $project->vulnerability_metrics, $project->management_summary, $project->management_conclusion);
+        $stmt->bind_param('iississssssss', $project->creator_uid, $project->client_id, $project->name, $project->description, $project->is_template, $project->category_id, $project->engagement_start_date, $project->engagement_end_date, $project->visibility, $project->external_id, $project->vulnerability_metrics, $project->management_summary, $project->management_conclusion);
         return $this->executeInsertStatement($stmt);
     }
 
@@ -128,9 +117,13 @@ SQL;
         $queryBuilder->setColumns('
             p.*,
             c.name AS client_name,
+            pc.name AS category_name,
+            u.full_name AS creator_full_name,
             (SELECT COUNT(*) FROM task WHERE project_id = p.id) AS num_tasks
         ');
         $queryBuilder->addJoin('LEFT JOIN client c ON (c.id = p.client_id)');
+        $queryBuilder->addJoin('LEFT JOIN project_category pc ON (pc.id = p.category_id)');
+        $queryBuilder->addJoin('INNER JOIN user u ON (u.id = p.creator_uid)');
         return $queryBuilder;
     }
 }

@@ -11,7 +11,7 @@ class Project
     public ?string $description;
     public ?string $visibility = 'public';
     public bool $is_template = false;
-    public ?string $engagement_type;
+    public ?int $category_id;
     public ?string $engagement_start_date;
     public ?string $engagement_end_date;
     public ?string $external_id;

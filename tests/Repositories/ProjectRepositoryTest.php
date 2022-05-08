@@ -27,7 +27,8 @@ class ProjectRepositoryTest extends DatabaseTestCase
             'visibility' => 'public',
             'name' => 'Linux host template',
             'description' => 'Project template to show general linux host reconnaissance tasks',
-            'engagement_type' => null,
+            'category_id' => null,
+            'category_name' => null,
             'engagement_start_date' => null,
             'engagement_end_date' => null,
             'archived' => 0,
@@ -37,8 +38,8 @@ class ProjectRepositoryTest extends DatabaseTestCase
             'external_id' => null,
             'vulnerability_metrics' => null,
             'management_summary' => null,
-            'management_conclusion' => null
-
+            'management_conclusion' => null,
+            'num_tasks' => 4,
         ];
 
         $project1 = $this->subject->findById(1);

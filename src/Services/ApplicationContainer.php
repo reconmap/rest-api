@@ -3,6 +3,7 @@
 namespace Reconmap\Services;
 
 use League\Container\Container;
+use League\Container\ContainerAwareInterface;
 use League\Container\ReflectionContainer;
 use Monolog\Logger;
 use Reconmap\Controllers\Controller;
@@ -36,8 +37,9 @@ class ApplicationContainer extends Container
             ->invokeMethod('setConfig', [ApplicationConfig::class]);
         $this->add(ApplicationConfig::class, $config);
 
-        $this->inflector(ContainerConsumer::class)
+        $this->inflector(ContainerAwareInterface::class)
             ->invokeMethod('setContainer', [Container::class]);
+
         $this->add(Container::class, $this);
     }
 }

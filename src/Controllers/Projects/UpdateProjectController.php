@@ -5,13 +5,14 @@ namespace Reconmap\Controllers\Projects;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Database\NullColumnReplacer;
-use Reconmap\Models\AuditActions\AuditLogAction;
+use Reconmap\Models\AuditActions\ProjectLogActions;
 use Reconmap\Repositories\ProjectRepository;
 use Reconmap\Services\ActivityPublisherService;
 
 class UpdateProjectController extends Controller
 {
-    public function __construct(private ProjectRepository $repository, private ActivityPublisherService $activityPublisherService)
+    public function __construct(private readonly ProjectRepository $repository,
+                                private readonly ActivityPublisherService $activityPublisherService)
     {
     }
 
@@ -28,7 +29,7 @@ class UpdateProjectController extends Controller
 
         $success = false;
         if (!empty($newColumnValues)) {
-            NullColumnReplacer::replaceEmptyWithNulls(['engagement_type', 'engagement_start_date', 'engagement_end_date', 'external_id', 'vulnerability_metrics'], $newColumnValues);
+            NullColumnReplacer::replaceEmptyWithNulls(['category_id', 'engagement_start_date', 'engagement_end_date', 'external_id', 'vulnerability_metrics'], $newColumnValues);
 
             $success = $this->repository->updateById($projectId, $newColumnValues);
 
@@ -41,6 +42,6 @@ class UpdateProjectController extends Controller
 
     private function auditAction(int $loggedInUserId, int $projectId): void
     {
-        $this->activityPublisherService->publish($loggedInUserId, AuditLogAction::PROJECT_MODIFIED, ['projectId' => $projectId]);
+        $this->activityPublisherService->publish($loggedInUserId, ProjectLogActions::PROJECT_MODIFIED, ['projectId' => $projectId]);
     }
 }

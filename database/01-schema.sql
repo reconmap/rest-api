@@ -144,41 +144,55 @@ CREATE TABLE vault
     FOREIGN KEY (project_id) REFERENCES project (id) ON DELETE CASCADE
 ) Engine = InnoDB;
 
+DROP TABLE IF EXISTS project_category;
+
+CREATE TABLE project_category
+(
+    id          INT UNSIGNED  NOT NULL AUTO_INCREMENT,
+    name        VARCHAR(200)  NOT NULL,
+    description VARCHAR(2000) NULL,
+
+    PRIMARY KEY (id),
+    UNIQUE KEY (name)
+) ENGINE = InnoDB
+  CHARSET = utf8mb4;
+
 DROP TABLE IF EXISTS project;
 
 CREATE TABLE project
 (
-    id                    INT UNSIGNED                             NOT NULL AUTO_INCREMENT,
-    insert_ts             TIMESTAMP                                NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    update_ts             TIMESTAMP                                NULL ON UPDATE CURRENT_TIMESTAMP,
-    creator_uid           INT UNSIGNED                             NOT NULL,
-    client_id             INT UNSIGNED                             NULL COMMENT 'Null when project is template',
-    is_template           BOOLEAN                                  NOT NULL DEFAULT FALSE,
-    visibility            ENUM ('public', 'private')               NOT NULL DEFAULT 'public',
-    name                  VARCHAR(200)                             NOT NULL,
-    description           VARCHAR(2000)                            NULL,
-    engagement_type       ENUM ('blackbox', 'whitebox', 'greybox') NULL,
+    id                    INT UNSIGNED               NOT NULL AUTO_INCREMENT,
+    insert_ts             TIMESTAMP                  NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_ts             TIMESTAMP                  NULL ON UPDATE CURRENT_TIMESTAMP,
+    creator_uid           INT UNSIGNED               NOT NULL,
+    client_id             INT UNSIGNED               NULL COMMENT 'Null when project is template',
+    category_id           INT UNSIGNED               NULL,
+    is_template           BOOLEAN                    NOT NULL DEFAULT FALSE,
+    visibility            ENUM ('public', 'private') NOT NULL DEFAULT 'public',
+    name                  VARCHAR(200)               NOT NULL,
+    description           VARCHAR(2000)              NULL,
     engagement_start_date DATE,
     engagement_end_date   DATE,
-    archived              BOOLEAN                                  NOT NULL DEFAULT FALSE,
-    archive_ts            TIMESTAMP                                NULL,
-    external_id           VARCHAR(40)                              NULL,
-    vulnerability_metrics ENUM ('CVSS', 'OWASP_RR')                NULL,
-    management_summary    VARCHAR(2000)                            NULL,
-    management_conclusion VARCHAR(500)                             NULL,
+    archived              BOOLEAN                    NOT NULL DEFAULT FALSE,
+    archive_ts            TIMESTAMP                  NULL,
+    external_id           VARCHAR(40)                NULL,
+    vulnerability_metrics ENUM ('CVSS', 'OWASP_RR')  NULL,
+    management_summary    VARCHAR(2000)              NULL,
+    management_conclusion VARCHAR(500)               NULL,
 
     PRIMARY KEY (id),
     UNIQUE KEY (name),
     KEY (is_template),
     FOREIGN KEY (creator_uid) REFERENCES user (id) ON DELETE NO ACTION,
-    CONSTRAINT project_fk_client_id FOREIGN KEY (client_id) REFERENCES client (id) ON DELETE SET NULL
+    CONSTRAINT project_fk_client_id FOREIGN KEY (client_id) REFERENCES client (id) ON DELETE SET NULL,
+    CONSTRAINT project_fk_category_id FOREIGN KEY (category_id) REFERENCES project_category (id) ON DELETE SET NULL
 ) ENGINE = InnoDB;
 
 DROP VIEW IF EXISTS project_template;
 
 CREATE VIEW project_template
 AS
-SELECT id, insert_ts, update_ts, creator_uid, name, description, engagement_type
+SELECT id, insert_ts, update_ts, creator_uid, name, description, category_id
 FROM project
 WHERE is_template = 1;
 
