@@ -2,9 +2,9 @@
 
 namespace Reconmap\Controllers\System;
 
+use League\Container\Container;
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
-use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
@@ -35,7 +35,7 @@ class ImportDataControllerTest extends TestCase
         $mockProjectImporter->expects($this->never())
             ->method('import');
 
-        $mockContainer = $this->createMock(ContainerInterface::class);
+        $mockContainer = $this->createMock(Container::class);
         $mockContainer->expects($this->never())
             ->method('get');
 
@@ -79,7 +79,7 @@ class ImportDataControllerTest extends TestCase
         $mockProjectImporter->expects($this->never())
             ->method('import');
 
-        $mockContainer = $this->createMock(ContainerInterface::class);
+        $mockContainer = $this->createMock(Container::class);
         $mockContainer->expects($this->never())
             ->method('get');
 
@@ -124,7 +124,7 @@ class ImportDataControllerTest extends TestCase
             ->method('import')
             ->willReturn(['count' => 0, 'errors' => []]);
 
-        $mockContainer = $this->createMock(ContainerInterface::class);
+        $mockContainer = $this->createMock(Container::class);
         $mockContainer->expects($this->once())
             ->method('get')
             ->with(ProjectsImporter::class)

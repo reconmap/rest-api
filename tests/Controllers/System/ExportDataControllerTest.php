@@ -4,7 +4,7 @@ namespace Reconmap\Controllers\System;
 
 use Fig\Http\Message\StatusCodeInterface;
 use GuzzleHttp\Psr7\ServerRequest;
-use Psr\Container\ContainerInterface;
+use League\Container\Container;
 use Reconmap\ControllerTestCase;
 use Reconmap\Repositories\Exporters\ClientsExporter;
 use Reconmap\Services\AuditLogService;
@@ -28,7 +28,7 @@ class ExportDataControllerTest extends ControllerTestCase
             ->method('export')
             ->willReturn(['client1']);
 
-        $mockContainer = $this->createMock(ContainerInterface::class);
+        $mockContainer = $this->createMock(Container::class);
         $mockContainer->expects($this->once())
             ->method('get')
             ->with('Reconmap\Repositories\Exporters\ClientsExporter')

@@ -12,7 +12,7 @@ use Reconmap\Services\AuditLogService;
 
 class ImportDataController extends Controller
 {
-    public function __construct(private AuditLogService $auditLogService)
+    public function __construct(private readonly AuditLogService $auditLogService)
     {
     }
 
