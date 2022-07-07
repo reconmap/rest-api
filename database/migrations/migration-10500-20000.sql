@@ -1,0 +1,8 @@
+SET FOREIGN_KEY_CHECKS = 0;
+
+ALTER TABLE user
+    DROP COLUMN password,
+    DROP COLUMN mfa_enabled,
+    DROP COLUMN mfa_secret;
+
+SET FOREIGN_KEY_CHECKS = 1;

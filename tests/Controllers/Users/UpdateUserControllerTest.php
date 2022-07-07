@@ -31,7 +31,7 @@ class UpdateUserControllerTest extends TestCase
             ->willReturn(true);
         $mockUserRepository->expects($this->once())
             ->method('findById')
-            ->with($fakeUserId, false)
+            ->with($fakeUserId)
             ->willReturn(['full_name' => 'Some Body', 'email' => 'some.body@on.the.internet']);
 
         $mockEmailService = $this->createMock(EmailService::class);

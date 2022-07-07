@@ -1,5 +1,5 @@
-INSERT INTO user (id, full_name, username, password, email, role)
-VALUES (1, 'Administrator', 'admin', '$2y$10$CrblfxMv8e1ynu9RG54Cau.8dcmz.SpT7nNERclfGMZSbYHoQQuuq', 'admin@localhost',
+INSERT INTO user (id, full_name, username, email, role)
+VALUES (1, 'Administrator', 'admin', 'admin@localhost',
         'administrator');
 
 INSERT INTO audit_log (user_id, client_ip, action)

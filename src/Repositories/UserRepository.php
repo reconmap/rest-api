@@ -15,9 +15,6 @@ class UserRepository extends MysqlRepository
         'email' => 's',
         'role' => 's',
         'username' => 's',
-        'password' => 's',
-        'mfa_enabled' => 'i',
-        'mfa_secret' => 's',
         'timezone' => 's',
         'preferences' => 's',
     ];
@@ -30,10 +27,10 @@ class UserRepository extends MysqlRepository
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
-    public function findById(int $id, bool $includePassword = false): ?array
+    public function findById(int $id): ?array
     {
         $queryBuilder = $this->getBaseSelectQueryBuilder();
-        $queryBuilder->setColumns($queryBuilder->getColumns() . ', u.mfa_secret' . ($includePassword ? ', u.password' : ''));
+        $queryBuilder->setColumns($queryBuilder->getColumns());
         $queryBuilder->setWhere('u.id = ?');
 
         $stmt = $this->db->prepare($queryBuilder->toSql());
@@ -49,14 +46,14 @@ class UserRepository extends MysqlRepository
     protected function getBaseSelectQueryBuilder(): SelectQueryBuilder
     {
         $queryBuilder = new SelectQueryBuilder('user u');
-        $queryBuilder->setColumns('u.id, u.insert_ts, u.update_ts, u.active, u.full_name, u.short_bio, u.username, u.email, u.role, u.timezone, u.preferences, u.mfa_enabled');
+        $queryBuilder->setColumns('u.id, u.insert_ts, u.update_ts, u.active, u.full_name, u.short_bio, u.username, u.email, u.role, u.timezone, u.preferences');
         return $queryBuilder;
     }
 
     public function findByUsername(string $username): ?array
     {
         $queryBuilder = $this->getBaseSelectQueryBuilder();
-        $queryBuilder->setColumns($queryBuilder->getColumns() . ', u.password, u.mfa_secret');
+        $queryBuilder->setColumns($queryBuilder->getColumns());
         $queryBuilder->setWhere('u.active AND u.username = ?');
 
         $stmt = $this->db->prepare($queryBuilder->toSql());
@@ -82,9 +79,9 @@ class UserRepository extends MysqlRepository
     public function create(User $user): int
     {
         $insertStmt = new InsertQueryBuilder('user');
-        $insertStmt->setColumns('active, full_name, short_bio, username, password, mfa_enabled, mfa_secret, email, role');
+        $insertStmt->setColumns('active, full_name, short_bio, username, email, role');
         $stmt = $this->db->prepare($insertStmt->toSql());
-        $stmt->bind_param('issssisss', $user->active, $user->full_name, $user->short_bio, $user->username, $user->password, $user->mfa_enabled, $user->mfa_secret, $user->email, $user->role);
+        $stmt->bind_param('isssss', $user->active, $user->full_name, $user->short_bio, $user->username, $user->email, $user->role);
         return $this->executeInsertStatement($stmt);
     }
 

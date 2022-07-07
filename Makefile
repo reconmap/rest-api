@@ -38,7 +38,7 @@ tests: start
 	docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet -e "CREATE DATABASE reconmap_test"
 	docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet -e "GRANT ALL PRIVILEGES ON reconmap_test.* TO 'reconmapper'@'%';"
 	echo Importing SQL files: $(wildcard database/*.sql)
-	cat database/{01,02,03}*.sql | docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet reconmap_test
+	cat database/0*.sql | docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet reconmap_test
 	docker-compose run --rm -w /var/www/webapp --entrypoint php api src/Cli/app.php test:generate-data --use-test-database
 	docker-compose run --rm -w /var/www/webapp -e CURRENT_PLANET=Moon --entrypoint ./run-tests.sh api
 	docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet -e "DROP DATABASE reconmap_test"

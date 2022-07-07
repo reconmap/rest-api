@@ -10,17 +10,19 @@ use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Utils;
 use League\Route\Http\Exception;
 use League\Route\Http\Exception\ForbiddenException;
-use League\Route\Http\Exception\UnauthorizedException;
 use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Reconmap\Services\ApplicationConfig;
+use Reconmap\Services\Keycloak;
+use Reconmap\Services\KeycloakService;
 
 class AuthMiddleware implements MiddlewareInterface
 {
-    public function __construct(private readonly Logger $logger,
+    public function __construct(private readonly KeycloakService   $keycloak,
+                                private readonly Logger            $logger,
                                 private readonly ApplicationConfig $config)
     {
     }
@@ -35,20 +37,17 @@ class AuthMiddleware implements MiddlewareInterface
         $jwtConfig = $this->config->getSettings('jwt');
 
         try {
-            $token = JWT::decode($jwt, new Key($jwtConfig['key'], 'HS256'));
+            $token = JWT::decode($jwt, new Key($this->keycloak->getPublicKey(), 'RS256'));
 
             if ($token->iss !== $jwtConfig['issuer']) {
-                throw new ForbiddenException("Invalid JWT issuer");
+                throw new ForbiddenException("Invalid JWT issuer: " . $token->iss);
             }
             if ($token->aud !== $jwtConfig['audience']) {
-                throw new ForbiddenException("Invalid JWT audience");
+                throw new ForbiddenException("Invalid JWT audience: " . $token->aud);
             }
 
-            if (!str_contains($request->getUri()->getPath(), '/auth/mfa') && !in_array($token->data->mfa, ['verified', 'disabled'])) {
-                throw new UnauthorizedException("Mfa code not verified");
-            }
-            $request = $request->withAttribute('userId', $token->data->id)
-                ->withAttribute('role', $token->data->role);
+            $request = $request->withAttribute('userId', 1)//$token->data->id)
+            ->withAttribute('role', 'administrator');//$token->data->role);
             return $handler->handle($request);
         } catch (ForbiddenException|ExpiredException $e) {
             $this->logger->warning($e->getMessage());

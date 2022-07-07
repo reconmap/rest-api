@@ -9,7 +9,6 @@ use League\Route\Router;
 use Monolog\Logger;
 use Reconmap\{Controllers\AuditLog\AuditLogRouter,
     Controllers\Auth\AuthRouter,
-    Controllers\Auth\LoginController,
     Controllers\Clients\ClientsRouter,
     Controllers\Commands\CommandsRouter,
     Controllers\Contacts\ContactsRouter,
@@ -75,8 +74,6 @@ class ApiRouter extends Router
 
         $authMiddleware = $container->get(AuthMiddleware::class);
         $securityMiddleware = $container->get(SecurityMiddleware::class);
-
-        $this->map('POST', '/users/login', LoginController::class);
 
         $this->group('', function (RouteGroup $router): void {
             foreach (self::ROUTER_CLASSES as $mappable) {

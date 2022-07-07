@@ -4,9 +4,10 @@ namespace Reconmap\Controllers\Users;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Models\AuditActions\AuditLogAction;
+use Reconmap\Models\AuditActions\UserAuditActions;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\ActivityPublisherService;
+use Reconmap\Services\KeycloakService;
 
 class DeleteUserController extends Controller
 {
@@ -20,6 +21,11 @@ class DeleteUserController extends Controller
         $userId = (int)$args['userId'];
         $loggedInUserId = $request->getAttribute('userId');
 
+        $user = $this->repository->findById($userId);
+
+        $kc = new KeycloakService();
+        $kc->deleteUser($user);
+
         $success = $this->repository->deleteById($userId);
 
         $this->auditAction($loggedInUserId, $userId);
@@ -29,6 +35,6 @@ class DeleteUserController extends Controller
 
     private function auditAction(int $loggedInUserId, int $userId): void
     {
-        $this->activityPublisherService->publish($loggedInUserId, AuditLogAction::USER_DELETED, ['id' => $userId]);
+        $this->activityPublisherService->publish($loggedInUserId, UserAuditActions::USER_DELETED, ['id' => $userId]);
     }
 }

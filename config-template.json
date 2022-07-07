@@ -1,4 +1,8 @@
 {
+  "keycloak": {
+    "baseUri": "http://keycloak:8080",
+    "clientSecret": "this is to be replaced!"
+  },
   "jwt": {
     "issuer": "reconmap.org",
     "audience": "reconmap.com",

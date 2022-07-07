@@ -3,12 +3,14 @@
 namespace Reconmap\Controllers\Auth;
 
 use Fig\Http\Message\StatusCodeInterface;
+use League\Container\Container;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\AuditLogService;
 use Reconmap\Services\JwtPayloadCreator;
+use Reconmap\Services\Security\AuthorisationService;
 
 class LoginControllerTest extends TestCase
 {
@@ -20,26 +22,41 @@ class LoginControllerTest extends TestCase
             'role' => 'superuser'];
 
         $mockUserRepository = $this->createMock(UserRepository::class);
-        $mockUserRepository->expects($this->once())
+        $mockUserRepository->expects($this->never())
             ->method('findByUsername')
             ->with('me')
             ->willReturn($fakeUser);
 
         $mockApplicationConfig = $this->createMock(ApplicationConfig::class);
-        $mockApplicationConfig->expects($this->once())
+        $mockApplicationConfig->expects($this->never())
             ->method('getSettings')
             ->with('jwt')
             ->willReturn(['key' => 'aaa']);
+
+        $mockAuthorisationService = $this->createMock(AuthorisationService::class);
+        $mockAuthorisationService->expects($this->once())
+            ->method('isRoleAllowed')
+            ->willReturn(true);
+
+        $mockContainer = $this->createMock(Container::class);
+        $mockContainer->expects($this->once())
+            ->method('get')
+            ->willReturn($mockAuthorisationService);
 
         $mockAuditLogService = $this->createMock(AuditLogService::class);
         $mockJwtPayloadCreator = $this->createMock(JwtPayloadCreator::class);
 
         $mockServerRequestInterface = $this->createMock(ServerRequestInterface::class);
-        $mockServerRequestInterface->expects($this->once())
+        $mockServerRequestInterface->expects($this->never())
             ->method('getBody')
             ->willReturn(json_encode(['username' => 'me', 'password' => 'su123']));
+        $mockServerRequestInterface->expects(($this->exactly(2)))
+            ->method('getAttribute')
+            ->withConsecutive(['userId'], ['role'])
+            ->willReturnOnConsecutiveCalls(1, 'superuser');
 
-        $controller = new LoginController($mockUserRepository, $mockApplicationConfig, $mockAuditLogService, $mockJwtPayloadCreator);
+        $controller = new LoginController($mockAuditLogService);
+        $controller->setContainer($mockContainer);
         $response = $controller($mockServerRequestInterface);
 
         $this->assertEquals(StatusCodeInterface::STATUS_OK, $response->getStatusCode());

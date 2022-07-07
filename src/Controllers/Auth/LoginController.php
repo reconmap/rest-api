@@ -2,64 +2,38 @@
 
 namespace Reconmap\Controllers\Auth;
 
-use Firebase\JWT\JWT;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Reconmap\Controllers\Controller;
+use Reconmap\Controllers\ControllerV2;
+use Reconmap\Http\ApplicationRequest;
 use Reconmap\Models\AuditActions\UserAuditActions;
-use Reconmap\Repositories\UserRepository;
-use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\AuditLogService;
-use Reconmap\Services\JwtPayloadCreator;
 use Reconmap\Services\Security\Permissions;
 
-class LoginController extends Controller
+class LoginController extends ControllerV2
 {
     public function __construct(
-        private readonly UserRepository $userRepository,
-        private readonly ApplicationConfig $applicationConfig,
-        private readonly AuditLogService $auditLogService,
-        private readonly JwtPayloadCreator $jwtPayloadCreator)
+        private readonly AuditLogService $auditLogService)
     {
     }
 
-    public function __invoke(ServerRequestInterface $request): ResponseInterface
+    protected function process(ApplicationRequest $request): ResponseInterface
     {
-        $json = $this->getJsonBodyDecodedAsArray($request);
-        $username = $json['username'];
-        $password = $json['password'];
+        $user = $request->getUser();
 
-        $user = $this->userRepository->findByUsername($username);
+        $this->audit($user->id);
 
-        if (is_null($user) || !password_verify($password, $user['password'])) {
-            $this->audit(null, UserAuditActions::USER_LOGIN_FAILED, ['username' => $username]);
-            return $this->createForbiddenResponse();
-        }
-
-        unset($user['password']); // DO NOT leak password in the response.
-
-        $user['mfa'] = match (true) {
-            $user['mfa_enabled'] === 1 => $user['mfa_secret'] ? 'ready' : 'setup',
-            default => 'disabled'
-        };
-
-        $this->audit($user['id'], UserAuditActions::USER_LOGGED_IN);
-
-        $jwtPayload = $this->jwtPayloadCreator->createFromUserArray($user);
-
-        $jwtConfig = $this->applicationConfig->getSettings('jwt');
-
-        $user['access_token'] = JWT::encode($jwtPayload, $jwtConfig['key'], 'HS256');
-        $user['permissions'] = Permissions::ByRoles[$user['role']];
+        $userArray = (array)$user;
+        $userArray['permissions'] = Permissions::ByRoles[$user->role];
 
         $response = new Response;
-        $response->getBody()->write(json_encode($user));
+        $response->getBody()->write(json_encode($userArray));
+
         return $response->withHeader('Content-type', 'application/json');
     }
 
-    private function audit(?int $userId, string $action, ?array $object = null): void
+    private function audit(?int $userId): void
     {
-        $this->auditLogService->insert($userId, $action, $object);
+        $this->auditLogService->insert($userId, UserAuditActions::USER_LOGGED_IN, null);
     }
 }

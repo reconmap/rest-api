@@ -126,23 +126,6 @@ paths:
         '200':
           description: User session terminated
 
-  '/auth/mfa-setup':
-    get:
-      tags:
-        - Auth
-      description: Save MFA user settings
-      responses:
-        '200':
-          description: OK
-  '/auth/mfa-verification':
-    get:
-      tags:
-        - Auth
-      description: Verify MFA user settings
-      responses:
-        '200':
-          description: OK
-
   /clients:
     post:
       tags:
@@ -580,18 +563,18 @@ paths:
                     type: object
                   logsDirectory:
                     type: string
-                examples:
-                  default:
-                    attachmentsDirectory:
-                      location: '/var/www/webapp/data/attachments/'
-                      exists: true
-                      writeable: true
-                    logsDirectory:
-                      location: '/var/www/webapp/logs'
-                      exists: true
-                      writeable: true
-                    dbConnection:
-                      ping: true
+                  examples:
+                    default:
+                      attachmentsDirectory:
+                        location: '/var/www/webapp/data/attachments/'
+                        exists: true
+                        writeable: true
+                      logsDirectory:
+                        location: '/var/www/webapp/logs'
+                        exists: true
+                        writeable: true
+                      dbConnection:
+                        ping: true
 
   /system/logs:
     get:
