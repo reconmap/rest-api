@@ -25,7 +25,7 @@ class TaskRepositoryTest extends DatabaseTestCase
 
     public function testFindByKeywords()
     {
-        $tasks = $this->subject->findByKeywords('SCANNER');
+        $tasks = $this->subject->findByKeywords('scanner');
         $this->assertCount(8, $tasks);
         $this->assertEquals('Run port scanner', $tasks[0]['summary']);
     }

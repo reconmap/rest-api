@@ -1,3 +1,5 @@
+USE reconmap;
+
 INSERT INTO user (id, full_name, username, email, role)
 VALUES (1, 'Administrator', 'admin', 'admin@localhost',
         'administrator');

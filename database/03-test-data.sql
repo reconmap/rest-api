@@ -1,3 +1,5 @@
+USE reconmap;
+
 SET @admin_user_id = 1;
 
 INSERT INTO command (creator_uid, name, description, docker_image, arguments, executable_type, output_filename,
