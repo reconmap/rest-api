@@ -1,12 +1,12 @@
 {
   "keycloak": {
     "baseUri": "http://keycloak:8080",
-    "clientSecret": "this is to be replaced!"
+    "clientSecret": "xxxxxxxxxxxxxxxxxxyyyyyyyyyyyyyy"
   },
   "jwt": {
-    "issuer": "reconmap.org",
-    "audience": "reconmap.com",
-    "key": "One long key of your own"
+    "issuer": "http://localhost:8080/realms/reconmap",
+    "audience": "account",
+    "key": ""
   },
   "cors": {
     "allowedOrigins": [
