@@ -31,7 +31,7 @@ build:
 	docker-compose build --no-cache
 
 .PHONY: tests
-tests: start
+tests: start validate
 	docker-compose run --rm -e WAIT_HOSTS=$(DB_CONTAINER):3306 -e WAIT_TIMEOUT=60 --entrypoint /usr/local/bin/wait waiter
 
 	echo Importing SQL files: $(wildcard database/0*.sql)
@@ -48,6 +48,10 @@ security-tests:
 .PHONY: start
 start:
 	docker-compose up -d
+
+.PHONY: validate
+validate:
+	docker-compose run --rm -w /var/www/webapp --entrypoint composer api validate --strict
 
 .PHONY: stop
 stop:
