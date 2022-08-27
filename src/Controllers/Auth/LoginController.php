@@ -7,27 +7,30 @@ use Psr\Http\Message\ResponseInterface;
 use Reconmap\Controllers\ControllerV2;
 use Reconmap\Http\ApplicationRequest;
 use Reconmap\Models\AuditActions\UserAuditActions;
+use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\AuditLogService;
 use Reconmap\Services\Security\Permissions;
 
 class LoginController extends ControllerV2
 {
     public function __construct(
+        private readonly UserRepository  $userRepository,
         private readonly AuditLogService $auditLogService)
     {
     }
 
     protected function process(ApplicationRequest $request): ResponseInterface
     {
-        $user = $request->getUser();
+        $requestUser = $request->getUser();
 
-        $this->audit($user->id);
+        $this->audit($requestUser->id);
 
-        $userArray = (array)$user;
-        $userArray['permissions'] = Permissions::ByRoles[$user->role];
+        $user = $this->userRepository->findById($requestUser->id);
+
+        $user['permissions'] = Permissions::ByRoles[$requestUser->role];
 
         $response = new Response;
-        $response->getBody()->write(json_encode($userArray));
+        $response->getBody()->write(json_encode($user));
 
         return $response->withHeader('Content-type', 'application/json');
     }

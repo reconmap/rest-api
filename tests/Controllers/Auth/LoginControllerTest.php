@@ -22,9 +22,9 @@ class LoginControllerTest extends TestCase
             'role' => 'superuser'];
 
         $mockUserRepository = $this->createMock(UserRepository::class);
-        $mockUserRepository->expects($this->never())
-            ->method('findByUsername')
-            ->with('me')
+        $mockUserRepository->expects($this->once())
+            ->method('findById')
+            ->with(1)
             ->willReturn($fakeUser);
 
         $mockApplicationConfig = $this->createMock(ApplicationConfig::class);
@@ -55,7 +55,7 @@ class LoginControllerTest extends TestCase
             ->withConsecutive(['userId'], ['role'])
             ->willReturnOnConsecutiveCalls(1, 'superuser');
 
-        $controller = new LoginController($mockAuditLogService);
+        $controller = new LoginController($mockUserRepository, $mockAuditLogService);
         $controller->setContainer($mockContainer);
         $response = $controller($mockServerRequestInterface);
 
