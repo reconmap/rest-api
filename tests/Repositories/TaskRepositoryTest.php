@@ -39,6 +39,7 @@ class TaskRepositoryTest extends DatabaseTestCase
     public function testFindById()
     {
         $task = $this->subject->findById(1);
+        $this->assertEquals(1, $task['project_is_template']);
         $this->assertEquals('Run port scanner', $task['summary']);
     }
 

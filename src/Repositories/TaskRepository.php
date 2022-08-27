@@ -70,7 +70,8 @@ class TaskRepository extends MysqlRepository implements Findable
     {
         $queryBuilder = new SelectQueryBuilder('task t');
         $queryBuilder->setColumns('
-            t.id, t.project_id, p.name AS project_name, t.insert_ts, t.update_ts, t.priority, t.summary, t.description, t.status, t.due_date,
+            t.id, t.project_id, t.insert_ts, t.update_ts, t.priority, t.summary, t.description, t.status, t.due_date,
+            p.name AS project_name, p.is_template AS project_is_template,
             t.creator_uid, creator.full_name AS creator_full_name,
             t.assignee_uid, assignee.full_name AS assignee_full_name,
             c.id AS command_id, c.name AS command_name, c.output_parser, c.docker_image AS command_docker_image, c.arguments AS command_container_args
