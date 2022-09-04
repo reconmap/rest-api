@@ -3,15 +3,24 @@
 namespace Reconmap\Services;
 
 use GuzzleHttp\Client;
+use Monolog\Logger;
 use Reconmap\Models\User;
 
 class KeycloakService
 {
     private readonly array $config;
 
-    public function __construct(ApplicationConfig $config)
+    public function __construct(private readonly Logger $logger, ApplicationConfig $config)
     {
         $this->config = $config->getSettings('keycloak');
+    }
+
+    private function getClient(): Client
+    {
+        return new Client([
+            'base_uri' => $this->config['baseUri'],
+            'timeout' => 2.0,
+        ]);
     }
 
     public function getPublicKey(): string
@@ -24,10 +33,7 @@ class KeycloakService
 
     public function getAccessToken(): string
     {
-        $client = new Client([
-            'base_uri' => $this->config['baseUri'],
-            'timeout' => 2.0,
-        ]);
+        $client = $this->getClient();
         $response = $client->post('/realms/reconmap/protocol/openid-connect/token', [
             'form_params' => [
                 'grant_type' => 'client_credentials',
@@ -38,15 +44,18 @@ class KeycloakService
         return $json->access_token;
     }
 
-    public function createUser(User $user, string $accessToken)
+    /**
+     * @param User $user
+     * @param string $accessToken
+     * @return string UUID
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function createUser(User $user, string $accessToken): string
     {
-        $client = new Client([
-            'base_uri' => $this->config['baseUri'],
-            'timeout' => 2.0,
-        ]);
+        $client = $this->getClient();
         list($firstName, $lastName) = explode(' ', $user->full_name);
 
-        $client->post('/admin/realms/reconmap/users', [
+        $response = $client->post('/admin/realms/reconmap/users', [
             'headers' => ['Authorization' => 'Bearer ' . $accessToken],
             'json' => [
                 "firstName" => $firstName,
@@ -56,14 +65,14 @@ class KeycloakService
                 "username" => $user->username
             ]
         ]);
+        $newUserLocation = $response->getHeaderLine('Location');
+        $locationParts = explode('/', $newUserLocation);
+        return $locationParts[count($locationParts) - 1];
     }
 
     public function getUser(string $email)
     {
-        $client = new Client([
-            'base_uri' => $this->config['baseUri'],
-            'timeout' => 2.0,
-        ]);
+        $client = $this->getClient();
 
         $client->get('/admin/realms/reconmap/users/?email=' . $email, [
             'headers' => [
@@ -74,12 +83,9 @@ class KeycloakService
 
     public function deleteUser(User $user)
     {
-        $client = new Client([
-            'base_uri' => $this->config['baseUri'],
-            'timeout' => 2.0,
-        ]);
+        $client = $this->getClient();
 
-        $client->delete('/admin/realms/reconmap/users/' . $user->oidc_id, [
+        $client->delete('/admin/realms/reconmap/users/' . $user->subject_id, [
             'headers' => [
                 'Authorization' => 'Bearer ' . $this->getAccessToken()
             ]

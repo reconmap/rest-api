@@ -15,11 +15,11 @@ use Reconmap\Services\PasswordGenerator;
 class CreateUserController extends Controller
 {
     public function __construct(
-        private readonly KeycloakService $keycloakService,
-        private UserRepository           $userRepository,
-        private PasswordGenerator        $passwordGenerator,
-        private EmailService             $emailService,
-        private AuditLogService          $auditLogService
+        private readonly KeycloakService   $keycloakService,
+        private readonly UserRepository    $userRepository,
+        private readonly PasswordGenerator $passwordGenerator,
+        private readonly EmailService      $emailService,
+        private readonly AuditLogService   $auditLogService
     )
     {
     }
@@ -32,14 +32,15 @@ class CreateUserController extends Controller
             public ?bool $sendEmailToUser;
         });
 
+        $accessToken = $this->keycloakService->getAccessToken();
+        $user->subject_id = $this->keycloakService->createUser($user, $accessToken);
+
         $user->id = $this->userRepository->create($user);
 
         $loggedInUserId = $request->getAttribute('userId');
 
         $this->auditAction($loggedInUserId, $user->id);
 
-        $accessToken = $this->keycloakService->getAccessToken();
-        $this->keycloakService->createUser($user, $accessToken);
 
         return (array)$user;
     }

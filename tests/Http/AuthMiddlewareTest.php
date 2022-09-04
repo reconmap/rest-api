@@ -11,6 +11,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Reconmap\ApplicationConfigTestingTrait;
+use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\JwtPayloadCreator;
 use Reconmap\Services\KeycloakService;
 
@@ -37,6 +38,8 @@ class AuthMiddlewareTest extends TestCase
         $jwtPayload = (new JwtPayloadCreator($config))->createFromUserArray($user);
         $jwt = JWT::encode($jwtPayload, $config['jwt']['key'], 'HS256');
 
+        $mockUserRepository = $this->createMock(UserRepository::class);
+
         $request = $this->createMock(ServerRequestInterface::class);
         $request->expects($this->once())
             ->method('getHeader')
@@ -62,7 +65,7 @@ class AuthMiddlewareTest extends TestCase
         $mockLogger = $this->createMock(Logger::class);
 
         /** @var AuthMiddleware */
-        $middleware = new AuthMiddleware($mockKeycloak, $mockLogger, $config);
+        $middleware = new AuthMiddleware($mockUserRepository, $mockKeycloak, $mockLogger, $config);
         $response = $middleware->process($request, $handler);
 
         $this->assertEquals(StatusCodeInterface::STATUS_BAD_REQUEST, $response->getStatusCode());

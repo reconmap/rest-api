@@ -35,6 +35,7 @@ CREATE TABLE user
     id          INT UNSIGNED  NOT NULL AUTO_INCREMENT,
     insert_ts   TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_ts   TIMESTAMP     NULL ON UPDATE CURRENT_TIMESTAMP,
+    subject_id  VARCHAR(40)   NOT NULL COMMENT 'JWT sub',
     active      BOOLEAN       NOT NULL DEFAULT TRUE,
     email       VARCHAR(200)  NOT NULL,
     role        ENUM ('administrator', 'superuser', 'user', 'client'),

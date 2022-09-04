@@ -1,7 +1,7 @@
 USE reconmap;
 
-INSERT INTO user (id, full_name, username, email, role)
-VALUES (1, 'Administrator', 'admin', 'admin@localhost',
+INSERT INTO user (id, subject_id, full_name, username, email, role)
+VALUES (1, 'fec17265-a0ae-4d5a-9e20-63487fc21b67', 'Administrator', 'admin', 'admin@localhost',
         'administrator');
 
 INSERT INTO audit_log (user_id, client_ip, action)

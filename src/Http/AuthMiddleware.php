@@ -15,13 +15,15 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\Keycloak;
 use Reconmap\Services\KeycloakService;
 
 class AuthMiddleware implements MiddlewareInterface
 {
-    public function __construct(private readonly KeycloakService   $keycloak,
+    public function __construct(private readonly UserRepository    $userRepository,
+                                private readonly KeycloakService   $keycloak,
                                 private readonly Logger            $logger,
                                 private readonly ApplicationConfig $config)
     {
@@ -46,8 +48,13 @@ class AuthMiddleware implements MiddlewareInterface
                 throw new ForbiddenException("Invalid JWT audience: " . $token->aud);
             }
 
-            $request = $request->withAttribute('userId', 1)//$token->data->id)
-            ->withAttribute('role', 'administrator');//$token->data->role);
+            $dbUser = $this->userRepository->findBySubjectId($token->sub);
+            if (is_null($dbUser)) {
+                $this->logger->error('No user with subject: ' . $token->sub);
+            }
+
+            $request = $request->withAttribute('userId', $dbUser['id'])
+                ->withAttribute('role', $token->resource_access->{'web-client'}->roles[0]);
             return $handler->handle($request);
         } catch (ForbiddenException|ExpiredException $e) {
             $this->logger->warning($e->getMessage());

@@ -5,7 +5,7 @@ namespace Reconmap\Models;
 class User
 {
     public ?int $id;
-    public ?string $oidc_id;
+    public ?string $subject_id;
     public bool $active = true;
     public string $full_name;
     public ?string $short_bio;

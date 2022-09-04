@@ -44,7 +44,7 @@ class UserRepositoryTest extends DatabaseTestCase
         $user = new User();
         $user->full_name = 'Mr Happy';
         $user->username = 'mrhappy';
-        $user->password = 'Password123';
+        $user->subject_id = 'yyyy-xxxx';
         $user->email = 'mr.happy@emailprovider.internet';
         $user->role = 'administrator';
 

@@ -43,6 +43,22 @@ class UserRepository extends MysqlRepository
         return $user;
     }
 
+    public function findBySubjectId(string $subjectId): ?array
+    {
+        $queryBuilder = $this->getBaseSelectQueryBuilder();
+        $queryBuilder->setColumns($queryBuilder->getColumns());
+        $queryBuilder->setWhere('u.subject_id = ?');
+
+        $stmt = $this->db->prepare($queryBuilder->toSql());
+        $stmt->bind_param('s', $subjectId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $user = $result->fetch_assoc();
+        $stmt->close();
+
+        return $user;
+    }
+
     protected function getBaseSelectQueryBuilder(): SelectQueryBuilder
     {
         $queryBuilder = new SelectQueryBuilder('user u');
@@ -79,9 +95,9 @@ class UserRepository extends MysqlRepository
     public function create(User $user): int
     {
         $insertStmt = new InsertQueryBuilder('user');
-        $insertStmt->setColumns('active, full_name, short_bio, username, email, role');
+        $insertStmt->setColumns('subject_id, active, full_name, short_bio, username, email, role');
         $stmt = $this->db->prepare($insertStmt->toSql());
-        $stmt->bind_param('isssss', $user->active, $user->full_name, $user->short_bio, $user->username, $user->email, $user->role);
+        $stmt->bind_param('sisssss', $user->subject_id, $user->active, $user->full_name, $user->short_bio, $user->username, $user->email, $user->role);
         return $this->executeInsertStatement($stmt);
     }
 
