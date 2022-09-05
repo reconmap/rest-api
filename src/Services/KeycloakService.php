@@ -81,11 +81,11 @@ class KeycloakService
         ]);
     }
 
-    public function deleteUser(User $user)
+    public function deleteUser(array $user)
     {
         $client = $this->getClient();
 
-        $client->delete('/admin/realms/reconmap/users/' . $user->subject_id, [
+        $client->delete('/admin/realms/reconmap/users/' . $user['subject_id'], [
             'headers' => [
                 'Authorization' => 'Bearer ' . $this->getAccessToken()
             ]

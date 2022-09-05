@@ -11,8 +11,9 @@ use Reconmap\Services\KeycloakService;
 
 class DeleteUserController extends Controller
 {
-    public function __construct(private UserRepository           $repository,
-                                private ActivityPublisherService $activityPublisherService)
+    public function __construct(private readonly UserRepository           $userRepository,
+                                private readonly KeycloakService          $keycloakService,
+                                private readonly ActivityPublisherService $activityPublisherService)
     {
     }
 
@@ -21,12 +22,11 @@ class DeleteUserController extends Controller
         $userId = (int)$args['userId'];
         $loggedInUserId = $request->getAttribute('userId');
 
-        $user = $this->repository->findById($userId);
+        $user = $this->userRepository->findById($userId);
 
-        $kc = new KeycloakService();
-        $kc->deleteUser($user);
+        $this->keycloakService->deleteUser($user);
 
-        $success = $this->repository->deleteById($userId);
+        $success = $this->userRepository->deleteById($userId);
 
         $this->auditAction($loggedInUserId, $userId);
 
