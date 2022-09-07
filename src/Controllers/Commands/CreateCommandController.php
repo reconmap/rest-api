@@ -9,7 +9,7 @@ use Reconmap\Repositories\CommandRepository;
 
 class CreateCommandController extends Controller
 {
-    public function __construct(private CommandRepository $repository)
+    public function __construct(private readonly CommandRepository $repository)
     {
     }
 

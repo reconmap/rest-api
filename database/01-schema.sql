@@ -374,6 +374,22 @@ CREATE TABLE command
     FOREIGN KEY (creator_uid) REFERENCES user (id) ON DELETE NO ACTION
 ) ENGINE = InnoDB;
 
+DROP TABLE IF EXISTS command_schedule;
+
+CREATE TABLE command_schedule
+(
+    id              INT UNSIGNED  NOT NULL AUTO_INCREMENT,
+    creator_uid     INT UNSIGNED  NOT NULL,
+    insert_ts       TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_ts       TIMESTAMP     NULL ON UPDATE CURRENT_TIMESTAMP,
+    command_id      INT UNSIGNED  NULL,
+    argument_values VARCHAR(1000) NULL,
+    cron_expression VARCHAR(60)   NOT NULL,
+
+    PRIMARY KEY (id),
+    FOREIGN KEY (command_id) REFERENCES command (id) ON DELETE CASCADE
+) ENGINE = InnoDB;
+
 DROP TABLE IF EXISTS report;
 
 CREATE TABLE report
