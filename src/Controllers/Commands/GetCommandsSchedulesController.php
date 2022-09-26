@@ -7,7 +7,7 @@ use Reconmap\Controllers\SecureController;
 use Reconmap\Repositories\CommandScheduleRepository;
 use Reconmap\Services\Security\AuthorisationService;
 
-class GetCommandSchedulesController extends SecureController
+class GetCommandsSchedulesController extends SecureController
 {
     public function __construct(AuthorisationService                       $authorisationService,
                                 private readonly CommandScheduleRepository $repository)
