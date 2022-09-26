@@ -24,6 +24,18 @@ class CommandScheduleRepository extends MysqlRepository implements Deletable
         'tags' => 's'
     ];
 
+    public function findByCommandId(int $commandId): array
+    {
+        $queryBuilder = $this->getBaseSelectQueryBuilder();
+        $queryBuilder->setWhere('ce.command_id = ?');
+        $sql = $queryBuilder->toSql();
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$commandId]);
+        $result = $stmt->get_result();
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
     public function findById(int $id): ?array
     {
         $sql = <<<SQL
@@ -64,7 +76,7 @@ SQL;
 
     protected function getBaseSelectQueryBuilder(): SelectQueryBuilder
     {
-        return new SelectQueryBuilder('command_schedule c');
+        return new SelectQueryBuilder('command_schedule ce');
     }
 
     public function deleteById(int $id): bool
