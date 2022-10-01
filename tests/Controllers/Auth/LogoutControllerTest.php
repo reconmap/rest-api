@@ -37,7 +37,7 @@ class LogoutControllerTest extends TestCase
 
         $controller = new LogoutController($mockAuditLogService);
         $controller->setContainer($mockContainer);
-        $response = $controller($mockRequest);
+        $response = $controller($mockRequest, []);
 
         $this->assertEquals(StatusCodeInterface::STATUS_OK, $response->getStatusCode());
     }

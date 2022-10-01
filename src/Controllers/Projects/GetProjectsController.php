@@ -12,7 +12,7 @@ use Reconmap\Services\PaginationRequestHandler;
 
 class GetProjectsController extends Controller
 {
-    public function __construct(private readonly ProjectRepository $projectRepository,
+    public function __construct(private readonly ProjectRepository     $projectRepository,
                                 private readonly ProjectSearchCriteria $projectSearchCriteria)
     {
     }
@@ -36,8 +36,6 @@ class GetProjectsController extends Controller
         if (isset($params['isTemplate'])) {
             $isTemplate = filter_var($params['isTemplate'], FILTER_VALIDATE_BOOL);
             $this->projectSearchCriteria->addTemplateCriterion($isTemplate);
-        } else {
-            $this->projectSearchCriteria->addIsNotTemplateCriterion();
         }
         if (!$user->isAdministrator()) {
             $this->projectSearchCriteria->addUserCriterion($user->id);

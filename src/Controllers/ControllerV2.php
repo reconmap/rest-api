@@ -9,9 +9,9 @@ use Reconmap\Services\Security\AuthorisationService;
 
 abstract class ControllerV2 extends Controller
 {
-    public function __invoke(ServerRequestInterface $serverRequest): ResponseInterface
+    public function __invoke(ServerRequestInterface $serverRequest, array $args): ResponseInterface
     {
-        $applicationRequest = new ApplicationRequest($serverRequest);
+        $applicationRequest = new ApplicationRequest($serverRequest, $args);
         $user = $applicationRequest->getUser();
 
         /** @var AuthorisationService $authorisationService */

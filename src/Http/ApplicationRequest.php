@@ -9,8 +9,13 @@ class ApplicationRequest
 {
     private ?User $user = null;
 
-    public function __construct(private readonly ServerRequestInterface $serverRequest)
+    public function __construct(private readonly ServerRequestInterface $serverRequest, private readonly array $args)
     {
+    }
+
+    public function getArgs(): array
+    {
+        return $this->args;
     }
 
     public function getUser(): User

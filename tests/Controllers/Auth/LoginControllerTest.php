@@ -57,7 +57,7 @@ class LoginControllerTest extends TestCase
 
         $controller = new LoginController($mockUserRepository, $mockAuditLogService);
         $controller->setContainer($mockContainer);
-        $response = $controller($mockServerRequestInterface);
+        $response = $controller($mockServerRequestInterface, []);
 
         $this->assertEquals(StatusCodeInterface::STATUS_OK, $response->getStatusCode());
     }

@@ -8,7 +8,7 @@ use Reconmap\Repositories\ProjectRepository;
 
 class CloneProjectController extends Controller
 {
-    public function __construct(private ProjectRepository $projectRepository)
+    public function __construct(private readonly ProjectRepository $projectRepository)
     {
     }
 

@@ -37,6 +37,18 @@ class TaskRepository extends MysqlRepository implements Findable
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
+    public function clone(int $taskId, int $userId): array
+    {
+        $originalTask = array_filter($this->findById($taskId),
+            fn($key) => in_array($key, array_keys(self::UPDATABLE_COLUMNS_TYPES)), mode: ARRAY_FILTER_USE_KEY);
+        $task = new Task();
+        $task->creator_uid = $userId;
+        foreach ($originalTask as $k => $v) {
+            $task->{$k} = $v;
+        }
+        return ['taskId' => $this->insert($task)];
+    }
+
     public function findByKeywords(string $keywords): array
     {
         $queryBuilder = $this->getBaseSelectQueryBuilder();

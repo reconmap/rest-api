@@ -12,6 +12,7 @@ class TasksRouter
         $router->map('GET', '/tasks', GetTasksController::class);
         $router->map('PATCH', '/tasks', BulkUpdateTasksController::class);
         $router->map('GET', '/tasks/{taskId:number}', GetTaskController::class);
+        $router->map('POST', '/tasks/{taskId:number}/clone', CloneTaskController::class);
         $router->map('PATCH', '/tasks/{taskId:number}', UpdateTaskController::class);
         $router->map('DELETE', '/tasks/{taskId:number}', DeleteTaskController::class);
     }
