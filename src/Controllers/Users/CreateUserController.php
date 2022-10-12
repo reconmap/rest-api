@@ -32,10 +32,29 @@ class CreateUserController extends Controller
             public ?bool $sendEmailToUser;
         });
 
+        $passwordGenerationMethodIsAuto = empty($user->unencryptedPassword);
+        if ($passwordGenerationMethodIsAuto) {
+            $user->unencryptedPassword = $this->passwordGenerator->generate(24);
+        }
+
         $accessToken = $this->keycloakService->getAccessToken();
-        $user->subject_id = $this->keycloakService->createUser($user, $accessToken);
+        $user->subject_id = $this->keycloakService->createUser($user, $user->unencryptedPassword, $accessToken);
 
         $user->id = $this->userRepository->create($user);
+
+        if ($passwordGenerationMethodIsAuto || $user->sendEmailToUser) {
+            $this->emailService->queueTemplatedEmail(
+                'users/newAccount',
+                [
+                    'user' => (array)$user,
+                    'unencryptedPassword' => $user->unencryptedPassword
+                ],
+                'Account created',
+                [$user->email => $user->full_name]
+            );
+        } else {
+            $this->logger->debug('Email invitation not sent', ['email' => $user->email]);
+        }
 
         $loggedInUserId = $request->getAttribute('userId');
 

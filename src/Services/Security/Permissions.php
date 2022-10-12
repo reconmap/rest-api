@@ -21,9 +21,11 @@ class Permissions
             'commands.*',
             'tasks.*',
             'projects.*',
+            'users.login',
         ],
         'client' => [
-            'projects.list'
+            'projects.list',
+            'users.login',
         ]
     ];
 }

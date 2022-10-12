@@ -50,7 +50,7 @@ class KeycloakService
      * @return string UUID
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function createUser(User $user, string $accessToken): string
+    public function createUser(User $user, string $password, string $accessToken): string
     {
         $client = $this->getClient();
         list($firstName, $lastName) = explode(' ', $user->full_name);
@@ -62,7 +62,13 @@ class KeycloakService
                 "lastName" => $lastName,
                 "email" => $user->email,
                 "enabled" => "true",
-                "username" => $user->username
+                "username" => $user->username,
+                "credentials" => [
+                    ["type" => "password", "value" => $password, "temporary" => false]
+                ],
+                "groups" => [
+                    $user->role . "-group"
+                ]
             ]
         ]);
         $newUserLocation = $response->getHeaderLine('Location');

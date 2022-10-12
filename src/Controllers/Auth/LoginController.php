@@ -19,6 +19,11 @@ class LoginController extends ControllerV2
     {
     }
 
+    protected function getPermissionRequired(): string
+    {
+        return 'users.login';
+    }
+
     protected function process(ApplicationRequest $request): ResponseInterface
     {
         $requestUser = $request->getUser();

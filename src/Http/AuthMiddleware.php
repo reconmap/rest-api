@@ -17,7 +17,6 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\ApplicationConfig;
-use Reconmap\Services\Keycloak;
 use Reconmap\Services\KeycloakService;
 
 class AuthMiddleware implements MiddlewareInterface
@@ -57,8 +56,9 @@ class AuthMiddleware implements MiddlewareInterface
                     ->withAttribute('role', 'administrator'); // api
 
             } else {
+                $tokenRole = $this->extractRoleFromToken($token);
                 $request = $request->withAttribute('userId', $dbUser['id'])
-                    ->withAttribute('role', $token->resource_access->{'web-client'}->roles[0]);
+                    ->withAttribute('role', $tokenRole);
 
             }
             return $handler->handle($request);
@@ -94,5 +94,14 @@ class AuthMiddleware implements MiddlewareInterface
             throw new ForbiddenException("Invalid 'Bearer' token");
         }
         return $authHeaderParts[1];
+    }
+
+    private function extractRoleFromToken(object $token): string
+    {
+        if (isset($token->resource_access->{'web-client'}->roles[0])) {
+            return $token->resource_access->{'web-client'}->roles[0];
+        }
+
+        return $token->realm_access->resource_access->{'web-client'}->roles[0];
     }
 }
