@@ -33,6 +33,10 @@
     "gitter": {
       "token": "yourpersonaltoken",
       "roomId": "yourroomid"
+    },
+    "maxmind": {
+      "enabled": false,
+      "dbPath": "/var/www/webapp/data/GeoLite2-City.mmdb"
     }
   }
 }

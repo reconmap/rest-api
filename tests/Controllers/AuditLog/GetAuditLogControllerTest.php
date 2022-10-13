@@ -6,6 +6,7 @@ use Fig\Http\Message\StatusCodeInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\ControllerTestCase;
 use Reconmap\Repositories\AuditLogRepository;
+use Reconmap\Services\ApplicationConfig;
 
 class GetAuditLogControllerTest extends ControllerTestCase
 {
@@ -25,12 +26,17 @@ class GetAuditLogControllerTest extends ControllerTestCase
             ->method('getQueryParams')
             ->willReturn(['page' => 1]);
 
+        $mockConfig = $this->createMock(ApplicationConfig::class);
+        $mockConfig->expects($this->once())
+            ->method('offsetGet')
+            ->willReturn([]);
+
         $mockAuthorisationService = $this->createAuthorisationServiceMock();
 
         /**
          * @var $controller GetAuditLogController
          */
-        $controller = $this->injectController(new GetAuditLogController($mockAuthorisationService, $mockRepository));
+        $controller = $this->injectController(new GetAuditLogController($mockAuthorisationService, $mockRepository, $mockConfig));
         $response = $controller($mockRequest);
         $this->assertEquals(StatusCodeInterface::STATUS_OK, $response->getStatusCode());
         $this->assertEquals(1, $response->getHeaderLine('X-Page-Count'));
