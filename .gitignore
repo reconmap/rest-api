@@ -12,3 +12,4 @@ environment.js
 tags
 *.code-workspace
 data/*.mmdb
+tags.*
