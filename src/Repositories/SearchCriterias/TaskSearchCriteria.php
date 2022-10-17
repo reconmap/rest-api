@@ -47,4 +47,9 @@ class TaskSearchCriteria extends SearchCriteria
     {
         $this->addCriterion('(p.visibility = "public" OR ? IN (SELECT user_id FROM project_user WHERE project_id = p.id))', [$userId]);
     }
+
+    public function addProjectArchivedCriterion(int $projectIsArchived)
+    {
+        $this->addCriterion('p.archived = ?', [$projectIsArchived]);
+    }
 }

@@ -10,7 +10,7 @@ use Reconmap\Services\PaginationRequestHandler;
 
 class GetTasksController extends Controller
 {
-    public function __construct(private readonly TaskRepository $repository,
+    public function __construct(private readonly TaskRepository     $repository,
                                 private readonly TaskSearchCriteria $searchCriteria)
     {
     }
@@ -48,6 +48,9 @@ class GetTasksController extends Controller
         }
         if (isset($params['priority'])) {
             $this->searchCriteria->addPriorityCriterion($params['priority']);
+        }
+        if (isset($params['projectIsArchived'])) {
+            $this->searchCriteria->addProjectArchivedCriterion(intval($params['projectIsArchived']));
         }
 
         return $this->repository->search($this->searchCriteria, $paginator);

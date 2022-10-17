@@ -8,7 +8,7 @@ use Reconmap\Repositories\TaskRepository;
 
 class GetProjectTasksController extends Controller
 {
-    public function __construct(private TaskRepository $taskRepository)
+    public function __construct(private readonly TaskRepository $taskRepository)
     {
     }
 
