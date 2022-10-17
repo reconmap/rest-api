@@ -9,7 +9,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class TestDataGeneratorCommand extends Command
 {
-    public function __construct(private TestDataGenerator $testDataGenerator)
+    public function __construct(private readonly TestDataGenerator $testDataGenerator)
     {
         parent::__construct();
     }

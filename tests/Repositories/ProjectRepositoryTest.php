@@ -18,8 +18,10 @@ class ProjectRepositoryTest extends DatabaseTestCase
 
     public function testFindById()
     {
+        $projectId = 2;
+
         $expectedProject = [
-            'id' => 1,
+            'id' => $projectId,
             'update_ts' => null,
             'creator_uid' => 1,
             'client_id' => null,
@@ -39,10 +41,10 @@ class ProjectRepositoryTest extends DatabaseTestCase
             'vulnerability_metrics' => null,
             'management_summary' => null,
             'management_conclusion' => null,
-            'num_tasks' => 4,
+            'num_tasks' => 3,
         ];
 
-        $project1 = $this->subject->findById(1);
+        $project1 = $this->subject->findById($projectId);
         unset($project1['insert_ts']); // Can't compare against a changing date/time
         $this->assertEquals($expectedProject, $project1);
     }
@@ -59,17 +61,17 @@ class ProjectRepositoryTest extends DatabaseTestCase
         $searchCriteria->addCriterion('p.is_template = 1');
         $projects = $this->subject->search($searchCriteria);
         $this->assertCount(1, $projects);
-        $this->assertEquals(4, $projects[0]['num_tasks']);
+        $this->assertEquals(3, $projects[0]['num_tasks']);
     }
 
     public function testIsVisibleToUser()
     {
-        $this->assertTrue($this->subject->isVisibleToUser(2, 1));
+        $this->assertTrue($this->subject->isVisibleToUser(4, 1));
     }
 
     public function testIsNotVisibleToUser()
     {
-        $this->assertFalse($this->subject->isVisibleToUser(4, 1));
+        $this->assertFalse($this->subject->isVisibleToUser(5, 1));
     }
 
     public function testDeleteById()
@@ -89,6 +91,6 @@ class ProjectRepositoryTest extends DatabaseTestCase
         $project->creator_uid = 1;
         $project->visibility = 'public';
         $projectId = $this->subject->insert($project);
-        $this->assertEquals(6, $projectId);
+        $this->assertEquals(7, $projectId);
     }
 }

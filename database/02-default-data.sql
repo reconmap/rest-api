@@ -161,3 +161,16 @@ VALUES ('Managed security monitoring',
         'Protects the defenses around the network from external attackers as well as from bad insiders.Relevant activities including establishing the controls and processes that limit access to sensitive data in the network and on the end point.'),
        ('Penetration testing',
         'Also known as pentesting, which entails simulating a cyberattack against the organization’s information and technology assets to check for exploitable vulnerabilities. This service constitutes a form of ethical hacking that can be very effective at uncovering the vulnerabilities that may be successfully targeted by hackers ');
+
+INSERT INTO project (creator_uid, name, description, engagement_end_date)
+VALUES (1, 'Onboarding to Reconmap', 'Project to ensure all Reconmap\'s onboarding tasks are done in order.',
+        CURRENT_DATE);
+
+INSERT INTO task (creator_uid, assignee_uid, project_id, summary, description)
+VALUES (1, 1, 1, '1. Update your organisation details', '[Follow this link](/settings/organisation)'),
+       (1, 1, 1, '2. Update your preferences', '[Follow this link](/users/preferences)'),
+       (1, 1, 1, '3. Invite your team', '[Follow this link](/users/create)'),
+       (1, 1, 1, '4. Create client', '[Follow this link](/clients/create)'),
+       (1, 1, 1, '5. Create project', '[Follow this link](/projects/create)'),
+       (1, 1, 1, '6. Archive the onboarding project', NULL);
+

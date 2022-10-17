@@ -19,18 +19,20 @@ use Reconmap\Repositories\TargetRepository;
 class TestDataGenerator
 {
     public function __construct(
-        private readonly UserTestDataGenerator $userTestDataGenerator,
-        private readonly ContactRepository $contactRepository,
-        private readonly ClientRepository $clientRepository,
-        private readonly ProjectTestDataGenerator $projectTestDataGenerator,
-        private readonly NoteTestDataGenerator $noteTestDataGenerator,
-        private readonly DocumentRepository $documentRepository,
-        private readonly TaskTestDataGenerator $taskTestDataGenerator,
+        private readonly UserTestDataGenerator          $userTestDataGenerator,
+        private readonly ContactRepository              $contactRepository,
+        private readonly ClientRepository               $clientRepository,
+        private readonly ProjectTestDataGenerator       $projectTestDataGenerator,
+        private readonly NoteTestDataGenerator          $noteTestDataGenerator,
+        private readonly DocumentRepository             $documentRepository,
+        private readonly TaskTestDataGenerator          $taskTestDataGenerator,
         private readonly VulnerabilityTestDataGenerator $vulnerabilityTestDataGenerator,
-        private readonly NotificationsRepository $notificationsRepository,
-        private readonly ReportRepository $reportRepository,
-        private readonly ProjectUserRepository $projectUserRepository,
-        private readonly TargetRepository $targetRepository)
+        private readonly NotificationsRepository        $notificationsRepository,
+        private readonly ReportRepository               $reportRepository,
+        private readonly ProjectUserRepository          $projectUserRepository,
+        private readonly TargetRepository               $targetRepository,
+        private readonly CommandTestDataGenerator       $commandTestDataGenerator
+    )
     {
     }
 
@@ -93,6 +95,7 @@ class TestDataGenerator
        ]';
         $this->targetRepository->insert($target);
 
+        $this->commandTestDataGenerator->run();
         $this->userTestDataGenerator->run();
         $this->noteTestDataGenerator->run();
         $this->taskTestDataGenerator->run();

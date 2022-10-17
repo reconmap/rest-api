@@ -11,7 +11,7 @@ use Reconmap\Services\ActivityPublisherService;
 
 class UpdateProjectController extends Controller
 {
-    public function __construct(private readonly ProjectRepository $repository,
+    public function __construct(private readonly ProjectRepository        $repository,
                                 private readonly ActivityPublisherService $activityPublisherService)
     {
     }
@@ -29,7 +29,7 @@ class UpdateProjectController extends Controller
 
         $success = false;
         if (!empty($newColumnValues)) {
-            NullColumnReplacer::replaceEmptyWithNulls(['category_id', 'engagement_start_date', 'engagement_end_date', 'external_id', 'vulnerability_metrics'], $newColumnValues);
+            NullColumnReplacer::replaceEmptyWithNulls(['category_id', 'client_id', 'engagement_start_date', 'engagement_end_date', 'external_id', 'vulnerability_metrics'], $newColumnValues);
 
             $success = $this->repository->updateById($projectId, $newColumnValues);
 
