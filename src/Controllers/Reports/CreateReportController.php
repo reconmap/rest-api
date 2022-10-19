@@ -20,29 +20,13 @@ use Reconmap\Utils\ArrayUtils;
 class CreateReportController extends Controller
 {
     public function __construct(
-        private readonly AttachmentFilePath $attachmentFilePathService,
-        private readonly ProjectRepository $projectRepository,
-        private readonly ReportRepository $reportRepository,
+        private readonly AttachmentFilePath   $attachmentFilePathService,
+        private readonly ProjectRepository    $projectRepository,
+        private readonly ReportRepository     $reportRepository,
         private readonly AttachmentRepository $attachmentRepository,
-        private readonly ReportDataCollector $reportDataCollector
+        private readonly ReportDataCollector  $reportDataCollector
     )
     {
-    }
-
-    protected function getHTMLElements($xpath, $xpathquery)
-    {
-        $elements = $xpath->query($xpathquery);
-
-        if (!is_null($elements)) {
-            $resultarray = array();
-            foreach ($elements as $element) {
-                $nodes = $element->childNodes;
-                foreach ($nodes as $node) {
-                    $resultarray[] = $node->nodeValue;
-                }
-            }
-            return $resultarray;
-        }
     }
 
     public function __invoke(ServerRequestInterface $request): array
@@ -187,18 +171,23 @@ class CreateReportController extends Controller
                     }
 
                     if (!is_null($vulnerability['proof_of_concept'])) {
-                        $description = $markdownParser->convert($vulnerability['proof_of_concept']);
+                        $proofOfConcept = $markdownParser->convert($vulnerability['proof_of_concept']);
                         $dom = new \DomDocument();
-                        $dom->loadHTML(strval($description));
+                        $dom->loadHTML(strval($proofOfConcept));
                         $xpath = new \DOMXpath($dom);
 
-                        // uses only code examples (``` in MD)
-                        $codeExamples = $this->getHTMLElements($xpath, '//code');
                         $tempTable = $word->addSection()->addTable();
 
-                        $codeFontStyle = array('align' => 'center', 'name' => 'Courier', 'size' => 9);
-                        foreach ($codeExamples as $key => $example) {
-                            $tempTable->addRow()->addCell()->addText($example, $codeFontStyle, array('align' => 'left'));
+                        $elements = $xpath->evaluate('//body/*');
+                        foreach ($elements as $node) {
+                            $cell = $tempTable->addRow()->addCell();
+                            if ($node->tagName === 'pre') {
+                                $node = $node->firstChild;
+                                $node->setAttribute('style', 'font-family: Courier; font-size: 9px;');
+                                Html::addHtml($cell, nl2br($node->ownerDocument->saveXML($node)));
+                            } else {
+                                Html::addHtml($cell, $node->ownerDocument->saveXML($node));
+                            }
                         }
 
                         $template->setComplexBlock('vulnerability.proof_of_concept#' . ($index + 1), $tempTable);
