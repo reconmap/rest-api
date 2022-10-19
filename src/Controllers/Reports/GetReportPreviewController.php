@@ -10,7 +10,7 @@ use Reconmap\Services\Reporting\ReportGenerator;
 
 class GetReportPreviewController extends Controller
 {
-    public function __construct(private ReportGenerator $reportGenerator)
+    public function __construct(private readonly ReportGenerator $reportGenerator)
     {
     }
 

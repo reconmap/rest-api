@@ -13,7 +13,7 @@ class TemplateEngine
     {
         $this->templatesDirectory = $config->getAppDir() . '/resources/templates';
         $filesystemLoader = new FilesystemLoader($this->templatesDirectory);
-        $this->environment = new \Twig\Environment($filesystemLoader);
+        $this->environment = new \Twig\Environment($filesystemLoader, ['strict_variables' => true]);
     }
 
     public function render(string $templateName, array $context): string

@@ -24,20 +24,20 @@ use Reconmap\Services\Filesystem\AttachmentFilePath;
 class ReportDataCollector
 {
     public function __construct(
-        private readonly ProjectRepository $projectRepository,
-        private readonly ReportRepository $reportRepository,
-        private readonly ReportConfigurationRepository $reportConfigurationRepository,
-        private readonly VulnerabilityRepository $vulnerabilityRepository,
+        private readonly ProjectRepository               $projectRepository,
+        private readonly ReportRepository                $reportRepository,
+        private readonly ReportConfigurationRepository   $reportConfigurationRepository,
+        private readonly VulnerabilityRepository         $vulnerabilityRepository,
         private readonly VulnerabilityCategoryRepository $vulnerabilityCategoryRepository,
-        private readonly OrganisationRepository $organisationRepository,
-        private readonly UserRepository $userRepository,
-        private readonly ClientRepository $clientRepository,
-        private readonly TaskRepository $taskRepository,
-        private readonly TargetRepository $targetRepository,
-        private readonly ContactRepository $contactRepository,
-        private readonly AttachmentRepository $attachmentRepository,
-        private readonly AttachmentFilePath $attachmentFilePathService,
-        private readonly VaultRepository $vaultRepository,
+        private readonly OrganisationRepository          $organisationRepository,
+        private readonly UserRepository                  $userRepository,
+        private readonly ClientRepository                $clientRepository,
+        private readonly TaskRepository                  $taskRepository,
+        private readonly TargetRepository                $targetRepository,
+        private readonly ContactRepository               $contactRepository,
+        private readonly AttachmentRepository            $attachmentRepository,
+        private readonly AttachmentFilePath              $attachmentFilePathService,
+        private readonly VaultRepository                 $vaultRepository,
     )
     {
     }

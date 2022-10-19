@@ -7,8 +7,8 @@ use Reconmap\Services\TemplateEngine;
 class ReportGenerator
 {
     public function __construct(
-        private ReportDataCollector $reportDataCollector,
-        private TemplateEngine      $templateEngine)
+        private readonly ReportDataCollector $reportDataCollector,
+        private readonly TemplateEngine      $templateEngine)
     {
     }
 
