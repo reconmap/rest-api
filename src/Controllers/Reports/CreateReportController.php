@@ -182,9 +182,9 @@ class CreateReportController extends Controller
                         foreach ($elements as $node) {
                             $cell = $tempTable->addRow()->addCell();
                             if ($node->tagName === 'pre') {
-                                $node = $node->firstChild;
-                                $node->setAttribute('style', 'font-family: Courier; font-size: 9px;');
-                                Html::addHtml($cell, nl2br($node->ownerDocument->saveXML($node)));
+                                $nodeDiv = $dom->createElement("p", $node->nodeValue);
+                                $nodeDiv->setAttribute('style', 'font-family: Courier; font-size: 10px;');
+                                Html::addHtml($cell, nl2br($node->ownerDocument->saveXML($nodeDiv)));
                             } else {
                                 Html::addHtml($cell, $node->ownerDocument->saveXML($node));
                             }
