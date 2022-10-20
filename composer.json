@@ -1,7 +1,7 @@
 {
-	"name": "reconmap/rest-api",
-	"description": "Reconmap REST API",
-	"license": "Apache-2.0",
+    "name": "reconmap/rest-api",
+    "description": "Reconmap REST API",
+    "license": "Apache-2.0",
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
@@ -29,14 +29,14 @@
         "league/route": "^5.0",
         "monolog/monolog": "^3.0",
         "netresearch/jsonmapper": "^4.0",
-        "phpoffice/phpword": "^0.18.2",
+        "phpoffice/phpword": "^0.18",
         "ponup/sql-builders": "^1.0",
         "symfony/filesystem": "^6.0",
         "twig/twig": "^3.0",
         "reconmap/command-output-parsers": "^2.0",
         "symfony/console": "^6.0",
         "symfony/mailer": "^6.0",
-		"geoip2/geoip2": "~2.0"
+        "geoip2/geoip2": "~2.0"
     },
     "autoload": {
         "psr-4": {
