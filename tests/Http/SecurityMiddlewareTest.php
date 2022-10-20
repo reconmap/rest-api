@@ -32,7 +32,7 @@ class SecurityMiddlewareTest extends TestCase
         $response = $middleware->process($mockRequest, $mockHandler);
         $this->assertTrue($response->hasHeader('Strict-Transport-Security'));
         $this->assertTrue($response->hasHeader('Referrer-Policy'));
-        $this->assertTrue($response->hasHeader('X-Content-Type-Options'));
+        $this->assertEquals('frame-ancestors some.where', $response->getHeaderLine('Content-Security-Policy'));
         $this->assertTrue($response->hasHeader('X-Permitted-Cross-Domain-Policies'));
         $this->assertTrue($response->hasHeader('X-XSS-Protection'));
     }
