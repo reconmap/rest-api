@@ -163,6 +163,16 @@ class CreateReportController extends Controller
                         $template->setComplexBlock('vulnerability.description#' . ($index + 1), $tempTable);
                     }
 
+                    if (!is_null($vulnerability['remediation'])) {
+                        $remediation = $markdownParser->convert($vulnerability['remediation']);
+
+                        $tempTable = $word->addSection()->addTable();
+                        $cell = $tempTable->addRow()->addCell();
+                        Html::addHtml($cell, $remediation);
+
+                        $template->setComplexBlock('vulnerability.remediation#' . ($index + 1), $tempTable);
+                    }
+
                     $attachments = $vulnerability['attachments'];
                     $template->cloneBlock('vulnerability.attachments#' . ($index + 1), count($attachments), true, true);
                     foreach ($attachments as $i => $attach) {
@@ -200,7 +210,6 @@ class CreateReportController extends Controller
                     $template->setValue('vulnerability.owasp_likelihood#' . ($index + 1), $vulnerability['owasp_likehood']);
                     $template->setValue('vulnerability.owasp_impact#' . ($index + 1), $vulnerability['owasp_impact']);
                     $template->setValue('vulnerability.severity#' . ($index + 1), $vulnerability['risk']);
-                    $template->setValue('vulnerability.remediation#' . ($index + 1), $vulnerability['remediation']);
                     $template->setValue('vulnerability.impact#' . ($index + 1), $vulnerability['impact']);
                     $template->setValue('vulnerability.references#' . ($index + 1), $vulnerability['external_refs']);
                 }
