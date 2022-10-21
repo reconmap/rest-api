@@ -2,6 +2,9 @@
 
 namespace Reconmap\Controllers\Users;
 
+use Fig\Http\Message\StatusCodeInterface;
+use GuzzleHttp\Exception\ClientException;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditActions\UserAuditActions;
@@ -17,20 +20,28 @@ class DeleteUserController extends Controller
     {
     }
 
-    public function __invoke(ServerRequestInterface $request, array $args): array
+    public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
     {
         $userId = (int)$args['userId'];
         $loggedInUserId = $request->getAttribute('userId');
 
         $user = $this->userRepository->findById($userId);
 
-        $this->keycloakService->deleteUser($user);
+        try {
+            $this->keycloakService->deleteUser($user);
+        } catch (ClientException $e) {
+            if ($e->getCode() === StatusCodeInterface::STATUS_NOT_FOUND) {
+                $this->logger->warning("User to delete not found on Keycloak", ['userId' => $userId]);
+            } else {
+                throw $e;
+            }
+        }
 
-        $success = $this->userRepository->deleteById($userId);
+        $this->userRepository->deleteById($userId);
 
         $this->auditAction($loggedInUserId, $userId);
 
-        return ['success' => $success];
+        return $this->createDeletedResponse();
     }
 
     private function auditAction(int $loggedInUserId, int $userId): void

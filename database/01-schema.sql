@@ -62,7 +62,7 @@ CREATE TABLE audit_log
     object     JSON         NULL,
 
     PRIMARY KEY (id),
-    FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE NO ACTION
+    CONSTRAINT audit_log_fk_user_id FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE
 ) ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS organisation;

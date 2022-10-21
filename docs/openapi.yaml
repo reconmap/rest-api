@@ -809,7 +809,7 @@ paths:
       security:
         - BearerAuth: [ ]
       responses:
-        '200':
+        '204':
           description: Successfully deleted
 
   '/users/{id}/activity':

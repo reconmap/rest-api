@@ -60,7 +60,6 @@ class CreateUserController extends Controller
 
         $this->auditAction($loggedInUserId, $user->id);
 
-
         return (array)$user;
     }
 

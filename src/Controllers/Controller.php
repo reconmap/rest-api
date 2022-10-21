@@ -73,7 +73,7 @@ abstract class Controller implements ContainerAwareInterface
 
     protected function createDeletedResponse(): ResponseInterface
     {
-        return (new Response())->withStatus(StatusCodeInterface::STATUS_NO_CONTENT);
+        return $this->createNoContentResponse();
     }
 
     protected function createOkResponse(): ResponseInterface
