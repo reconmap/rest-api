@@ -14,7 +14,6 @@ class SystemRouter
         $router->map('POST', '/system/data', ImportDataController::class);
         $router->map('GET', '/system/data', ExportDataController::class);
         $router->map('GET', '/system/exportables', GetExportablesController::class);
-        $router->map('GET', '/system/logs', GetApplicationLogsController::class);
         $router->map('GET', '/system/usage', GetSystemUsageController::class);
     }
 }
