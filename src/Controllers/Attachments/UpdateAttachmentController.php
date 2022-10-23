@@ -5,11 +5,10 @@ namespace Reconmap\Controllers\Attachments;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Models\Attachment;
-use Reconmap\Repositories\AttachmentRepository;
-use Reconmap\Services\Filesystem\AttachmentFilePath;
 use Reconmap\Models\AuditActions\AuditLogAction;
+use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Services\AuditLogService;
+use Reconmap\Services\Filesystem\AttachmentFilePath;
 
 class UpdateAttachmentController extends Controller
 {

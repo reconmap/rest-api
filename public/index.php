@@ -6,12 +6,11 @@ require $applicationDir . '/vendor/autoload.php';
 
 use Fig\Http\Message\StatusCodeInterface;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
-use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Reconmap\ApiRouter;
 use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\ApplicationContainer;
-use Reconmap\Services\Filesystem\ApplicationLogFilePath;
+use Reconmap\Services\Logging\LoggingConfigurator;
 
 $configFilePath = $applicationDir . '/config.json';
 if (!file_exists($configFilePath) || !is_readable($configFilePath)) {
@@ -25,20 +24,8 @@ $config = ApplicationConfig::load($configFilePath);
 $config->setAppDir($applicationDir);
 
 $logger = new Logger('http');
-$applicationLogFilePath = new ApplicationLogFilePath($config);
-$logsDirectory = $applicationLogFilePath->getDirectory();
-if (is_writable($logsDirectory)) {
-    $applicationLogPath = $applicationDir . '/logs/application.log';
-    $logger->pushHandler(new StreamHandler($applicationLogPath, Logger::DEBUG));
-}
-
-set_error_handler(function (int $errno, string $errstr, string $errfile, int $errline) use ($logger) {
-    if (E_USER_ERROR === $errno) {
-        $logger->error("$errstr ($errno) on $errfile:$errline");
-    } else {
-        $logger->warning("$errstr ($errno) on $errfile:$errline");
-    }
-});
+$loggingConfigurator = new LoggingConfigurator($logger, $config);
+$loggingConfigurator->configure();
 
 $container = new ApplicationContainer($config, $logger);
 

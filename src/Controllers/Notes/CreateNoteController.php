@@ -4,8 +4,8 @@ namespace Reconmap\Controllers\Notes;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Repositories\NoteRepository;
 use Reconmap\Models\Note;
+use Reconmap\Repositories\NoteRepository;
 
 class CreateNoteController extends Controller
 {

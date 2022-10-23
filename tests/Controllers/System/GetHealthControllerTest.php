@@ -18,9 +18,8 @@ class GetHealthControllerTest extends TestCase
             ->willReturn('/i/am/not/a/dir');
         $mockServerRequestInterface = $this->createMock(ServerRequestInterface::class);
 
-        $mockApplicationLogFilePath = $this->createMock(ApplicationLogFilePath::class);
         $mockDirectoryChecker = $this->createMock(DirectoryChecker::class);
-        $mockDirectoryChecker->expects($this->exactly(2))
+        $mockDirectoryChecker->expects($this->once(2))
             ->method('checkDirectoryIsWriteable')
             ->willReturn([
                 'location' => '/i/am/not/a/dir',
@@ -32,15 +31,10 @@ class GetHealthControllerTest extends TestCase
             ->method('ping')
             ->willReturn(true);
 
-        $controller = new GetHealthController($mockAttachmentFilePath, $mockApplicationLogFilePath, $mockDirectoryChecker, $mockMysql);
+        $controller = new GetHealthController($mockAttachmentFilePath, $mockDirectoryChecker, $mockMysql);
         $response = $controller($mockServerRequestInterface);
         $expectedResponse = [
             'attachmentsDirectory' => [
-                'location' => '/i/am/not/a/dir',
-                'exists' => false,
-                'writeable' => false
-            ],
-            'logsDirectory' => [
                 'location' => '/i/am/not/a/dir',
                 'exists' => false,
                 'writeable' => false

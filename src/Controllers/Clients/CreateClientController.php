@@ -6,7 +6,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\Client;
-use Reconmap\Models\Contact;
 use Reconmap\Repositories\ClientRepository;
 
 class CreateClientController extends Controller

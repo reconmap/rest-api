@@ -15,9 +15,9 @@ use Reconmap\Http\CorsResponseDecorator;
 
 class ApiStrategy extends JsonStrategy
 {
-    public function __construct(ResponseFactoryInterface $responseFactory,
-                                private                  readonly CorsResponseDecorator $corsResponseDecorator,
-                                private                  readonly Logger $logger)
+    public function __construct(ResponseFactoryInterface               $responseFactory,
+                                private readonly CorsResponseDecorator $corsResponseDecorator,
+                                private readonly Logger                $logger)
     {
         parent::__construct($responseFactory);
     }
@@ -26,9 +26,9 @@ class ApiStrategy extends JsonStrategy
     {
         return new class ($this->responseFactory->createResponse(), $this->corsResponseDecorator, $this->logger) implements MiddlewareInterface {
 
-            public function __construct(private readonly ResponseInterface $response,
+            public function __construct(private readonly ResponseInterface     $response,
                                         private readonly CorsResponseDecorator $corsResponseDecorator,
-                                        private readonly Logger $logger)
+                                        private readonly Logger                $logger)
             {
             }
 

@@ -2,13 +2,9 @@
 
 namespace Reconmap\Controllers\Vault;
 
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Models\AuditActions\VaultAuditActions;
-use Reconmap\Models\Vault;
 use Reconmap\Repositories\VaultRepository;
-use Reconmap\Services\AuditLogService;
 
 class ReadProjectVaultController extends Controller
 {

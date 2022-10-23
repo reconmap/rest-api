@@ -13,8 +13,11 @@ class ApplicationConfig implements \ArrayAccess
     {
     }
 
-    public function getSettings(string $name): array
+    public function getSettings(string $name): mixed
     {
+        if (!isset($this->props[$name])) {
+            return null;
+        }
         return $this->props[$name];
     }
 
@@ -35,7 +38,7 @@ class ApplicationConfig implements \ArrayAccess
 
     public function offsetGet(mixed $offset): mixed
     {
-        return $this->props[$offset];
+        return $this->getSettings($offset);
     }
 
     public function offsetSet(mixed $offset, mixed $value): void
