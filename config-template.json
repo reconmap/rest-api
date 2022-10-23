@@ -36,7 +36,7 @@
       "path": "/var/www/webapp/logs/application.log"
     },
     "gelf": {
-      "enabled": true,
+      "enabled": false,
       "level": "debug",
       "serverName": "api-graylog-1",
       "serverPort": 12201
