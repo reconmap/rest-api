@@ -1016,16 +1016,16 @@
         },
         {
             "name": "laminas/laminas-httphandlerrunner",
-            "version": "2.3.0",
+            "version": "2.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-httphandlerrunner.git",
-                "reference": "3c9491473b7decd8f329266a3cb6226a1f90594c"
+                "reference": "d15af53895fd581b5a448a09fd9a4baebc4ae6e5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-httphandlerrunner/zipball/3c9491473b7decd8f329266a3cb6226a1f90594c",
-                "reference": "3c9491473b7decd8f329266a3cb6226a1f90594c",
+                "url": "https://api.github.com/repos/laminas/laminas-httphandlerrunner/zipball/d15af53895fd581b5a448a09fd9a4baebc4ae6e5",
+                "reference": "d15af53895fd581b5a448a09fd9a4baebc4ae6e5",
                 "shasum": ""
             },
             "require": {
@@ -1079,7 +1079,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2022-10-10T19:52:02+00:00"
+            "time": "2022-10-25T13:41:39+00:00"
         },
         {
             "name": "league/commonmark",
