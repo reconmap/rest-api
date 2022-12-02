@@ -29,7 +29,7 @@
         "league/route": "^5.0",
         "monolog/monolog": "^3.0",
         "netresearch/jsonmapper": "^4.0",
-        "phpoffice/phpword": "^0.18",
+        "phpoffice/phpword": "^1.0",
         "ponup/sql-builders": "^1.0",
         "symfony/filesystem": "^6.0",
         "twig/twig": "^3.0",
