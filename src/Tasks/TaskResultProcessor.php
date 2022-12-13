@@ -114,7 +114,7 @@ class TaskResultProcessor implements ItemProcessor
                 $this->redis->lPush("notifications:queue", json_encode(['type' => 'message']));
             }
         } else {
-            $this->logger->warning("Task type has no processor: ${task['command_short_name']}");
+            $this->logger->warning("Task type has no processor: {$task['command_short_name']}");
         }
     }
 
