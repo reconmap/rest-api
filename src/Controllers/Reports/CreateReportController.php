@@ -19,6 +19,9 @@ use Reconmap\Utils\ArrayUtils;
 
 class CreateReportController extends Controller
 {
+    protected $word;
+    protected $templateProcessor;
+    
     public function __construct(
         private readonly AttachmentFilePath   $attachmentFilePathService,
         private readonly ProjectRepository    $projectRepository,
@@ -67,31 +70,59 @@ class CreateReportController extends Controller
 
         try {
             $templateFilePath = $this->attachmentFilePathService->generateFilePathFromAttachment($reportTemplateAttachment);
-            $template = new TemplateProcessor($templateFilePath);
-            $template->setUpdateFields(true);
+            $this->word = new PhpWord();
+            $this->templateProcessor = new TemplateProcessor($templateFilePath);
+            $this->templateProcessor->setUpdateFields(true);
 
-            $template->setValue('date', $vars['date']);
+            $this->setValue('date', $vars['date']);
             foreach (ArrayUtils::flatten($vars['project'], 'project.') as $key => $value) {
-                $template->setValue($key, $value);
+                if (is_null($value)) {
+                    continue;
+                }
+
+                switch ($key) {
+                    case 'project.description':
+                        $this->markdownParser('Text', $key, $value);
+                        break;
+
+                    case 'project.management_summary':
+                        $this->markdownParser('Text', $key, $value);
+                        break;
+
+                    case 'project.management_conclusion':
+                        $this->markdownParser('Text', $key, $value);
+                        break;
+
+                    default:
+                        $this->setValue($key, $value);
+                        break;
+                }
             }
             foreach (ArrayUtils::flatten($vars['client'], 'client.') as $key => $value) {
-                $template->setValue($key, $value);
+                $this->setValue($key, $value);
             }
             foreach (ArrayUtils::flatten($vars['org'], 'org.') as $key => $value) {
-                $template->setValue($key, $value);
+                $this->setValue($key, $value);
             }
 
             $attachments = $vars['project']['attachments'];
-            $template->cloneBlock('attachments', count($attachments), true, true);
-            foreach ($attachments as $index => $attach) {
-                $template->setImageValue('attachment.image#' . ($index + 1), $attach);
+            if(count($attachments) > 0) {
+                $this->templateProcessor->cloneBlock('attachments', count($attachments), true, true);
+                foreach ($attachments as $index => $attach) {
+                    if (is_null($attach)) {
+                        continue;
+                    }
+                    $this->templateProcessor->setImageValue('attachment.image#' . ($index + 1), $attach);
+                }
             }
 
             try {
-                $template->cloneRow('user.full_name', count($vars['users']), true, true);
-                foreach ($vars['users'] as $index => $user) {
-                    $template->setValue('user.full_name#' . ($index + 1), $user['full_name']);
-                    $template->setValue('user.short_bio#' . ($index + 1), $user['short_bio']);
+                if(count($vars['users']) > 0) {
+                    $this->templateProcessor->cloneRow('user.full_name', count($vars['users']), true, true);
+                    foreach ($vars['users'] as $index => $user) {
+                        $this->setValue('user.full_name#' . ($index + 1), $user['full_name']);
+                        $this->setValue('user.short_bio#' . ($index + 1), $user['short_bio']);
+                    }
                 }
             } catch (\Exception $e) {
                 $msg = $e->getMessage();
@@ -100,16 +131,16 @@ class CreateReportController extends Controller
 
             try {
                 if (isset($vars["logos"]["org_logo"])) {
-                    $template->setImageValue('org.logo', $vars["logos"]["org_logo"]);
+                    $this->templateProcessor->setImageValue('org.logo', $vars["logos"]["org_logo"]);
                 }
                 if (isset($vars["logos"]["org_small_logo"])) {
-                    $template->setImageValue('org.small_logo', $vars["logos"]["org_small_logo"]);
+                    $this->templateProcessor->setImageValue('org.small_logo', $vars["logos"]["org_small_logo"]);
                 }
                 if (isset($vars["logos"]["client_logo"])) {
-                    $template->setImageValue('client.logo', $vars["logos"]["client_logo"]);
+                    $this->templateProcessor->setImageValue('client.logo', $vars["logos"]["client_logo"]);
                 }
                 if (isset($vars["logos"]["client_small_logo"])) {
-                    $template->setImageValue('client.small_logo', $vars["logos"]["client_small_logo"]);
+                    $this->templateProcessor->setImageValue('client.small_logo', $vars["logos"]["client_small_logo"]);
                 }
             } catch (\Exception $e) {
                 $msg = $e->getMessage();
@@ -117,12 +148,14 @@ class CreateReportController extends Controller
             }
 
             try {
-                $template->cloneRow('vault.name', count($vars['vault']));
-                foreach ($vars['vault'] as $index => $item) {
-                    $indexPlusOne = $index + 1;
-                    $template->setValue('vault.name#' . $indexPlusOne, $item['name']);
-                    $template->setValue('vault.note#' . $indexPlusOne, $item['note']);
-                    $template->setValue('vault.type#' . $indexPlusOne, $item['type']);
+                if(count($vars['vault']) > 0) {
+                    $this->templateProcessor->cloneRow('vault.name', count($vars['vault']));
+                    foreach ($vars['vault'] as $index => $item) {
+                        $indexPlusOne = $index + 1;
+                        $this->setValue('vault.name#' . $indexPlusOne, $item['name']);
+                        $this->setValue('vault.note#' . $indexPlusOne, $item['note']);
+                        $this->setValue('vault.type#' . $indexPlusOne, $item['type']);
+                    }
                 }
             } catch (\Exception $e) {
                 $msg = $e->getMessage();
@@ -130,11 +163,13 @@ class CreateReportController extends Controller
             }
 
             try {
-                $template->cloneRow('target.name', count($vars['targets']));
-                foreach ($vars['targets'] as $index => $target) {
-                    $indexPlusOne = $index + 1;
-                    $template->setValue('target.name#' . $indexPlusOne, $target['name']);
-                    $template->setValue('target.kind#' . $indexPlusOne, $target['kind']);
+                if(count($vars['targets']) > 0) {
+                    $this->templateProcessor->cloneRow('target.name', count($vars['targets']));
+                    foreach ($vars['targets'] as $index => $target) {
+                        $indexPlusOne = $index + 1;
+                        $this->setValue('target.name#' . $indexPlusOne, $target['name']);
+                        $this->setValue('target.kind#' . $indexPlusOne, $target['kind']);
+                    }
                 }
             } catch (\Exception $e) {
                 $msg = $e->getMessage();
@@ -142,84 +177,48 @@ class CreateReportController extends Controller
             }
 
             foreach ($vars['findingsOverview'] as $stat) {
-                $template->setValue('findings.count.' . $stat['severity'], $stat['count']);
+                $this->setValue('findings.count.' . $stat['severity'], $stat['count']);
             }
 
-            $markdownParser = new GithubFlavoredMarkdownConverter();
-            $word = new PhpWord();
-
             try {
-                $template->cloneBlock('vulnerabilities', count($vars['vulnerabilities']), true, true);
-                foreach ($vars['vulnerabilities'] as $index => $vulnerability) {
-                    $template->setValue('vulnerability.name#' . ($index + 1), $vulnerability['summary']);
+                if(count($vars['vulnerabilities']) > 0) {
+                    $this->templateProcessor->cloneBlock('vulnerabilities', count($vars['vulnerabilities']), true, true);
+                    foreach ($vars['vulnerabilities'] as $index => $vulnerability) {
+                        $this->setValue('vulnerability.name#' . ($index + 1), $vulnerability['summary']);
+                        $this->markdownParser('Text', 'vulnerability.description#' . ($index + 1), $vulnerability['description']);
+                        $this->markdownParser('Text', 'vulnerability.remediation#' . ($index + 1), $vulnerability['remediation']);
 
-                    if (!is_null($vulnerability['description'])) {
-                        $description = $markdownParser->convert($vulnerability['description']);
-
-                        $tempTable = $word->addSection()->addTable();
-                        $cell = $tempTable->addRow()->addCell();
-                        Html::addHtml($cell, $description);
-
-                        $template->setComplexBlock('vulnerability.description#' . ($index + 1), $tempTable);
-                    }
-
-                    if (!is_null($vulnerability['remediation'])) {
-                        $remediation = $markdownParser->convert($vulnerability['remediation']);
-
-                        $tempTable = $word->addSection()->addTable();
-                        $cell = $tempTable->addRow()->addCell();
-                        Html::addHtml($cell, $remediation);
-
-                        $template->setComplexBlock('vulnerability.remediation#' . ($index + 1), $tempTable);
-                    }
-
-                    $attachments = $vulnerability['attachments'];
-                    $template->cloneBlock('vulnerability.attachments#' . ($index + 1), count($attachments), true, true);
-                    foreach ($attachments as $i => $attach) {
-                        $name = 'vulnerability.attachment.image#' . ($index + 1) . "#" . ($i + 1);
-                        $template->setImageValue($name, $attach);
-                    }
-
-                    if (!is_null($vulnerability['proof_of_concept'])) {
-                        $proofOfConcept = $markdownParser->convert($vulnerability['proof_of_concept']);
-                        $dom = new \DomDocument();
-                        $dom->loadHTML(strval($proofOfConcept));
-                        $xpath = new \DOMXpath($dom);
-
-                        $tempTable = $word->addSection()->addTable();
-
-                        $elements = $xpath->evaluate('//body/*');
-                        foreach ($elements as $node) {
-                            $cell = $tempTable->addRow()->addCell();
-                            if ($node->tagName === 'pre') {
-                                $nodeDiv = $dom->createElement("p", $node->nodeValue);
-                                $nodeDiv->setAttribute('style', 'font-family: Courier; font-size: 10px;');
-                                Html::addHtml($cell, nl2br($node->ownerDocument->saveXML($nodeDiv)));
-                            } else {
-                                Html::addHtml($cell, $node->ownerDocument->saveXML($node));
+                        $attachments = $vulnerability['attachments'];
+                        if(count($attachments) > 0) {
+                            $this->templateProcessor->cloneBlock('vulnerability.attachments#' . ($index + 1), count($attachments), true, true);
+                            foreach ($attachments as $i => $attach) {
+                                $name = 'vulnerability.attachment.image#' . ($index + 1) . "#" . ($i + 1);
+                                $this->templateProcessor->setImageValue($name, $attach);
                             }
                         }
 
-                        $template->setComplexBlock('vulnerability.proof_of_concept#' . ($index + 1), $tempTable);
+                        $this->markdownParser('SourceCode', 'vulnerability.proof_of_concept#' . ($index + 1), $vulnerability['proof_of_concept']);
+                        $this->setValue('vulnerability.category_name#' . ($index + 1), $vulnerability['category_name']);
+                        $this->setValue('vulnerability.cvss_score#' . ($index + 1), $vulnerability['cvss_score']);
+                        $this->setValue('vulnerability.owasp_vector#' . ($index + 1), $vulnerability['owasp_vector']);
+                        $this->setValue('vulnerability.owasp_overall#' . ($index + 1), $vulnerability['owasp_overall']);
+                        $this->setValue('vulnerability.owasp_likelihood#' . ($index + 1), $vulnerability['owasp_likehood']);
+                        $this->setValue('vulnerability.owasp_impact#' . ($index + 1), $vulnerability['owasp_impact']);
+                        $this->setValue('vulnerability.severity#' . ($index + 1), $vulnerability['risk']);
+                        $this->markdownParser('Text', 'vulnerability.impact#' . ($index + 1), $vulnerability['impact']);
+                        $this->markdownParser('Text', 'vulnerability.references#' . ($index + 1), $vulnerability['external_refs']);
                     }
-
-                    $template->setValue('vulnerability.category_name#' . ($index + 1), $vulnerability['category_name']);
-                    $template->setValue('vulnerability.cvss_score#' . ($index + 1), $vulnerability['cvss_score']);
-                    $template->setValue('vulnerability.owasp_vector#' . ($index + 1), $vulnerability['owasp_vector']);
-                    $template->setValue('vulnerability.owasp_overall#' . ($index + 1), $vulnerability['owasp_overall']);
-                    $template->setValue('vulnerability.owasp_likelihood#' . ($index + 1), $vulnerability['owasp_likehood']);
-                    $template->setValue('vulnerability.owasp_impact#' . ($index + 1), $vulnerability['owasp_impact']);
-                    $template->setValue('vulnerability.severity#' . ($index + 1), $vulnerability['risk']);
-                    $template->setValue('vulnerability.impact#' . ($index + 1), $vulnerability['impact']);
-                    $template->setValue('vulnerability.references#' . ($index + 1), $vulnerability['external_refs']);
                 }
-                $template->cloneRow('vuln', count($vars['vulnerabilities']));
-                foreach ($vars['vulnerabilities'] as $index => $item) {
-                    $indexPlusOne = $index + 1;
-                    $template->setValue('vuln#' . $indexPlusOne, $item['summary']);
-                    $template->setValue('vulnerability.owasp_overall#' . $indexPlusOne, $item['owasp_overall']);
-                    $template->setValue('vulnerability.description#' . $indexPlusOne, $item['description']);
-                    $template->setValue('vulnerability.category_name#' . $indexPlusOne, $item['category_name']);
+
+                if(count($vars['vulnerabilities']) > 0) {
+                    $this->templateProcessor->cloneRow('vuln', count($vars['vulnerabilities']));
+                    foreach ($vars['vulnerabilities'] as $index => $item) {
+                        $indexPlusOne = $index + 1;
+                        $this->setValue('vuln#' . $indexPlusOne, $item['summary']);
+                        $this->setValue('vulnerability.owasp_overall#' . $indexPlusOne, $item['owasp_overall']);
+                        $this->setValue('vulnerability.description#' . $indexPlusOne, $item['description']);
+                        $this->setValue('vulnerability.category_name#' . $indexPlusOne, $item['category_name']);
+                    }
                 }
             } catch (\Exception $e) {
                 $msg = $e->getMessage();
@@ -227,13 +226,15 @@ class CreateReportController extends Controller
             }
 
             try {
-                $template->cloneRow('contact.name', count($vars['contacts']), true, true);
-                foreach ($vars['contacts'] as $index => $vulnerability) {
-                    $template->setValue('contact.kind#' . ($index + 1), $vulnerability['kind']);
-                    $template->setValue('contact.name#' . ($index + 1), $vulnerability['name']);
-                    $template->setValue('contact.phone#' . ($index + 1), $vulnerability['phone']);
-                    $template->setValue('contact.email#' . ($index + 1), $vulnerability['email']);
-                    $template->setValue('contact.role#' . ($index + 1), $vulnerability['role']);
+                if(count($vars['contacts']) > 0) {
+                    $this->templateProcessor->cloneRow('contact.name', count($vars['contacts']), true, true);
+                    foreach ($vars['contacts'] as $index => $vulnerability) {
+                        $this->setValue('contact.kind#' . ($index + 1), $vulnerability['kind']);
+                        $this->setValue('contact.name#' . ($index + 1), $vulnerability['name']);
+                        $this->setValue('contact.phone#' . ($index + 1), $vulnerability['phone']);
+                        $this->setValue('contact.email#' . ($index + 1), $vulnerability['email']);
+                        $this->setValue('contact.role#' . ($index + 1), $vulnerability['role']);
+                    }
                 }
             } catch (\Exception $e) {
                 $msg = $e->getMessage();
@@ -241,10 +242,12 @@ class CreateReportController extends Controller
             }
 
             try {
-                $template->cloneRow('category.group', count($vars['parentCategories']), true, true);
-                foreach ($vars['parentCategories'] as $index => $category) {
-                    $template->setValue('category.group#' . ($index + 1), $category['name']);
-                    $template->setValue('category.severity#' . ($index + 1), $category['owasp_overall']);
+                if(count($vars['parentCategories']) > 0) {
+                    $this->templateProcessor->cloneRow('category.group', count($vars['parentCategories']), true, true);
+                    foreach ($vars['parentCategories'] as $index => $category) {
+                        $this->setValue('category.group#' . ($index + 1), $category['name']);
+                        $this->setValue('category.severity#' . ($index + 1), $category['owasp_overall']);
+                    }
                 }
             } catch (\Exception $e) {
                 $msg = $e->getMessage();
@@ -252,10 +255,12 @@ class CreateReportController extends Controller
             }
 
             try {
-                $template->cloneRow('category.name', count($vars['categories']), true, true);
-                foreach ($vars['categories'] as $index => $category) {
-                    $template->setValue('category.name#' . ($index + 1), $category['name']);
-                    $template->setValue('category.status#' . ($index + 1), $category['status']);
+                if(count($vars['categories']) > 0) {
+                    $this->templateProcessor->cloneRow('category.name', count($vars['categories']), true, true);
+                    foreach ($vars['categories'] as $index => $category) {
+                        $this->setValue('category.name#' . ($index + 1), $category['name']);
+                        $this->setValue('category.status#' . ($index + 1), $category['status']);
+                    }
                 }
             } catch (\Exception $e) {
                 $msg = $e->getMessage();
@@ -263,12 +268,14 @@ class CreateReportController extends Controller
             }
 
             try {
-                $template->cloneRow('revisionHistoryDateTime', count($vars['reports']));
-                foreach ($vars['reports'] as $index => $reportRevision) {
-                    $indexPlusOne = $index + 1;
-                    $template->setValue('revisionHistoryDateTime#' . $indexPlusOne, $reportRevision['insert_ts']);
-                    $template->setValue('revisionHistoryVersionName#' . $indexPlusOne, $reportRevision['version_name']);
-                    $template->setValue('revisionHistoryVersionDescription#' . $indexPlusOne, $reportRevision['version_description']);
+                if(count($vars['reports']) > 0) {
+                    $this->templateProcessor->cloneRow('revisionHistoryDateTime', count($vars['reports']));
+                    foreach ($vars['reports'] as $index => $reportRevision) {
+                        $indexPlusOne = $index + 1;
+                        $this->setValue('revisionHistoryDateTime#' . $indexPlusOne, $reportRevision['insert_ts']);
+                        $this->setValue('revisionHistoryVersionName#' . $indexPlusOne, $reportRevision['version_name']);
+                        $this->setValue('revisionHistoryVersionDescription#' . $indexPlusOne, $reportRevision['version_description']);
+                    }
                 }
             } catch (\Exception $e) {
                 $msg = $e->getMessage();
@@ -279,7 +286,7 @@ class CreateReportController extends Controller
             $basePath = $this->attachmentFilePathService->generateBasePath();
             $filePath = $basePath . $fileName;
 
-            $template->saveAs($filePath);
+            $this->templateProcessor->saveAs($filePath);
 
             $projectName = str_replace(' ', '_', strtolower($project['name']));
             $clientFileName = "reconmap-{$projectName}-v{$versionName}.docx";
@@ -298,5 +305,59 @@ class CreateReportController extends Controller
         }
 
         return $attachmentIds;
+    }
+
+    private function markdownParser($type, $blockName, $markdownText): void
+    {
+        if (is_null($markdownText)) {
+            return;
+        }
+
+        $markdownConverter = new GithubFlavoredMarkdownConverter();
+
+        switch ($type) {
+            case 'Text':
+                $convertedText = $markdownConverter->convert($markdownText);
+
+                $tempTable = $this->word->addSection()->addTable();
+                $cell = $tempTable->addRow()->addCell();
+                Html::addHtml($cell, nl2br(strval($convertedText)));                
+
+                $this->templateProcessor->setComplexBlock($blockName, $tempTable);
+
+                break;
+
+            case 'SourceCode':
+                $convertedText = $markdownConverter->convert($markdownText);
+
+                $dom = new \DomDocument();
+                $dom->loadHTML(strval($convertedText));
+                $xpath = new \DOMXpath($dom);
+
+                $tempTable = $this->word->addSection()->addTable();
+
+                $elements = $xpath->evaluate('//body/*');
+                foreach ($elements as $node) {
+                    $cell = $tempTable->addRow()->addCell();
+                    if ($node->tagName === 'pre') {
+                        $nodeDiv = $dom->createElement("p", $node->nodeValue);
+                        $nodeDiv->setAttribute('style', 'font-family: Courier; font-size: 10px;');
+                        Html::addHtml($cell, nl2br($node->ownerDocument->saveXML($nodeDiv)));
+                    } else {
+                        Html::addHtml($cell, $node->ownerDocument->saveXML($node));
+                    }
+                }
+
+                $this->templateProcessor->setComplexBlock($blockName, $tempTable);
+
+                break;
+        }
+    }
+    
+    private function setValue($blockName, $value) {
+        if (is_null($value)) {
+            return;
+        }
+        $this->templateProcessor->setValue($blockName, $value);
     }
 }
