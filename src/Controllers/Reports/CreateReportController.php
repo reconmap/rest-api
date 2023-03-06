@@ -187,19 +187,20 @@ class CreateReportController extends Controller
                         $this->setValue('vulnerability.name#' . ($index + 1), $vulnerability['summary']);
                         $this->markdownParser('Text', 'vulnerability.description#' . ($index + 1), $vulnerability['description']);
                         $this->markdownParser('Text', 'vulnerability.remediation#' . ($index + 1), $vulnerability['remediation']);
-
+                        $this->setValue('vulnerability.remediation_complexity#' . ($index + 1), $vulnerability['remediation_complexity']);
+                        $this->setValue('vulnerability.remediation_priority#' . ($index + 1), $vulnerability['remediation_priority']);
+                        
                         $attachments = $vulnerability['attachments'];
-                        if(count($attachments) > 0) {
-                            $this->templateProcessor->cloneBlock('vulnerability.attachments#' . ($index + 1), count($attachments), true, true);
-                            foreach ($attachments as $i => $attach) {
-                                $name = 'vulnerability.attachment.image#' . ($index + 1) . "#" . ($i + 1);
-                                $this->templateProcessor->setImageValue($name, $attach);
-                            }
+                        $this->templateProcessor->cloneBlock('vulnerability.attachments#' . ($index + 1), count($attachments), true, true);
+                        foreach ($attachments as $i => $attach) {
+                            $name = 'vulnerability.attachment.image#' . ($index + 1) . "#" . ($i + 1);
+                            $this->templateProcessor->setImageValue($name, $attach);
                         }
 
                         $this->markdownParser('SourceCode', 'vulnerability.proof_of_concept#' . ($index + 1), $vulnerability['proof_of_concept']);
                         $this->setValue('vulnerability.category_name#' . ($index + 1), $vulnerability['category_name']);
                         $this->setValue('vulnerability.cvss_score#' . ($index + 1), $vulnerability['cvss_score']);
+                        $this->setValue('vulnerability.cvss_vector#' . ($index + 1), $vulnerability['cvss_vector']);
                         $this->setValue('vulnerability.owasp_vector#' . ($index + 1), $vulnerability['owasp_vector']);
                         $this->setValue('vulnerability.owasp_overall#' . ($index + 1), $vulnerability['owasp_overall']);
                         $this->setValue('vulnerability.owasp_likelihood#' . ($index + 1), $vulnerability['owasp_likehood']);
@@ -331,7 +332,7 @@ class CreateReportController extends Controller
                 $convertedText = $markdownConverter->convert($markdownText);
 
                 $dom = new \DomDocument();
-                $dom->loadHTML(strval($convertedText));
+                $dom->loadHTML(mb_convert_encoding(strval($convertedText), 'ISO-8859-1', 'UTF-8'));
                 $xpath = new \DOMXpath($dom);
 
                 $tempTable = $this->word->addSection()->addTable();
