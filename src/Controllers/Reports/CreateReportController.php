@@ -186,7 +186,7 @@ class CreateReportController extends Controller
                     foreach ($vars['vulnerabilities'] as $index => $vulnerability) {
                         $this->setValue('vulnerability.name#' . ($index + 1), $vulnerability['summary']);
                         $this->markdownParser('Text', 'vulnerability.description#' . ($index + 1), $vulnerability['description']);
-                        $this->markdownParser('Text', 'vulnerability.remediation#' . ($index + 1), $vulnerability['remediation']);
+                        $this->markdownParser('SourceCode', 'vulnerability.remediation#' . ($index + 1), $vulnerability['remediation']);
                         $this->setValue('vulnerability.remediation_complexity#' . ($index + 1), $vulnerability['remediation_complexity']);
                         $this->setValue('vulnerability.remediation_priority#' . ($index + 1), $vulnerability['remediation_priority']);
                         
@@ -206,7 +206,7 @@ class CreateReportController extends Controller
                         $this->setValue('vulnerability.owasp_likelihood#' . ($index + 1), $vulnerability['owasp_likehood']);
                         $this->setValue('vulnerability.owasp_impact#' . ($index + 1), $vulnerability['owasp_impact']);
                         $this->setValue('vulnerability.severity#' . ($index + 1), $vulnerability['risk']);
-                        $this->markdownParser('Text', 'vulnerability.impact#' . ($index + 1), $vulnerability['impact']);
+                        $this->markdownParser('SourceCode', 'vulnerability.impact#' . ($index + 1), $vulnerability['impact']);
                         $this->markdownParser('Text', 'vulnerability.references#' . ($index + 1), $vulnerability['external_refs']);
                     }
                 }
@@ -335,17 +335,31 @@ class CreateReportController extends Controller
                 $dom->loadHTML(mb_convert_encoding(strval($convertedText), 'ISO-8859-1', 'UTF-8'));
                 $xpath = new \DOMXpath($dom);
 
-                $tempTable = $this->word->addSection()->addTable();
+                $tableStyle = array(
+                    'cellMargin'  => 50
+                );
+                $tempTable = $this->word->addSection()->addTable($tableStyle);
 
                 $elements = $xpath->evaluate('//body/*');
                 foreach ($elements as $node) {
-                    $cell = $tempTable->addRow()->addCell();
-                    if ($node->tagName === 'pre') {
-                        $nodeDiv = $dom->createElement("p", $node->nodeValue);
-                        $nodeDiv->setAttribute('style', 'font-family: Courier; font-size: 10px;');
-                        Html::addHtml($cell, nl2br($node->ownerDocument->saveXML($nodeDiv)));
-                    } else {
-                        Html::addHtml($cell, $node->ownerDocument->saveXML($node));
+                    switch ($node->tagName) {
+                        case 'pre':
+                            $cellStyle = array(
+                            'bgColor'     => 'eeeeee',
+                            'borderColor' => 'dddddd',
+                            'borderSize'  => 1,
+                            );
+                            $cell = $tempTable->addRow()->addCell(2000, $cellStyle);
+                            $nodeDiv = $dom->createElement("p", $node->nodeValue);
+                            $nodeDiv->setAttribute('style', 'font-family: Arial Narrow, Courier New; font-size: 10px;');
+                            Html::addHtml($cell, nl2br($node->ownerDocument->saveXML($nodeDiv)));
+                            break;
+                        
+                        default:
+                            $cell = $tempTable->addRow()->addCell();
+                            $nodeDiv = $dom->createElement("div", $node->nodeValue);
+                            Html::addHtml($cell, nl2br($node->ownerDocument->saveXML($nodeDiv)));
+                            break;
                     }
                 }
 
