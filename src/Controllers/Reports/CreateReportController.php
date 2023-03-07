@@ -16,11 +16,13 @@ use Reconmap\Repositories\ReportRepository;
 use Reconmap\Services\Filesystem\AttachmentFilePath;
 use Reconmap\Services\Reporting\ReportDataCollector;
 use Reconmap\Utils\ArrayUtils;
+use PhpOffice\PhpWord\Shared\Converter;
 
 class CreateReportController extends Controller
 {
     protected $word;
     protected $templateProcessor;
+    protected $severityColors;
     
     public function __construct(
         private readonly AttachmentFilePath   $attachmentFilePathService,
@@ -74,6 +76,13 @@ class CreateReportController extends Controller
             $this->templateProcessor = new TemplateProcessor($templateFilePath);
             $this->templateProcessor->setUpdateFields(true);
 
+            $this->severityColors = [
+                'low'       => 'fbc800',
+                'medium'    => 'db732e',
+                'high'      => 'd42820',
+                'critical'  => '000000',
+            ];
+            
             $this->setValue('date', $vars['date']);
             foreach (ArrayUtils::flatten($vars['project'], 'project.') as $key => $value) {
                 if (is_null($value)) {
@@ -82,15 +91,15 @@ class CreateReportController extends Controller
 
                 switch ($key) {
                     case 'project.description':
-                        $this->markdownParser('Text', $key, $value);
+                        $this->advancedParser('MarkdownText', $key, $value);
                         break;
 
                     case 'project.management_summary':
-                        $this->markdownParser('Text', $key, $value);
+                        $this->advancedParser('MarkdownText', $key, $value);
                         break;
 
                     case 'project.management_conclusion':
-                        $this->markdownParser('Text', $key, $value);
+                        $this->advancedParser('MarkdownText', $key, $value);
                         break;
 
                     default:
@@ -176,17 +185,36 @@ class CreateReportController extends Controller
                 $this->logger->warning("Error in target section: [$msg]");
             }
 
+            $chartX = $chartY = [];
             foreach ($vars['findingsOverview'] as $stat) {
                 $this->setValue('findings.count.' . $stat['severity'], $stat['count']);
+                $chartX[] = $stat['severity'];
+                $chartY[] = $stat['count'];
+                $chartColors[] = $this->severityColors[$stat['severity']];
+            }
+
+            if(!empty($chartX)) {
+                $chart = $this->word->addSection()->addChart('column', $chartX,$chartY);
+                $chart->getStyle()->setWidth(Converter::inchToEmu(7))->setHeight(Converter::inchToEmu(5));
+                $chart->getStyle()->setColors($chartColors);
+                $chart->getStyle()->setShowAxisLabels(true);
+                $chart->getStyle()->setShowGridX(true);
+                $chart->getStyle()->setShowGridY(true);
+                $chart->getStyle()->setCategoryLabelPosition('low');
+                $this->templateProcessor->setChart('findingsChart', $chart);
             }
 
             try {
                 if(count($vars['vulnerabilities']) > 0) {
                     $this->templateProcessor->cloneBlock('vulnerabilities', count($vars['vulnerabilities']), true, true);
                     foreach ($vars['vulnerabilities'] as $index => $vulnerability) {
-                        $this->setValue('vulnerability.name#' . ($index + 1), $vulnerability['summary']);
-                        $this->markdownParser('Text', 'vulnerability.description#' . ($index + 1), $vulnerability['description']);
-                        $this->markdownParser('SourceCode', 'vulnerability.remediation#' . ($index + 1), $vulnerability['remediation']);
+                        if(!is_null($vulnerability['risk'])) {
+                            $this->advancedParser('TitleWithSeverity', 'vulnerability.name#' . ($index + 1), $vulnerability['summary'], ['severity' => $vulnerability['risk']]);
+                        } else {
+                            $this->setValue('vulnerability.name#' . ($index + 1), $vulnerability['summary']);
+                        }
+                        $this->advancedParser('MarkdownText', 'vulnerability.description#' . ($index + 1), $vulnerability['description']);
+                        $this->advancedParser('MarkdownSourceCode', 'vulnerability.remediation#' . ($index + 1), $vulnerability['remediation']);
                         $this->setValue('vulnerability.remediation_complexity#' . ($index + 1), $vulnerability['remediation_complexity']);
                         $this->setValue('vulnerability.remediation_priority#' . ($index + 1), $vulnerability['remediation_priority']);
                         
@@ -197,7 +225,7 @@ class CreateReportController extends Controller
                             $this->templateProcessor->setImageValue($name, $attach);
                         }
 
-                        $this->markdownParser('SourceCode', 'vulnerability.proof_of_concept#' . ($index + 1), $vulnerability['proof_of_concept']);
+                        $this->advancedParser('MarkdownSourceCode', 'vulnerability.proof_of_concept#' . ($index + 1), $vulnerability['proof_of_concept']);
                         $this->setValue('vulnerability.category_name#' . ($index + 1), $vulnerability['category_name']);
                         $this->setValue('vulnerability.cvss_score#' . ($index + 1), $vulnerability['cvss_score']);
                         $this->setValue('vulnerability.cvss_vector#' . ($index + 1), $vulnerability['cvss_vector']);
@@ -206,8 +234,8 @@ class CreateReportController extends Controller
                         $this->setValue('vulnerability.owasp_likelihood#' . ($index + 1), $vulnerability['owasp_likehood']);
                         $this->setValue('vulnerability.owasp_impact#' . ($index + 1), $vulnerability['owasp_impact']);
                         $this->setValue('vulnerability.severity#' . ($index + 1), $vulnerability['risk']);
-                        $this->markdownParser('SourceCode', 'vulnerability.impact#' . ($index + 1), $vulnerability['impact']);
-                        $this->markdownParser('Text', 'vulnerability.references#' . ($index + 1), $vulnerability['external_refs']);
+                        $this->advancedParser('MarkdownSourceCode', 'vulnerability.impact#' . ($index + 1), $vulnerability['impact']);
+                        $this->advancedParser('MarkdownText', 'vulnerability.references#' . ($index + 1), $vulnerability['external_refs']);
                     }
                 }
 
@@ -290,7 +318,8 @@ class CreateReportController extends Controller
             $this->templateProcessor->saveAs($filePath);
 
             $projectName = str_replace(' ', '_', strtolower($project['name']));
-            $clientFileName = "reconmap-{$projectName}-v{$versionName}.docx";
+            $clientName = str_replace(' ', '_', strtolower($vars['client']->getName()));
+            $clientFileName = $this->sanitizeString("{$clientName}-{$projectName}-v{$versionName}.docx");
 
             $attachment->file_name = $fileName;
             $attachment->file_mimetype = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
@@ -308,17 +337,16 @@ class CreateReportController extends Controller
         return $attachmentIds;
     }
 
-    private function markdownParser($type, $blockName, $markdownText): void
+    private function advancedParser($type, $blockName, $textToParse, $options = []): void
     {
-        if (is_null($markdownText)) {
+        if (is_null($textToParse)) {
             return;
         }
 
-        $markdownConverter = new GithubFlavoredMarkdownConverter();
-
         switch ($type) {
-            case 'Text':
-                $convertedText = $markdownConverter->convert($markdownText);
+            case 'MarkdownText':
+                $markdownConverter = new GithubFlavoredMarkdownConverter();
+                $convertedText = $markdownConverter->convert($textToParse);
 
                 $tempTable = $this->word->addSection()->addTable();
                 $cell = $tempTable->addRow()->addCell();
@@ -328,16 +356,17 @@ class CreateReportController extends Controller
 
                 break;
 
-            case 'SourceCode':
-                $convertedText = $markdownConverter->convert($markdownText);
+            case 'MarkdownSourceCode':
+                $markdownConverter = new GithubFlavoredMarkdownConverter();
+                $convertedText = $markdownConverter->convert($textToParse);
 
                 $dom = new \DomDocument();
                 $dom->loadHTML(mb_convert_encoding(strval($convertedText), 'ISO-8859-1', 'UTF-8'));
                 $xpath = new \DOMXpath($dom);
 
-                $tableStyle = array(
+                $tableStyle = [
                     'cellMargin'  => 50
-                );
+                ];
                 $tempTable = $this->word->addSection()->addTable($tableStyle);
 
                 $elements = $xpath->evaluate('//body/*');
@@ -349,7 +378,7 @@ class CreateReportController extends Controller
                             'borderColor' => 'dddddd',
                             'borderSize'  => 1,
                             );
-                            $cell = $tempTable->addRow()->addCell(2000, $cellStyle);
+                            $cell = $tempTable->addRow()->addCell(null, $cellStyle);
                             $nodeDiv = $dom->createElement("p", $node->nodeValue);
                             $nodeDiv->setAttribute('style', 'font-family: Arial Narrow, Courier New; font-size: 10px;');
                             Html::addHtml($cell, nl2br($node->ownerDocument->saveXML($nodeDiv)));
@@ -366,6 +395,36 @@ class CreateReportController extends Controller
                 $this->templateProcessor->setComplexBlock($blockName, $tempTable);
 
                 break;
+
+            case 'TitleWithSeverity':
+                $colors = [
+                    'low'       => [ 'bg' => $this->severityColors['low'],      'text' => 'ffffff'],
+                    'medium'    => [ 'bg' => $this->severityColors['medium'],   'text' => 'ffffff'],
+                    'high'      => [ 'bg' => $this->severityColors['high'],     'text' => 'ffffff'],
+                    'critical'  => [ 'bg' => $this->severityColors['critical'], 'text' => 'ffffff'],
+                ];
+
+                $tableStyle = [
+                    'cellMargin'  => 100
+                ];
+                
+                $cellStyle = [
+                    'bgColor'     => $colors[$options['severity']]['bg'],
+                    'borderColor' => 'dddddd',
+                    'borderSize'  => 1,
+                ];
+
+                $fontStyle = [
+                    'color'     => $colors[$options['severity']]['text'],
+                    'name'      => 'Arial',
+                ];
+
+                $tempTable = $this->word->addSection()->addTable($tableStyle);
+                $cell = $tempTable->addRow()->addCell(null, $cellStyle)->addText($textToParse, $fontStyle);
+
+                $this->templateProcessor->setComplexBlock($blockName, $tempTable);
+
+                break;
         }
     }
     
@@ -374,5 +433,9 @@ class CreateReportController extends Controller
             return;
         }
         $this->templateProcessor->setValue($blockName, $value);
+    }
+    
+    private function sanitizeString($string) {
+        return \Transliterator::create('NFD; [:Nonspacing Mark:] Remove; NFC')->transliterate($string);
     }
 }
