@@ -1,6 +1,8 @@
 {
   "keycloak": {
     "baseUri": "http://keycloak:8080",
+    "realmName": "reconmap",
+    "clientId": "admin-cli",
     "clientSecret": "xxxxxxxxxxxxxxxxxxyyyyyyyyyyyyyy"
   },
   "jwt": {
