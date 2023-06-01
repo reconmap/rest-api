@@ -3,15 +3,18 @@
 namespace Reconmap\Services;
 
 use PHPUnit\Framework\TestCase;
+use Reconmap\ConsecutiveParamsTrait;
 
 class RedisServerTest extends TestCase
 {
+    use ConsecutiveParamsTrait;
+
     public function testAuth()
     {
         $mockEnvironment = $this->createMock(Environment::class);
         $mockEnvironment->expects($this->exactly(4))
             ->method('getValue')
-            ->withConsecutive(['REDIS_HOST'], ['REDIS_PORT'], ['REDIS_USER'], ['REDIS_PASSWORD'])
+            ->with(...$this->consecutiveParams(['REDIS_HOST'], ['REDIS_PORT'], ['REDIS_USER'], ['REDIS_PASSWORD']))
             ->willReturnOnConsecutiveCalls('localhost', '1111', 'root', 'roto');
 
         $redisServer = $this->getMockBuilder(RedisServer::class)

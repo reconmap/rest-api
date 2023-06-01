@@ -81,10 +81,12 @@ class CreateReportController extends Controller
                 $template->setValue($key, $value);
             }
 
-            $attachments = $vars['project']['attachments'];
-            $template->cloneBlock('attachments', count($attachments), true, true);
-            foreach ($attachments as $index => $attach) {
-                $template->setImageValue('attachment.image#' . ($index + 1), $attach);
+            $attachments = $vars['project']['attachments'] ?? [];
+            if(!empty($attachments)) {
+                $template->cloneBlock('attachments', count($attachments), true, true);
+                foreach ($attachments as $index => $attach) {
+                    $template->setImageValue('attachment.image#' . ($index + 1), $attach);
+                }
             }
 
             try {
@@ -116,17 +118,19 @@ class CreateReportController extends Controller
                 $this->logger->warning("Error in logo section: [$msg]");
             }
 
-            try {
-                $template->cloneRow('vault.name', count($vars['vault']));
-                foreach ($vars['vault'] as $index => $item) {
-                    $indexPlusOne = $index + 1;
-                    $template->setValue('vault.name#' . $indexPlusOne, $item['name']);
-                    $template->setValue('vault.note#' . $indexPlusOne, $item['note']);
-                    $template->setValue('vault.type#' . $indexPlusOne, $item['type']);
+            if(!empty($vars['vault'])) {
+                try {
+                    $template->cloneRow('vault.name', count($vars['vault']));
+                    foreach ($vars['vault'] as $index => $item) {
+                        $indexPlusOne = $index + 1;
+                        $template->setValue('vault.name#' . $indexPlusOne, $item['name']);
+                        $template->setValue('vault.note#' . $indexPlusOne, $item['note']);
+                        $template->setValue('vault.type#' . $indexPlusOne, $item['type']);
+                    }
+                } catch (\Exception $e) {
+                    $msg = $e->getMessage();
+                    $this->logger->warning("Error in vault section: [$msg]");
                 }
-            } catch (\Exception $e) {
-                $msg = $e->getMessage();
-                $this->logger->warning("Error in vault section: [$msg]");
             }
 
             try {
@@ -226,40 +230,46 @@ class CreateReportController extends Controller
                 $this->logger->warning("Error in vulnerabilties section: [$msg]");
             }
 
-            try {
-                $template->cloneRow('contact.name', count($vars['contacts']), true, true);
-                foreach ($vars['contacts'] as $index => $vulnerability) {
-                    $template->setValue('contact.kind#' . ($index + 1), $vulnerability['kind']);
-                    $template->setValue('contact.name#' . ($index + 1), $vulnerability['name']);
-                    $template->setValue('contact.phone#' . ($index + 1), $vulnerability['phone']);
-                    $template->setValue('contact.email#' . ($index + 1), $vulnerability['email']);
-                    $template->setValue('contact.role#' . ($index + 1), $vulnerability['role']);
+            if(!empty($vars['contacts'])) {
+                try {
+                    $template->cloneRow('contact.name', count($vars['contacts']), true, true);
+                    foreach ($vars['contacts'] as $index => $vulnerability) {
+                        $template->setValue('contact.kind#' . ($index + 1), $vulnerability['kind']);
+                        $template->setValue('contact.name#' . ($index + 1), $vulnerability['name']);
+                        $template->setValue('contact.phone#' . ($index + 1), $vulnerability['phone']);
+                        $template->setValue('contact.email#' . ($index + 1), $vulnerability['email']);
+                        $template->setValue('contact.role#' . ($index + 1), $vulnerability['role']);
+                    }
+                } catch (\Exception $e) {
+                    $msg = $e->getMessage();
+                    $this->logger->warning("Error in contacts section: [$msg]");
                 }
-            } catch (\Exception $e) {
-                $msg = $e->getMessage();
-                $this->logger->warning("Error in contacts section: [$msg]");
             }
 
-            try {
-                $template->cloneRow('category.group', count($vars['parentCategories']), true, true);
-                foreach ($vars['parentCategories'] as $index => $category) {
-                    $template->setValue('category.group#' . ($index + 1), $category['name']);
-                    $template->setValue('category.severity#' . ($index + 1), $category['owasp_overall']);
+            if(!empty($vars['parentCategories'])) {
+                try {
+                    $template->cloneRow('category.group', count($vars['parentCategories']), true, true);
+                    foreach ($vars['parentCategories'] as $index => $category) {
+                        $template->setValue('category.group#' . ($index + 1), $category['name']);
+                        $template->setValue('category.severity#' . ($index + 1), $category['owasp_overall']);
+                    }
+                } catch (\Exception $e) {
+                    $msg = $e->getMessage();
+                    $this->logger->warning("Error in parent categories section: [$msg]");
                 }
-            } catch (\Exception $e) {
-                $msg = $e->getMessage();
-                $this->logger->warning("Error in parent categories section: [$msg]");
             }
 
-            try {
-                $template->cloneRow('category.name', count($vars['categories']), true, true);
-                foreach ($vars['categories'] as $index => $category) {
-                    $template->setValue('category.name#' . ($index + 1), $category['name']);
-                    $template->setValue('category.status#' . ($index + 1), $category['status']);
+            if(!empty($vars['categories'])) {
+                try {
+                    $template->cloneRow('category.name', count($vars['categories']), true, true);
+                    foreach ($vars['categories'] as $index => $category) {
+                        $template->setValue('category.name#' . ($index + 1), $category['name']);
+                        $template->setValue('category.status#' . ($index + 1), $category['status']);
+                    }
+                } catch (\Exception $e) {
+                    $msg = $e->getMessage();
+                    $this->logger->warning("Error in categories section: [$msg]");
                 }
-            } catch (\Exception $e) {
-                $msg = $e->getMessage();
-                $this->logger->warning("Error in categories section: [$msg]");
             }
 
             try {

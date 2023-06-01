@@ -6,6 +6,7 @@ use Fig\Http\Message\StatusCodeInterface;
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\ConsecutiveParamsTrait;
 use Reconmap\Models\AuditActions\ClientAuditActions;
 use Reconmap\Repositories\ClientRepository;
 use Reconmap\Services\ActivityPublisherService;
@@ -13,6 +14,8 @@ use Reconmap\Services\Security\AuthorisationService;
 
 class UpdateClientControllerTest extends TestCase
 {
+    use ConsecutiveParamsTrait;
+
     public function testHappyPath()
     {
         $fakeClientId = 49;
@@ -23,7 +26,7 @@ class UpdateClientControllerTest extends TestCase
             ->willReturn('{"name": "Fancy new Client Name"}');
         $mockRequest->expects($this->exactly(2))
             ->method('getAttribute')
-            ->withConsecutive(['role'], ['userId'])
+            ->with(...$this->consecutiveParams(['role'], ['userId']))
             ->willReturnOnConsecutiveCalls('superuser', 9);
 
         $mockClientRepository = $this->createMock(ClientRepository::class);

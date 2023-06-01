@@ -3,6 +3,7 @@
 namespace Reconmap;
 
 use League\Route\RouteCollectionInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Reconmap\Controllers\Attachments\AttachmentsRouter;
 use Reconmap\Controllers\AuditLog\AuditLogRouter;
@@ -23,7 +24,7 @@ use Reconmap\Controllers\Vulnerabilities\VulnerabilitiesRouter;
 
 class ControllerRoutesTest extends TestCase
 {
-    public function routerDataProvider(): array
+    public static function routerDataProvider(): array
     {
         return [
             [AuthRouter::class],
@@ -45,10 +46,7 @@ class ControllerRoutesTest extends TestCase
         ];
     }
 
-    /**
-     * @param string $routerClass
-     * @dataProvider routerDataProvider
-     */
+    #[DataProvider("routerDataProvider")]
     public function testAllRouters(string $routerClass)
     {
         $mockCollection = $this->createMock(RouteCollectionInterface::class);

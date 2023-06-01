@@ -2,12 +2,13 @@
 
 namespace Reconmap\Services;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class CvssTest extends TestCase
 {
 
-    public function listSeverities(): array
+    public static function listSeverities(): array
     {
         return [
             [0, 'none'],
@@ -18,9 +19,7 @@ class CvssTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider listSeverities
-     */
+    #[DataProvider("listSeverities")]
     public function testToSeverity(float $score, string $severity): void
     {
         $cvss = new Cvss;
