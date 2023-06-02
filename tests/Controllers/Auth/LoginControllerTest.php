@@ -6,6 +6,7 @@ use Fig\Http\Message\StatusCodeInterface;
 use League\Container\Container;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\ConsecutiveParamsTrait;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\AuditLogService;
@@ -14,6 +15,8 @@ use Reconmap\Services\Security\AuthorisationService;
 
 class LoginControllerTest extends TestCase
 {
+    use ConsecutiveParamsTrait;
+
     public function testLogin()
     {
         $fakeUser = ['id' => 56,
@@ -52,7 +55,7 @@ class LoginControllerTest extends TestCase
             ->willReturn(json_encode(['username' => 'me', 'password' => 'su123']));
         $mockServerRequestInterface->expects(($this->exactly(2)))
             ->method('getAttribute')
-            ->withConsecutive(['userId'], ['role'])
+            ->with(...$this->consecutiveParams(['userId'], ['role']))
             ->willReturnOnConsecutiveCalls(1, 'superuser');
 
         $controller = new LoginController($mockUserRepository, $mockAuditLogService);

@@ -11,6 +11,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Reconmap\ApplicationConfigTestingTrait;
+use Reconmap\ConsecutiveParamsTrait;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\JwtPayloadCreator;
 use Reconmap\Services\KeycloakService;
@@ -18,6 +19,7 @@ use Reconmap\Services\KeycloakService;
 class AuthMiddlewareTest extends TestCase
 {
     use ApplicationConfigTestingTrait;
+    use ConsecutiveParamsTrait;
 
     public function testJwtTokenValidation()
     {
@@ -46,7 +48,7 @@ class AuthMiddlewareTest extends TestCase
             ->willReturn(['Bearer ' . $jwt]);
         $request->expects($this->exactly(0))
             ->method('withAttribute')
-            ->withConsecutive(['userId', 5], ['role', 'superuser'])
+            ->with(...$this->consecutiveParams(['userId', 5], ['role', 'superuser']))
             ->willReturn($request);
 
         $mockUri = $this->createMock(UriInterface::class);

@@ -4,17 +4,20 @@ namespace Reconmap\Controllers\Vulnerabilities;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\ConsecutiveParamsTrait;
 use Reconmap\Repositories\SearchCriterias\VulnerabilitySearchCriteria;
 use Reconmap\Repositories\VulnerabilityRepository;
 
 class GetVulnerabilitiesControllerTest extends TestCase
 {
+    use ConsecutiveParamsTrait;
+
     public function testFindingVulnerabilitiesByKeywords()
     {
         $mockRequest = $this->createMock(ServerRequestInterface::class);
         $mockRequest->expects($this->exactly(2))
             ->method('getAttribute')
-            ->withConsecutive(['userId'], ['role'])
+            ->with(...$this->consecutiveParams(['userId'], ['role']))
             ->willReturnOnConsecutiveCalls(9, 'superuser');
         $mockRequest->expects($this->atLeastOnce())
             ->method('getQueryParams')
@@ -46,7 +49,7 @@ class GetVulnerabilitiesControllerTest extends TestCase
         $mockRequest = $this->createMock(ServerRequestInterface::class);
         $mockRequest->expects($this->exactly(2))
             ->method('getAttribute')
-            ->withConsecutive(['userId'], ['role'])
+            ->with(...$this->consecutiveParams(['userId'], ['role']))
             ->willReturnOnConsecutiveCalls(9, 'superuser');
         $mockRequest->expects($this->atLeastOnce())
             ->method('getQueryParams')

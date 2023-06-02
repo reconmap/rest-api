@@ -6,18 +6,21 @@ use Fig\Http\Message\StatusCodeInterface;
 use League\Container\Container;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\ConsecutiveParamsTrait;
 use Reconmap\Models\AuditActions\UserAuditActions;
 use Reconmap\Services\AuditLogService;
 use Reconmap\Services\Security\AuthorisationService;
 
 class LogoutControllerTest extends TestCase
 {
+    use ConsecutiveParamsTrait;
+
     public function testLogout()
     {
         $mockRequest = $this->createMock(ServerRequestInterface::class);
         $mockRequest->expects($this->exactly(2))
             ->method('getAttribute')
-            ->withConsecutive(['userId'], ['role'])
+            ->with(...$this->consecutiveParams(['userId'], ['role']))
             ->willReturnOnConsecutiveCalls(509, 'client');
 
         $mockAuthorisationService = $this->createMock(AuthorisationService::class);

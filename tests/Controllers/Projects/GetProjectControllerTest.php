@@ -5,10 +5,13 @@ namespace Reconmap\Controllers\Projects;
 use League\Route\Http\Exception\NotFoundException;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\ConsecutiveParamsTrait;
 use Reconmap\Repositories\ProjectRepository;
 
 class GetProjectControllerTest extends TestCase
 {
+    use ConsecutiveParamsTrait;
+
     public function testRetrievingProject()
     {
         $mockProject = ['title' => 'foo'];
@@ -16,7 +19,7 @@ class GetProjectControllerTest extends TestCase
         $mockRequest = $this->createMock(ServerRequestInterface::class);
         $mockRequest->expects($this->exactly(2))
             ->method('getAttribute')
-            ->withConsecutive(['userId'], ['role'])
+            ->with(...$this->consecutiveParams(['userId'], ['role']))
             ->willReturnOnConsecutiveCalls(9, 'administrator');
 
         $mockRepository = $this->createMock(ProjectRepository::class);
@@ -38,7 +41,7 @@ class GetProjectControllerTest extends TestCase
         $mockRequest = $this->createMock(ServerRequestInterface::class);
         $mockRequest->expects($this->exactly(2))
             ->method('getAttribute')
-            ->withConsecutive(['userId'], ['role'])
+            ->with(...$this->consecutiveParams(['userId'], ['role']))
             ->willReturnOnConsecutiveCalls(9, 'administrator');
 
         $mockRepository = $this->createMock(ProjectRepository::class);

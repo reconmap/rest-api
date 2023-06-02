@@ -3,6 +3,7 @@
 namespace Reconmap\Controllers\Documents;
 
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\ConsecutiveParamsTrait;
 use Reconmap\ControllerTestCase;
 use Reconmap\Repositories\DocumentRepository;
 use Reconmap\Services\ActivityPublisherService;
@@ -10,6 +11,8 @@ use Reconmap\Services\Security\AuthorisationService;
 
 class DeleteDocumentControllerTest extends ControllerTestCase
 {
+    use ConsecutiveParamsTrait;
+
     public function testDelete()
     {
         $mockAuthorisationService = $this->createMock(AuthorisationService::class);
@@ -31,7 +34,7 @@ class DeleteDocumentControllerTest extends ControllerTestCase
         $request = $this->createMock(ServerRequestInterface::class);
         $request->expects($this->exactly(2))
             ->method('getAttribute')
-            ->withConsecutive(['role'], ['userId'])
+            ->with(...$this->consecutiveParams(['role'], ['userId']))
             ->willReturnOnConsecutiveCalls('superuser', 1);
 
         $args = ['documentId' => 1];

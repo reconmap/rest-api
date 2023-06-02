@@ -4,10 +4,13 @@ namespace Reconmap\Controllers;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\ConsecutiveParamsTrait;
 use Reconmap\Models\User;
 
 class ControllerTest extends TestCase
 {
+    use ConsecutiveParamsTrait;
+
     public function testJsonDecodeAsObject()
     {
         $subject = $this->getMockForAbstractClass(Controller::class);
@@ -38,7 +41,7 @@ class ControllerTest extends TestCase
         $mockRequest = $this->createMock(ServerRequestInterface::class);
         $mockRequest->expects($this->exactly(2))
             ->method('getAttribute')
-            ->withConsecutive(['userId'], ['role'])
+            ->with(...$this->consecutiveParams(['userId'], ['role']))
             ->willReturnOnConsecutiveCalls(4, 'client');
         $user = $subject->getUserFromRequest($mockRequest);
 

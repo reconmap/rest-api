@@ -10,7 +10,9 @@ class EmailTaskProcessorTest extends TestCase
 {
     public function testSuccess()
     {
-        $mockSettings = ['host' => 'amazonses', 'port' => 589, 'username' => 'foo', 'password' => 'bar', 'verifyPeer' => 'false'];
+        $mockSettings = ['host' => 'amazonses', 'port' => 589, 'username' => 'foo', 'password' => 'bar', 'verifyPeer' => 'false',
+            'fromEmail' => 'some@email.com',
+            'fromName' => 'Some Name'];
 
         $mockAppConfig = $this->createMock(ApplicationConfig::class);
         $mockAppConfig->expects($this->once())
@@ -20,6 +22,9 @@ class EmailTaskProcessorTest extends TestCase
         $mockLogger = $this->createMock(Logger::class);
 
         $mockItem = new \stdClass();
+        $mockItem->to = ['so@body.com' => 'So body'];
+        $mockItem->subject = 'Spam!';
+        $mockItem->body = 'Buy this now';
 
         $controller = new EmailTaskProcessor($mockAppConfig, $mockLogger);
         $controller->process($mockItem);

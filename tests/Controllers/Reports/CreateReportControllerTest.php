@@ -40,6 +40,9 @@ class CreateReportControllerTest extends TestCase
 
         $mockAttachmentRepository = $this->createMock(AttachmentRepository::class);
         $mockAttachmentRepository->expects($this->once())
+            ->method('insert')
+            ->willReturn(1);
+        $mockAttachmentRepository->expects($this->once())
             ->method('findByParentId')
             ->with('report', 1)
             ->willReturn([
@@ -70,7 +73,7 @@ class CreateReportControllerTest extends TestCase
         $controller->setLogger($this->createMock(Logger::class));
         $response = $controller($mockRequest);
 
-        $expectedAttachmentIds = [];
+        $expectedAttachmentIds = [1];
 
         $this->assertEquals($expectedAttachmentIds, $response);
     }
