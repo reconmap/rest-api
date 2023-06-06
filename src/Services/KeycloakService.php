@@ -25,7 +25,7 @@ class KeycloakService
 
     public function getPublicKey(): string
     {
-        $realmInfoEncoded = file_get_contents($this->config['baseUri'] . '/realms/reconmap');
+        $realmInfoEncoded = file_get_contents($this->config['baseUri'] . '/realms/'. $this->config['realmName']);
         $realmInfo = json_decode($realmInfoEncoded);
         $publicKey = $realmInfo->public_key;
         return "-----BEGIN PUBLIC KEY-----\n{$publicKey}\n-----END PUBLIC KEY-----";
@@ -34,10 +34,10 @@ class KeycloakService
     public function getAccessToken(): string
     {
         $client = $this->getClient();
-        $response = $client->post('/realms/reconmap/protocol/openid-connect/token', [
+        $response = $client->post('/realms/' . $this->config['realmName'] . '/protocol/openid-connect/token', [
             'form_params' => [
                 'grant_type' => 'client_credentials',
-                'client_id' => 'admin-cli',
+                'client_id' => $this->config['clientId'],
                 'client_secret' => $this->config['clientSecret']
             ]]);
         $json = json_decode($response->getBody()->getContents());
@@ -55,7 +55,7 @@ class KeycloakService
         $client = $this->getClient();
         list($firstName, $lastName) = explode(' ', $user->full_name);
 
-        $response = $client->post('/admin/realms/reconmap/users', [
+        $response = $client->post('/admin/realms/' . $this->config['realmName'] . '/users', [
             'headers' => ['Authorization' => 'Bearer ' . $accessToken],
             'json' => [
                 "firstName" => $firstName,
@@ -80,7 +80,7 @@ class KeycloakService
     {
         $client = $this->getClient();
 
-        $client->get('/admin/realms/reconmap/users/?email=' . $email, [
+        $client->get('/admin/realms/' . $this->config['realmName'] . '/users/?email=' . $email, [
             'headers' => [
                 'Authorization' => 'Bearer ' . $this->getAccessToken()
             ]
@@ -91,11 +91,10 @@ class KeycloakService
     {
         $client = $this->getClient();
 
-        $client->delete('/admin/realms/reconmap/users/' . $user['subject_id'], [
+        $client->delete('/admin/realms/' . $this->config['realmName'] . '/users/' . $user['subject_id'], [
             'headers' => [
                 'Authorization' => 'Bearer ' . $this->getAccessToken()
             ]
         ]);
     }
 }
-
