@@ -5,6 +5,8 @@ namespace Reconmap\Models;
 class Attachment
 {
     public ?int $id = null;
+    public int|string|null $insert_ts = null;
+
     public string $parent_type;
     public int $parent_id;
     public int $submitter_uid;

@@ -4,6 +4,7 @@ namespace Reconmap\Controllers\Reports;
 
 use League\CommonMark\GithubFlavoredMarkdownConverter;
 use PhpOffice\PhpWord\PhpWord;
+use PhpOffice\PhpWord\Settings;
 use PhpOffice\PhpWord\Shared\Html;
 use PhpOffice\PhpWord\TemplateProcessor;
 use Psr\Http\Message\ServerRequestInterface;
@@ -61,7 +62,7 @@ class CreateReportController extends Controller
         $attachment->submitter_uid = $userId;
 
         $vars = $this->reportDataCollector->collectForProject($projectId);
-        \PhpOffice\PhpWord\Settings::setOutputEscapingEnabled(true);
+        Settings::setOutputEscapingEnabled(true);
 
         $attachmentIds = [];
 
@@ -74,6 +75,7 @@ class CreateReportController extends Controller
             foreach (ArrayUtils::flatten($vars['project'], 'project.') as $key => $value) {
                 $template->setValue($key, $value);
             }
+
             foreach (ArrayUtils::flatten($vars['client'], 'client.') as $key => $value) {
                 $template->setValue($key, $value);
             }
@@ -217,22 +219,14 @@ class CreateReportController extends Controller
                     $template->setValue('vulnerability.impact#' . ($index + 1), $vulnerability['impact']);
                     $template->setValue('vulnerability.references#' . ($index + 1), $vulnerability['external_refs']);
                 }
-                $template->cloneRow('vuln', count($vars['vulnerabilities']));
-                foreach ($vars['vulnerabilities'] as $index => $item) {
-                    $indexPlusOne = $index + 1;
-                    $template->setValue('vuln#' . $indexPlusOne, $item['summary']);
-                    $template->setValue('vulnerability.owasp_overall#' . $indexPlusOne, $item['owasp_overall']);
-                    $template->setValue('vulnerability.description#' . $indexPlusOne, $item['description']);
-                    $template->setValue('vulnerability.category_name#' . $indexPlusOne, $item['category_name']);
-                }
             } catch (\Exception $e) {
                 $msg = $e->getMessage();
-                $this->logger->warning("Error in vulnerabilties section: [$msg]");
+                $this->logger->warning("Error in vulnerabilities section: [$msg]");
             }
 
             if(!empty($vars['contacts'])) {
                 try {
-                    $template->cloneRow('contact.name', count($vars['contacts']), true, true);
+                    $template->cloneBlock('contacts', count($vars['contacts']), true, true);
                     foreach ($vars['contacts'] as $index => $vulnerability) {
                         $template->setValue('contact.kind#' . ($index + 1), $vulnerability['kind']);
                         $template->setValue('contact.name#' . ($index + 1), $vulnerability['name']);
@@ -248,7 +242,7 @@ class CreateReportController extends Controller
 
             if(!empty($vars['parentCategories'])) {
                 try {
-                    $template->cloneRow('category.group', count($vars['parentCategories']), true, true);
+                    $template->cloneBlock('category.group', count($vars['parentCategories']), true, true);
                     foreach ($vars['parentCategories'] as $index => $category) {
                         $template->setValue('category.group#' . ($index + 1), $category['name']);
                         $template->setValue('category.severity#' . ($index + 1), $category['owasp_overall']);
@@ -261,7 +255,7 @@ class CreateReportController extends Controller
 
             if(!empty($vars['categories'])) {
                 try {
-                    $template->cloneRow('category.name', count($vars['categories']), true, true);
+                    $template->cloneBlock('category.name', count($vars['categories']), true, true);
                     foreach ($vars['categories'] as $index => $category) {
                         $template->setValue('category.name#' . ($index + 1), $category['name']);
                         $template->setValue('category.status#' . ($index + 1), $category['status']);
@@ -292,7 +286,7 @@ class CreateReportController extends Controller
             $template->saveAs($filePath);
 
             $projectName = str_replace(' ', '_', strtolower($project['name']));
-            $clientFileName = "reconmap-{$projectName}-v{$versionName}.docx";
+            $clientFileName = "reconmap-$projectName-v$versionName.docx";
 
             $attachment->file_name = $fileName;
             $attachment->file_mimetype = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
