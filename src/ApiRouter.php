@@ -7,7 +7,8 @@ use League\Container\Container;
 use League\Route\RouteGroup;
 use League\Route\Router;
 use Monolog\Logger;
-use Reconmap\{Controllers\AuditLog\AuditLogRouter,
+use Reconmap\{Controllers\Attachments\ServeAttachmentController,
+    Controllers\AuditLog\AuditLogRouter,
     Controllers\Auth\AuthRouter,
     Controllers\Clients\ClientsRouter,
     Controllers\Commands\CommandsRouter,
@@ -19,6 +20,7 @@ use Reconmap\{Controllers\AuditLog\AuditLogRouter,
     Controllers\ProjectCategories\ProjectCategoriesRouter,
     Controllers\Projects\ProjectsRouter,
     Controllers\Reports\ReportsRouter,
+    Controllers\System\GetOpenApiYamlController,
     Controllers\System\SystemRouter,
     Controllers\Targets\TargetsRouter,
     Controllers\Tasks\TasksRouter,
@@ -29,10 +31,14 @@ use Reconmap\{Controllers\AuditLog\AuditLogRouter,
     Http\CorsMiddleware,
     Http\CorsResponseDecorator,
     Http\SecurityMiddleware,
-    Services\ApplicationConfig
-};
+    Http\StaticMiddleware,
+    Services\ApplicationConfig};
+use OpenApi\Attributes\Info;
+use OpenApi\Attributes\SecurityScheme;
 use Reconmap\Controllers\Attachments\AttachmentsRouter;
 
+#[Info(version: "1.0.0", description: "Reconmap REST API", title: "Reconmap API")]
+#[SecurityScheme(securityScheme: "bearerAuth", type: "http", bearerFormat: "JWT", scheme: "bearer")]
 class ApiRouter extends Router
 {
     private const ROUTER_CLASSES = [
@@ -74,6 +80,10 @@ class ApiRouter extends Router
 
         $authMiddleware = $container->get(AuthMiddleware::class);
         $securityMiddleware = $container->get(SecurityMiddleware::class);
+        $cookieMiddleware = $container->get(StaticMiddleware::class);
+
+        $this->map('GET', '/openapi.json', GetOpenApiYamlController::class);
+        $this->map('GET', '/image/{attachmentId:number}', ServeAttachmentController::class)->middlewares([$cookieMiddleware]);
 
         $this->group('', function (RouteGroup $router): void {
             foreach (self::ROUTER_CLASSES as $mappable) {

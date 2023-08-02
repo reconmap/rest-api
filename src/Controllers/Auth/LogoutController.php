@@ -2,6 +2,7 @@
 
 namespace Reconmap\Controllers\Auth;
 
+use HansOtt\PSR7Cookies\SetCookie;
 use Psr\Http\Message\ResponseInterface;
 use Reconmap\Controllers\ControllerV2;
 use Reconmap\Http\ApplicationRequest;
@@ -20,6 +21,9 @@ class LogoutController extends ControllerV2
 
         $this->auditLogService->insert($user->id, UserAuditActions::USER_LOGGED_OUT);
 
-        return $this->createOkResponse();
+        $cookie = new SetCookie('reconmap-static','',-1, '/');
+        $response = $this->createOkResponse();
+        $response = $cookie->addToResponse($response);
+        return $response;
     }
 }

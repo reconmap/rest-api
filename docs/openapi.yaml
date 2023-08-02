@@ -63,27 +63,6 @@ paths:
         '200':
           description: Successfully deleted
 
-  /auditlog:
-    get:
-      description: Get audit log entries
-      tags:
-        - Audit log
-      security:
-        - BearerAuth: [ ]
-      responses:
-        '200':
-          description: OK
-  /auditlog/stats:
-    get:
-      description: Get audit log statistics
-      tags:
-        - Audit log
-      security:
-        - BearerAuth: [ ]
-      responses:
-        '200':
-          description: OK
-
   /users/login:
     post:
       tags:

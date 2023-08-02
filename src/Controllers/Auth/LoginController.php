@@ -3,19 +3,25 @@
 namespace Reconmap\Controllers\Auth;
 
 use GuzzleHttp\Psr7\Response;
+use HansOtt\PSR7Cookies\InvalidArgumentException;
+use HansOtt\PSR7Cookies\SetCookie;
 use Psr\Http\Message\ResponseInterface;
 use Reconmap\Controllers\ControllerV2;
 use Reconmap\Http\ApplicationRequest;
 use Reconmap\Models\AuditActions\UserAuditActions;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\AuditLogService;
+use Reconmap\Services\PasswordGenerator;
+use Reconmap\Services\RedisServer;
 use Reconmap\Services\Security\Permissions;
 
 class LoginController extends ControllerV2
 {
     public function __construct(
         private readonly UserRepository  $userRepository,
-        private readonly AuditLogService $auditLogService)
+        private readonly AuditLogService $auditLogService,
+        private readonly RedisServer $redisServer,
+    )
     {
     }
 
@@ -34,10 +40,24 @@ class LoginController extends ControllerV2
 
         $user['permissions'] = Permissions::ByRoles[$requestUser->role];
 
+        $staticToken = $this->generateStaticToken();
+
+        try {
+            $this->redisServer->set('static-token', $staticToken);
+            $cookie = new SetCookie('reconmap-static', $staticToken, time() + (3600 * 24), path: '/', secure: false, httpOnly: false);
+        } catch (InvalidArgumentException $e) {
+
+        }
+
         $response = new Response;
         $response->getBody()->write(json_encode($user));
-
+        $response = $cookie->addToResponse($response);
         return $response->withHeader('Content-type', 'application/json');
+    }
+
+    private function generateStaticToken(): string {
+        $passwordGenrator = new PasswordGenerator();
+        return $passwordGenrator->generate(20);
     }
 
     private function audit(?int $userId): void

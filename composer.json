@@ -37,7 +37,9 @@
         "symfony/console": "^6.0",
         "symfony/mailer": "^6.0",
         "geoip2/geoip2": "~2.0",
-        "graylog2/gelf-php": "dev-master"
+        "graylog2/gelf-php": "dev-master",
+        "zircote/swagger-php": "^4.7",
+        "hansott/psr7-cookies": "^3.0"
     },
     "autoload": {
         "psr-4": {

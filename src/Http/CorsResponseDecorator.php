@@ -21,7 +21,8 @@ class CorsResponseDecorator
 
         $response = $response
             ->withHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,PATCH')
-            ->withHeader('Access-Control-Allow-Headers', 'Authorization,Bulk-Operation,Content-Type');
+            ->withHeader('Access-Control-Allow-Credentials', 'true')
+            ->withHeader('Access-Control-Allow-Headers', 'Authorization,Bulk-Operation,Content-Type,Set-Cookie');
 
         if (in_array('*', $allowedOrigins)) {
             $response = $response->withHeader('Access-Control-Allow-Origin', '*');
