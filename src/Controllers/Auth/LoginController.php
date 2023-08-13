@@ -42,22 +42,23 @@ class LoginController extends ControllerV2
 
         $staticToken = $this->generateStaticToken();
 
+        $response = new Response;
+
         try {
             $this->redisServer->set('static-token', $staticToken);
             $cookie = new SetCookie('reconmap-static', $staticToken, time() + (3600 * 24), path: '/', secure: false, httpOnly: false);
+            $response = $cookie->addToResponse($response);
         } catch (InvalidArgumentException $e) {
-
+            $this->logger->warning($e->getMessage());
         }
 
-        $response = new Response;
         $response->getBody()->write(json_encode($user));
-        $response = $cookie->addToResponse($response);
         return $response->withHeader('Content-type', 'application/json');
     }
 
     private function generateStaticToken(): string {
-        $passwordGenrator = new PasswordGenerator();
-        return $passwordGenrator->generate(20);
+        $passwordGenerator = new PasswordGenerator();
+        return $passwordGenerator->generate(20);
     }
 
     private function audit(?int $userId): void

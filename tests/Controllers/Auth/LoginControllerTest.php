@@ -11,6 +11,7 @@ use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\AuditLogService;
 use Reconmap\Services\JwtPayloadCreator;
+use Reconmap\Services\RedisServer;
 use Reconmap\Services\Security\AuthorisationService;
 
 class LoginControllerTest extends TestCase
@@ -58,7 +59,9 @@ class LoginControllerTest extends TestCase
             ->with(...$this->consecutiveParams(['userId'], ['role']))
             ->willReturnOnConsecutiveCalls(1, 'superuser');
 
-        $controller = new LoginController($mockUserRepository, $mockAuditLogService);
+        $mockRedisServer = $this->createMock(RedisServer::class);
+
+        $controller = new LoginController($mockUserRepository, $mockAuditLogService, $mockRedisServer);
         $controller->setContainer($mockContainer);
         $response = $controller($mockServerRequestInterface, []);
 
