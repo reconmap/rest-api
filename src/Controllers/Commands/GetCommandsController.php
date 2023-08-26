@@ -20,7 +20,7 @@ class GetCommandsController extends SecureController
         parent::__construct($authorisationService);
     }
 
-    public function process(ServerRequestInterface $request): ResponseInterface
+    public function process(ServerRequestInterface $request, array $args): ResponseInterface
     {
         $params = $request->getQueryParams();
         if (isset($params['keywords'])) {

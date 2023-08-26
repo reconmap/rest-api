@@ -360,19 +360,40 @@ CREATE TABLE command
     update_ts       TIMESTAMP              NULL ON UPDATE CURRENT_TIMESTAMP,
     name            VARCHAR(200)           NOT NULL,
     description     VARCHAR(2000)          NULL,
-    output_parser   VARCHAR(100)           NULL,
-    executable_type ENUM ('custom','rmap') NOT NULL DEFAULT 'custom',
-    executable_path VARCHAR(255)           NULL,
-    docker_image    VARCHAR(300)           NULL,
-    arguments       VARCHAR(2000)          NULL,
-    configuration   JSON                   NULL,
-    output_filename VARCHAR(100)           NULL,
     more_info_url   VARCHAR(200)           NULL,
     tags            JSON                   NULL,
 
     PRIMARY KEY (id),
     FOREIGN KEY (creator_uid) REFERENCES user (id) ON DELETE NO ACTION
 ) ENGINE = InnoDB;
+
+DROP TABLE IF EXISTS command_usage;
+
+CREATE TABLE command_usage (
+    id             INT UNSIGNED           NOT NULL AUTO_INCREMENT,
+    command_id     INT UNSIGNED            NOT NULL,
+    creator_uid     INT UNSIGNED           NOT NULL,
+    insert_ts       TIMESTAMP              NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_ts       TIMESTAMP              NULL ON UPDATE CURRENT_TIMESTAMP,
+    description     VARCHAR(2000)          NULL,
+    executable_type ENUM ('custom','rmap') NOT NULL DEFAULT 'custom',
+    executable_path VARCHAR(255)           NULL,
+    docker_image    VARCHAR(300)           NULL,
+    arguments       VARCHAR(2000)          NULL,
+    output_filename VARCHAR(100)           NULL,
+    output_parser   VARCHAR(100)           NULL,
+
+    PRIMARY KEY (id),
+    FOREIGN KEY (creator_uid) REFERENCES user (id) ON DELETE NO ACTION,
+    FOREIGN KEY (command_id) REFERENCES command (id) ON DELETE CASCADE
+) ENGINE = InnoDB;
+
+INSERT INTO command(id,creator_uid,name) VALUES(1,1,'nmap');
+
+TRUNCATE TABLE command_usage;
+INSERT INTO command_usage(id,creator_uid,command_id, description, executable_type, executable_path, docker_image, arguments, output_filename, output_parser) VALUES
+(1,1,1,"Scan all reserved TCP ports on the machine. The -v option enables verbose mode.", "custom", "nmap", NULL, "  -v scanme.nmap.org", "STDOUT", "nmap"),
+(2,1,1,"Launches a stealth SYN scan against each machine that is up out of the 256 IPs on the /24 sized network where Scanme resides. It also tries to determine what operating system is running on each host that is up and running. This requires root privileges because of the SYN scan and OS detection.", "custom", "nmap", NULL, " -sS -O scanme.nmap.org/24", "STDOUT", "nmap");
 
 DROP TABLE IF EXISTS command_schedule;
 

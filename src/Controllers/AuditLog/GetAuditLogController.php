@@ -34,7 +34,7 @@ class GetAuditLogController extends SecureController
         return 'auditlog.get';
     }
 
-    protected function process(ServerRequestInterface $request): array|ResponseInterface
+    protected function process(ServerRequestInterface $request, array $args): array|ResponseInterface
     {
         $paginator = new PaginationRequestHandler($request);
         $params = $request->getQueryParams();

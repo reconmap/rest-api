@@ -14,7 +14,7 @@ class DeleteCommandController extends Controller
 
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
-        $commandId = (int)$args['commandId'];
+        $commandId = intval($args['commandId']);
 
         $success = $this->repository->deleteById($commandId);
 

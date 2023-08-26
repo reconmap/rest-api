@@ -5,12 +5,13 @@ namespace Reconmap\Controllers\Commands;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\SecureController;
 use Reconmap\Repositories\CommandScheduleRepository;
+use Reconmap\Repositories\CommandUsageRepository;
 use Reconmap\Services\Security\AuthorisationService;
 
-class GetCommandsSchedulesController extends SecureController
+class GetCommandUsagesController extends SecureController
 {
     public function __construct(AuthorisationService                       $authorisationService,
-                                private readonly CommandScheduleRepository $repository)
+                                private readonly CommandUsageRepository $repository)
     {
         parent::__construct($authorisationService);
     }
@@ -22,6 +23,7 @@ class GetCommandsSchedulesController extends SecureController
 
     public function process(ServerRequestInterface $request, array $args): array
     {
-        return $this->repository->findAll();
+        $commandId = intval($args['commandId']);
+        return $this->repository->findByCommandId($commandId);
     }
 }
