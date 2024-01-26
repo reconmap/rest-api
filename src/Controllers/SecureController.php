@@ -12,7 +12,7 @@ abstract class SecureController extends Controller
     {
     }
 
-    public function __invoke(ServerRequestInterface $request, array $args): array|ResponseInterface
+    public function __invoke(ServerRequestInterface $request, ?array $args = []): array|ResponseInterface
     {
         $role = $request->getAttribute('role');
         if (!$this->authorisationService->isRoleAllowed($role, $this->getPermissionRequired())) {

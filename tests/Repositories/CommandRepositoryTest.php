@@ -29,14 +29,14 @@ class CommandRepositoryTest extends DatabaseTestCase
     public function testFindAll()
     {
         $commands = $this->subject->findAll();
-        $this->assertCount(5, $commands);
+        $this->assertCount(6, $commands);
     }
 
 
     public function testFindById()
     {
         $command = $this->subject->findById(1);
-        $this->assertEquals('Goohost', $command['name']);
+        $this->assertEquals('nmap', $command['name']);
     }
 
     public function testFindByIdNotFound()
