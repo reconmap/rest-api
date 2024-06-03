@@ -31,7 +31,7 @@
         "netresearch/jsonmapper": "^4.0",
         "phpoffice/phpword": "^1.0",
         "ponup/sql-builders": "^1.0",
-        "symfony/filesystem": "^6.0",
+        "symfony/filesystem": "^7.1",
         "twig/twig": "^3.0",
         "reconmap/command-output-parsers": "^2.0",
         "symfony/console": "^6.0",
