@@ -6,16 +6,16 @@ use Ponup\SqlBuilders\InsertQueryBuilder;
 use Ponup\SqlBuilders\SearchCriteria;
 use Ponup\SqlBuilders\SelectQueryBuilder;
 use Reconmap\Models\Command;
+use Reconmap\Models\CommandUsage;
 use Reconmap\Services\PaginationRequestHandler;
 
 class CommandUsageRepository extends MysqlRepository
 {
     public const UPDATABLE_COLUMNS_TYPES = [
         'command_id' => 'i',
+        'name' => 's',
         'description' => 's',
         'output_parser' => 's',
-        'docker_image' => 's',
-        'executable_type' => 's',
         'executable_path' => 's',
         'arguments' => 's',
         'output_filename' => 's',
@@ -28,7 +28,7 @@ SELECT
        c.*,
        u.full_name AS creator_full_name
 FROM
-    command c
+    command_usage c
     INNER JOIN user u ON (u.id = c.creator_uid)
 WHERE c.id = ?
 SQL;
@@ -81,12 +81,12 @@ SQL;
         return $this->deleteByTableId('command_usage', $id);
     }
 
-    public function insert(Command|\stdClass $command): int
+    public function insert(\stdClass|CommandUsage $command): int
     {
         $insertStmt = new InsertQueryBuilder('command_usage');
-        $insertStmt->setColumns('creator_uid, name, description, docker_image, arguments, executable_type, executable_path, output_filename, more_info_url, tags, output_parser');
+        $insertStmt->setColumns('creator_uid, command_id, name, description, arguments, executable_path, output_filename, tags, output_parser');
         $stmt = $this->db->prepare($insertStmt->toSql());
-        $stmt->bind_param('issssssssss', $command->creator_uid, $command->name, $command->description, $command->docker_image, $command->arguments, $command->executable_type, $command->executable_path, $command->output_filename, $command->more_info_url, $command->tags, $command->output_parser);
+        $stmt->bind_param('iisssssss', $command->creator_uid,  $command->command_id, $command->name, $command->description, $command->arguments, $command->executable_path, $command->output_filename, $command->tags, $command->output_parser);
         return $this->executeInsertStatement($stmt);
     }
 

@@ -10,10 +10,9 @@ class CommandUsage {
 	public ?int $id;
 	public ?int $command_id;
 	public ?int $creator_uid;
+	public ?string $name;
 	public ?string $description;
-	public ?string $executable_type = 'custom';
 	public ?string $executable_path;
-	public ?string $docker_image;
 	public ?string $arguments;
 	public ?string $output_filename;
 	public ?string $output_parser;

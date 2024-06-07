@@ -8,7 +8,7 @@ use Reconmap\Controllers\Controller;
 
 class GetCommandOutputParsersController extends Controller
 {
-    public function __construct(private ProcessorFactory $processorFactory)
+    public function __construct(private readonly ProcessorFactory $processorFactory)
     {
     }
 

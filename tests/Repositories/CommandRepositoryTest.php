@@ -20,7 +20,6 @@ class CommandRepositoryTest extends DatabaseTestCase
         $command->creator_uid = 1;
         $command->name = 'Nmap';
         $command->output_parser = 'nmap';
-        $command->executable_type = 'custom';
         $command->executable_path = 'nmap';
 
         $this->assertTrue($this->subject->insert($command) >= 1);

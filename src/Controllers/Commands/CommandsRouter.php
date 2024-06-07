@@ -13,7 +13,10 @@ class CommandsRouter
         $router->map('GET', '/commands/{commandId:number}', GetCommandController::class);
         $router->map('GET', '/commands/schedules', GetCommandsSchedulesController::class);
         $router->map('GET', '/commands/{commandId:number}/schedules', GetCommandSchedulesController::class);
+        $router->map('GET', '/commands/usage/{commandId:number}', GetCommandUsageController::class);
+        $router->map('DELETE', '/commands/usage/{commandId:number}', DeleteCommandUsageController::class);
         $router->map('GET', '/commands/{commandId:number}/usages', GetCommandUsagesController::class);
+        $router->map('POST', '/commands/{commandId:number}/usages', AddCommandUsageController::class);
         $router->map('DELETE', '/commands/schedules/{commandScheduleId:number}', DeleteCommandScheduleController::class);
         $router->map('PUT', '/commands/{commandId:number}', UpdateCommandController::class);
         $router->map('POST', '/commands/{commandId:number}/schedule', AddCommandScheduleController::class);
