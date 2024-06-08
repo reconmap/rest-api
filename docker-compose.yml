@@ -29,6 +29,10 @@ services:
       - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: reconmuppet
+    healthcheck:
+        test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+        timeout: 20s
+        retries: 10
 
   keycloak:
     image: quay.io/reconmap/keycloak-custom:latest
@@ -58,8 +62,8 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - mysql
-
+        mysql:
+            condition: service_healthy
   api:
     container_name: rmap-api
     image: quay.io/reconmap/rest-api:latest

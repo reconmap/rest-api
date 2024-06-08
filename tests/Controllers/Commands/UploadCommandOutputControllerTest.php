@@ -8,6 +8,7 @@ use Reconmap\ControllerTestCase;
 use Reconmap\Models\Attachment;
 use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Repositories\CommandRepository;
+use Reconmap\Repositories\CommandUsageRepository;
 use Reconmap\Services\Filesystem\AttachmentFilePath;
 use Reconmap\Services\RedisServer;
 
@@ -63,9 +64,14 @@ class UploadCommandOutputControllerTest extends ControllerTestCase
             ->method('findById')
             ->willReturn(['id' => 5]);
 
+        $mockCommandUsageRepository = $this->createMock(CommandUsageRepository::class);
+        $mockCommandUsageRepository->expects($this->once())
+            ->method('findById')
+            ->willReturn(['command_id' => 5]);
+
         $args = ['attachmentId' => $fakeAttachmentId];
 
-        $controller = $this->injectController(new UploadCommandOutputController($mockAttachmentRepository, $mockAttachmentFilePath, $mockRedisServer, $mockCommandRepository));
+        $controller = $this->injectController(new UploadCommandOutputController($mockAttachmentRepository, $mockAttachmentFilePath, $mockRedisServer, $mockCommandRepository, $mockCommandUsageRepository));
         $response = $controller($mockRequest, $args);
 
         $this->assertTrue($response['success']);

@@ -36,7 +36,7 @@ class TestDataGenerator
     {
     }
 
-    public function generate()
+    public function generate(): void
     {
         $contact = new Contact();
         $contact->kind = 'billing';
@@ -74,10 +74,13 @@ class TestDataGenerator
         $document->title = 'Thing';
         $this->documentRepository->insert($document);
 
-        $notification = new Notification(toUserId: 1, title: 'Command completed', content: '100 vulnerabilities have been found');
+        $notification = new Notification();
+        $notification->toUserId = 1;
+        $notification->title = 'Command completed';
+        $notification->content = '100 vulnerabilities have been found';
         $this->notificationsRepository->insert($notification);
 
-        $this->projectTestDataGenerator->run();;
+        $this->projectTestDataGenerator->run();
         $target = new Target();
         $target->project_id = 1;
         $target->name = 'https://test.com';
