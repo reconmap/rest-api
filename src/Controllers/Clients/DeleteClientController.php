@@ -11,8 +11,8 @@ use Reconmap\Services\ActivityPublisherService;
 class DeleteClientController extends Controller
 {
     public function __construct(
-        private ClientRepository         $repository,
-        private ActivityPublisherService $activityPublisherService)
+        private readonly ClientRepository         $repository,
+        private readonly ActivityPublisherService $activityPublisherService)
     {
     }
 

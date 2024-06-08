@@ -46,6 +46,7 @@
   },
   "integrations": {
     "gitter": {
+      "enabled": false,
       "token": "yourpersonaltoken",
       "roomId": "yourroomid"
     },
