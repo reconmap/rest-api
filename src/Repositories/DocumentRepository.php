@@ -7,7 +7,7 @@ use Reconmap\Models\Document;
 
 class DocumentRepository extends MysqlRepository implements Deletable
 {
-    public const UPDATABLE_COLUMNS_TYPES = [
+    public const array UPDATABLE_COLUMNS_TYPES = [
         'title' => 's',
         'content' => 's',
         'visibility' => 's',
@@ -55,7 +55,7 @@ class DocumentRepository extends MysqlRepository implements Deletable
         return $this->deleteByTableId('document', $id);
     }
 
-    public function insert(Document $document): int
+    public function insert(Document|\Reconmap\DomainObjects\Document $document): int
     {
         $stmt = $this->db->prepare('INSERT INTO document (user_id, parent_type, parent_id, visibility, title, content) VALUES (?, ?, ?, ?, ?, ?)');
         $stmt->bind_param('isisss', $document->user_id, $document->parent_type, $document->parent_id, $document->visibility, $document->title, $document->content);

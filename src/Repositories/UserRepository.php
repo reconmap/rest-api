@@ -30,7 +30,6 @@ class UserRepository extends MysqlRepository
     public function findById(int $id): ?array
     {
         $queryBuilder = $this->getBaseSelectQueryBuilder();
-        $queryBuilder->setColumns($queryBuilder->getColumns());
         $queryBuilder->setWhere('u.id = ?');
 
         $stmt = $this->db->prepare($queryBuilder->toSql());

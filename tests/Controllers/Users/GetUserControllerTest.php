@@ -2,15 +2,19 @@
 
 namespace Reconmap\Controllers\Users;
 
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Repositories\UserRepository;
 
 class GetUserControllerTest extends TestCase
 {
+    /**
+     * @throws Exception
+     */
     public function testHappyPath()
     {
-        $mockUser = ['title' => 'foo'];
+        $mockUser = ['title' => 'foo', 'preferences' => '{"theme": "system"}'];
 
         $mockRequest = $this->createMock(ServerRequestInterface::class);
 
@@ -25,6 +29,6 @@ class GetUserControllerTest extends TestCase
         $controller = new GetUserController($mockRepository);
         $response = $controller($mockRequest, $args);
 
-        $this->assertEquals($mockUser, $response);
+        $this->assertEquals(['title' => 'foo', 'preferences' => ["theme" => "system"]], $response);
     }
 }

@@ -16,6 +16,9 @@ class GetUserController extends Controller
     {
         $userId = (int)$args['userId'];
 
-        return $this->userRepository->findById($userId);
+        $user = $this->userRepository->findById($userId);
+        $user['preferences'] = json_decode($user['preferences'], true);
+
+        return $user;
     }
 }

@@ -9,8 +9,8 @@ use League\Container\ContainerAwareTrait;
 use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\DomainObjects\User;
 use Reconmap\Models\Cleanable;
-use Reconmap\Models\User;
 use Reconmap\Services\TemplateEngine;
 
 abstract class Controller implements ContainerAwareInterface

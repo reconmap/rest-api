@@ -8,8 +8,11 @@ namespace Reconmap\Models;
 class Organisation {
 
 	public ?int $id = null;
+	public ?string $insert_ts;
+	public ?string $update_ts;
 	public string $name = '';
 	public ?string $url = null;
+	public ?int $contact_id = null;
 	public ?string $contact_name = null;
 	public ?string $contact_email = null;
 	public ?string $contact_phone = null;

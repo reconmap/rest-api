@@ -2,12 +2,16 @@
 
 namespace Reconmap\Repositories\Importers;
 
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
-use Reconmap\Models\Document;
+use Reconmap\DomainObjects\Document;
 use Reconmap\Repositories\DocumentRepository;
 
 class DocumentsImporterTest extends TestCase
 {
+    /**
+     * @throws Exception
+     */
     public function testHappyPath()
     {
         $userId = 5;

@@ -6,7 +6,7 @@ use Reconmap\Models\Client;
 
 class ClientRepository extends MysqlRepository implements Updateable, Findable
 {
-    public const UPDATABLE_COLUMNS_TYPES = [
+    public const array UPDATABLE_COLUMNS_TYPES = [
         'name' => 's',
         'address' => 's',
         'url' => 's',
@@ -45,7 +45,7 @@ SQL;
         $stmt->bind_param('i', $id);
         $stmt->execute();
         $result = $stmt->get_result();
-        $client = $result->fetch_object(Client::class);
+        $client = $result->fetch_object(\Reconmap\DomainObjects\Client::class);
         $stmt->close();
 
         return $client;

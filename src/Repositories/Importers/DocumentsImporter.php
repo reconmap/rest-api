@@ -2,10 +2,10 @@
 
 namespace Reconmap\Repositories\Importers;
 
-use Reconmap\Models\Document;
+use Reconmap\DomainObjects\Document;
 use Reconmap\Repositories\DocumentRepository;
 
-class DocumentsImporter implements Importable
+readonly class DocumentsImporter implements Importable
 {
     public function __construct(private DocumentRepository $repository)
     {

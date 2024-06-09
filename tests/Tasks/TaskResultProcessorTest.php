@@ -3,6 +3,7 @@
 namespace Reconmap\Tasks;
 
 use Monolog\Logger;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Reconmap\CommandOutputParsers\Models\Asset;
 use Reconmap\CommandOutputParsers\Models\AssetKind;
@@ -19,6 +20,9 @@ use Reconmap\Services\RedisServer;
 
 class TaskResultProcessorTest extends TestCase
 {
+    /**
+     * @throws Exception
+     */
     public function testSuccess()
     {
         $mockLogger = $this->createMock(Logger::class);
