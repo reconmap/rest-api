@@ -1,58 +1,60 @@
 {
-    "name": "reconmap/rest-api",
-    "description": "Reconmap REST API",
-    "license": "Apache-2.0",
-    "minimum-stability": "stable",
-    "prefer-stable": true,
-    "require": {
-        "php": "^8.3",
-        "ext-curl": "*",
-        "ext-dom": "*",
-        "ext-gd": "*",
-        "ext-intl": "*",
-        "ext-json": "*",
-        "ext-mbstring": "*",
-        "ext-mysqli": "*",
-        "ext-mysqlnd": "*",
-        "ext-redis": "*",
-        "ext-simplexml": "*",
-        "ext-zip": "*",
-        "fig/http-message-util": "^1.1",
-        "firebase/php-jwt": "^v6.0",
-        "guzzlehttp/guzzle": "^7.2",
-        "guzzlehttp/psr7": "^2.1",
-        "laminas/laminas-diactoros": "^3.0",
-        "laminas/laminas-httphandlerrunner": "^2.1",
-        "league/commonmark": "^2.0",
-        "league/container": "^4.2",
-        "league/html-to-markdown": "^5.0",
-        "league/route": "^5.0",
-        "monolog/monolog": "^3.0",
-        "netresearch/jsonmapper": "^4.0",
-        "phpoffice/phpword": "^1.0",
-        "ponup/sql-builders": "^1.0",
-        "symfony/filesystem": "^6.0",
-        "twig/twig": "^3.0",
-        "reconmap/command-output-parsers": "^2.0",
-        "symfony/console": "^6.0",
-        "symfony/mailer": "^6.0",
-        "geoip2/geoip2": "~3.0",
-        "graylog2/gelf-php": "dev-master",
-        "zircote/swagger-php": "^4.7",
-        "hansott/psr7-cookies": "^3.0"
-    },
-    "autoload": {
-        "psr-4": {
-            "Reconmap\\": "src/"
-        }
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^10",
-        "icanhazstring/composer-unused": "^0.8.2"
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Reconmap\\": "tests/"
-        }
+  "name": "reconmap/rest-api",
+  "description": "Reconmap REST API",
+  "license": "Apache-2.0",
+  "minimum-stability": "stable",
+  "prefer-stable": true,
+  "require": {
+    "ext-curl": "*",
+    "ext-dom": "*",
+    "ext-gd": "*",
+    "ext-intl": "*",
+    "ext-json": "*",
+    "ext-mbstring": "*",
+    "ext-mysqli": "*",
+    "ext-mysqlnd": "*",
+    "ext-redis": "*",
+    "ext-simplexml": "*",
+    "ext-zip": "*",
+    "fig/http-message-util": "^1.1",
+    "firebase/php-jwt": "^v6.0",
+    "geoip2/geoip2": "~3.0",
+    "graylog2/gelf-php": "dev-master",
+    "guzzlehttp/guzzle": "^7.2",
+    "guzzlehttp/psr7": "^2.1",
+    "hansott/psr7-cookies": "^3.0",
+    "laminas/laminas-diactoros": "^3.0",
+    "laminas/laminas-httphandlerrunner": "^2.1",
+    "league/commonmark": "^2.0",
+    "league/container": "^4.2",
+    "league/html-to-markdown": "^5.0",
+    "league/route": "^5.0",
+    "monolog/monolog": "^3.0",
+    "netresearch/jsonmapper": "^4.0",
+    "php": "^8.3",
+    "phpoffice/phpword": "^1.0",
+    "ponup/sql-builders": "^1.0",
+    "reconmap/command-output-parsers": "^2.0",
+    "symfony/console": "^7",
+    "symfony/filesystem": "^7",
+    "symfony/mailer": "^7",
+    "twig/twig": "^3.0",
+    "zircote/swagger-php": "^4.7",
+    "symfony/http-kernel": "^7.1",
+    "symfony/routing": "^7.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Reconmap\\": "src/"
     }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^10",
+    "icanhazstring/composer-unused": "^0.8.2"
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Reconmap\\": "tests/"
+    }
+  }
 }

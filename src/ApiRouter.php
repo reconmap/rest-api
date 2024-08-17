@@ -7,6 +7,8 @@ use League\Container\Container;
 use League\Route\RouteGroup;
 use League\Route\Router;
 use Monolog\Logger;
+use OpenApi\Attributes\Info;
+use OpenApi\Attributes\SecurityScheme;
 use Reconmap\{Controllers\Attachments\ServeAttachmentController,
     Controllers\AuditLog\AuditLogRouter,
     Controllers\Auth\AuthRouter,
@@ -20,7 +22,6 @@ use Reconmap\{Controllers\Attachments\ServeAttachmentController,
     Controllers\ProjectCategories\ProjectCategoriesRouter,
     Controllers\Projects\ProjectsRouter,
     Controllers\Reports\ReportsRouter,
-    Controllers\System\GetOpenApiYamlController,
     Controllers\System\SystemRouter,
     Controllers\Targets\TargetsRouter,
     Controllers\Tasks\TasksRouter,
@@ -33,15 +34,13 @@ use Reconmap\{Controllers\Attachments\ServeAttachmentController,
     Http\SecurityMiddleware,
     Http\StaticMiddleware,
     Services\ApplicationConfig};
-use OpenApi\Attributes\Info;
-use OpenApi\Attributes\SecurityScheme;
 use Reconmap\Controllers\Attachments\AttachmentsRouter;
 
 #[Info(version: "1.0.0", description: "Reconmap REST API", title: "Reconmap API")]
 #[SecurityScheme(securityScheme: "bearerAuth", type: "http", bearerFormat: "JWT", scheme: "bearer")]
 class ApiRouter extends Router
 {
-    private const ROUTER_CLASSES = [
+    private const array ROUTER_CLASSES = [
         AuthRouter::class,
         AttachmentsRouter::class,
         AuditLogRouter::class,
@@ -82,7 +81,6 @@ class ApiRouter extends Router
         $securityMiddleware = $container->get(SecurityMiddleware::class);
         $cookieMiddleware = $container->get(StaticMiddleware::class);
 
-        $this->map('GET', '/openapi.json', GetOpenApiYamlController::class);
         $this->map('GET', '/image/{attachmentId:number}', ServeAttachmentController::class)->middlewares([$cookieMiddleware]);
 
         $this->group('', function (RouteGroup $router): void {
