@@ -2,12 +2,12 @@
 
 namespace Reconmap\Controllers\System;
 
+use GuzzleHttp\Psr7\Utils;
 use OpenApi\Annotations\OpenApi;
 use OpenApi\Generator;
+use Psr\Http\Message\ResponseInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Services\ApplicationConfig;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 
 class GetOpenApiYamlController extends Controller
 {
@@ -15,10 +15,11 @@ class GetOpenApiYamlController extends Controller
     {
     }
 
-    public function __invoke(): Response
+    public function __invoke(): ResponseInterface
     {
         $generator = Generator::scan([$this->applicationConfig->getAppDir() . '/src'], ["version" => OpenApi::VERSION_3_0_0]);
 
-        return JsonResponse::fromJsonString($generator->toJson());
+        return $this->createOkResponse()
+            ->withBody(Utils::streamFor($generator->toJson()));
     }
 }
