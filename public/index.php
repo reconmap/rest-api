@@ -5,12 +5,12 @@ $applicationDir = realpath('../');
 require $applicationDir . '/vendor/autoload.php';
 
 use Fig\Http\Message\StatusCodeInterface;
-use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use Monolog\Logger;
 use Reconmap\ApiRouter;
 use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\ApplicationContainer;
 use Reconmap\Services\Logging\LoggingConfigurator;
+use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 
 $configFilePath = $applicationDir . '/config.json';
 if (!file_exists($configFilePath) || !is_readable($configFilePath)) {
@@ -36,5 +36,8 @@ $request = GuzzleHttp\Psr7\ServerRequest::fromGlobals();
 
 $response = $router->dispatch($request);
 
-(new SapiEmitter)->emit($response);
+$httpFoundationFactory = new HttpFoundationFactory();
+$symfonyResponse = $httpFoundationFactory->createResponse($response);
+
+$symfonyResponse->send();
 

@@ -22,8 +22,6 @@
     "graylog2/gelf-php": "dev-master",
     "guzzlehttp/guzzle": "^7.2",
     "guzzlehttp/psr7": "^2.1",
-    "laminas/laminas-diactoros": "^3.0",
-    "laminas/laminas-httphandlerrunner": "^2.1",
     "league/commonmark": "^2.0",
     "league/container": "^4.2",
     "league/html-to-markdown": "^5.0",

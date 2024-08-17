@@ -2,7 +2,7 @@
 
 namespace Reconmap;
 
-use Laminas\Diactoros\ResponseFactory;
+use GuzzleHttp\Psr7\HttpFactory;
 use League\Container\Container;
 use League\Route\RouteGroup;
 use League\Route\Router;
@@ -64,7 +64,7 @@ class ApiRouter extends Router
 
     public function mapRoutes(Container $container, ApplicationConfig $applicationConfig): void
     {
-        $responseFactory = new ResponseFactory;
+        $responseFactory = new HttpFactory();
 
         $corsResponseDecorator = $container->get(CorsResponseDecorator::class);
         $logger = $container->get(Logger::class);
