@@ -2,12 +2,15 @@
 
 namespace Reconmap\Controllers\Auth;
 
-use HansOtt\PSR7Cookies\SetCookie;
+use GuzzleHttp\Psr7\HttpFactory;
 use Psr\Http\Message\ResponseInterface;
 use Reconmap\Controllers\ControllerV2;
 use Reconmap\Http\ApplicationRequest;
 use Reconmap\Models\AuditActions\UserAuditActions;
 use Reconmap\Services\AuditLogService;
+use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
+use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\Response;
 
 class LogoutController extends ControllerV2
 {
@@ -21,9 +24,14 @@ class LogoutController extends ControllerV2
 
         $this->auditLogService->insert($user->id, UserAuditActions::USER_LOGGED_OUT);
 
-        $cookie = new SetCookie('reconmap-static','',-1, '/');
-        $response = $this->createOkResponse();
-        $response = $cookie->addToResponse($response);
-        return $response;
+        $staticCookie = new Cookie('reconmap-static', '', -1, '/');
+
+        $response = new Response();
+        $response->headers->setCookie($staticCookie);
+
+        $psr17Factory = new HttpFactory();
+        $psrHttpFactory = new PsrHttpFactory($psr17Factory, $psr17Factory, $psr17Factory, $psr17Factory);
+
+        return $psrHttpFactory->createResponse($response);
     }
 }

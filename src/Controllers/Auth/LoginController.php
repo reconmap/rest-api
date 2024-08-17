@@ -2,9 +2,7 @@
 
 namespace Reconmap\Controllers\Auth;
 
-use GuzzleHttp\Psr7\Response;
-use HansOtt\PSR7Cookies\InvalidArgumentException;
-use HansOtt\PSR7Cookies\SetCookie;
+use GuzzleHttp\Psr7\HttpFactory;
 use Psr\Http\Message\ResponseInterface;
 use Reconmap\Controllers\ControllerV2;
 use Reconmap\Http\ApplicationRequest;
@@ -14,13 +12,16 @@ use Reconmap\Services\AuditLogService;
 use Reconmap\Services\PasswordGenerator;
 use Reconmap\Services\RedisServer;
 use Reconmap\Services\Security\Permissions;
+use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
+use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\Response;
 
 class LoginController extends ControllerV2
 {
     public function __construct(
         private readonly UserRepository  $userRepository,
         private readonly AuditLogService $auditLogService,
-        private readonly RedisServer $redisServer,
+        private readonly RedisServer     $redisServer,
     )
     {
     }
@@ -42,21 +43,22 @@ class LoginController extends ControllerV2
 
         $staticToken = $this->generateStaticToken();
 
-        $response = new Response;
+        $response = new Response();
+        $response->setContent(json_encode($user));
+        $response->headers->set('Content-type', 'application/json');
 
-        try {
-            $this->redisServer->set('static-token', $staticToken);
-            $cookie = new SetCookie('reconmap-static', $staticToken, time() + (3600 * 24), path: '/', secure: false, httpOnly: false);
-            $response = $cookie->addToResponse($response);
-        } catch (InvalidArgumentException $e) {
-            $this->logger->warning($e->getMessage());
-        }
+        $this->redisServer->set('static-token', $staticToken);
+        $cookie = new Cookie('reconmap-static', $staticToken, time() + (3600 * 24), path: '/', secure: false, httpOnly: false);
+        $response->headers->setCookie($cookie);
 
-        $response->getBody()->write(json_encode($user));
-        return $response->withHeader('Content-type', 'application/json');
+        $psr17Factory = new HttpFactory();
+        $psrHttpFactory = new PsrHttpFactory($psr17Factory, $psr17Factory, $psr17Factory, $psr17Factory);
+
+        return $psrHttpFactory->createResponse($response);
     }
 
-    private function generateStaticToken(): string {
+    private function generateStaticToken(): string
+    {
         $passwordGenerator = new PasswordGenerator();
         return $passwordGenerator->generate(20);
     }
