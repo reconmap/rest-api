@@ -2,7 +2,6 @@
 
 namespace Reconmap\Controllers\Clients;
 
-use Fig\Http\Message\StatusCodeInterface;
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
@@ -50,6 +49,6 @@ class UpdateClientControllerTest extends TestCase
         $controller = new UpdateClientController($mockAuthorisationService, $mockPublisherService, $mockClientRepository);
         $controller->setLogger($this->createMock(Logger::class));
         $response = $controller($mockRequest, $args);
-        $this->assertEquals(StatusCodeInterface::STATUS_NO_CONTENT, $response->getStatusCode());
+        $this->assertEquals(\Symfony\Component\HttpFoundation\Response::HTTP_NO_CONTENT, $response->getStatusCode());
     }
 }

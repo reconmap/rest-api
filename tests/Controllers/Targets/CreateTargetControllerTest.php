@@ -2,7 +2,6 @@
 
 namespace Reconmap\Controllers\Targets;
 
-use Fig\Http\Message\StatusCodeInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\ControllerTestCase;
 use Reconmap\Models\Target;
@@ -31,7 +30,7 @@ class CreateTargetControllerTest extends ControllerTestCase
         $controller = $this->injectController(new CreateTargetController($mockVulnerabilityRepository));
         $response = $controller($request);
 
-        $this->assertEquals(StatusCodeInterface::STATUS_CREATED, $response->getStatusCode());
+        $this->assertEquals(\Symfony\Component\HttpFoundation\Response::HTTP_CREATED, $response->getStatusCode());
         $this->assertEquals('{"targetId":5}', (string)$response->getBody());
     }
 }

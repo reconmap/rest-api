@@ -2,7 +2,6 @@
 
 namespace Reconmap\Controllers\AuditLog;
 
-use Fig\Http\Message\StatusCodeInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\ControllerTestCase;
 use Reconmap\Repositories\AuditLogRepository;
@@ -38,7 +37,7 @@ class GetAuditLogControllerTest extends ControllerTestCase
          */
         $controller = $this->injectController(new GetAuditLogController($mockAuthorisationService, $mockRepository, $mockConfig));
         $response = $controller($mockRequest);
-        $this->assertEquals(StatusCodeInterface::STATUS_OK, $response->getStatusCode());
+        $this->assertEquals(\Symfony\Component\HttpFoundation\Response::HTTP_OK, $response->getStatusCode());
         $this->assertEquals(1, $response->getHeaderLine('X-Page-Count'));
         $this->assertEquals('X-Page-Count', $response->getHeaderLine('Access-Control-Expose-Headers'));
     }

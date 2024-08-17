@@ -2,7 +2,6 @@
 
 namespace Reconmap\Http;
 
-use Fig\Http\Message\StatusCodeInterface;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -21,9 +20,9 @@ class StaticMiddleware implements MiddlewareInterface
     {
         $cookies = $request->getCookieParams();
 
-        if(!isset($cookies['reconmap-static']) || !$this->redisServer->exists('static-token')) {
+        if (!isset($cookies['reconmap-static']) || !$this->redisServer->exists('static-token')) {
             $response = new Response();
-            return $response->withStatus(StatusCodeInterface::STATUS_FORBIDDEN);
+            return $response->withStatus(\Symfony\Component\HttpFoundation\Response::HTTP_FORBIDDEN);
         }
 
         return $handler->handle($request);

@@ -2,7 +2,6 @@
 
 namespace Reconmap\Controllers\Users;
 
-use Fig\Http\Message\StatusCodeInterface;
 use GuzzleHttp\Exception\ClientException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -11,6 +10,7 @@ use Reconmap\Models\AuditActions\UserAuditActions;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\ActivityPublisherService;
 use Reconmap\Services\KeycloakService;
+use Symfony\Component\HttpFoundation\Response;
 
 class DeleteUserController extends Controller
 {
@@ -30,7 +30,7 @@ class DeleteUserController extends Controller
         try {
             $this->keycloakService->deleteUser($user);
         } catch (ClientException $e) {
-            if ($e->getCode() === StatusCodeInterface::STATUS_NOT_FOUND) {
+            if ($e->getCode() === Response::HTTP_NOT_FOUND) {
                 $this->logger->warning("User to delete not found on Keycloak", ['userId' => $userId]);
             } else {
                 throw $e;

@@ -4,11 +4,10 @@ namespace Reconmap\Controllers\Vault;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
-use Reconmap\Models\Vault;
-use Reconmap\Repositories\VaultRepository;
 use Reconmap\Models\AuditActions\VaultAuditActions;
+use Reconmap\Repositories\VaultRepository;
 use Reconmap\Services\AuditLogService;
-use Fig\Http\Message\StatusCodeInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 class UpdateVaultItemControllerTest extends TestCase
 {
@@ -42,6 +41,6 @@ class UpdateVaultItemControllerTest extends TestCase
 
         $controller = new UpdateVaultItemController($mockRepository, $mockAuditLogService);
         $response = $controller($mockRequest, $args);
-        $this->assertEquals(StatusCodeInterface::STATUS_CREATED, $response->getStatusCode());
+        $this->assertEquals(Response::HTTP_CREATED, $response->getStatusCode());
     }
 }

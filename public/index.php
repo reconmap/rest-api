@@ -4,7 +4,6 @@ $applicationDir = realpath('../');
 
 require $applicationDir . '/vendor/autoload.php';
 
-use Fig\Http\Message\StatusCodeInterface;
 use Monolog\Logger;
 use Reconmap\ApiRouter;
 use Reconmap\Services\ApplicationConfig;
@@ -15,7 +14,7 @@ use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 $configFilePath = $applicationDir . '/config.json';
 if (!file_exists($configFilePath) || !is_readable($configFilePath)) {
     $errorMessage = 'Missing or unreadable API configuration file (config.json)';
-    header($errorMessage, true, StatusCodeInterface::STATUS_SERVICE_UNAVAILABLE);
+    header($errorMessage, true, \Symfony\Component\HttpFoundation\Response::HTTP_SERVICE_UNAVAILABLE);
     echo $errorMessage, PHP_EOL;
     exit;
 }

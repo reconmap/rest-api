@@ -2,7 +2,6 @@
 
 namespace Reconmap\Http;
 
-use Fig\Http\Message\StatusCodeInterface;
 use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
@@ -64,13 +63,13 @@ class AuthMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         } catch (ForbiddenException|ExpiredException $e) {
             $this->logger->warning($e->getMessage());
-            return (new Response)->withStatus(StatusCodeInterface::STATUS_UNAUTHORIZED)
+            return (new Response)->withStatus(\Symfony\Component\HttpFoundation\Response::HTTP_UNAUTHORIZED)
                 ->withBody(Utils::streamFor($e->getMessage()));
         } catch (Exception $httpException) {
             throw $httpException;
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
-            return (new Response)->withStatus(StatusCodeInterface::STATUS_BAD_REQUEST);
+            return (new Response)->withStatus(\Symfony\Component\HttpFoundation\Response::HTTP_BAD_REQUEST);
         }
     }
 

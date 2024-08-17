@@ -2,7 +2,6 @@
 
 namespace Reconmap\Http;
 
-use Fig\Http\Message\StatusCodeInterface;
 use Firebase\JWT\JWT;
 use League\Route\Http\Exception\ForbiddenException;
 use Monolog\Logger;
@@ -15,6 +14,7 @@ use Reconmap\ConsecutiveParamsTrait;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\JwtPayloadCreator;
 use Reconmap\Services\KeycloakService;
+use Symfony\Component\HttpFoundation\Response;
 
 class AuthMiddlewareTest extends TestCase
 {
@@ -70,7 +70,7 @@ class AuthMiddlewareTest extends TestCase
         $middleware = new AuthMiddleware($mockUserRepository, $mockKeycloak, $mockLogger, $config);
         $response = $middleware->process($request, $handler);
 
-        $this->assertEquals(StatusCodeInterface::STATUS_BAD_REQUEST, $response->getStatusCode());
+        $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
     }
 
     public function testForbiddenIsReturnedWhenAuthIsMissing()

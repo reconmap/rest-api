@@ -2,12 +2,12 @@
 
 namespace Reconmap\Controllers\Users;
 
-use Fig\Http\Message\StatusCodeInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\ActivityPublisherService;
 use Reconmap\Services\KeycloakService;
+use Symfony\Component\HttpFoundation\Response;
 
 class DeleteUserControllerTest extends TestCase
 {
@@ -39,6 +39,6 @@ class DeleteUserControllerTest extends TestCase
         $controller = new DeleteUserController($mockUserRepository, $mockKeycloakService, $mockActivityPublisher);
         $response = $controller($mockRequest, $args);
 
-        $this->assertEquals(StatusCodeInterface::STATUS_NO_CONTENT, $response->getStatusCode());
+        $this->assertEquals(Response::HTTP_NO_CONTENT, $response->getStatusCode());
     }
 }

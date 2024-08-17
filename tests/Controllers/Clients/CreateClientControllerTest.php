@@ -2,7 +2,6 @@
 
 namespace Reconmap\Controllers\Clients;
 
-use Fig\Http\Message\StatusCodeInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Models\AuditActions\ClientAuditActions;
@@ -43,6 +42,6 @@ class CreateClientControllerTest extends TestCase
         $controller = new CreateClientController($mockProjectRepository, $mockActivityPublisherService);
         $response = $controller($mockRequest);
 
-        $this->assertEquals(StatusCodeInterface::STATUS_CREATED, $response->getStatusCode());
+        $this->assertEquals(\Symfony\Component\HttpFoundation\Response::HTTP_CREATED, $response->getStatusCode());
     }
 }

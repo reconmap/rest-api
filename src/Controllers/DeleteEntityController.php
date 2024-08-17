@@ -2,7 +2,6 @@
 
 namespace Reconmap\Controllers;
 
-use Fig\Http\Message\StatusCodeInterface;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -13,12 +12,12 @@ use Reconmap\Services\Security\AuthorisationService;
 abstract class DeleteEntityController extends Controller
 {
     public function __construct(
-        private readonly AuthorisationService $authorisationService,
+        private readonly AuthorisationService     $authorisationService,
         private readonly ActivityPublisherService $activityPublisherService,
-        private readonly Deletable $repository,
-        private readonly string $entityName,
-        private readonly string $auditLogAction,
-        private readonly string $idParamName
+        private readonly Deletable                $repository,
+        private readonly string                   $entityName,
+        private readonly string                   $auditLogAction,
+        private readonly string                   $idParamName
     )
     {
     }
@@ -31,7 +30,7 @@ abstract class DeleteEntityController extends Controller
         if (!$this->authorisationService->isRoleAllowed($role, $operation)) {
             $this->logger->warning("Unauthorised action '" . $operation . "' called for role '$role'");
 
-            return (new Response())->withStatus(StatusCodeInterface::STATUS_FORBIDDEN);
+            return (new Response())->withStatus(\Symfony\Component\HttpFoundation\Response::HTTP_FORBIDDEN);
         }
 
         $entityId = intval($args[$this->idParamName]);
@@ -45,7 +44,7 @@ abstract class DeleteEntityController extends Controller
             return $this->createNoContentResponse();
         }
 
-        return (new Response())->withStatus(StatusCodeInterface::STATUS_BAD_REQUEST);
+        return (new Response())->withStatus(\Symfony\Component\HttpFoundation\Response::HTTP_BAD_REQUEST);
     }
 
     private function auditAction(int $loggedInUserId, int $entityId): void

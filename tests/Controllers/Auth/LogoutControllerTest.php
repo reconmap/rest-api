@@ -2,7 +2,6 @@
 
 namespace Reconmap\Controllers\Auth;
 
-use Fig\Http\Message\StatusCodeInterface;
 use League\Container\Container;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
@@ -42,6 +41,6 @@ class LogoutControllerTest extends TestCase
         $controller->setContainer($mockContainer);
         $response = $controller($mockRequest, []);
 
-        $this->assertEquals(StatusCodeInterface::STATUS_OK, $response->getStatusCode());
+        $this->assertEquals(\Symfony\Component\HttpFoundation\Response::HTTP_OK, $response->getStatusCode());
     }
 }

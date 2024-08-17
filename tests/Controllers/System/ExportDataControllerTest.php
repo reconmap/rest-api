@@ -2,7 +2,6 @@
 
 namespace Reconmap\Controllers\System;
 
-use Fig\Http\Message\StatusCodeInterface;
 use GuzzleHttp\Psr7\ServerRequest;
 use League\Container\Container;
 use Reconmap\ControllerTestCase;
@@ -39,7 +38,7 @@ class ExportDataControllerTest extends ControllerTestCase
         $controller->setContainer($mockContainer);
         $response = $controller($request);
 
-        $this->assertEquals(StatusCodeInterface::STATUS_OK, $response->getStatusCode());
+        $this->assertEquals(\Symfony\Component\HttpFoundation\Response::HTTP_OK, $response->getStatusCode());
         $this->assertEquals('{"clients":["client1"]}', $response->getBody()->getContents());
         $this->assertStringContainsString('attachment; filename="reconmap-clients-', $response->getHeaderLine('Content-Disposition'));
         $this->assertEquals('application/json; charset=UTF-8', $response->getHeaderLine('Content-Type'));
@@ -60,6 +59,6 @@ class ExportDataControllerTest extends ControllerTestCase
         $controller = $this->injectController(new ExportDataController($mockAuditLogService));
         $response = $controller($request);
 
-        $this->assertEquals(StatusCodeInterface::STATUS_BAD_REQUEST, $response->getStatusCode());
+        $this->assertEquals(\Symfony\Component\HttpFoundation\Response::HTTP_BAD_REQUEST, $response->getStatusCode());
     }
 }

@@ -2,7 +2,6 @@
 
 namespace Reconmap\Controllers\Auth;
 
-use Fig\Http\Message\StatusCodeInterface;
 use League\Container\Container;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
@@ -13,6 +12,7 @@ use Reconmap\Services\AuditLogService;
 use Reconmap\Services\JwtPayloadCreator;
 use Reconmap\Services\RedisServer;
 use Reconmap\Services\Security\AuthorisationService;
+use Symfony\Component\HttpFoundation\Response;
 
 class LoginControllerTest extends TestCase
 {
@@ -65,6 +65,6 @@ class LoginControllerTest extends TestCase
         $controller->setContainer($mockContainer);
         $response = $controller($mockServerRequestInterface, []);
 
-        $this->assertEquals(StatusCodeInterface::STATUS_OK, $response->getStatusCode());
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
     }
 }

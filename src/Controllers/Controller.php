@@ -2,7 +2,6 @@
 
 namespace Reconmap\Controllers;
 
-use Fig\Http\Message\StatusCodeInterface;
 use GuzzleHttp\Psr7\Response;
 use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
@@ -48,27 +47,27 @@ abstract class Controller implements ContainerAwareInterface
 
     protected function createInternalServerErrorResponse(): ResponseInterface
     {
-        return (new Response())->withStatus(StatusCodeInterface::STATUS_INTERNAL_SERVER_ERROR);
+        return (new Response())->withStatus(\Symfony\Component\HttpFoundation\Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     protected function createForbiddenResponse(): ResponseInterface
     {
-        return (new Response())->withStatus(StatusCodeInterface::STATUS_FORBIDDEN);
+        return (new Response())->withStatus(\Symfony\Component\HttpFoundation\Response::HTTP_FORBIDDEN);
     }
 
     protected function createNoContentResponse(): ResponseInterface
     {
-        return (new Response())->withStatus(StatusCodeInterface::STATUS_NO_CONTENT);
+        return (new Response())->withStatus(\Symfony\Component\HttpFoundation\Response::HTTP_NO_CONTENT);
     }
 
     protected function createBadRequestResponse(): ResponseInterface
     {
-        return (new Response())->withStatus(StatusCodeInterface::STATUS_BAD_REQUEST);
+        return (new Response())->withStatus(\Symfony\Component\HttpFoundation\Response::HTTP_BAD_REQUEST);
     }
 
     protected function createNotFoundResponse(): ResponseInterface
     {
-        return (new Response())->withStatus(StatusCodeInterface::STATUS_NOT_FOUND);
+        return (new Response())->withStatus(\Symfony\Component\HttpFoundation\Response::HTTP_NOT_FOUND);
     }
 
     protected function createDeletedResponse(): ResponseInterface
@@ -78,7 +77,7 @@ abstract class Controller implements ContainerAwareInterface
 
     protected function createOkResponse(): ResponseInterface
     {
-        return (new Response())->withStatus(StatusCodeInterface::STATUS_OK);
+        return (new Response())->withStatus(\Symfony\Component\HttpFoundation\Response::HTTP_OK);
     }
 
     protected function createStatusCreatedResponse(string|array|object $body): ResponseInterface
@@ -86,7 +85,7 @@ abstract class Controller implements ContainerAwareInterface
         $jsonBody = is_string($body) ? $body : json_encode($body);
 
         $response = (new Response())
-            ->withStatus(StatusCodeInterface::STATUS_CREATED)
+            ->withStatus(\Symfony\Component\HttpFoundation\Response::HTTP_CREATED)
             ->withHeader('Content-type', 'application/json');
         $response->getBody()->write($jsonBody);
         return $response;
