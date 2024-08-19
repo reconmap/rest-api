@@ -17,7 +17,11 @@ class GetUserController extends Controller
         $userId = (int)$args['userId'];
 
         $user = $this->userRepository->findById($userId);
-        $user['preferences'] = json_decode($user['preferences'], true);
+        if (is_string($user['preferences']) && json_validate($user['preferences'])) {
+            $user['preferences'] = json_decode($user['preferences'], true);
+        } else {
+            $this->logger->warning("Invalid user preferences provided");
+        }
 
         return $user;
     }

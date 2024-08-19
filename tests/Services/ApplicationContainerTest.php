@@ -34,7 +34,7 @@ class ApplicationContainerTest extends TestCase
             ->method('add');
         $container->expects($this->atLeastOnce())
             ->method('inflector')
-            ->willReturn($this->getMockForAbstractClass(InflectorInterface::class));
+            ->willReturn($this->createMock(InflectorInterface::class));
 
         $container->initialise($config, $logger);
     }

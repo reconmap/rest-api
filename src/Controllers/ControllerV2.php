@@ -15,7 +15,7 @@ abstract class ControllerV2 extends Controller
         $user = $applicationRequest->getUser();
 
         /** @var AuthorisationService $authorisationService */
-        $authorisationService = $this->getContainer()->get(AuthorisationService::class);
+        $authorisationService = new AuthorisationService();
         if (!$authorisationService->isRoleAllowed($user->role, $this->getPermissionRequired())) {
             return $this->createForbiddenResponse();
         }

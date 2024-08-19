@@ -10,28 +10,30 @@ use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\ApplicationContainer;
 use Reconmap\Services\Logging\LoggingConfigurator;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
+use Symfony\Component\HttpFoundation\Response;
 
 $configFilePath = $applicationDir . '/config.json';
 if (!file_exists($configFilePath) || !is_readable($configFilePath)) {
     $errorMessage = 'Missing or unreadable API configuration file (config.json)';
-    header($errorMessage, true, \Symfony\Component\HttpFoundation\Response::HTTP_SERVICE_UNAVAILABLE);
+    header($errorMessage, true, Response::HTTP_SERVICE_UNAVAILABLE);
     echo $errorMessage, PHP_EOL;
     exit;
 }
 
-$config = ApplicationConfig::load($configFilePath);
-$config->setAppDir($applicationDir);
+$applicationConfig = ApplicationConfig::load($configFilePath);
+$applicationConfig->setAppDir($applicationDir);
 
 $logger = new Logger('http');
-$loggingConfigurator = new LoggingConfigurator($logger, $config);
+$loggingConfigurator = new LoggingConfigurator($logger, $applicationConfig);
 $loggingConfigurator->configure();
 
-$container = new ApplicationContainer($config, $logger);
-
-$router = new ApiRouter();
-$router->mapRoutes($container, $config);
+$container = new ApplicationContainer($applicationConfig, $logger);
 
 $request = GuzzleHttp\Psr7\ServerRequest::fromGlobals();
+$container->set(Psr\Http\Message\ServerRequestInterface::class, $request);
+
+$router = new ApiRouter();
+$router->mapRoutes($container, $applicationConfig);
 
 $response = $router->dispatch($request);
 

@@ -10,7 +10,7 @@ use Reconmap\Services\PaginationRequestHandler;
 
 class ProjectRepository extends MysqlRepository
 {
-    public const UPDATABLE_COLUMNS_TYPES = [
+    public const array UPDATABLE_COLUMNS_TYPES = [
         'client_id' => 'i',
         'category_id' => 'i',
         'name' => 's',
@@ -22,8 +22,6 @@ class ProjectRepository extends MysqlRepository
         'archived' => 'i',
         'external_id' => 's',
         'vulnerability_metrics' => 's',
-        'management_summary' => 's',
-        'management_conclusion' => 's'
     ];
 
     public function isVisibleToUser(int $projectId, int $userId): bool
@@ -70,7 +68,7 @@ SQL;
         $this->db->begin_transaction();
 
         $projectSql = <<<SQL
-        INSERT INTO project (creator_uid, name, description, category_id, engagement_start_date, engagement_end_date, vulnerability_metrics, management_summary, management_conclusion) SELECT ?, CONCAT(name, ' - ', CURRENT_TIMESTAMP()), description, category_id, engagement_start_date, engagement_end_date, vulnerability_metrics, management_summary, management_conclusion FROM project WHERE id = ?
+        INSERT INTO project (creator_uid, name, description, category_id, engagement_start_date, engagement_end_date, vulnerability_metrics) SELECT ?, CONCAT(name, ' - ', CURRENT_TIMESTAMP()), description, category_id, engagement_start_date, engagement_end_date, vulnerability_metrics FROM project WHERE id = ?
         SQL;
         $stmt = $this->db->prepare($projectSql);
         $stmt->bind_param('ii', $userId, $templateId);
@@ -94,10 +92,10 @@ SQL;
     public function insert(Project $project): int
     {
         $insertStmt = new InsertQueryBuilder('project');
-        $insertStmt->setColumns('creator_uid, client_id, name, description, is_template, category_id, engagement_start_date, engagement_end_date, visibility, external_id, vulnerability_metrics, management_summary, management_conclusion');
+        $insertStmt->setColumns('creator_uid, client_id, name, description, is_template, category_id, engagement_start_date, engagement_end_date, visibility, external_id, vulnerability_metrics');
 
         $stmt = $this->db->prepare($insertStmt->toSql());
-        $stmt->bind_param('iississssssss', $project->creator_uid, $project->client_id, $project->name, $project->description, $project->is_template, $project->category_id, $project->engagement_start_date, $project->engagement_end_date, $project->visibility, $project->external_id, $project->vulnerability_metrics, $project->management_summary, $project->management_conclusion);
+        $stmt->bind_param('iississssss', $project->creator_uid, $project->client_id, $project->name, $project->description, $project->is_template, $project->category_id, $project->engagement_start_date, $project->engagement_end_date, $project->visibility, $project->external_id, $project->vulnerability_metrics);
         return $this->executeInsertStatement($stmt);
     }
 

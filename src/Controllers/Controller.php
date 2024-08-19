@@ -3,8 +3,6 @@
 namespace Reconmap\Controllers;
 
 use GuzzleHttp\Psr7\Response;
-use League\Container\ContainerAwareInterface;
-use League\Container\ContainerAwareTrait;
 use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -12,9 +10,9 @@ use Reconmap\DomainObjects\User;
 use Reconmap\Models\Cleanable;
 use Reconmap\Services\TemplateEngine;
 
-abstract class Controller implements ContainerAwareInterface
+abstract class Controller # implements ContainerAwareInterface
 {
-    use ContainerAwareTrait;
+    #use ContainerAwareTrait;
 
     protected ?Logger $logger = null;
     protected ?TemplateEngine $template = null;

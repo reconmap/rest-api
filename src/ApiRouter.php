@@ -3,12 +3,12 @@
 namespace Reconmap;
 
 use GuzzleHttp\Psr7\HttpFactory;
-use League\Container\Container;
 use League\Route\RouteGroup;
 use League\Route\Router;
 use Monolog\Logger;
 use OpenApi\Attributes\Info;
 use OpenApi\Attributes\SecurityScheme;
+use Psr\Container\ContainerInterface;
 use Reconmap\{Controllers\Attachments\ServeAttachmentController,
     Controllers\AuditLog\AuditLogRouter,
     Controllers\Auth\AuthRouter,
@@ -62,7 +62,7 @@ class ApiRouter extends Router
         VulnerabilitiesRouter::class,
     ];
 
-    public function mapRoutes(Container $container, ApplicationConfig $applicationConfig): void
+    public function mapRoutes(ContainerInterface $container, ApplicationConfig $applicationConfig): void
     {
         $responseFactory = new HttpFactory();
 

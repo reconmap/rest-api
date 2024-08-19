@@ -42,19 +42,21 @@ class AuthMiddleware implements MiddlewareInterface
             if ($token->iss !== $jwtConfig['issuer']) {
                 throw new ForbiddenException("Invalid JWT issuer: " . $token->iss);
             }
-            if ($token->aud !== $jwtConfig['audience']) {
-                $this->logger->warning("Invalid JWT audience: " . $token->aud);
-            }
 
-            $dbUser = $this->userRepository->findBySubjectId($token->sub);
-            if (is_null($dbUser)) {
-                $this->logger->error('No user with subject: ' . $token->sub);
-            }
             if (isset($token->clientId) && $token->clientId === 'admin-cli') {
                 $request = $request->withAttribute('userId', 0)
                     ->withAttribute('role', 'administrator'); // api
 
             } else {
+                $dbUser = $this->userRepository->findBySubjectId($token->sub);
+                if (is_null($dbUser)) {
+                    $this->logger->error('No user with subject: ' . $token->sub);
+                }
+
+                if ($token->aud !== $jwtConfig['audience']) {
+                    $this->logger->warning("Invalid JWT audience: " . $token->aud);
+                }
+
                 $tokenRole = $this->extractRoleFromToken($token);
                 $request = $request->withAttribute('userId', $dbUser['id'])
                     ->withAttribute('role', $tokenRole);
