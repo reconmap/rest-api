@@ -2,7 +2,7 @@
 
 namespace Reconmap\Cli\Commands;
 
-use Reconmap\QueueProcessor;
+use Reconmap\Services\QueueProcessor;
 use Reconmap\Tasks\TaskResultProcessor;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -10,8 +10,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class TaskProcessorCommand extends Command
 {
-    public function __construct(private QueueProcessor      $queueProcessor,
-                                private TaskResultProcessor $taskResultProcessor)
+    public function __construct(private readonly QueueProcessor      $queueProcessor,
+                                private readonly TaskResultProcessor $taskResultProcessor)
     {
         parent::__construct();
     }

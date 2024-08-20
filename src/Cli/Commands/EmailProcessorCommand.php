@@ -2,7 +2,7 @@
 
 namespace Reconmap\Cli\Commands;
 
-use Reconmap\QueueProcessor;
+use Reconmap\Services\QueueProcessor;
 use Reconmap\Tasks\EmailTaskProcessor;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

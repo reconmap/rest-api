@@ -4,6 +4,7 @@ namespace Reconmap;
 
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
+use Reconmap\Services\QueueProcessor;
 use Reconmap\Services\RedisServer;
 use Reconmap\Tasks\ItemProcessor;
 

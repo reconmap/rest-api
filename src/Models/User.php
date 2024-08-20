@@ -8,6 +8,9 @@ namespace Reconmap\Models;
 class User {
 
 	public ?int $id;
+	public ?string $insert_ts;
+	public ?string $update_ts;
+	public ?string $last_login_ts;
 	public ?string $subject_id;
 	public ?bool $active = true;
 	public string $full_name;

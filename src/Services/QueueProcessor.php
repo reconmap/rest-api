@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace Reconmap;
+namespace Reconmap\Services;
 
 use Monolog\Logger;
-use Reconmap\Services\RedisServer;
+use Reconmap\ExitCode;
 use Reconmap\Tasks\ItemProcessor;
 
-class QueueProcessor
+readonly class QueueProcessor
 {
     public function __construct(private RedisServer $redis,
                                 private Logger      $logger)

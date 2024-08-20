@@ -3,6 +3,7 @@
 namespace Reconmap\Services;
 
 use Monolog\Logger;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\CommandOutputParsers\ProcessorFactory;
 use Reconmap\Database\ConnectionFactory;
@@ -10,19 +11,15 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
 class ApplicationContainer extends ContainerBuilder
 {
-    public function __construct(ApplicationConfig $config, Logger $logger)
+    public function __construct(?ParameterBagInterface $parameterBag = null)
     {
-        parent::__construct();
+        parent::__construct($parameterBag);
 
-        $this->initialise($config, $logger);
-    }
-
-    public function initialise(ApplicationConfig $config, Logger $logger)
-    {
         $loader = new PhpFileLoader($this, new FileLocator(__DIR__));
 
         $instanceof = [];
@@ -31,11 +28,15 @@ class ApplicationContainer extends ContainerBuilder
         $this->configure($configurator);
 
         $this->register(Filesystem::class);
-        $this->compile();
-        $this->set(ApplicationConfig::class, $config);
-        $this->set(\mysqli::class, ConnectionFactory::createConnection($config));
-        $this->set(Logger::class, $logger);
-        $this->set(ProcessorFactory::class, new ProcessorFactory());
+    }
+
+    public static function initialise(ContainerInterface $container, ApplicationConfig $config, Logger $logger): void
+    {
+        $container->set(ApplicationConfig::class, $config);
+        $container->set(\mysqli::class, ConnectionFactory::createConnection($config));
+        $container->set(Logger::class, $logger);
+        $container->set(ProcessorFactory::class, new ProcessorFactory());
+        $container->set(ContainerInterface::class, $container);
     }
 
     private function configure(ContainerConfigurator $containerConfigurator): void
@@ -51,19 +52,17 @@ class ApplicationContainer extends ContainerBuilder
             ->load('Reconmap\\Services\\', $prefix . 'Services/*')
             ->exclude([$prefix . 'Services/QueryParams/OrderByRequestHandler.php'])
             ->load('Reconmap\\Repositories\\', $prefix . 'Repositories/*')
+            ->load('Reconmap\\Database\\', $prefix . 'Database/*')
+            ->load('Reconmap\\Tasks\\', $prefix . 'Tasks/*')
             ->load('Reconmap\\Http\\', $prefix . 'Http/*')
             ->exclude($prefix . 'Http/ApplicationRequest.php')
             ->load('Reconmap\\Controllers\\', $prefix . 'Controllers/*')
-            ->set(ServerRequestInterface::class)
-            ->synthetic()
-            ->set(Logger::class)
-            ->synthetic()
-            ->set(ApplicationConfig::class)
-            ->synthetic()
-            ->set(ProcessorFactory::class)
-            ->synthetic()
-            ->set(\mysqli::class)
-            ->synthetic();
+            ->set(ServerRequestInterface::class)->synthetic()
+            ->set(Logger::class)->synthetic()
+            ->set(ApplicationConfig::class)->synthetic()
+            ->set(ProcessorFactory::class)->synthetic()
+            ->set(ContainerInterface::class)->synthetic()
+            ->set(\mysqli::class)->synthetic();
     }
 }
 

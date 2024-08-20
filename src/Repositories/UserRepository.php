@@ -8,7 +8,7 @@ use Reconmap\Models\User;
 
 class UserRepository extends MysqlRepository
 {
-    public const UPDATABLE_COLUMNS_TYPES = [
+    public const array UPDATABLE_COLUMNS_TYPES = [
         'active' => 'i',
         'full_name' => 's',
         'short_bio' => 's',
@@ -61,7 +61,7 @@ class UserRepository extends MysqlRepository
     protected function getBaseSelectQueryBuilder(): SelectQueryBuilder
     {
         $queryBuilder = new SelectQueryBuilder('user u');
-        $queryBuilder->setColumns('u.id, u.insert_ts, u.update_ts, u.subject_id, u.active, u.full_name, u.short_bio, u.username, u.email, u.role, u.timezone, u.preferences');
+        $queryBuilder->setColumns('u.id, u.insert_ts, u.update_ts, u.last_login_ts, u.subject_id, u.active, u.full_name, u.short_bio, u.username, u.email, u.role, u.timezone, u.preferences');
         return $queryBuilder;
     }
 
@@ -125,5 +125,11 @@ class UserRepository extends MysqlRepository
     public function updateById(int $id, array $newColumnValues): bool
     {
         return $this->updateByTableId('user', $id, $newColumnValues);
+    }
+
+    public function updateLastLoginTime(int $userId): bool
+    {
+        $stmt = $this->db->prepare('UPDATE user SET last_login_ts = NOW() WHERE id = ?');
+        return $stmt->execute([$userId]);
     }
 }

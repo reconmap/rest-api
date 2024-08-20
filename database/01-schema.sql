@@ -1,12 +1,14 @@
-USE reconmap;
+USE
+reconmap;
 
-SET FOREIGN_KEY_CHECKS = 0;
+SET
+FOREIGN_KEY_CHECKS = 0;
 
 DROP TABLE IF EXISTS database_migration;
 
 CREATE TABLE database_migration
 (
-    insert_ts    TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    insert_ts    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     from_version INT UNSIGNED NOT NULL,
     to_version   INT UNSIGNED NOT NULL,
 
@@ -19,10 +21,10 @@ CREATE TABLE contact
 (
     id    INT UNSIGNED                             NOT NULL AUTO_INCREMENT,
     kind  ENUM ('general', 'technical', 'billing') NOT NULL DEFAULT 'general',
-    name  VARCHAR(200)                             NOT NULL,
-    email VARCHAR(200)                             NOT NULL,
-    phone VARCHAR(200)                             NULL,
-    role  VARCHAR(200)                             NULL,
+    name  VARCHAR(200) NOT NULL,
+    email VARCHAR(200) NOT NULL,
+    phone VARCHAR(200) NULL,
+    role  VARCHAR(200) NULL,
 
     PRIMARY KEY (id)
 ) ENGINE = InnoDB
@@ -32,18 +34,19 @@ DROP TABLE IF EXISTS user;
 
 CREATE TABLE user
 (
-    id          INT UNSIGNED  NOT NULL AUTO_INCREMENT,
-    insert_ts   TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    update_ts   TIMESTAMP     NULL ON UPDATE CURRENT_TIMESTAMP,
-    subject_id  VARCHAR(40)   NOT NULL COMMENT 'JWT sub',
-    active      BOOLEAN       NOT NULL DEFAULT TRUE,
-    email       VARCHAR(200)  NOT NULL,
-    role        ENUM ('administrator', 'superuser', 'user', 'client'),
-    username    VARCHAR(80)   NOT NULL,
-    full_name   VARCHAR(200)  NOT NULL,
-    short_bio   VARCHAR(1000) NULL,
-    timezone    VARCHAR(200)  NOT NULL DEFAULT 'UTC',
-    preferences JSON          NULL COMMENT 'Client side (eg UI) preferences',
+    id            INT UNSIGNED  NOT NULL AUTO_INCREMENT,
+    insert_ts     TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_ts     TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+    last_login_ts TIMESTAMP NULL COMMENT 'Last login time',
+    subject_id    VARCHAR(40)  NOT NULL COMMENT 'JWT sub',
+    active        BOOLEAN      NOT NULL DEFAULT TRUE,
+    email         VARCHAR(200) NOT NULL,
+    role          ENUM ('administrator', 'superuser', 'user', 'client'),
+    username      VARCHAR(80)  NOT NULL,
+    full_name     VARCHAR(200) NOT NULL,
+    short_bio     VARCHAR(1000) NULL,
+    timezone      VARCHAR(200) NOT NULL DEFAULT 'UTC',
+    preferences   JSON NULL COMMENT 'Client side (eg UI) preferences',
 
     PRIMARY KEY (id),
     UNIQUE KEY (username)
@@ -59,7 +62,7 @@ CREATE TABLE audit_log
     user_agent VARCHAR(250) NULL,
     client_ip  INT UNSIGNED NOT NULL COMMENT 'IPv4 IP',
     action     VARCHAR(200) NOT NULL,
-    object     JSON         NULL,
+    object     JSON NULL,
 
     PRIMARY KEY (id),
     CONSTRAINT audit_log_fk_user_id FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE
@@ -71,7 +74,7 @@ CREATE TABLE organisation
 (
     id                       INT UNSIGNED NOT NULL AUTO_INCREMENT,
     insert_ts                TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    update_ts                TIMESTAMP    NULL ON UPDATE CURRENT_TIMESTAMP,
+    update_ts                TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
     name                     VARCHAR(200) NOT NULL,
     url                      VARCHAR(255) NULL,
     logo_attachment_id       INT UNSIGNED NULL,
@@ -91,10 +94,10 @@ DROP TABLE IF EXISTS client;
 CREATE TABLE client
 (
     id                       INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    insert_ts                TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    update_ts                TIMESTAMP    NULL ON UPDATE CURRENT_TIMESTAMP,
+    insert_ts                TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_ts                TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
     creator_uid              INT UNSIGNED NOT NULL,
-    name                     VARCHAR(80)  NOT NULL COMMENT 'eg Company name',
+    name                     VARCHAR(80) NOT NULL COMMENT 'eg Company name',
     address                  VARCHAR(400) NULL COMMENT 'eg 1 Hacker Way, Menlo Park, California',
     url                      VARCHAR(255) NULL,
     logo_attachment_id       INT UNSIGNED NULL,
@@ -128,15 +131,15 @@ DROP TABLE IF EXISTS vault;
 CREATE TABLE vault
 (
     id         INT UNSIGNED                           NOT NULL AUTO_INCREMENT,
-    insert_ts  TIMESTAMP                              NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    update_ts  TIMESTAMP                              NULL ON UPDATE CURRENT_TIMESTAMP,
-    name       VARCHAR(200)                           NOT NULL,
-    value      VARCHAR(2000)                          NOT NULL,
-    reportable BOOLEAN                                NOT NULL,
-    note       VARCHAR(1000)                          NULL,
+    insert_ts  TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_ts  TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+    name       VARCHAR(200)  NOT NULL,
+    value      VARCHAR(2000) NOT NULL,
+    reportable BOOLEAN       NOT NULL,
+    note       VARCHAR(1000) NULL,
     type       ENUM ('password','note','token','key') NOT NULL,
     project_id INT UNSIGNED                           NOT NULL,
-    record_iv  BLOB                                   NOT NULL,
+    record_iv  BLOB          NOT NULL,
 
     PRIMARY KEY (id),
     UNIQUE KEY (project_id, name),
@@ -149,7 +152,7 @@ DROP TABLE IF EXISTS project_category;
 CREATE TABLE project_category
 (
     id          INT UNSIGNED  NOT NULL AUTO_INCREMENT,
-    name        VARCHAR(200)  NOT NULL,
+    name        VARCHAR(200) NOT NULL,
     description VARCHAR(2000) NULL,
 
     PRIMARY KEY (id),
@@ -162,20 +165,20 @@ DROP TABLE IF EXISTS project;
 CREATE TABLE project
 (
     id                    INT UNSIGNED               NOT NULL AUTO_INCREMENT,
-    insert_ts             TIMESTAMP                  NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    update_ts             TIMESTAMP                  NULL ON UPDATE CURRENT_TIMESTAMP,
+    insert_ts             TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_ts             TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
     creator_uid           INT UNSIGNED               NOT NULL,
     client_id             INT UNSIGNED               NULL COMMENT 'Null when project is template',
     category_id           INT UNSIGNED               NULL,
-    is_template           BOOLEAN                    NOT NULL DEFAULT FALSE,
+    is_template           BOOLEAN      NOT NULL DEFAULT FALSE,
     visibility            ENUM ('public', 'private') NOT NULL DEFAULT 'public',
-    name                  VARCHAR(200)               NOT NULL,
-    description           VARCHAR(2000)              NULL,
+    name                  VARCHAR(200) NOT NULL,
+    description           VARCHAR(2000) NULL,
     engagement_start_date DATE,
     engagement_end_date   DATE,
-    archived              BOOLEAN                    NOT NULL DEFAULT FALSE,
-    archive_ts            TIMESTAMP                  NULL,
-    external_id           VARCHAR(40)                NULL,
+    archived              BOOLEAN      NOT NULL DEFAULT FALSE,
+    archive_ts            TIMESTAMP NULL,
+    external_id           VARCHAR(40) NULL,
     vulnerability_metrics ENUM ('CVSS', 'OWASP_RR')  NULL,
 
     PRIMARY KEY (id),
@@ -199,15 +202,14 @@ DROP TRIGGER IF EXISTS project_archive_ts_trigger;
 CREATE TRIGGER project_archive_ts_trigger
     BEFORE UPDATE
     ON project
-    FOR EACH ROW
-    SET NEW.archive_ts = IF(NEW.archived, CURRENT_TIMESTAMP, NULL);
+    FOR EACH ROW SET NEW.archive_ts = IF(NEW.archived, CURRENT_TIMESTAMP, NULL);
 
 DROP TABLE IF EXISTS project_user;
 
 CREATE TABLE project_user
 (
     id         INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    insert_ts  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    insert_ts  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     project_id INT UNSIGNED NOT NULL,
     user_id    INT UNSIGNED NOT NULL,
 
@@ -225,10 +227,10 @@ CREATE TABLE target
     parent_id  INT UNSIGNED NULL,
     project_id INT UNSIGNED NOT NULL,
     insert_ts  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    update_ts  TIMESTAMP    NULL ON UPDATE CURRENT_TIMESTAMP,
+    update_ts  TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
     name       VARCHAR(200) NOT NULL,
     kind       ENUM ('hostname', 'ip_address', 'port', 'cidr_range', 'url', 'binary', 'path', 'file'),
-    tags       JSON         NULL,
+    tags       JSON NULL,
 
     PRIMARY KEY (id),
     UNIQUE KEY (project_id, name),
@@ -241,10 +243,10 @@ DROP TABLE IF EXISTS vulnerability_category;
 CREATE TABLE vulnerability_category
 (
     id          INT UNSIGNED  NOT NULL AUTO_INCREMENT,
-    insert_ts   TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    update_ts   TIMESTAMP     NULL ON UPDATE CURRENT_TIMESTAMP,
+    insert_ts   TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_ts   TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
     parent_id   INT UNSIGNED  NULL,
-    name        VARCHAR(200)  NOT NULL,
+    name        VARCHAR(200) NOT NULL,
     description VARCHAR(2000) NULL,
 
     PRIMARY KEY (id),
@@ -258,38 +260,38 @@ DROP TABLE IF EXISTS vulnerability;
 CREATE TABLE vulnerability
 (
     id                     INT UNSIGNED                                                                                       NOT NULL AUTO_INCREMENT,
-    insert_ts              TIMESTAMP                                                                                          NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    update_ts              TIMESTAMP                                                                                          NULL ON UPDATE CURRENT_TIMESTAMP,
+    insert_ts              TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_ts              TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
     creator_uid            INT UNSIGNED                                                                                       NOT NULL,
 
-    is_template            BOOLEAN                                                                                            NOT NULL DEFAULT FALSE,
+    is_template            BOOLEAN      NOT NULL DEFAULT FALSE,
 
-    external_id            VARCHAR(50)                                                                                        NULL COMMENT 'External reference eg RMAP-CLIENT-001',
+    external_id            VARCHAR(50) NULL COMMENT 'External reference eg RMAP-CLIENT-001',
     project_id             INT UNSIGNED                                                                                       NULL,
     target_id              INT UNSIGNED                                                                                       NULL,
     category_id            INT UNSIGNED                                                                                       NULL,
 
-    summary                VARCHAR(500)                                                                                       NOT NULL,
-    description            TEXT                                                                                               NULL,
-    external_refs          TEXT                                                                                               NULL,
+    summary                VARCHAR(500) NOT NULL,
+    description            TEXT NULL,
+    external_refs          TEXT NULL,
 
     visibility             ENUM ('private', 'public')                                                                         NOT NULL DEFAULT 'public',
 
     risk                   ENUM ('none', 'low', 'medium', 'high', 'critical')                                                 NOT NULL,
-    proof_of_concept       TEXT                                                                                               NULL,
-    impact                 TEXT                                                                                               NULL,
-    remediation            TEXT                                                                                               NULL,
+    proof_of_concept       TEXT NULL,
+    impact                 TEXT NULL,
+    remediation            TEXT NULL,
     remediation_complexity ENUM ('unknown', 'low', 'medium', 'high')                                                          NULL,
     remediation_priority   ENUM ('low','medium','high')                                                                       NULL,
 
-    cvss_score             DECIMAL(3, 1)                                                                                      NULL,
-    cvss_vector            VARCHAR(80)                                                                                        NULL,
+    cvss_score             DECIMAL(3, 1) NULL,
+    cvss_vector            VARCHAR(80) NULL,
     status                 ENUM ('open', 'confirmed', 'resolved', 'closed')                                                   NOT NULL DEFAULT 'open',
     substatus              ENUM ('reported', 'unresolved', 'unexploited', 'exploited', 'remediated', 'mitigated', 'rejected') NULL     DEFAULT 'reported',
-    tags                   JSON                                                                                               NULL,
-    owasp_vector           VARCHAR(80)                                                                                        NULL,
-    owasp_likehood         DECIMAL(5, 3)                                                                                      NULL,
-    owasp_impact           DECIMAL(5, 3)                                                                                      NULL,
+    tags                   JSON NULL,
+    owasp_vector           VARCHAR(80) NULL,
+    owasp_likehood         DECIMAL(5, 3) NULL,
+    owasp_impact           DECIMAL(5, 3) NULL,
     owasp_overall          ENUM ('critical','high','medium','low','note')                                                     NULL,
 
     PRIMARY KEY (id),
@@ -332,13 +334,13 @@ CREATE TABLE task
     project_id   INT UNSIGNED                                        NOT NULL,
     creator_uid  INT UNSIGNED                                        NOT NULL,
     assignee_uid INT UNSIGNED                                        NULL,
-    insert_ts    TIMESTAMP                                           NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    update_ts    TIMESTAMP                                           NULL ON UPDATE CURRENT_TIMESTAMP,
+    insert_ts    TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_ts    TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
     priority     ENUM ('highest', 'high', 'medium', 'low', 'lowest') NOT NULL,
-    summary      VARCHAR(200)                                        NOT NULL,
-    description  VARCHAR(2000)                                       NULL,
+    summary      VARCHAR(200) NOT NULL,
+    description  VARCHAR(2000) NULL,
     status       ENUM ('todo', 'doing', 'done')                      NOT NULL DEFAULT 'todo',
-    due_date     DATE                                                NULL,
+    due_date     DATE NULL,
     command_id   INT UNSIGNED                                        NULL,
 
     PRIMARY KEY (id),
@@ -352,14 +354,14 @@ DROP TABLE IF EXISTS command;
 
 CREATE TABLE command
 (
-    id              INT UNSIGNED           NOT NULL AUTO_INCREMENT,
-    creator_uid     INT UNSIGNED           NOT NULL,
-    insert_ts       TIMESTAMP              NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    update_ts       TIMESTAMP              NULL ON UPDATE CURRENT_TIMESTAMP,
-    name            VARCHAR(200)           NOT NULL,
-    description     VARCHAR(2000)          NULL,
-    more_info_url   VARCHAR(200)           NULL,
-    tags            JSON                   NULL,
+    id            INT UNSIGNED           NOT NULL AUTO_INCREMENT,
+    creator_uid   INT UNSIGNED           NOT NULL,
+    insert_ts     TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_ts     TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+    name          VARCHAR(200) NOT NULL,
+    description   VARCHAR(2000) NULL,
+    more_info_url VARCHAR(200) NULL,
+    tags          JSON NULL,
 
     PRIMARY KEY (id),
     FOREIGN KEY (creator_uid) REFERENCES user (id) ON DELETE NO ACTION
@@ -367,32 +369,38 @@ CREATE TABLE command
 
 DROP TABLE IF EXISTS command_usage;
 
-CREATE TABLE command_usage (
-    id             INT UNSIGNED           NOT NULL AUTO_INCREMENT,
-    command_id     INT UNSIGNED            NOT NULL,
+CREATE TABLE command_usage
+(
+    id              INT UNSIGNED           NOT NULL AUTO_INCREMENT,
+    command_id      INT UNSIGNED            NOT NULL,
     creator_uid     INT UNSIGNED           NOT NULL,
-    insert_ts       TIMESTAMP              NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    update_ts       TIMESTAMP              NULL ON UPDATE CURRENT_TIMESTAMP,
-    name     VARCHAR(2000)          NULL,
-    description     VARCHAR(2000)          NULL,
-    tags       JSON         NULL,
-    executable_path VARCHAR(255)           NULL,
-    docker_image    VARCHAR(300)           NULL,
-    arguments       VARCHAR(2000)          NULL,
-    output_filename VARCHAR(100)           NULL,
-    output_parser   VARCHAR(100)           NULL,
+    insert_ts       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_ts       TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+    name            VARCHAR(2000) NULL,
+    description     VARCHAR(2000) NULL,
+    tags            JSON NULL,
+    executable_path VARCHAR(255) NULL,
+    docker_image    VARCHAR(300) NULL,
+    arguments       VARCHAR(2000) NULL,
+    output_filename VARCHAR(100) NULL,
+    output_parser   VARCHAR(100) NULL,
 
     PRIMARY KEY (id),
     FOREIGN KEY (creator_uid) REFERENCES user (id) ON DELETE NO ACTION,
     FOREIGN KEY (command_id) REFERENCES command (id) ON DELETE CASCADE
 ) ENGINE = InnoDB;
 
-INSERT INTO command(id,creator_uid,name) VALUES(1,1,'nmap');
+INSERT INTO command(id, creator_uid, name)
+VALUES (1, 1, 'nmap');
 
 TRUNCATE TABLE command_usage;
-INSERT INTO command_usage(id,creator_uid,command_id, description, executable_path, arguments, output_filename, output_parser) VALUES
-(1,1,1,"Scan all reserved TCP ports on the machine. The -v option enables verbose mode.", "nmap", "  -v scanme.nmap.org", "STDOUT", "nmap"),
-(2,1,1,"Launches a stealth SYN scan against each machine that is up out of the 256 IPs on the /24 sized network where Scanme resides. It also tries to determine what operating system is running on each host that is up and running. This requires root privileges because of the SYN scan and OS detection.", "nmap", " -sS -O scanme.nmap.org/24", "STDOUT", "nmap");
+INSERT INTO command_usage(id, creator_uid, command_id, description, executable_path, arguments, output_filename,
+                          output_parser)
+VALUES (1, 1, 1, "Scan all reserved TCP ports on the machine. The -v option enables verbose mode.", "nmap",
+        "  -v scanme.nmap.org", "STDOUT", "nmap"),
+       (2, 1, 1,
+        "Launches a stealth SYN scan against each machine that is up out of the 256 IPs on the /24 sized network where Scanme resides. It also tries to determine what operating system is running on each host that is up and running. This requires root privileges because of the SYN scan and OS detection.",
+        "nmap", " -sS -O scanme.nmap.org/24", "STDOUT", "nmap");
 
 DROP TABLE IF EXISTS command_schedule;
 
@@ -400,11 +408,11 @@ CREATE TABLE command_schedule
 (
     id              INT UNSIGNED  NOT NULL AUTO_INCREMENT,
     creator_uid     INT UNSIGNED  NOT NULL,
-    insert_ts       TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    update_ts       TIMESTAMP     NULL ON UPDATE CURRENT_TIMESTAMP,
+    insert_ts       TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_ts       TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
     command_id      INT UNSIGNED  NULL,
     argument_values VARCHAR(1000) NULL,
-    cron_expression VARCHAR(60)   NOT NULL,
+    cron_expression VARCHAR(60) NOT NULL,
 
     PRIMARY KEY (id),
     FOREIGN KEY (command_id) REFERENCES command (id) ON DELETE CASCADE
@@ -447,14 +455,14 @@ DROP TABLE IF EXISTS document;
 CREATE TABLE document
 (
     id          INT UNSIGNED                                 NOT NULL AUTO_INCREMENT,
-    insert_ts   TIMESTAMP                                    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    update_ts   TIMESTAMP                                    NULL ON UPDATE CURRENT_TIMESTAMP,
+    insert_ts   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_ts   TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
     user_id     INT UNSIGNED                                 NOT NULL,
     parent_type ENUM ('library', 'project', 'vulnerability') NOT NULL,
     parent_id   INT UNSIGNED                                 NULL,
     visibility  ENUM ('private', 'public')                   NOT NULL DEFAULT 'private',
-    title       VARCHAR(250)                                 NULL,
-    content     TEXT                                         NOT NULL,
+    title       VARCHAR(250) NULL,
+    content     TEXT      NOT NULL,
 
     PRIMARY KEY (id),
     INDEX (parent_type, parent_id),
@@ -466,12 +474,12 @@ DROP TABLE IF EXISTS note;
 CREATE TABLE note
 (
     id          INT UNSIGNED                      NOT NULL AUTO_INCREMENT,
-    insert_ts   TIMESTAMP                         NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    insert_ts   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     user_id     INT UNSIGNED                      NOT NULL,
     parent_type ENUM ('project', 'vulnerability') NOT NULL,
     parent_id   INT UNSIGNED                      NOT NULL,
     visibility  ENUM ('private', 'public')        NOT NULL DEFAULT 'private',
-    content     TEXT                              NOT NULL,
+    content     TEXT      NOT NULL,
 
     PRIMARY KEY (id),
     INDEX (parent_type, parent_id),
@@ -483,15 +491,15 @@ DROP TABLE IF EXISTS attachment;
 CREATE TABLE attachment
 (
     id               INT UNSIGNED                                                                             NOT NULL AUTO_INCREMENT,
-    insert_ts        TIMESTAMP                                                                                NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    insert_ts        TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
     parent_type      ENUM ('project', 'report', 'command', 'task', 'vulnerability', 'organisation', 'client') NOT NULL,
     parent_id        INT UNSIGNED                                                                             NOT NULL,
     submitter_uid    INT UNSIGNED                                                                             NOT NULL,
-    client_file_name VARCHAR(200)                                                                             NOT NULL,
-    file_name        VARCHAR(200)                                                                             NOT NULL,
+    client_file_name VARCHAR(200)   NOT NULL,
+    file_name        VARCHAR(200)   NOT NULL,
     file_size        INT UNSIGNED                                                                             NOT NULL,
-    file_mimetype    VARCHAR(200)                                                                             NULL,
-    file_hash        VARCHAR(10000)                                                                           NOT NULL,
+    file_mimetype    VARCHAR(200) NULL,
+    file_hash        VARCHAR(10000) NOT NULL,
 
     PRIMARY KEY (id),
     FOREIGN KEY (submitter_uid) REFERENCES user (id) ON DELETE NO ACTION
@@ -499,19 +507,21 @@ CREATE TABLE attachment
 
 DROP FUNCTION IF EXISTS PARENT_CHILD_NAME;
 
-DELIMITER $$
+DELIMITER
+$$
 
 CREATE FUNCTION PARENT_CHILD_NAME(
-    parent_name VARCHAR(100),
-    child_name VARCHAR(100)
+    parent_name VARCHAR (100),
+    child_name VARCHAR (100)
 )
     RETURNS VARCHAR(202)
     DETERMINISTIC
 BEGIN
-    IF parent_name IS NULL THEN
+    IF
+parent_name IS NULL THEN
         RETURN child_name;
-    END IF;
-    RETURN CONCAT(parent_name, ', ', child_name);
+END IF;
+RETURN CONCAT(parent_name, ', ', child_name);
 END$$
 
 DELIMITER ;
@@ -521,11 +531,11 @@ DROP TABLE IF EXISTS notification;
 CREATE TABLE notification
 (
     id         INT UNSIGNED            NOT NULL AUTO_INCREMENT,
-    insert_ts  TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    update_ts  TIMESTAMP               NULL ON UPDATE CURRENT_TIMESTAMP,
+    insert_ts  TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_ts  TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
     to_user_id INT UNSIGNED            NOT NULL,
-    title      VARCHAR(200)            NULL,
-    content    VARCHAR(4000)           NOT NULL,
+    title      VARCHAR(200) NULL,
+    content    VARCHAR(4000) NOT NULL,
     status     ENUM ('unread', 'read') NOT NULL DEFAULT 'unread',
 
     PRIMARY KEY (id),
@@ -533,4 +543,5 @@ CREATE TABLE notification
 ) ENGINE = InnoDB
   CHARSET = utf8mb4;
 
-SET FOREIGN_KEY_CHECKS = 1;
+SET
+FOREIGN_KEY_CHECKS = 1;

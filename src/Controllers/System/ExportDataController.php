@@ -4,6 +4,7 @@ namespace Reconmap\Controllers\System;
 
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Utils;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
@@ -14,7 +15,7 @@ use Reconmap\Services\AuditLogService;
 
 class ExportDataController extends Controller
 {
-    public function __construct(private readonly AuditLogService $auditLogService)
+    public function __construct(private readonly AuditLogService $auditLogService, private readonly ContainerInterface $container)
     {
     }
 

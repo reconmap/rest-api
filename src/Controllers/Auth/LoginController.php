@@ -51,6 +51,8 @@ class LoginController extends ControllerV2
         $cookie = new Cookie('reconmap-static', $staticToken, time() + (3600 * 24), path: '/', secure: false, httpOnly: false);
         $response->headers->setCookie($cookie);
 
+        $this->userRepository->updateLastLoginTime($requestUser->id);
+
         $psr17Factory = new HttpFactory();
         $psrHttpFactory = new PsrHttpFactory($psr17Factory, $psr17Factory, $psr17Factory, $psr17Factory);
 

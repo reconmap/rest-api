@@ -2,6 +2,7 @@
 
 namespace Reconmap\Controllers\System;
 
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Reconmap\Controllers\Controller;
@@ -12,7 +13,7 @@ use Reconmap\Services\AuditLogService;
 
 class ImportDataController extends Controller
 {
-    public function __construct(private readonly AuditLogService $auditLogService)
+    public function __construct(private readonly AuditLogService $auditLogService, private readonly ContainerInterface $container)
     {
     }
 
