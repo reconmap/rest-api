@@ -12,6 +12,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Filesystem\Filesystem;
 
 class ApplicationContainer extends ContainerBuilder
@@ -37,6 +38,7 @@ class ApplicationContainer extends ContainerBuilder
         $container->set(Logger::class, $logger);
         $container->set(ProcessorFactory::class, new ProcessorFactory());
         $container->set(ContainerInterface::class, $container);
+        $container->set(EventDispatcher::class, new EventDispatcher());
     }
 
     private function configure(ContainerConfigurator $containerConfigurator): void
@@ -62,7 +64,9 @@ class ApplicationContainer extends ContainerBuilder
             ->set(ApplicationConfig::class)->synthetic()
             ->set(ProcessorFactory::class)->synthetic()
             ->set(ContainerInterface::class)->synthetic()
+            ->set(EventDispatcher::class)->synthetic()
             ->set(\mysqli::class)->synthetic();
+
     }
 }
 

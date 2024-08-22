@@ -19,7 +19,7 @@ class GetRecentSearchesController extends ControllerV2
         $userId = $request->getUser()->id;
         $setName = "recent-searches-user{$userId}";
 
-        $recentSearches = $this->redisServer->zRange($setName, 0, 10);
+        $recentSearches = $this->redisServer->zRevRange($setName, 0, 9);
 
         $response = $this->createOkResponse();
         $response->getBody()->write(json_encode($recentSearches));

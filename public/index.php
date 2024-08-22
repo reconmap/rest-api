@@ -6,11 +6,14 @@ require $applicationDir . '/vendor/autoload.php';
 
 use Monolog\Logger;
 use Reconmap\ApiRouter;
+use Reconmap\Events\SearchEvent;
 use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\ApplicationContainer;
 use Reconmap\Services\Logging\LoggingConfigurator;
+use Reconmap\Services\SearchListener;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Response;
 
 $configFilePath = $applicationDir . '/config.json';
@@ -46,6 +49,12 @@ $container->set(Psr\Http\Message\ServerRequestInterface::class, $request);
 
 $router = new ApiRouter();
 $router->mapRoutes($container, $config);
+
+/**
+ * @var EventDispatcher $eventDispatcher
+ */
+$eventDispatcher = $container->get(EventDispatcher::class);
+$eventDispatcher->addListener(SearchEvent::class, $container->get(SearchListener::class));
 
 $response = $router->dispatch($request);
 

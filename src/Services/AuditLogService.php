@@ -4,7 +4,7 @@ namespace Reconmap\Services;
 
 use Reconmap\Repositories\AuditLogRepository;
 
-class AuditLogService
+readonly class AuditLogService
 {
     public function __construct(
         private AuditLogRepository $repository,
