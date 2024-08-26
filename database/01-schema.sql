@@ -1,5 +1,4 @@
-USE
-reconmap;
+USE reconmap;
 
 SET
 FOREIGN_KEY_CHECKS = 0;
@@ -450,6 +449,24 @@ CREATE TABLE report_configuration
     FOREIGN KEY (project_id) REFERENCES project (id) ON DELETE CASCADE
 ) ENGINE = InnoDB;
 
+DROP TABLE IF EXISTS custom_field;
+
+CREATE TABLE custom_field (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    insert_ts   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_ts   TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+    parent_type ENUM ('vulnerability') NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    label VARCHAR(100) NOT NULL,
+    kind ENUM('text', 'number') NOT NULL,
+    config JSON NOT NULL,
+
+    PRIMARY KEY (id),
+    UNIQUE KEY(parent_type, name)
+) ENGINE = InnoDB;
+
+# INSERT INTO custom_field (parent_type, name, label, kind, config) VALUES ('vulnerability', 'cost_pounds', 'Cost in pounds', 'text', '{}');
+
 DROP TABLE IF EXISTS document;
 
 CREATE TABLE document
@@ -507,8 +524,7 @@ CREATE TABLE attachment
 
 DROP FUNCTION IF EXISTS PARENT_CHILD_NAME;
 
-DELIMITER
-$$
+DELIMITER $$
 
 CREATE FUNCTION PARENT_CHILD_NAME(
     parent_name VARCHAR (100),

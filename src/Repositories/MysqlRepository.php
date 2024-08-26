@@ -4,7 +4,6 @@ namespace Reconmap\Repositories;
 
 use Monolog\Logger;
 use Ponup\SqlBuilders\DeleteQueryBuilder;
-use Ponup\SqlBuilders\QueryBuilder;
 use Ponup\SqlBuilders\SearchCriteria;
 use Ponup\SqlBuilders\SelectQueryBuilder;
 use Ponup\SqlBuilders\UpdateQueryBuilder;
@@ -117,7 +116,7 @@ abstract class MysqlRepository
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
-    protected function countSearchResults(QueryBuilder $queryBuilder, SearchCriteria $searchCriteria): int
+    protected function countSearchResults(SelectQueryBuilder $queryBuilder, SearchCriteria $searchCriteria): int
     {
         $queryBuilder->setColumns('COUNT(*) AS total');
         $results = $this->searchAll($queryBuilder, $searchCriteria);

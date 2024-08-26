@@ -7,10 +7,10 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Services\ApplicationConfig;
 
-class CorsResponseDecorator
+readonly class CorsResponseDecorator
 {
-    public function __construct(private readonly Logger $logger,
-                                private readonly ApplicationConfig $config)
+    public function __construct(private Logger            $logger,
+                                private ApplicationConfig $config)
     {
     }
 

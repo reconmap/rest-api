@@ -2,13 +2,13 @@
 
 namespace Reconmap\Controllers\Auth;
 
-use League\Container\Container;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\ConsecutiveParamsTrait;
 use Reconmap\Models\AuditActions\UserAuditActions;
 use Reconmap\Services\AuditLogService;
 use Reconmap\Services\Security\AuthorisationService;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class LogoutControllerTest extends TestCase
 {
@@ -27,7 +27,7 @@ class LogoutControllerTest extends TestCase
             ->method('isRoleAllowed')
             ->willReturn(true);
 
-        $mockContainer = $this->createMock(Container::class);
+        $mockContainer = $this->createMock(ContainerInterface::class);
         $mockContainer->expects($this->once())
             ->method('get')
             ->willReturn($mockAuthorisationService);
@@ -38,7 +38,6 @@ class LogoutControllerTest extends TestCase
             ->with(509, UserAuditActions::USER_LOGGED_OUT);
 
         $controller = new LogoutController($mockAuditLogService);
-        $controller->setContainer($mockContainer);
         $response = $controller($mockRequest, []);
 
         $this->assertEquals(\Symfony\Component\HttpFoundation\Response::HTTP_OK, $response->getStatusCode());

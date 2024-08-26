@@ -7,9 +7,9 @@ namespace Reconmap\Database;
 use Reconmap\Models\Command;
 use Reconmap\Repositories\CommandRepository;
 
-class CommandTestDataGenerator
+readonly class CommandTestDataGenerator
 {
-    public function __construct(private readonly CommandRepository $commandRepository)
+    public function __construct(private CommandRepository $commandRepository)
     {
 
     }

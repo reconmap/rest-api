@@ -2,7 +2,6 @@
 
 namespace Reconmap\Controllers\Auth;
 
-use League\Container\Container;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\ConsecutiveParamsTrait;
@@ -12,6 +11,7 @@ use Reconmap\Services\AuditLogService;
 use Reconmap\Services\JwtPayloadCreator;
 use Reconmap\Services\RedisServer;
 use Reconmap\Services\Security\AuthorisationService;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Response;
 
 class LoginControllerTest extends TestCase
@@ -62,7 +62,6 @@ class LoginControllerTest extends TestCase
         $mockRedisServer = $this->createMock(RedisServer::class);
 
         $controller = new LoginController($mockUserRepository, $mockAuditLogService, $mockRedisServer);
-        $controller->setContainer($mockContainer);
         $response = $controller($mockServerRequestInterface, []);
 
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
