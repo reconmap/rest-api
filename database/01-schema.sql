@@ -292,6 +292,7 @@ CREATE TABLE vulnerability
     owasp_likehood         DECIMAL(5, 3) NULL,
     owasp_impact           DECIMAL(5, 3) NULL,
     owasp_overall          ENUM ('critical','high','medium','low','note')                                                     NULL,
+    custom_fields JSON NULL,
 
     PRIMARY KEY (id),
     UNIQUE KEY (project_id, target_id, summary),
@@ -458,7 +459,7 @@ CREATE TABLE custom_field (
     parent_type ENUM ('vulnerability') NOT NULL,
     name VARCHAR(100) NOT NULL,
     label VARCHAR(100) NOT NULL,
-    kind ENUM('text', 'number') NOT NULL,
+    kind ENUM('text', 'integer', 'decimal') NOT NULL,
     config JSON NOT NULL,
 
     PRIMARY KEY (id),

@@ -25,7 +25,7 @@
     "league/html-to-markdown": "^5.0",
     "league/route": "^5.0",
     "monolog/monolog": "^3.0",
-    "netresearch/jsonmapper": "^4.0",
+    "netresearch/jsonmapper": "^5.0",
     "php": "^8.3",
     "phpoffice/phpword": "^1.0",
     "ponup/sql-builders": "^1.0",

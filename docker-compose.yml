@@ -8,7 +8,7 @@ services:
 
   redis:
     container_name: rmap-redis
-    image: redis:6.0
+    image: redis:7.4
     command: redis-server --requirepass REconDIS
     ports:
       - "6379:6379"
@@ -30,9 +30,9 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: reconmuppet
     healthcheck:
-        test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
-        timeout: 20s
-        retries: 10
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
 
   keycloak:
     image: quay.io/reconmap/keycloak-custom:latest
@@ -55,8 +55,8 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-        mysql:
-            condition: service_healthy
+      mysql:
+        condition: service_healthy
   api:
     container_name: rmap-api
     image: quay.io/reconmap/rest-api:latest
