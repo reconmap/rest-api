@@ -9,18 +9,30 @@ use Reconmap\Services\Security\AuthorisationService;
 
 abstract class ControllerV2 extends Controller
 {
+    private AuthorisationService $authorisationService;
+
     public function __invoke(ServerRequestInterface $serverRequest, array $args): ResponseInterface
     {
         $applicationRequest = new ApplicationRequest($serverRequest, $args);
         $user = $applicationRequest->getUser();
 
         /** @var AuthorisationService $authorisationService */
-        $authorisationService = new AuthorisationService();
+        $authorisationService = $this->getAuthorisationService();
         if (!$authorisationService->isRoleAllowed($user->role, $this->getPermissionRequired())) {
             return $this->createForbiddenResponse();
         }
 
         return $this->process($applicationRequest);
+    }
+
+    public function setAuthorisationService(AuthorisationService $authorisationService): void
+    {
+        $this->authorisationService = $authorisationService;
+    }
+
+    private function getAuthorisationService(): AuthorisationService
+    {
+        return $this->authorisationService ?? new AuthorisationService();
     }
 
     protected function getPermissionRequired(): string

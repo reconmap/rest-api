@@ -29,9 +29,14 @@ abstract class Controller # implements ContainerAwareInterface
 
     public function getJsonBodyDecodedAsClass(ServerRequestInterface $request, object $instance, bool $strictNullTypes = true): object
     {
+        return $this->getJsonAsClass($this->getJsonBodyDecoded($request), $instance, $strictNullTypes);
+    }
+
+    public function getJsonAsClass(array|object $json, object $instance, bool $strictNullTypes = true): object
+    {
         $jsonMapper = new \JsonMapper();
         $jsonMapper->bStrictNullTypes = $strictNullTypes;
-        $object = $jsonMapper->map($this->getJsonBodyDecoded($request), $instance);
+        $object = $jsonMapper->map($json, $instance);
         if ($object instanceof Cleanable) {
             $object->clean();
         }

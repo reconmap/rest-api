@@ -8,7 +8,7 @@ use Reconmap\ConsecutiveParamsTrait;
 use Reconmap\Models\AuditActions\UserAuditActions;
 use Reconmap\Services\AuditLogService;
 use Reconmap\Services\Security\AuthorisationService;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 class LogoutControllerTest extends TestCase
 {
@@ -27,19 +27,15 @@ class LogoutControllerTest extends TestCase
             ->method('isRoleAllowed')
             ->willReturn(true);
 
-        $mockContainer = $this->createMock(ContainerInterface::class);
-        $mockContainer->expects($this->once())
-            ->method('get')
-            ->willReturn($mockAuthorisationService);
-
         $mockAuditLogService = $this->createMock(AuditLogService::class);
         $mockAuditLogService->expects($this->once())
             ->method('insert')
             ->with(509, UserAuditActions::USER_LOGGED_OUT);
 
         $controller = new LogoutController($mockAuditLogService);
+        $controller->setAuthorisationService($mockAuthorisationService);
         $response = $controller($mockRequest, []);
 
-        $this->assertEquals(\Symfony\Component\HttpFoundation\Response::HTTP_OK, $response->getStatusCode());
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
     }
 }

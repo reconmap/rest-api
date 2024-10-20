@@ -3,7 +3,7 @@
 namespace Reconmap\Controllers\System;
 
 use GuzzleHttp\Psr7\ServerRequest;
-use League\Container\Container;
+use Psr\Container\ContainerInterface;
 use Reconmap\ControllerTestCase;
 use Reconmap\Repositories\Exporters\ClientsExporter;
 use Reconmap\Services\AuditLogService;
@@ -27,15 +27,14 @@ class ExportDataControllerTest extends ControllerTestCase
             ->method('export')
             ->willReturn(['client1']);
 
-        $mockContainer = $this->createMock(Container::class);
+        $mockContainer = $this->createMock(ContainerInterface::class);
         $mockContainer->expects($this->once())
             ->method('get')
             ->with('Reconmap\Repositories\Exporters\ClientsExporter')
             ->willReturn($mockClientExporter);
 
         /** @var $controller ExportDataController */
-        $controller = $this->injectController(new ExportDataController($mockAuditLogService));
-        $controller->setContainer($mockContainer);
+        $controller = $this->injectController(new ExportDataController($mockAuditLogService, $mockContainer));
         $response = $controller($request);
 
         $this->assertEquals(\Symfony\Component\HttpFoundation\Response::HTTP_OK, $response->getStatusCode());
@@ -55,8 +54,10 @@ class ExportDataControllerTest extends ControllerTestCase
                 'entities' => 'passwords'
             ]);
 
+        $mockContainer = $this->createMock(ContainerInterface::class);
+
         /** @var $controller ExportDataController */
-        $controller = $this->injectController(new ExportDataController($mockAuditLogService));
+        $controller = $this->injectController(new ExportDataController($mockAuditLogService, $mockContainer));
         $response = $controller($request);
 
         $this->assertEquals(\Symfony\Component\HttpFoundation\Response::HTTP_BAD_REQUEST, $response->getStatusCode());

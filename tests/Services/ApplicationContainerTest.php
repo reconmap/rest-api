@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Reconmap\Services;
 
-use League\Container\Inflector\InflectorInterface;
-use League\Container\ReflectionContainer;
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
 use Reconmap\DatabaseTestCase;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class ApplicationContainerTest extends TestCase
 {
@@ -22,20 +21,12 @@ class ApplicationContainerTest extends TestCase
             ->willReturn(DatabaseTestCase::DATABASE_SETTINGS);
         $logger = $this->createMock(Logger::class);
 
-        /** @var ApplicationContainer $container */
-        $container = $this->getMockBuilder(ApplicationContainer::class)
-            ->onlyMethods(['delegate', 'add', 'inflector'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $container->expects($this->once())
-            ->method('delegate')
-            ->with($this->isInstanceOf(ReflectionContainer::class));
-        $container->expects($this->atLeastOnce())
-            ->method('add');
-        $container->expects($this->atLeastOnce())
-            ->method('inflector')
-            ->willReturn($this->createMock(InflectorInterface::class));
+        /** @var ContainerBuilder $container */
+        $mockContainer = $this->createMock(ContainerBuilder::class);
+        $mockContainer->expects($this->atLeastOnce())
+            ->method('set');
 
-        $container->initialise($config, $logger);
+        $container = new ApplicationContainer();
+        $container->initialise($mockContainer, $config, $logger);
     }
 }

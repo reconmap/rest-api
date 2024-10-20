@@ -38,14 +38,8 @@ class LoginControllerTest extends TestCase
             ->willReturn(['key' => 'aaa']);
 
         $mockAuthorisationService = $this->createMock(AuthorisationService::class);
-        $mockAuthorisationService->expects($this->once())
-            ->method('isRoleAllowed')
-            ->willReturn(true);
 
         $mockContainer = $this->createMock(Container::class);
-        $mockContainer->expects($this->once())
-            ->method('get')
-            ->willReturn($mockAuthorisationService);
 
         $mockAuditLogService = $this->createMock(AuditLogService::class);
         $mockJwtPayloadCreator = $this->createMock(JwtPayloadCreator::class);
