@@ -17,6 +17,7 @@ class UserRepository extends MysqlRepository
         'username' => 's',
         'timezone' => 's',
         'preferences' => 's',
+        'mfa_enabled' => 'i',
     ];
 
     public function findAll(): array
@@ -61,7 +62,7 @@ class UserRepository extends MysqlRepository
     protected function getBaseSelectQueryBuilder(): SelectQueryBuilder
     {
         $queryBuilder = new SelectQueryBuilder('user u');
-        $queryBuilder->setColumns('u.id, u.insert_ts, u.update_ts, u.last_login_ts, u.subject_id, u.active, u.full_name, u.short_bio, u.username, u.email, u.role, u.timezone, u.preferences');
+        $queryBuilder->setColumns('u.id, u.insert_ts, u.update_ts, u.last_login_ts, u.subject_id, u.active, u.full_name, u.short_bio, u.username, u.email, u.role, u.timezone, u.preferences, u.mfa_enabled');
         return $queryBuilder;
     }
 

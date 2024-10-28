@@ -45,6 +45,7 @@ CREATE TABLE user
     full_name     VARCHAR(200) NOT NULL,
     short_bio     VARCHAR(1000) NULL,
     timezone      VARCHAR(200) NOT NULL DEFAULT 'UTC',
+    mfa_enabled BOOLEAN NOT NULL DEFAULT FALSE,
     preferences   JSON NULL COMMENT 'Client side (eg UI) preferences',
 
     PRIMARY KEY (id),

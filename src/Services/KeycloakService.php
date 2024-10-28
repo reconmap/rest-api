@@ -6,13 +6,13 @@ use GuzzleHttp\Client;
 use Monolog\Logger;
 use Reconmap\Models\User;
 
-class KeycloakService
+readonly class KeycloakService
 {
-    private readonly array $config;
+    private array $config;
 
-    public function __construct(private readonly Logger $logger, ApplicationConfig $config)
+    public function __construct(private Logger $logger, ApplicationConfig $applicationConfig)
     {
-        $this->config = $config->getSettings('keycloak');
+        $this->config = $applicationConfig->getSettings('keycloak');
     }
 
     private function getClient(): Client
@@ -25,7 +25,7 @@ class KeycloakService
 
     public function getPublicKey(): string
     {
-        $realmInfoEncoded = file_get_contents($this->config['baseUri'] . '/realms/'. $this->config['realmName']);
+        $realmInfoEncoded = file_get_contents($this->config['baseUri'] . '/realms/' . $this->config['realmName']);
         $realmInfo = json_decode($realmInfoEncoded);
         $publicKey = $realmInfo->public_key;
         return "-----BEGIN PUBLIC KEY-----\n{$publicKey}\n-----END PUBLIC KEY-----";
@@ -45,18 +45,16 @@ class KeycloakService
     }
 
     /**
-     * @param User $user
-     * @param string $accessToken
      * @return string UUID
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function createUser(User $user, string $password, string $accessToken): string
+    public function createUser(User $user, string $password): string
     {
         $client = $this->getClient();
         list($firstName, $lastName) = explode(' ', $user->full_name);
 
         $response = $client->post('/admin/realms/' . $this->config['realmName'] . '/users', [
-            'headers' => ['Authorization' => 'Bearer ' . $accessToken],
+            'headers' => ['Authorization' => 'Bearer ' . $this->getAccessToken()],
             'json' => [
                 "firstName" => $firstName,
                 "lastName" => $lastName,
@@ -76,7 +74,34 @@ class KeycloakService
         return $locationParts[count($locationParts) - 1];
     }
 
-    public function getUser(string $email)
+    public function getUserCredentials(array $user): array
+    {
+        $client = $this->getClient();
+
+        $response = $client->get('/admin/realms/' . $this->config['realmName'] . '/users/' . $user['subject_id'] . '/credentials', [
+            'headers' => ['Authorization' => 'Bearer ' . $this->getAccessToken()]]);
+        $credentials = json_decode($response->getBody()->getContents(), true);
+        return $credentials;
+    }
+
+    public function enableMfa(array $user): bool
+    {
+        $client = $this->getClient();
+
+        $response = $client->put('/admin/realms/' . $this->config['realmName'] . '/users/' . $user['subject_id'], [
+            'headers' => [
+                'Authorization' => "Bearer " . $this->getAccessToken(),
+                'Content-Type' => 'application/json',
+            ],
+            'json' => [
+                'requiredActions' => ['CONFIGURE_TOTP'],
+            ],
+        ]);
+
+        return $response->getStatusCode() === 204;
+    }
+
+    public function getUser(string $email): void
     {
         $client = $this->getClient();
 
@@ -87,7 +112,7 @@ class KeycloakService
         ]);
     }
 
-    public function deleteUser(array $user)
+    public function deleteUser(array $user): void
     {
         $client = $this->getClient();
 

@@ -9,10 +9,13 @@ use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\DomainObjects\User;
 use Reconmap\Models\Cleanable;
 use Reconmap\Services\TemplateEngine;
+use Symfony\Contracts\Service\Attribute\SubscribedService;
+use Symfony\Contracts\Service\ServiceMethodsSubscriberTrait;
+use Symfony\Contracts\Service\ServiceSubscriberInterface;
 
-abstract class Controller # implements ContainerAwareInterface
+abstract class Controller implements ServiceSubscriberInterface
 {
-    #use ContainerAwareTrait;
+    use ServiceMethodsSubscriberTrait;
 
     protected ?Logger $logger = null;
     protected ?TemplateEngine $template = null;
@@ -20,6 +23,12 @@ abstract class Controller # implements ContainerAwareInterface
     public function setLogger(Logger $logger): void
     {
         $this->logger = $logger;
+    }
+
+    #[SubscribedService]
+    public function logger(): Logger
+    {
+        return $this->container->get(Logger::class);
     }
 
     public function getJsonBodyDecoded(ServerRequestInterface $request): object

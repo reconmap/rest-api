@@ -37,8 +37,7 @@ class CreateUserController extends Controller
             $user->unencryptedPassword = $this->passwordGenerator->generate(24);
         }
 
-        $accessToken = $this->keycloakService->getAccessToken();
-        $user->subject_id = $this->keycloakService->createUser($user, $user->unencryptedPassword, $accessToken);
+        $user->subject_id = $this->keycloakService->createUser($user, $user->unencryptedPassword);
 
         $user->id = $this->userRepository->create($user);
 

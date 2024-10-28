@@ -34,7 +34,8 @@ class ExportDataControllerTest extends ControllerTestCase
             ->willReturn($mockClientExporter);
 
         /** @var $controller ExportDataController */
-        $controller = $this->injectController(new ExportDataController($mockAuditLogService, $mockContainer));
+        $controller = $this->injectController(new ExportDataController($mockAuditLogService));
+        $controller->setContainer($mockContainer);
         $response = $controller($request);
 
         $this->assertEquals(\Symfony\Component\HttpFoundation\Response::HTTP_OK, $response->getStatusCode());
@@ -57,7 +58,8 @@ class ExportDataControllerTest extends ControllerTestCase
         $mockContainer = $this->createMock(ContainerInterface::class);
 
         /** @var $controller ExportDataController */
-        $controller = $this->injectController(new ExportDataController($mockAuditLogService, $mockContainer));
+        $controller = $this->injectController(new ExportDataController($mockAuditLogService));
+        $controller->setContainer($mockContainer);
         $response = $controller($request);
 
         $this->assertEquals(\Symfony\Component\HttpFoundation\Response::HTTP_BAD_REQUEST, $response->getStatusCode());

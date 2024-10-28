@@ -82,7 +82,8 @@ class ImportDataControllerTest extends TestCase
         $mockContainer->expects($this->never())
             ->method('get');
 
-        $controller = new ImportDataController($mockAuditLogService, $mockContainer);
+        $controller = new ImportDataController($mockAuditLogService);
+        $controller->setContainer($mockContainer);
         $controller->setLogger($mockLogger);
         $response = $controller($mockRequest);
 
@@ -128,7 +129,8 @@ class ImportDataControllerTest extends TestCase
             ->with(ProjectsImporter::class)
             ->willReturn($mockProjectImporter);
 
-        $controller = new ImportDataController($mockAuditLogService, $mockContainer);
+        $controller = new ImportDataController($mockAuditLogService);
+        $controller->setContainer($mockContainer);
         $response = $controller($mockRequest);
 
         $expectedResponse = [

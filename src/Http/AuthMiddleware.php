@@ -18,17 +18,17 @@ use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\KeycloakService;
 
-class AuthMiddleware implements MiddlewareInterface
+readonly class AuthMiddleware implements MiddlewareInterface
 {
-    public function __construct(private readonly UserRepository    $userRepository,
-                                private readonly KeycloakService   $keycloak,
-                                private readonly Logger            $logger,
-                                private readonly ApplicationConfig $config)
+    public function __construct(private UserRepository    $userRepository,
+                                private KeycloakService   $keycloak,
+                                private Logger            $logger,
+                                private ApplicationConfig $config)
     {
     }
 
     /**
-     * @throws ForbiddenException
+     * @throws ForbiddenException|Exception
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
