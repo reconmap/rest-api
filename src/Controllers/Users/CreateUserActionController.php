@@ -12,7 +12,7 @@ use Reconmap\Services\ActivityPublisherService;
 use Reconmap\Services\KeycloakService;
 use Symfony\Component\HttpFoundation\Response;
 
-class EnableMfaController extends Controller
+class CreateUserActionController extends Controller
 {
     public function __construct(private readonly UserRepository           $userRepository,
                                 private readonly KeycloakService          $keycloakService,
@@ -27,10 +27,20 @@ class EnableMfaController extends Controller
 
         $user = $this->userRepository->findById($userId);
 
+        $action = $this->getJsonBodyDecodedAsArray($request)['name'];
+
         try {
-            if ($this->keycloakService->enableMfa($user)) {
-                $this->userRepository->updateById($userId, ['mfa_enabled' => true]);
+            switch ($action) {
+                case 'enable-mfa':
+                    if ($this->keycloakService->enableMfa($user)) {
+                        $this->userRepository->updateById($userId, ['mfa_enabled' => true]);
+                    }
+                    break;
+                case 'reset-password':
+                    $this->keycloakService->resetPassword($user);
+                    break;
             }
+
         } catch (ClientException $e) {
             if ($e->getCode() === Response::HTTP_NOT_FOUND) {
                 $this->logger->warning("User to delete not found on Keycloak", ['userId' => $userId]);
@@ -39,13 +49,13 @@ class EnableMfaController extends Controller
             }
         }
 
-        $this->auditAction($loggedInUserId, $userId);
+        $this->auditAction($loggedInUserId, $userId, $action);
 
-        return $this->createDeletedResponse();
+        return $this->createOkResponse();
     }
 
-    private function auditAction(int $loggedInUserId, int $userId): void
+    private function auditAction(int $loggedInUserId, int $userId, string $action): void
     {
-        $this->activityPublisherService->publish($loggedInUserId, UserAuditActions::USER_DELETED, ['id' => $userId]);
+        $this->activityPublisherService->publish($loggedInUserId, UserAuditActions::USER_REQUESTED_ACTION, ['id' => $userId, 'action' => $action]);
     }
 }

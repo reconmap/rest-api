@@ -80,11 +80,20 @@ readonly class KeycloakService
 
         $response = $client->get('/admin/realms/' . $this->config['realmName'] . '/users/' . $user['subject_id'] . '/credentials', [
             'headers' => ['Authorization' => 'Bearer ' . $this->getAccessToken()]]);
-        $credentials = json_decode($response->getBody()->getContents(), true);
-        return $credentials;
+        return json_decode($response->getBody()->getContents(), true);
     }
 
     public function enableMfa(array $user): bool
+    {
+        return $this->requireAction($user, 'CONFIGURE_TOTP');
+    }
+
+    public function resetPassword(array $user): bool
+    {
+        return $this->requireAction($user, 'UPDATE_PASSWORD');
+    }
+
+    private function requireAction(array $user, string $action): bool
     {
         $client = $this->getClient();
 
@@ -94,7 +103,7 @@ readonly class KeycloakService
                 'Content-Type' => 'application/json',
             ],
             'json' => [
-                'requiredActions' => ['CONFIGURE_TOTP'],
+                'requiredActions' => [$action],
             ],
         ]);
 

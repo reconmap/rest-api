@@ -11,12 +11,11 @@ class UsersRouter
     {
         $router->map('GET', '/users', GetUsersController::class);
         $router->map('POST', '/users', CreateUserController::class);
-        $router->map('POST', '/users/{userId:number}/enable-mfa', EnableMfaController::class);
+        $router->map('POST', '/users/{userId:number}/actions', CreateUserActionController::class);
         $router->map('PATCH', '/users', BulkUpdateUsersController::class);
         $router->map('GET', '/users/{userId:number}', GetUserController::class);
         $router->map('PATCH', '/users/{userId:number}', UpdateUserController::class);
         $router->map('GET', '/users/{userId:number}/activity', GetUserActivityController::class);
-        $router->map('PATCH', '/users/{userId:number}/password', UpdateUserPasswordController::class);
         $router->map('DELETE', '/users/{userId:number}', DeleteUserController::class);
     }
 }
