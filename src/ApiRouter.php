@@ -23,6 +23,7 @@ use Reconmap\{Controllers\Attachments\ServeAttachmentController,
     Controllers\Projects\ProjectsRouter,
     Controllers\Reports\ReportsRouter,
     Controllers\System\CustomFields\CustomFieldsRouter,
+    Controllers\System\GetOpenApiYamlController,
     Controllers\System\SystemRouter,
     Controllers\Targets\TargetsRouter,
     Controllers\Tasks\TasksRouter,
@@ -83,6 +84,7 @@ class ApiRouter extends Router
         $securityMiddleware = $container->get(SecurityMiddleware::class);
         $cookieMiddleware = $container->get(StaticMiddleware::class);
 
+        $this->map('GET', '/openapi.json', GetOpenApiYamlController::class);
         $this->map('GET', '/image/{attachmentId:number}', ServeAttachmentController::class)->middlewares([$cookieMiddleware]);
 
         $this->group('', function (RouteGroup $router): void {
