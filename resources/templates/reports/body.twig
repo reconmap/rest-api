@@ -120,10 +120,6 @@
         <tbody>
         {% for user in users %}
             <tr>
-                <td style="border: 0; width: 60px; padding-bottom: 8px;">
-                    <img alt="Avatar" style="width: 50px;"
-                         src="https://www.gravatar.com/avatar/{{ user.email_md5 }}?s=200&d=robohash"/>
-                </td>
                 <td style="border: 0;">
                     <h3>{{ user.full_name }}</h3>
                     <p>{{ user.short_bio }}</p>
