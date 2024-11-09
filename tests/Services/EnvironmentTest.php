@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Reconmap\Services;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class EnvironmentTest extends TestCase
 {
-    public function getTestValues(): array
+    public static function getTestValues(): array
     {
         return [
             ['CURRENT_ANIMAL', null],
@@ -16,11 +17,7 @@ class EnvironmentTest extends TestCase
         ];
     }
 
-    /**
-     * @param string $propertyName
-     * @param string|null $propertyValue
-     * @dataProvider getTestValues
-     */
+    #[DataProvider("getTestValues")]
     public function testValueIsReturned(string $propertyName, ?string $propertyValue)
     {
         $env = new Environment();

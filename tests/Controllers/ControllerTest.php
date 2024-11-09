@@ -4,13 +4,22 @@ namespace Reconmap\Controllers;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\ConsecutiveParamsTrait;
 use Reconmap\Models\User;
 
 class ControllerTest extends TestCase
 {
+    use ConsecutiveParamsTrait;
+
+    private function createEmptyController(): Controller
+    {
+        return new class() extends Controller {
+        };
+    }
+
     public function testJsonDecodeAsObject()
     {
-        $subject = $this->getMockForAbstractClass(Controller::class);
+        $subject = $this->createEmptyController();
         $mockRequest = $this->createMock(ServerRequestInterface::class);
         $mockRequest->expects($this->once())
             ->method('getBody')
@@ -22,7 +31,7 @@ class ControllerTest extends TestCase
 
     public function testJsonDecodeAsArray()
     {
-        $subject = $this->getMockForAbstractClass(Controller::class);
+        $subject = $this->createEmptyController();
         $mockRequest = $this->createMock(ServerRequestInterface::class);
         $mockRequest->expects($this->once())
             ->method('getBody')
@@ -34,11 +43,11 @@ class ControllerTest extends TestCase
 
     public function testGetUserFromRequest()
     {
-        $subject = $this->getMockForAbstractClass(Controller::class);
+        $subject = $this->createEmptyController();
         $mockRequest = $this->createMock(ServerRequestInterface::class);
         $mockRequest->expects($this->exactly(2))
             ->method('getAttribute')
-            ->withConsecutive(['userId'], ['role'])
+            ->with(...$this->consecutiveParams(['userId'], ['role']))
             ->willReturnOnConsecutiveCalls(4, 'client');
         $user = $subject->getUserFromRequest($mockRequest);
 

@@ -3,12 +3,15 @@
 namespace Reconmap\Controllers\Tasks;
 
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\ConsecutiveParamsTrait;
 use Reconmap\ControllerTestCase;
 use Reconmap\Repositories\TaskRepository;
 use Reconmap\Services\AuditLogService;
 
 class BulkUpdateTasksControllerTest extends ControllerTestCase
 {
+    use ConsecutiveParamsTrait;
+
     public function testSuccessfulDeletes(): void
     {
         $userId = 1;
@@ -59,7 +62,7 @@ class BulkUpdateTasksControllerTest extends ControllerTestCase
         $mockTaskRepository = $this->createPartialMock(TaskRepository::class, ['updateById']);
         $mockTaskRepository->expects($this->exactly(3))
             ->method('updateById')
-            ->withConsecutive([1, ['status' => 'closed']], [2, ['status' => 'closed']], [3, ['status' => 'closed']])
+            ->with(...$this->consecutiveParams([1, ['status' => 'closed']], [2, ['status' => 'closed']], [3, ['status' => 'closed']]))
             ->willReturn(true);
 
         $mockAuditLogService = $this->createMock(AuditLogService::class);

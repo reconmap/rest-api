@@ -2,20 +2,20 @@
 
 namespace Reconmap\Controllers;
 
-use Fig\Http\Message\StatusCodeInterface;
 use GuzzleHttp\Psr7\Response;
-use League\Container\ContainerAwareInterface;
-use League\Container\ContainerAwareTrait;
 use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\DomainObjects\User;
 use Reconmap\Models\Cleanable;
-use Reconmap\Models\User;
 use Reconmap\Services\TemplateEngine;
+use Symfony\Contracts\Service\Attribute\SubscribedService;
+use Symfony\Contracts\Service\ServiceMethodsSubscriberTrait;
+use Symfony\Contracts\Service\ServiceSubscriberInterface;
 
-abstract class Controller implements ContainerAwareInterface
+abstract class Controller implements ServiceSubscriberInterface
 {
-    use ContainerAwareTrait;
+    use ServiceMethodsSubscriberTrait;
 
     protected ?Logger $logger = null;
     protected ?TemplateEngine $template = null;
@@ -25,6 +25,12 @@ abstract class Controller implements ContainerAwareInterface
         $this->logger = $logger;
     }
 
+    #[SubscribedService]
+    public function logger(): Logger
+    {
+        return $this->container->get(Logger::class);
+    }
+
     public function getJsonBodyDecoded(ServerRequestInterface $request): object
     {
         return json_decode((string)$request->getBody());
@@ -32,9 +38,14 @@ abstract class Controller implements ContainerAwareInterface
 
     public function getJsonBodyDecodedAsClass(ServerRequestInterface $request, object $instance, bool $strictNullTypes = true): object
     {
+        return $this->getJsonAsClass($this->getJsonBodyDecoded($request), $instance, $strictNullTypes);
+    }
+
+    public function getJsonAsClass(array|object $json, object $instance, bool $strictNullTypes = true): object
+    {
         $jsonMapper = new \JsonMapper();
         $jsonMapper->bStrictNullTypes = $strictNullTypes;
-        $object = $jsonMapper->map($this->getJsonBodyDecoded($request), $instance);
+        $object = $jsonMapper->map($json, $instance);
         if ($object instanceof Cleanable) {
             $object->clean();
         }
@@ -48,27 +59,27 @@ abstract class Controller implements ContainerAwareInterface
 
     protected function createInternalServerErrorResponse(): ResponseInterface
     {
-        return (new Response())->withStatus(StatusCodeInterface::STATUS_INTERNAL_SERVER_ERROR);
+        return (new Response())->withStatus(\Symfony\Component\HttpFoundation\Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     protected function createForbiddenResponse(): ResponseInterface
     {
-        return (new Response())->withStatus(StatusCodeInterface::STATUS_FORBIDDEN);
+        return (new Response())->withStatus(\Symfony\Component\HttpFoundation\Response::HTTP_FORBIDDEN);
     }
 
     protected function createNoContentResponse(): ResponseInterface
     {
-        return (new Response())->withStatus(StatusCodeInterface::STATUS_NO_CONTENT);
+        return (new Response())->withStatus(\Symfony\Component\HttpFoundation\Response::HTTP_NO_CONTENT);
     }
 
     protected function createBadRequestResponse(): ResponseInterface
     {
-        return (new Response())->withStatus(StatusCodeInterface::STATUS_BAD_REQUEST);
+        return (new Response())->withStatus(\Symfony\Component\HttpFoundation\Response::HTTP_BAD_REQUEST);
     }
 
     protected function createNotFoundResponse(): ResponseInterface
     {
-        return (new Response())->withStatus(StatusCodeInterface::STATUS_NOT_FOUND);
+        return (new Response())->withStatus(\Symfony\Component\HttpFoundation\Response::HTTP_NOT_FOUND);
     }
 
     protected function createDeletedResponse(): ResponseInterface
@@ -78,7 +89,7 @@ abstract class Controller implements ContainerAwareInterface
 
     protected function createOkResponse(): ResponseInterface
     {
-        return (new Response())->withStatus(StatusCodeInterface::STATUS_OK);
+        return (new Response())->withStatus(\Symfony\Component\HttpFoundation\Response::HTTP_OK);
     }
 
     protected function createStatusCreatedResponse(string|array|object $body): ResponseInterface
@@ -86,7 +97,7 @@ abstract class Controller implements ContainerAwareInterface
         $jsonBody = is_string($body) ? $body : json_encode($body);
 
         $response = (new Response())
-            ->withStatus(StatusCodeInterface::STATUS_CREATED)
+            ->withStatus(\Symfony\Component\HttpFoundation\Response::HTTP_CREATED)
             ->withHeader('Content-type', 'application/json');
         $response->getBody()->write($jsonBody);
         return $response;

@@ -13,8 +13,8 @@ use Reconmap\Services\RedisServer;
 class UploadAttachmentController extends Controller
 {
     public function __construct(protected readonly AttachmentRepository $attachmentRepository,
-                                protected readonly AttachmentFilePath $attachmentFilePathService,
-                                protected readonly RedisServer $redisServer)
+                                protected readonly AttachmentFilePath   $attachmentFilePathService,
+                                protected readonly RedisServer          $redisServer)
     {
     }
 
@@ -31,7 +31,7 @@ class UploadAttachmentController extends Controller
         $index = 0;
         foreach ($files as $file) {
             /** @var UploadedFileInterface $file */
-            $this->logger->debug('file uploaded', ['filename' => $file->getClientFilename(), 'type' => $file->getClientMediaType(), 'size' => $file->getSize()]);
+            $this->logger()->debug('file uploaded', ['filename' => $file->getClientFilename(), 'type' => $file->getClientMediaType(), 'size' => $file->getSize()]);
             $attachment = $this->uploadAttachment($file, $parentType, $parentId, $userId);
 
             if ('command' === $parentType) {
@@ -43,7 +43,7 @@ class UploadAttachmentController extends Controller
                     ])
                 );
                 if (false === $queueLen) {
-                    $this->logger->error('Item could not be pushed to the queue', ['queue' => 'tasks-results:queue']);
+                    $this->logger()->error('Item could not be pushed to the queue', ['queue' => 'tasks-results:queue']);
                 }
             }
 

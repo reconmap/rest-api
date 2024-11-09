@@ -2,11 +2,12 @@
 
 namespace Reconmap\Services\Security;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class AuthorisationServiceTest extends TestCase
 {
-    public function dataProvider(): array
+    public static function dataProvider(): array
     {
         return [
             [true, 'administrator', 'vulnerabilities.delete'],
@@ -30,9 +31,7 @@ class AuthorisationServiceTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataProvider
-     */
+    #[DataProvider("dataProvider")]
     public function testIfRoleIsAllowed(bool $expected, ?string $role, string $action)
     {
         $subject = new AuthorisationService();

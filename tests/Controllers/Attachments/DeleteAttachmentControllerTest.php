@@ -2,7 +2,6 @@
 
 namespace Reconmap\Controllers\Attachments;
 
-use Fig\Http\Message\StatusCodeInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Models\Attachment;
@@ -54,6 +53,6 @@ class DeleteAttachmentControllerTest extends TestCase
         $controller = new DeleteAttachmentController($mockAttachmentRepository, $mockAttachmentFilePath, $mockPublisherService, $mockFilesystem);
         $response = $controller($mockRequest, $args);
 
-        $this->assertEquals(StatusCodeInterface::STATUS_NO_CONTENT, $response->getStatusCode());
+        $this->assertEquals(\Symfony\Component\HttpFoundation\Response::HTTP_NO_CONTENT, $response->getStatusCode());
     }
 }

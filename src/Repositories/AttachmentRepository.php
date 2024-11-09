@@ -8,9 +8,9 @@ use Reconmap\Models\Attachment;
 
 class AttachmentRepository extends MysqlRepository
 {
-    private const TABLE_NAME = 'attachment';
+    private const string TABLE_NAME = 'attachment';
 
-    public const UPDATABLE_COLUMNS_TYPES = [
+    public const array UPDATABLE_COLUMNS_TYPES = [
         "submitter_uid" => "i",
         "client_file_name" => "s",
         "file_hash" => "s",

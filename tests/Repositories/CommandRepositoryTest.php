@@ -20,7 +20,6 @@ class CommandRepositoryTest extends DatabaseTestCase
         $command->creator_uid = 1;
         $command->name = 'Nmap';
         $command->output_parser = 'nmap';
-        $command->executable_type = 'custom';
         $command->executable_path = 'nmap';
 
         $this->assertTrue($this->subject->insert($command) >= 1);
@@ -29,14 +28,14 @@ class CommandRepositoryTest extends DatabaseTestCase
     public function testFindAll()
     {
         $commands = $this->subject->findAll();
-        $this->assertCount(5, $commands);
+        $this->assertCount(6, $commands);
     }
 
 
     public function testFindById()
     {
         $command = $this->subject->findById(1);
-        $this->assertEquals('Goohost', $command['name']);
+        $this->assertEquals('nmap', $command['name']);
     }
 
     public function testFindByIdNotFound()

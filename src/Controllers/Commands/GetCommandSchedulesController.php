@@ -20,8 +20,9 @@ class GetCommandSchedulesController extends SecureController
         return 'commands.*';
     }
 
-    public function process(ServerRequestInterface $request): array
+    public function process(ServerRequestInterface $request, array $args): array
     {
-        return $this->repository->findByCommandId(1);
+        $commandId = intval($args['commandId']);
+        return $this->repository->findByCommandId($commandId);
     }
 }

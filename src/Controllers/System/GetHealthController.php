@@ -6,13 +6,15 @@ use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Services\Filesystem\AttachmentFilePath;
 use Reconmap\Services\Filesystem\DirectoryChecker;
+use Reconmap\Services\RedisServer;
 
 class GetHealthController extends Controller
 {
     public function __construct(
         private readonly AttachmentFilePath $attachmentFilePath,
         private readonly DirectoryChecker   $directoryChecker,
-        private readonly \mysqli            $dbConnection
+        private readonly \mysqli            $mysqlServer,
+        private readonly RedisServer        $redisServer,
     )
     {
     }
@@ -23,9 +25,22 @@ class GetHealthController extends Controller
 
         return [
             'attachmentsDirectory' => $this->directoryChecker->checkDirectoryIsWriteable($attachmentBasePath),
-            'dbConnection' => [
-                'ping' => $this->dbConnection->ping()
+            'databaseServer' => [
+                'reachable' => $this->mysqlServer->ping()
+            ],
+            'keyValueServer' => [
+                'reachable' => $this->isRedisServerReachable()
             ]
         ];
+    }
+
+    private function isRedisServerReachable(): bool
+    {
+        try {
+            return $this->redisServer->ping();
+        } catch (\RedisException $e) {
+            $this->logger()->warning($e->getMessage());
+            return false;
+        }
     }
 }

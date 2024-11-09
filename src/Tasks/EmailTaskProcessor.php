@@ -10,10 +10,10 @@ use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 
-class EmailTaskProcessor implements ItemProcessor
+readonly class EmailTaskProcessor implements ItemProcessor
 {
-    public function __construct(private readonly ApplicationConfig $config,
-                                private readonly Logger $logger)
+    public function __construct(private ApplicationConfig $config,
+                                private Logger            $logger)
     {
     }
 

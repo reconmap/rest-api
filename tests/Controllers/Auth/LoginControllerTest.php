@@ -2,18 +2,22 @@
 
 namespace Reconmap\Controllers\Auth;
 
-use Fig\Http\Message\StatusCodeInterface;
-use League\Container\Container;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\ConsecutiveParamsTrait;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\AuditLogService;
 use Reconmap\Services\JwtPayloadCreator;
+use Reconmap\Services\RedisServer;
 use Reconmap\Services\Security\AuthorisationService;
+use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\HttpFoundation\Response;
 
 class LoginControllerTest extends TestCase
 {
+    use ConsecutiveParamsTrait;
+
     public function testLogin()
     {
         $fakeUser = ['id' => 56,
@@ -34,14 +38,8 @@ class LoginControllerTest extends TestCase
             ->willReturn(['key' => 'aaa']);
 
         $mockAuthorisationService = $this->createMock(AuthorisationService::class);
-        $mockAuthorisationService->expects($this->once())
-            ->method('isRoleAllowed')
-            ->willReturn(true);
 
         $mockContainer = $this->createMock(Container::class);
-        $mockContainer->expects($this->once())
-            ->method('get')
-            ->willReturn($mockAuthorisationService);
 
         $mockAuditLogService = $this->createMock(AuditLogService::class);
         $mockJwtPayloadCreator = $this->createMock(JwtPayloadCreator::class);
@@ -52,13 +50,14 @@ class LoginControllerTest extends TestCase
             ->willReturn(json_encode(['username' => 'me', 'password' => 'su123']));
         $mockServerRequestInterface->expects(($this->exactly(2)))
             ->method('getAttribute')
-            ->withConsecutive(['userId'], ['role'])
+            ->with(...$this->consecutiveParams(['userId'], ['role']))
             ->willReturnOnConsecutiveCalls(1, 'superuser');
 
-        $controller = new LoginController($mockUserRepository, $mockAuditLogService);
-        $controller->setContainer($mockContainer);
+        $mockRedisServer = $this->createMock(RedisServer::class);
+
+        $controller = new LoginController($mockUserRepository, $mockAuditLogService, $mockRedisServer);
         $response = $controller($mockServerRequestInterface, []);
 
-        $this->assertEquals(StatusCodeInterface::STATUS_OK, $response->getStatusCode());
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
     }
 }

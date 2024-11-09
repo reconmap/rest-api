@@ -2,9 +2,8 @@
 
 namespace Reconmap\Controllers\System;
 
-use Fig\Http\Message\StatusCodeInterface;
 use GuzzleHttp\Psr7\ServerRequest;
-use League\Container\Container;
+use Psr\Container\ContainerInterface;
 use Reconmap\ControllerTestCase;
 use Reconmap\Repositories\Exporters\ClientsExporter;
 use Reconmap\Services\AuditLogService;
@@ -28,7 +27,7 @@ class ExportDataControllerTest extends ControllerTestCase
             ->method('export')
             ->willReturn(['client1']);
 
-        $mockContainer = $this->createMock(Container::class);
+        $mockContainer = $this->createMock(ContainerInterface::class);
         $mockContainer->expects($this->once())
             ->method('get')
             ->with('Reconmap\Repositories\Exporters\ClientsExporter')
@@ -39,7 +38,7 @@ class ExportDataControllerTest extends ControllerTestCase
         $controller->setContainer($mockContainer);
         $response = $controller($request);
 
-        $this->assertEquals(StatusCodeInterface::STATUS_OK, $response->getStatusCode());
+        $this->assertEquals(\Symfony\Component\HttpFoundation\Response::HTTP_OK, $response->getStatusCode());
         $this->assertEquals('{"clients":["client1"]}', $response->getBody()->getContents());
         $this->assertStringContainsString('attachment; filename="reconmap-clients-', $response->getHeaderLine('Content-Disposition'));
         $this->assertEquals('application/json; charset=UTF-8', $response->getHeaderLine('Content-Type'));
@@ -56,10 +55,13 @@ class ExportDataControllerTest extends ControllerTestCase
                 'entities' => 'passwords'
             ]);
 
+        $mockContainer = $this->createMock(ContainerInterface::class);
+
         /** @var $controller ExportDataController */
         $controller = $this->injectController(new ExportDataController($mockAuditLogService));
+        $controller->setContainer($mockContainer);
         $response = $controller($request);
 
-        $this->assertEquals(StatusCodeInterface::STATUS_BAD_REQUEST, $response->getStatusCode());
+        $this->assertEquals(\Symfony\Component\HttpFoundation\Response::HTTP_BAD_REQUEST, $response->getStatusCode());
     }
 }

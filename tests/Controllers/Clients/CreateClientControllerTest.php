@@ -2,11 +2,12 @@
 
 namespace Reconmap\Controllers\Clients;
 
-use Fig\Http\Message\StatusCodeInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\Models\AuditActions\ClientAuditActions;
 use Reconmap\Models\Client;
 use Reconmap\Repositories\ClientRepository;
+use Reconmap\Services\ActivityPublisherService;
 
 class CreateClientControllerTest extends TestCase
 {
@@ -33,9 +34,14 @@ class CreateClientControllerTest extends TestCase
             ->method('getBody')
             ->willReturn('{"name":"exciting new client","address":"evergreen","url":"1.1.1.1"}');
 
-        $controller = new CreateClientController($mockProjectRepository);
+        $mockActivityPublisherService = $this->createMock(ActivityPublisherService::class);
+        $mockActivityPublisherService->expects($this->once())
+            ->method('publish')
+            ->with(9, ClientAuditActions::CREATED, ['type' => 'client', 'id' => 1, 'name' => $expectedClient->name]);
+
+        $controller = new CreateClientController($mockProjectRepository, $mockActivityPublisherService);
         $response = $controller($mockRequest);
 
-        $this->assertEquals(StatusCodeInterface::STATUS_CREATED, $response->getStatusCode());
+        $this->assertEquals(\Symfony\Component\HttpFoundation\Response::HTTP_CREATED, $response->getStatusCode());
     }
 }

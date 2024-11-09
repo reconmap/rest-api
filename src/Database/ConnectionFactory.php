@@ -9,8 +9,7 @@ class ConnectionFactory
 
     static public function createConnection(ApplicationConfig $config): \mysqli
     {
-        $driver = new \mysqli_driver();
-        $driver->report_mode = MYSQLI_REPORT_ALL ^ MYSQLI_REPORT_INDEX;
+        mysqli_report(MYSQLI_REPORT_ALL ^ MYSQLI_REPORT_INDEX);
 
         $dbSettings = $config->getSettings('database');
         $conn = new \mysqli;

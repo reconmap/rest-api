@@ -3,7 +3,7 @@
 namespace Reconmap\Controllers\System;
 
 use GuzzleHttp\Psr7\Response;
-use Laminas\Diactoros\CallbackStream;
+use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
@@ -40,24 +40,22 @@ class ExportDataController extends Controller
 
         $fileName = 'reconmap-' . $packageName . '-' . date('Ymd-His') . '.json';
 
-        $body = new CallbackStream(function () use ($entities) {
-            $data = [];
+        $data = [];
 
-            foreach (Exportables::List as $exportable) {
-                $exportableKey = $exportable['key'];
-                if (in_array($exportableKey, $entities)) {
-                    /** @var Exportable $exporter */
-                    $exporter = $this->container->get($exportable['className']);
-                    $data[$exportableKey] = $exporter->export();
-                }
+        foreach (Exportables::List as $exportable) {
+            $exportableKey = $exportable['key'];
+            if (in_array($exportableKey, $entities)) {
+                /** @var Exportable $exporter */
+                $exporter = $this->container->get($exportable['className']);
+                $data[$exportableKey] = $exporter->export();
             }
+        }
 
-            return json_encode($data);
-        });
+        $body = json_encode($data);
 
         $response = new Response;
         return $response
-            ->withBody($body)
+            ->withBody(Utils::streamFor($body))
             ->withHeader('Access-Control-Expose-Headers', 'Content-Disposition')
             ->withHeader('Content-Disposition', 'attachment; filename="' . $fileName . '";')
             ->withAddedHeader('Content-Type', 'application/json; charset=UTF-8');

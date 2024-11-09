@@ -3,7 +3,7 @@
 namespace Reconmap\Cli\Commands;
 
 use PHPUnit\Framework\TestCase;
-use Reconmap\QueueProcessor;
+use Reconmap\Services\QueueProcessor;
 use Reconmap\Tasks\EmailTaskProcessor;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

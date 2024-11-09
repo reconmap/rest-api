@@ -6,6 +6,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Attachments\UploadAttachmentController;
 use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Repositories\CommandRepository;
+use Reconmap\Repositories\CommandUsageRepository;
 use Reconmap\Services\Filesystem\AttachmentFilePath;
 use Reconmap\Services\RedisServer;
 
@@ -15,6 +16,7 @@ class UploadCommandOutputController extends UploadAttachmentController
                                 AttachmentFilePath   $attachmentFilePathService,
                                 RedisServer          $redisServer,
                                 private              readonly CommandRepository $commandRepository,
+    private readonly CommandUsageRepository $commandUsageRepository,
     )
     {
         parent::__construct($attachmentRepository, $attachmentFilePathService, $redisServer);
@@ -30,7 +32,8 @@ class UploadCommandOutputController extends UploadAttachmentController
         $files = $request->getUploadedFiles();
         $resultFile = $files['resultFile'];
 
-        $command = $this->commandRepository->findById($commandId);
+        $usage = $this->commandUsageRepository->findById($commandId);
+        $command = $this->commandRepository->findById($usage['command_id']);
 
         $userId = $request->getAttribute('userId');
 

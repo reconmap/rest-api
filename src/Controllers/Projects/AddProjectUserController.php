@@ -8,7 +8,7 @@ use Reconmap\Repositories\ProjectUserRepository;
 
 class AddProjectUserController extends Controller
 {
-    public function __construct(private ProjectUserRepository $projectUserRepository)
+    public function __construct(private readonly ProjectUserRepository $projectUserRepository)
     {
     }
 

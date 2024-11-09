@@ -5,6 +5,7 @@ namespace Reconmap\Controllers\System;
 use GuzzleHttp\Psr7\ServerRequest;
 use Reconmap\ControllerTestCase;
 use Reconmap\Repositories\AttachmentRepository;
+use Reconmap\Services\RedisServer;
 
 class GetSystemUsageControllerTest extends ControllerTestCase
 {
@@ -17,10 +18,22 @@ class GetSystemUsageControllerTest extends ControllerTestCase
 
         $request = new ServerRequest('get', '/system/usage');
 
+        $mockRedis = $this->createMock(RedisServer::class);
+        $mockRedis->expects($this->exactly(3))
+            ->method('lLen')
+            ->willReturnOnConsecutiveCalls(1, 2, 3);
+
         /** @var $controller GetSystemUsageController */
-        $controller = $this->injectController(new GetSystemUsageController($mockRepository));
+        $controller = $this->injectController(new GetSystemUsageController($mockRepository, $mockRedis));
         $response = $controller($request);
 
-        $this->assertEquals(['attachments' => ['total_count' => 1, 'total_file_size' => 125984]], $response);
+        $this->assertEquals([
+            'attachments' => ['total_count' => 1, 'total_file_size' => 125984],
+            'queueLengths' => [
+                'emails' => 1,
+                'tasks' => 2,
+                'notifications' => 3,
+            ]
+        ], $response);
     }
 }

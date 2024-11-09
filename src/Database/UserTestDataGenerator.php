@@ -5,9 +5,9 @@ namespace Reconmap\Database;
 use Reconmap\Models\User;
 use Reconmap\Repositories\UserRepository;
 
-class UserTestDataGenerator
+readonly class UserTestDataGenerator
 {
-    public function __construct(private readonly UserRepository $userRepository)
+    public function __construct(private UserRepository $userRepository)
     {
     }
 

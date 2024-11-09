@@ -7,6 +7,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Services\Filesystem\ApplicationLogFilePath;
 use Reconmap\Services\Filesystem\AttachmentFilePath;
 use Reconmap\Services\Filesystem\DirectoryChecker;
+use Reconmap\Services\RedisServer;
 
 class GetHealthControllerTest extends TestCase
 {
@@ -31,7 +32,12 @@ class GetHealthControllerTest extends TestCase
             ->method('ping')
             ->willReturn(true);
 
-        $controller = new GetHealthController($mockAttachmentFilePath, $mockDirectoryChecker, $mockMysql);
+        $mockRedis = $this->createMock(RedisServer::class);
+        $mockRedis->expects($this->once())
+            ->method('ping')
+            ->willReturn(false);
+
+        $controller = new GetHealthController($mockAttachmentFilePath, $mockDirectoryChecker, $mockMysql, $mockRedis);
         $response = $controller($mockServerRequestInterface);
         $expectedResponse = [
             'attachmentsDirectory' => [
@@ -39,7 +45,8 @@ class GetHealthControllerTest extends TestCase
                 'exists' => false,
                 'writeable' => false
             ],
-            'dbConnection' => ['ping' => true]
+            'databaseServer' => ['reachable' => true],
+            'keyValueServer' => ['reachable' => false],
         ];
         $this->assertEquals($expectedResponse, $response);
     }

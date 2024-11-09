@@ -2,6 +2,8 @@
 
 namespace Reconmap\Controllers\AuditLog;
 
+use OpenApi\Attributes as OpenApi;
+
 use GeoIp2\Database\Reader;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
@@ -12,6 +14,9 @@ use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\PaginationRequestHandler;
 use Reconmap\Services\Security\AuthorisationService;
 
+#[OpenApi\Get(path: "/auditlog", description: "Get audit log entries", security: ["bearerAuth"], tags: ["Audit log"])]
+#[OpenApi\Response(response: 200, description: "Ok response")]
+#[OpenApi\Response(response: 403, description: "Authorization error")]
 class GetAuditLogController extends SecureController
 {
     private const PAGE_LIMIT = 20;
@@ -29,7 +34,7 @@ class GetAuditLogController extends SecureController
         return 'auditlog.get';
     }
 
-    protected function process(ServerRequestInterface $request): array|ResponseInterface
+    protected function process(ServerRequestInterface $request, array $args): array|ResponseInterface
     {
         $paginator = new PaginationRequestHandler($request);
         $params = $request->getQueryParams();

@@ -2,11 +2,12 @@
 
 namespace Reconmap;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class AppVersionTest extends TestCase
 {
-    public function dataProvider(): array
+    public static function dataProvider(): array
     {
         return [
             [1_00_00, '1.0.0'],
@@ -19,10 +20,7 @@ class AppVersionTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataProvider
-     * @return void
-     */
+    #[DataProvider("dataProvider")]
     public function testValues(int $in, string $out)
     {
         $this->assertEquals($out, AppVersion::numericToString($in));

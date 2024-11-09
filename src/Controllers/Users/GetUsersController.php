@@ -20,7 +20,7 @@ class GetUsersController extends SecureController
         return 'users.*';
     }
 
-    public function process(ServerRequestInterface $request): array
+    public function process(ServerRequestInterface $request, array $args): array
     {
         return $this->userRepository->findAll();
     }

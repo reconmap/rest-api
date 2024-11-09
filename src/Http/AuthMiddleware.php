@@ -2,7 +2,6 @@
 
 namespace Reconmap\Http;
 
-use Fig\Http\Message\StatusCodeInterface;
 use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
@@ -19,17 +18,17 @@ use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\KeycloakService;
 
-class AuthMiddleware implements MiddlewareInterface
+readonly class AuthMiddleware implements MiddlewareInterface
 {
-    public function __construct(private readonly UserRepository    $userRepository,
-                                private readonly KeycloakService   $keycloak,
-                                private readonly Logger            $logger,
-                                private readonly ApplicationConfig $config)
+    public function __construct(private UserRepository    $userRepository,
+                                private KeycloakService   $keycloak,
+                                private Logger            $logger,
+                                private ApplicationConfig $config)
     {
     }
 
     /**
-     * @throws ForbiddenException
+     * @throws ForbiddenException|Exception
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -43,19 +42,21 @@ class AuthMiddleware implements MiddlewareInterface
             if ($token->iss !== $jwtConfig['issuer']) {
                 throw new ForbiddenException("Invalid JWT issuer: " . $token->iss);
             }
-            if ($token->aud !== $jwtConfig['audience']) {
-                $this->logger->warning("Invalid JWT audience: " . $token->aud);
-            }
 
-            $dbUser = $this->userRepository->findBySubjectId($token->sub);
-            if (is_null($dbUser)) {
-                $this->logger->error('No user with subject: ' . $token->sub);
-            }
             if (isset($token->clientId) && $token->clientId === 'admin-cli') {
                 $request = $request->withAttribute('userId', 0)
                     ->withAttribute('role', 'administrator'); // api
 
             } else {
+                $dbUser = $this->userRepository->findBySubjectId($token->sub);
+                if (is_null($dbUser)) {
+                    $this->logger->error('No user with subject: ' . $token->sub);
+                }
+
+                if ($token->aud !== $jwtConfig['audience']) {
+                    $this->logger->warning("Invalid JWT audience: " . $token->aud);
+                }
+
                 $tokenRole = $this->extractRoleFromToken($token);
                 $request = $request->withAttribute('userId', $dbUser['id'])
                     ->withAttribute('role', $tokenRole);
@@ -64,13 +65,13 @@ class AuthMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         } catch (ForbiddenException|ExpiredException $e) {
             $this->logger->warning($e->getMessage());
-            return (new Response)->withStatus(StatusCodeInterface::STATUS_UNAUTHORIZED)
+            return (new Response)->withStatus(\Symfony\Component\HttpFoundation\Response::HTTP_UNAUTHORIZED)
                 ->withBody(Utils::streamFor($e->getMessage()));
         } catch (Exception $httpException) {
             throw $httpException;
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
-            return (new Response)->withStatus(StatusCodeInterface::STATUS_BAD_REQUEST);
+            return (new Response)->withStatus(\Symfony\Component\HttpFoundation\Response::HTTP_BAD_REQUEST);
         }
     }
 

@@ -4,18 +4,21 @@ namespace Reconmap\Controllers\Tasks;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\ConsecutiveParamsTrait;
 use Reconmap\Repositories\SearchCriterias\TaskSearchCriteria;
 use Reconmap\Repositories\TaskRepository;
 use Reconmap\Services\PaginationRequestHandler;
 
 class GetTasksControllerTest extends TestCase
 {
+    use ConsecutiveParamsTrait;
+
     public function testGetRegularTasks()
     {
         $mockRequest = $this->createMock(ServerRequestInterface::class);
         $mockRequest->expects($this->exactly(2))
             ->method('getAttribute')
-            ->withConsecutive(['userId'], ['role'])
+            ->with(...$this->consecutiveParams(['userId'], ['role']))
             ->willReturnOnConsecutiveCalls(9, 'superuser');
         $mockRequest->expects($this->exactly(3))
             ->method('getQueryParams')
@@ -44,7 +47,7 @@ class GetTasksControllerTest extends TestCase
         $mockRequest = $this->createMock(ServerRequestInterface::class);
         $mockRequest->expects($this->exactly(2))
             ->method('getAttribute')
-            ->withConsecutive(['userId'], ['role'])
+            ->with(...$this->consecutiveParams(['userId'], ['role']))
             ->willReturnOnConsecutiveCalls(9, 'superuser');
         $mockRequest->expects($this->exactly(3))
             ->method('getQueryParams')

@@ -2,7 +2,6 @@
 
 namespace Reconmap\Controllers\Projects;
 
-use Fig\Http\Message\StatusCodeInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Models\Project;
@@ -35,6 +34,6 @@ class CreateProjectControllerTest extends TestCase
         $controller = new CreateProjectController($mockProjectRepository);
         $response = $controller($mockRequest);
 
-        $this->assertEquals(StatusCodeInterface::STATUS_CREATED, $response->getStatusCode());
+        $this->assertEquals(\Symfony\Component\HttpFoundation\Response::HTTP_CREATED, $response->getStatusCode());
     }
 }

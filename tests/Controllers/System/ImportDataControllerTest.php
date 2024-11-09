@@ -2,9 +2,9 @@
 
 namespace Reconmap\Controllers\System;
 
-use League\Container\Container;
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
@@ -35,13 +35,12 @@ class ImportDataControllerTest extends TestCase
         $mockProjectImporter->expects($this->never())
             ->method('import');
 
-        $mockContainer = $this->createMock(Container::class);
+        $mockContainer = $this->createMock(ContainerInterface::class);
         $mockContainer->expects($this->never())
             ->method('get');
 
-        $controller = new ImportDataController($mockAuditLogService);
+        $controller = new ImportDataController($mockAuditLogService, $mockContainer);
         $controller->setLogger($mockLogger);
-        $controller->setContainer($mockContainer);
         $response = $controller($mockRequest);
 
         $expectedResponse = [
@@ -79,13 +78,13 @@ class ImportDataControllerTest extends TestCase
         $mockProjectImporter->expects($this->never())
             ->method('import');
 
-        $mockContainer = $this->createMock(Container::class);
+        $mockContainer = $this->createMock(ContainerInterface::class);
         $mockContainer->expects($this->never())
             ->method('get');
 
         $controller = new ImportDataController($mockAuditLogService);
-        $controller->setLogger($mockLogger);
         $controller->setContainer($mockContainer);
+        $controller->setLogger($mockLogger);
         $response = $controller($mockRequest);
 
         $expectedResponse = [
@@ -124,7 +123,7 @@ class ImportDataControllerTest extends TestCase
             ->method('import')
             ->willReturn(['count' => 0, 'errors' => []]);
 
-        $mockContainer = $this->createMock(Container::class);
+        $mockContainer = $this->createMock(ContainerInterface::class);
         $mockContainer->expects($this->once())
             ->method('get')
             ->with(ProjectsImporter::class)

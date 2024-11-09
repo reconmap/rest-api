@@ -14,8 +14,6 @@ class CommandScheduleRepository extends MysqlRepository implements Deletable
         'name' => 's',
         'description' => 's',
         'output_parser' => 's',
-        'docker_image' => 's',
-        'executable_type' => 's',
         'executable_path' => 's',
         'arguments' => 's',
         'configuration' => 's',

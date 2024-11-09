@@ -1,11 +1,11 @@
 {
+    "type": "project",
     "name": "reconmap/rest-api",
     "description": "Reconmap REST API",
     "license": "Apache-2.0",
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "php": "^8.2",
         "ext-curl": "*",
         "ext-dom": "*",
         "ext-gd": "*",
@@ -17,27 +17,29 @@
         "ext-redis": "*",
         "ext-simplexml": "*",
         "ext-zip": "*",
-        "fig/http-message-util": "^1.1",
         "firebase/php-jwt": "^v6.0",
+        "geoip2/geoip2": "~3.0",
+        "graylog2/gelf-php": "dev-master",
         "guzzlehttp/guzzle": "^7.2",
         "guzzlehttp/psr7": "^2.1",
-        "laminas/laminas-diactoros": "^2.5",
-        "laminas/laminas-httphandlerrunner": "^2.1",
         "league/commonmark": "^2.0",
-        "league/container": "^4.2",
         "league/html-to-markdown": "^5.0",
         "league/route": "^5.0",
         "monolog/monolog": "^3.0",
-        "netresearch/jsonmapper": "^4.0",
+        "netresearch/jsonmapper": "^5.0",
+        "php": "^8.3",
         "phpoffice/phpword": "^1.0",
         "ponup/sql-builders": "^1.0",
-        "symfony/filesystem": "^6.0",
-        "twig/twig": "^3.0",
         "reconmap/command-output-parsers": "^2.0",
-        "symfony/console": "^6.0",
-        "symfony/mailer": "^6.0",
-        "geoip2/geoip2": "~2.0",
-        "graylog2/gelf-php": "dev-master"
+        "symfony/config": "^7.1",
+        "symfony/console": "^7",
+        "symfony/dependency-injection": "^7.1",
+        "symfony/filesystem": "^7",
+        "symfony/http-foundation": "^7.1",
+        "symfony/mailer": "^7",
+        "symfony/psr-http-message-bridge": "^7.1",
+        "twig/twig": "^3.0",
+        "zircote/swagger-php": "^4.7"
     },
     "autoload": {
         "psr-4": {
@@ -45,8 +47,7 @@
         }
     },
     "require-dev": {
-        "phpunit/phpunit": "^9",
-        "icanhazstring/composer-unused": "^0.8.2"
+        "phpunit/phpunit": "^11"
     },
     "autoload-dev": {
         "psr-4": {

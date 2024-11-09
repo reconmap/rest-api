@@ -35,7 +35,9 @@ if (in_array('--use-test-database', $argv)) {
     unset($argv[array_search('--use-test-database', $argv)]);
 }
 
-$container = new ApplicationContainer($config, $logger);
+$container = new ApplicationContainer();
+$container->compile();
+ApplicationContainer::initialise($container, $config, $logger);
 
 $app = new Application('Reconmap internal CLI');
 $app->add($container->get(DatabaseMigratorCommand::class));

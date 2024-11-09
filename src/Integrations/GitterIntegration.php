@@ -2,11 +2,12 @@
 
 namespace Reconmap\Integrations;
 
+use GuzzleHttp\Client;
 use Reconmap\Services\ApplicationConfig;
 
 class GitterIntegration implements Integration, ActivityPublisher
 {
-    public function __construct(private ApplicationConfig $config)
+    public function __construct(private readonly ApplicationConfig $config)
     {
     }
 
@@ -33,7 +34,11 @@ class GitterIntegration implements Integration, ActivityPublisher
 
         $configuration = (object)$this->getConfiguration();
 
-        $client = new \GuzzleHttp\Client(['base_uri' => 'https://api.gitter.im/v1']);
+        if (!$configuration->enabled) {
+            return;
+        }
+
+        $client = new Client(['base_uri' => 'https://api.gitter.im/v1']);
         $client->request('POST', '/v1/rooms/' . $configuration->roomId . '/chatMessages', [
             'headers' => ['Authorization' => 'Bearer ' . $configuration->token],
             'json' => [

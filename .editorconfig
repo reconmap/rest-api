@@ -14,7 +14,7 @@ insert_final_newline = true
 trim_trailing_whitespace = true
 indent_style = space
 
-[{*.php, composer.json, *.md}]
+[{*.php,composer.json,*.md}]
 indent_size = 4
 
 [*.yml]

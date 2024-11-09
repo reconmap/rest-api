@@ -4,6 +4,7 @@ namespace Reconmap\Controllers\Reports;
 
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Services\EmailService;
@@ -23,7 +24,7 @@ class SendReportControllerTest extends TestCase
         $mockAttachmentRepository = $this->createMock(AttachmentRepository::class);
         $mockAttachmentRepository->expects($this->once())
             ->method('findByParentId')
-            ->with('report', 14, 'application/pdf')
+            ->with('report', 14, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document')
             ->willReturn([$mockAttachment]);
 
         $mockEmailService = $this->createMock(EmailService::class);
@@ -36,8 +37,13 @@ class SendReportControllerTest extends TestCase
             ->method('getBody')
             ->willReturn('{"subject": "Your report is ready", "report_id": 14, "body": "Find attached the report", "recipients": "foo@bar."}');
 
+        $mockContainer = $this->createMock(ContainerInterface::class);
+        $mockContainer->expects($this->once())
+            ->method('get')
+            ->willReturn($this->createStub(Logger::class));
+
         $controller = new SendReportController($mockAttachmentFilePath, $mockAttachmentRepository, $mockEmailService);
-        $controller->setLogger($this->createMock(Logger::class));
+        $controller->setContainer($mockContainer);
         $controller($mockServerRequest);
     }
 }

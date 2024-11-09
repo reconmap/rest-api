@@ -31,6 +31,7 @@ class UpdateCommandController extends Controller
             $success = $this->repository->updateById($commandId, $newColumnValues);
 
             $loggedInUserId = $request->getAttribute('userId');
+
             $this->auditAction($loggedInUserId, $commandId);
         }
 

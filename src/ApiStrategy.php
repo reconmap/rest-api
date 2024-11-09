@@ -2,7 +2,6 @@
 
 namespace Reconmap;
 
-use Fig\Http\Message\StatusCodeInterface;
 use League\Route\Http;
 use League\Route\Strategy\JsonStrategy;
 use Monolog\Logger;
@@ -12,6 +11,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Reconmap\Http\CorsResponseDecorator;
+use Symfony\Component\HttpFoundation\Response;
 
 class ApiStrategy extends JsonStrategy
 {
@@ -49,12 +49,12 @@ class ApiStrategy extends JsonStrategy
                     }
 
                     $response->getBody()->write(json_encode([
-                        'status_code' => StatusCodeInterface::STATUS_INTERNAL_SERVER_ERROR,
+                        'status_code' => Response::HTTP_INTERNAL_SERVER_ERROR,
                         'reason_phrase' => 'Internal server error'
                     ]));
 
                     $response = $response->withAddedHeader('content-type', 'application/json');
-                    $response = $response->withStatus(StatusCodeInterface::STATUS_INTERNAL_SERVER_ERROR, 'Internal server error');
+                    $response = $response->withStatus(Response::HTTP_INTERNAL_SERVER_ERROR, 'Internal server error');
 
                     return $this->corsResponseDecorator->decorate($request, $response);
                 }

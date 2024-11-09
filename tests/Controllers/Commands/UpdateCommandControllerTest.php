@@ -17,7 +17,7 @@ class UpdateCommandControllerTest extends TestCase
         $mockRequest = $this->createMock(ServerRequestInterface::class);
         $mockRequest->expects($this->once())
             ->method('getBody')
-            ->willReturn('{"executable_path": "nmap"}');
+            ->willReturn('{"name": "nmap"}');
         $mockRequest->expects($this->once())
             ->method('getAttribute')
             ->with('userId')
@@ -26,7 +26,7 @@ class UpdateCommandControllerTest extends TestCase
         $mockTaskRepository = $this->createMock(CommandRepository::class);
         $mockTaskRepository->expects($this->once())
             ->method('updateById')
-            ->with($fakeCommandId, ['executable_path' => 'nmap'])
+            ->with($fakeCommandId, ['name' => 'nmap'])
             ->willReturn(true);
 
         $mockPublisherService = $this->createMock(ActivityPublisherService::class);

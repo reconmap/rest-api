@@ -3,12 +3,15 @@
 namespace Reconmap\Repositories\Importers;
 
 use PHPUnit\Framework\TestCase;
+use Reconmap\ConsecutiveParamsTrait;
 use Reconmap\Repositories\ProjectRepository;
 use Reconmap\Repositories\ProjectUserRepository;
 use Reconmap\Repositories\TaskRepository;
 
 class ProjectsImporterTest extends TestCase
 {
+    use ConsecutiveParamsTrait;
+
     public function testEmptyProjectsImport()
     {
         $fakeUserId = 59;
@@ -55,7 +58,7 @@ class ProjectsImporterTest extends TestCase
         $mockProjectUserRepository = $this->createMock(ProjectUserRepository::class);
         $mockProjectUserRepository->expects($this->exactly(2))
             ->method('create')
-            ->withConsecutive([100, $fakeUserId], [101, $fakeUserId]);
+            ->with(...$this->consecutiveParams([100, $fakeUserId], [101, $fakeUserId]));
 
         $mockTaskRepository = $this->createMock(TaskRepository::class);
         $mockTaskRepository->expects($this->once())

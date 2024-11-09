@@ -39,8 +39,6 @@ class ProjectRepositoryTest extends DatabaseTestCase
             'creator_full_name' => 'Jane Doe',
             'external_id' => null,
             'vulnerability_metrics' => null,
-            'management_summary' => null,
-            'management_conclusion' => null,
             'num_tasks' => 3,
         ];
 

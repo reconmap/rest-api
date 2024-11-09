@@ -20,7 +20,7 @@ class GetCommandsSchedulesController extends SecureController
         return 'commands.*';
     }
 
-    public function process(ServerRequestInterface $request): array
+    public function process(ServerRequestInterface $request, array $args): array
     {
         return $this->repository->findAll();
     }
