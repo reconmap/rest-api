@@ -40,6 +40,9 @@ class GetProjectsController extends Controller
         if (isset($params['isTemplate'])) {
             $isTemplate = filter_var($params['isTemplate'], FILTER_VALIDATE_BOOL);
             $this->projectSearchCriteria->addTemplateCriterion($isTemplate);
+        } else {
+            $isTemplate = filter_var(false, FILTER_VALIDATE_BOOL);
+            $this->projectSearchCriteria->addTemplateCriterion($isTemplate);
         }
         if (!$user->isAdministrator()) {
             $this->projectSearchCriteria->addUserCriterion($user->id);
