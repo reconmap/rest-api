@@ -9,6 +9,9 @@ MAKEFLAGS += --no-builtin-rules
 
 DB_CONTAINER=rmap-mysql
 
+HOST_UID=$(shell id -u)
+HOST_GID=$(shell id -g)
+
 DOCKER_IMAGE_NAME = quay.io/reconmap/rest-api
 DOCKER_DEFAULT_TAG = $(DOCKER_IMAGE_NAME)
 
@@ -22,13 +25,17 @@ endif
 prepare-config:
 	[ -f config.json ] || cp config-template.json config.json
 
+.PHONY: prepare-dirs
+prepare-dirs:
+	mkdir -p vendor logs data-mysql data-redis
+
 .PHONY: prepare
-prepare: prepare-config build
-	docker-compose run --rm -w /var/www/webapp --entrypoint composer api install
+prepare: prepare-config prepare-dirs build
+	docker-compose run --rm --user reconmapper -w /var/www/webapp --entrypoint composer api install
 
 .PHONY: build
 build:
-	docker-compose build --no-cache
+	docker-compose build --no-cache --build-arg HOST_UID=$(HOST_UID) --build-arg HOST_GID=$(HOST_GID)
 
 .PHONY: tests
 tests: start validate

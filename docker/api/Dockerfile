@@ -1,8 +1,13 @@
 FROM debian:bookworm-slim
 
 ARG PHP_VERSION=8.3
-
 ARG DEBIAN_FRONTEND=noninteractive
+
+ARG HOST_UID
+ARG HOST_GID
+
+RUN groupadd -g ${HOST_GID} reconmappers && \
+    useradd -u ${HOST_UID} -g ${HOST_GID} -m -s /bin/bash reconmapper
 
 RUN apt-get update && apt-get upgrade -y --fix-missing
 RUN apt-get install -y wget unzip lsb-release
@@ -21,7 +26,7 @@ RUN wget --no-verbose https://getcomposer.org/installer -O - -q | php -- --insta
 
 RUN apt-get install -y cron
 COPY docker/api/crontab.txt /tmp/crontab
-RUN crontab /tmp/crontab && rm /tmp/crontab
+RUN crontab -u reconmapper /tmp/crontab && rm /tmp/crontab
 
 RUN sed -i "s/;clear_env = no/clear_env = no/" /etc/php/${PHP_VERSION}/fpm/pool.d/www.conf
 RUN rm /etc/nginx/sites-enabled/default
@@ -30,13 +35,15 @@ COPY docker/api/nginx/sites-enabled/* /etc/nginx/sites-enabled/
 RUN sed -i 's/upload_max_filesize = [[:digit:]]\+M/upload_max_filesize = 20M/' /etc/php/${PHP_VERSION}/fpm/php.ini
 RUN sed -i 's/post_max_size = [[:digit:]]\+M/post_max_size = 28M/' /etc/php/${PHP_VERSION}/fpm/php.ini
 
-WORKDIR /var/www/webapp
-COPY composer.json /var/www/webapp
-COPY composer.lock /var/www/webapp
-RUN composer install --no-ansi --no-dev --no-interaction --no-plugins --no-progress --no-scripts --optimize-autoloader
+RUN mkdir -p /var/www/webapp /var/www/webapp/data/vendor /var/www/webapp/data/attachments /var/www/webapp/logs && \
+    chown -R reconmapper:reconmappers /var/www/webapp
 
-RUN mkdir -p data/attachments && chown www-data data/attachments
-RUN mkdir logs && chown www-data logs && chmod a+w logs
+RUN chmod -R a+w /var/www/webapp/logs
+
+WORKDIR /var/www/webapp
+
+COPY composer.json composer.lock /var/www/webapp/
+RUN composer install --no-ansi --no-dev --no-interaction --no-plugins --no-progress --no-scripts --optimize-autoloader
 
 COPY public /var/www/webapp/public
 COPY database/ /var/www/webapp/database/
@@ -47,5 +54,6 @@ COPY src/ /var/www/webapp/src/
 VOLUME /var/www/webapp
 
 COPY docker/api/entrypoint.sh /entrypoint
+
 ENTRYPOINT ["/entrypoint"]
 CMD nginx -g 'daemon off;' && bash

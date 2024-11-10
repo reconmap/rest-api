@@ -1,4 +1,5 @@
 SHELL=/bin/bash
+BASH_ENV=/home/reconmapper/crontab.env
 
 # .---------------- minute (0 - 59)
 # |  .------------- hour (0 - 23)
