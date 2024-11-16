@@ -1,0 +1,110 @@
+services:
+
+  waiter:
+    container_name: rmap-waiter
+    build:
+      context: ./
+      dockerfile: docker/Dockerfile.waiter
+
+  redis:
+    container_name: rmap-redis
+    image: redis:7.4
+    command: redis-server --requirepass REconDIS
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data-redis:/data
+
+  mysql:
+    container_name: rmap-mysql
+    image: quay.io/reconmap/rest-api-db:latest
+    build:
+      context: ./
+      dockerfile: docker/mysql/Dockerfile
+    volumes:
+      - ./data-mysql:/var/lib/mysql
+      - ./database:/docker-entrypoint-initdb.d:ro
+      - ./docker/mysql/overrides.cnf:/etc/mysql/conf.d/overrides.cnf:ro
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: reconmuppet
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
+
+  keycloak:
+    image: quay.io/reconmap/keycloak-custom:latest
+    command: "start --hostname=http://localhost:8080 --proxy-headers xforwarded --http-enabled true --import-realm"
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KEYCLOAK_WELCOME_THEME: "reconmap-theme"
+      KEYCLOAK_DEFAULT_THEME: "reconmap-theme"
+      JAVA_OPTS_APPEND: ""
+      KC_DB_VENDOR: MYSQL
+      KC_DB: mysql
+      KC_DB_URL: 'jdbc:mysql://rmap-mysql/keycloak'
+      KC_DB_DATABASE: keycloak
+      KC_DB_USERNAME: keycloaker
+      KC_DB_PASSWORD: keycloaked
+      KC_LOG_LEVEL: INFO
+      VAR_ADMIN_CLI_SECRET: "xxxxxxxxxxxxxxxxxxyyyyyyyyyyyyyy"
+      VAR_WEB_CLIENT_URL: "http://localhost:5500"
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+  api:
+    container_name: rmap-api
+    image: quay.io/reconmap/rest-api:latest
+    build:
+      context: ./
+      dockerfile: docker/api/Dockerfile
+    volumes:
+      - "./config.json:/var/www/webapp/config.json"
+      - "./logs:/var/www/webapp/logs"
+      - "./data:/var/www/webapp/data"
+      - "./composer.json:/var/www/webapp/composer.json"
+      - "./composer.lock:/var/www/webapp/composer.lock"
+      - "./vendor:/var/www/webapp/vendor"
+      - "./public:/var/www/webapp/public"
+      - "./docs/openapi.yaml:/var/www/webapp/public/docs/openapi.yaml"
+      - "./docs/schemas/:/var/www/webapp/public/docs/schemas/"
+      - "./src:/var/www/webapp/src"
+      - "./resources:/var/www/webapp/resources"
+      - "./tests:/var/www/webapp/tests"
+      - "./phpunit.xml.dist:/var/www/webapp/phpunit.xml.dist"
+      - "./run-tests.sh:/var/www/webapp/run-tests.sh"
+      - "./database:/var/www/webapp/database"
+    ports:
+      - "5510:5510"
+    extra_hosts:
+      host.docker.internal: host-gateway
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_USER: default
+      REDIS_PASSWORD: REconDIS
+      PHP_IDE_CONFIG: ${PHP_IDE_CONFIG:-serverName=DOCKER_SERVER}
+      XDEBUG_MODE: ${XDEBUG_MODE:-debug}
+      XDEBUG_CONFIG: "client_host=host.docker.internal"
+      XDEBUG_TRIGGER: 'yes'
+
+  agent:
+    container_name: rmap-agent
+    image: quay.io/reconmap/agent:latest
+    ports:
+      - "5520:5520"
+    environment:
+      RMAP_KEYCLOAK_HOSTNAME: "http://keycloak:8080"
+      RMAP_AGENT_CLIENT_ID: "admin-cli"
+      RMAP_AGENT_CLIENT_SECRET: "xxxxxxxxxxxxxxxxxxyyyyyyyyyyyyyy"
+      RMAP_REST_API_URL: "http://api:5510"
+      VALID_ORIGINS: http://localhost:5510
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: REconDIS
+

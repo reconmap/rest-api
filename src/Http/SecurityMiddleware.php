@@ -8,9 +8,9 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Reconmap\Services\ApplicationConfig;
 
-class SecurityMiddleware implements MiddlewareInterface
+readonly class SecurityMiddleware implements MiddlewareInterface
 {
-    public function __construct(private readonly ApplicationConfig $applicationConfig)
+    public function __construct(private ApplicationConfig $applicationConfig)
     {
     }
 

@@ -53,7 +53,7 @@ security-tests:
 	docker-compose run --rm -w /var/www/webapp --entrypoint bash api -c "wget https://github.com/fabpot/local-php-security-checker/releases/download/v2.0.5/local-php-security-checker_2.0.5_linux_amd64 -O security-checker && chmod +x security-checker && ./security-checker"
 
 .PHONY: start
-start:
+start: prepare-config prepare-dirs
 	docker-compose up -d
 
 .PHONY: validate

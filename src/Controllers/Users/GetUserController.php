@@ -22,7 +22,7 @@ class GetUserController extends Controller
         if (null === $user) {
             return $this->createNotFoundResponse();
         }
-        
+
         if (is_string($user['preferences']) && json_validate($user['preferences'])) {
             $user['preferences'] = json_decode($user['preferences'], true);
         } else {
