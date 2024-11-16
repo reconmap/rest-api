@@ -24,7 +24,7 @@
         "guzzlehttp/psr7": "^2.1",
         "league/commonmark": "^2.0",
         "league/html-to-markdown": "^5.0",
-        "league/route": "^5.0",
+        "league/route": "^6.0",
         "monolog/monolog": "^3.0",
         "netresearch/jsonmapper": "^5.0",
         "php": "^8.3",

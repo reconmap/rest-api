@@ -72,7 +72,15 @@ clean: stop
 
 .PHONY: api-shell
 api-shell:
-	@docker-compose exec -w /var/www/webapp api bash
+	@docker-compose exec -u reconmapper -w /var/www/webapp api bash
+
+.PHONY: api-rootshell
+api-rootshell:
+	@docker-compose exec -u root -w /var/www/webapp api bash
+
+.PHONY: cache-clear
+cache-clear:
+	git clean -fdx data/cache
 
 .PHONY: push
 push:
