@@ -84,7 +84,6 @@ class ApiRouter extends Router
         $securityMiddleware = $container->get(SecurityMiddleware::class);
         $cookieMiddleware = $container->get(StaticMiddleware::class);
 
-        $this->map('GET', '/openapi.json', GetOpenApiYamlController::class);
         $this->map('GET', '/image/{attachmentId:number}', ServeAttachmentController::class)->middlewares([$cookieMiddleware]);
 
         $this->group('', function (RouteGroup $router): void {

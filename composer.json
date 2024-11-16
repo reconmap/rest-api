@@ -39,7 +39,9 @@
         "symfony/mailer": "^7",
         "symfony/psr-http-message-bridge": "^7.1",
         "twig/twig": "^3.0",
-        "zircote/swagger-php": "^4.7"
+        "zircote/swagger-php": "^4.7",
+        "symfony/routing": "^7.1",
+        "doctrine/annotations": "^2.0"
     },
     "autoload": {
         "psr-4": {

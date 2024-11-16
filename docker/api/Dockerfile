@@ -35,7 +35,7 @@ COPY docker/api/nginx/sites-enabled/* /etc/nginx/sites-enabled/
 RUN sed -i 's/upload_max_filesize = [[:digit:]]\+M/upload_max_filesize = 20M/' /etc/php/${PHP_VERSION}/fpm/php.ini
 RUN sed -i 's/post_max_size = [[:digit:]]\+M/post_max_size = 28M/' /etc/php/${PHP_VERSION}/fpm/php.ini
 
-RUN mkdir -p /var/www/webapp /var/www/webapp/data/vendor /var/www/webapp/data/attachments /var/www/webapp/logs && \
+RUN mkdir -p /var/www/webapp /var/www/webapp/data/vendor /var/www/webapp/data/attachments /var/www/webapp/data/cache /var/www/webapp/logs && \
     chown -R reconmapper:reconmappers /var/www/webapp
 
 RUN chmod -R a+w /var/www/webapp/logs
