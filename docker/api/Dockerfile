@@ -50,6 +50,7 @@ COPY database/ /var/www/webapp/database/
 COPY docs/openapi.yaml /var/www/webapp/public/docs/openapi.yaml
 COPY docs/schemas/ /var/www/webapp/public/docs/schemas/
 COPY resources/ /var/www/webapp/resources/
+COPY packages/ /var/www/webapp/packages/
 COPY src/ /var/www/webapp/src/
 VOLUME /var/www/webapp
 
