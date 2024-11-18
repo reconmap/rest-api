@@ -30,7 +30,7 @@
         "php": "^8.3",
         "phpoffice/phpword": "^1.0",
         "ponup/sql-builders": "^1.0",
-        "reconmap/command-output-parsers": "^2.0",
+        "reconmap/command-parsers": "^2.0",
         "symfony/config": "^7.1",
         "symfony/console": "^7",
         "symfony/dependency-injection": "^7.1",
@@ -55,5 +55,11 @@
         "psr-4": {
             "Reconmap\\": "tests/"
         }
-    }
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "packages/command-parsers-lib"
+        }
+    ]
 }

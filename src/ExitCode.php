@@ -2,9 +2,8 @@
 
 namespace Reconmap;
 
-class ExitCode
+enum ExitCode: int
 {
-    const EXIT_SUCCESS = 0;
-    const EXIT_FAILURE = 1;
+    case SUCCESS = 0;
+    case FAILURE = 1;
 }
-

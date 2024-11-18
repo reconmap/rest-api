@@ -74,6 +74,7 @@ services:
       - "./docs/openapi.yaml:/var/www/webapp/public/docs/openapi.yaml"
       - "./docs/schemas/:/var/www/webapp/public/docs/schemas/"
       - "./src:/var/www/webapp/src"
+      - "./packages:/var/www/webapp/packages"
       - "./resources:/var/www/webapp/resources"
       - "./tests:/var/www/webapp/tests"
       - "./phpunit.xml.dist:/var/www/webapp/phpunit.xml.dist"

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d9bd40f8aa50305c0a45041917d80ad1",
+    "content-hash": "5cfba873b8ebf92e4892ed67986b0f15",
     "packages": [
         {
             "name": "composer/ca-bundle",
@@ -2550,28 +2550,22 @@
             "time": "2019-03-08T08:55:37+00:00"
         },
         {
-            "name": "reconmap/command-output-parsers",
-            "version": "2.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/reconmap/php-command-output-parsers.git",
-                "reference": "2fcf32f70a79af2063c1f4b4d31c0aaf541f9aa1"
-            },
+            "name": "reconmap/command-parsers",
+            "version": "2.0",
             "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/reconmap/php-command-output-parsers/zipball/2fcf32f70a79af2063c1f4b4d31c0aaf541f9aa1",
-                "reference": "2fcf32f70a79af2063c1f4b4d31c0aaf541f9aa1",
-                "shasum": ""
+                "type": "path",
+                "url": "packages/command-parsers-lib",
+                "reference": "005a2ac8db65e6fbcb7f8c2b61eeb28cb70b44f1"
             },
             "require": {
                 "ext-mbstring": "*",
                 "ext-simplexml": "*",
                 "league/html-to-markdown": "^5",
-                "php": "^8.2"
+                "php": "^8.3"
             },
             "require-dev": {
-                "phpunit/phpunit": "^10",
-                "vimeo/psalm": "^5"
+                "phpunit/phpunit": "^11.4.3",
+                "vimeo/psalm": "dev-master"
             },
             "type": "library",
             "autoload": {
@@ -2579,7 +2573,16 @@
                     "Reconmap\\CommandOutputParsers\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "Reconmap\\CommandOutputParsers\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "phpunit"
+                ]
+            },
             "license": [
                 "LGPL-3.0-or-later"
             ],
@@ -2590,11 +2593,9 @@
                 }
             ],
             "description": "Parsers for many security command outputs in the form of a PHP library",
-            "support": {
-                "issues": "https://github.com/reconmap/php-command-output-parsers/issues",
-                "source": "https://github.com/reconmap/php-command-output-parsers/tree/2.2.0"
-            },
-            "time": "2024-02-03T22:17:48+00:00"
+            "transport-options": {
+                "relative": true
+            }
         },
         {
             "name": "symfony/config",
@@ -4554,16 +4555,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v3.14.2",
+            "version": "v3.15.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "0b6f9d8370bb3b7f1ce5313ed8feb0fafd6e399a"
+                "reference": "2d5b3964cc21d0188633d7ddce732dc8e874db02"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/0b6f9d8370bb3b7f1ce5313ed8feb0fafd6e399a",
-                "reference": "0b6f9d8370bb3b7f1ce5313ed8feb0fafd6e399a",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/2d5b3964cc21d0188633d7ddce732dc8e874db02",
+                "reference": "2d5b3964cc21d0188633d7ddce732dc8e874db02",
                 "shasum": ""
             },
             "require": {
@@ -4617,7 +4618,7 @@
             ],
             "support": {
                 "issues": "https://github.com/twigphp/Twig/issues",
-                "source": "https://github.com/twigphp/Twig/tree/v3.14.2"
+                "source": "https://github.com/twigphp/Twig/tree/v3.15.0"
             },
             "funding": [
                 {
@@ -4629,7 +4630,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-11-07T12:36:22+00:00"
+            "time": "2024-11-17T15:59:19+00:00"
         },
         {
             "name": "zircote/swagger-php",

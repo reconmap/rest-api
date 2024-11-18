@@ -16,7 +16,7 @@ class TaskProcessorCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('task:process')
             ->setDescription('Process pending task results');

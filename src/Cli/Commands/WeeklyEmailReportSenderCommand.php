@@ -9,12 +9,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class WeeklyEmailReportSenderCommand extends Command
 {
-    public function __construct(private WeeklyReportGenerator $reportGenerator)
+    public function __construct(private readonly WeeklyReportGenerator $reportGenerator)
     {
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('email:send-weekly-report')
             ->setDescription('Send weekly report emails');

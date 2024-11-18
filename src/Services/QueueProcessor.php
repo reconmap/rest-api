@@ -21,6 +21,6 @@ readonly class QueueProcessor
             $itemProcessor->process($item);
         }
 
-        return ExitCode::EXIT_SUCCESS;
+        return ExitCode::SUCCESS->value;
     }
 }

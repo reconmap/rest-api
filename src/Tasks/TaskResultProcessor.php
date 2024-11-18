@@ -16,22 +16,26 @@ use Reconmap\Repositories\VulnerabilityRepository;
 use Reconmap\Services\ObjectCaster;
 use Reconmap\Services\RedisServer;
 
-class TaskResultProcessor implements ItemProcessor
+readonly class TaskResultProcessor implements ItemProcessor
 {
     public function __construct(
-        private readonly Logger $logger,
-        private readonly RedisServer $redis,
-        private readonly VulnerabilityRepository $vulnerabilityRepository,
-        private readonly NotificationsRepository $notificationsRepository,
-        private readonly TaskRepository $taskRepository,
-        private readonly TargetRepository $targetRepository,
-        private readonly ProcessorFactory $processorFactory)
+        private Logger                  $logger,
+        private RedisServer             $redis,
+        private VulnerabilityRepository $vulnerabilityRepository,
+        private NotificationsRepository $notificationsRepository,
+        private TaskRepository          $taskRepository,
+        private TargetRepository        $targetRepository,
+        private ProcessorFactory        $processorFactory)
     {
     }
 
     public function process(object $item): void
     {
         $path = $item->filePath;
+
+        if (is_null($item->taskId)) {
+            return;
+        }
 
         $task = $this->taskRepository->findById($item->taskId);
         $outputParserName = $task['output_parser'];
@@ -63,7 +67,10 @@ class TaskResultProcessor implements ItemProcessor
                 $this->logger->debug("Number of hosts in uploaded file: " . $numHosts);
 
                 if ($numHosts > 0) {
-                    $notification = new Notification($item->userId, "New assets found", "A total of '$numHosts' new assets have been found by the '$outputParserName' command");
+                    $notification = new Notification();
+                    $notification->toUserId = $item->userId;
+                    $notification->title = "New assets found";
+                    $notification->content = "A total of '$numHosts' new assets have been found by the '$outputParserName' command";
                     $this->notificationsRepository->insert($notification);
                     $this->redis->lPush("notifications:queue", json_encode(['type' => 'message']));
                 }
@@ -109,7 +116,10 @@ class TaskResultProcessor implements ItemProcessor
             }
 
             if ($numVulnerabilities > 0) {
-                $notification = new Notification($item->userId, "New vulnerabilities found", "A total of '$numVulnerabilities' new vulnerabilities have been found by the '$outputParserName' command");
+                $notification = new Notification();
+                $notification->toUserId = $item->userId;
+                $notification->title = "New vulnerabilities found";
+                $notification->content = "A total of '$numVulnerabilities' new vulnerabilities have been found by the '$outputParserName' command";
                 $this->notificationsRepository->insert($notification);
                 $this->redis->lPush("notifications:queue", json_encode(['type' => 'message']));
             }

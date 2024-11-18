@@ -1,0 +1,17 @@
+{
+  "https://www.foobar.com": {
+    "present": {
+      "Strict-Transport-Security": "max-age=63072000"
+    },
+    "missing": [
+      "X-Frame-Options",
+      "X-Content-Type-Options",
+      "Content-Security-Policy",
+      "Referrer-Policy",
+      "Permissions-Policy",
+      "Cross-Origin-Embedder-Policy",
+      "Cross-Origin-Resource-Policy",
+      "Cross-Origin-Opener-Policy"
+    ]
+  }
+}

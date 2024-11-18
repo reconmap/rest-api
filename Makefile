@@ -21,6 +21,12 @@ else
 GIT_BRANCH_NAME = $(shell git rev-parse --abbrev-ref HEAD)
 endif
 
+define composer_install 
+	echo
+	echo Running composer install on $(1)
+	docker-compose run --rm --user reconmapper -w $(1) --entrypoint composer api install
+endef
+
 .PHONY: prepare-config
 prepare-config:
 	[ -f config.json ] || cp config-template.json config.json
@@ -29,9 +35,14 @@ prepare-config:
 prepare-dirs:
 	mkdir -p vendor logs data-mysql data-redis
 
+.SILENT: install-deps
+.PHONY: install-deps
+install-deps:
+	$(call composer_install, /var/www/webapp)
+	$(call composer_install, /var/www/webapp/packages/command-parsers-lib)
+
 .PHONY: prepare
-prepare: prepare-config prepare-dirs build
-	docker-compose run --rm --user reconmapper -w /var/www/webapp --entrypoint composer api install
+prepare: prepare-config prepare-dirs build install-deps
 
 .PHONY: build
 build:
@@ -40,7 +51,6 @@ build:
 .PHONY: tests
 tests: start validate
 	docker-compose run --rm -e WAIT_HOSTS=$(DB_CONTAINER):3306 -e WAIT_TIMEOUT=60 --entrypoint /usr/local/bin/wait waiter
-
 	echo Importing SQL files: $(wildcard database/0*.sql)
 	cat tests/database.sql | docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet
 	cat database/0*.sql | sed "s/USE reconmap;/USE reconmap_test;/" | docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet reconmap_test

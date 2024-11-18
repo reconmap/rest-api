@@ -14,7 +14,7 @@ class DatabaseMigratorCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('database:migrate-schema')
             ->setDescription('Migrates the database to newer schemas');

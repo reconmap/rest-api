@@ -1,0 +1,465 @@
+<?xml version="1.0"?>
+<report id="f3732b63-5257-452b-91a1-b69db4ae7261" format_id="a994b278-1f62-11e1-96ac-406186ea4fc5" extension="xml" type="scan" content_type="text/xml">
+    <owner>
+        <name/>
+    </owner>
+    <name>2014-09-20T03:55:33Z</name>
+    <comment/>
+    <creation_time>2014-09-20T03:55:33Z</creation_time>
+    <modification_time>2014-09-20T05:09:20Z</modification_time>
+    <writable>0</writable>
+    <in_use>0</in_use>
+    <report id="f3732b63-5257-452b-91a1-b69db4ae7261">
+        <report_format/>
+        <sort>
+            <field>severity<order>descending</order>
+            </field>
+        </sort>
+        <filters id="0">hmlg<term>sort-reverse=severity result_hosts_only=1 min_cvss_base= levels=hmlg autofp=0 notes=1 overrides=1 first=1 rows=50 delta_states=gn</term>
+            <phrase/>
+            <autofp>0</autofp>
+            <notes>1</notes>
+            <overrides>1</overrides>
+            <apply_overrides>1</apply_overrides>
+            <result_hosts_only>1</result_hosts_only>
+            <min_cvss_base/>
+            <filter>High</filter>
+            <filter>Medium</filter>
+            <filter>Low</filter>
+            <filter>Log</filter>
+        </filters>
+        <severity_class id="d4c74cda-89e1-11e3-9c29-406186ea4fc5">
+            <name>nist</name>
+            <full_name>NVD Vulnerability Severity Ratings</full_name>
+            <severity_range>
+                <name>None</name>
+                <min>0.0</min>
+                <max>0.0</max>
+            </severity_range>
+            <severity_range>
+                <name>Low</name>
+                <min>0.1</min>
+                <max>3.9</max>
+            </severity_range>
+            <severity_range>
+                <name>Medium</name>
+                <min>4.0</min>
+                <max>6.9</max>
+            </severity_range>
+            <severity_range>
+                <name>High</name>
+                <min>7.0</min>
+                <max>10.0</max>
+            </severity_range>
+        </severity_class>
+        <user_tags>
+            <count>0</count>
+        </user_tags>
+        <scan_run_status>Done</scan_run_status>
+        <hosts>
+            <count>1</count>
+        </hosts>
+        <closed_cves>
+            <count>0</count>
+        </closed_cves>
+        <vulns>
+            <count>30</count>
+        </vulns>
+        <os>
+            <count>1</count>
+        </os>
+        <apps>
+            <count>2</count>
+        </apps>
+        <ssl_certs>
+            <count>4</count>
+        </ssl_certs>
+        <task id="27ea49cb-96a2-4eff-b1b1-6f41bac3178d">
+            <name>10.10.10.10</name>
+            <comment/>
+            <target id="f8a7cd4b-10df-4ccd-928c-91f286d74463">
+                <trash>0</trash>
+            </target>
+            <progress>-1</progress>
+        </task>
+        <scan>
+            <task>
+                <slave id="">
+                    <name/>
+                    <host/>
+                    <port>0</port>
+                </slave>
+                <preferences>
+                    <preference>
+                        <name>Network Source Interface</name>
+                        <scanner_name>source_iface</scanner_name>
+                        <value/>
+                    </preference>
+                </preferences>
+            </task>
+        </scan>
+        <timestamp>2014-09-20T03:55:32Z</timestamp>
+        <scan_start>2014-09-20T03:55:33Z</scan_start>
+        <ports max="50" start="1">
+            <count>7</count>
+            <port>1443/tcp<host>10.10.10.10</host>
+                <severity>6.8</severity>
+                <threat>Medium</threat>
+            </port>
+            <port>8443/tcp<host>10.10.10.10</host>
+                <severity>6.4</severity>
+                <threat>Medium</threat>
+            </port>
+            <port>3390/tcp<host>10.10.10.10</host>
+                <severity>5.0</severity>
+                <threat>Medium</threat>
+            </port>
+            <port>443/tcp<host>10.10.10.10</host>
+                <severity>4.3</severity>
+                <threat>Medium</threat>
+            </port>
+            <port>general/tcp<host>10.10.10.10</host>
+                <severity>2.6</severity>
+                <threat>Low</threat>
+            </port>
+            <port>general/CPE-T<host>10.10.10.10</host>
+                <severity>0.0</severity>
+                <threat>Log</threat>
+            </port>
+            <port>541/tcp<host>10.10.10.10</host>
+                <severity>0.0</severity>
+                <threat>Log</threat>
+            </port>
+            <port>3391/tcp<host>10.10.10.10</host>
+                <severity>0.0</severity>
+                <threat>Log</threat>
+            </port>
+            <port>25/tcp<host>10.10.10.10</host>
+                <severity>0.0</severity>
+                <threat>Log</threat>
+            </port>
+        </ports>
+        <results max="50" start="1">
+            <result id="e68f58e5-1451-43ca-a279-395904bbe03f">
+                <user_tags>
+                    <count>0</count>
+                </user_tags>
+                <host>10.10.10.10</host>
+                <port>1443/tcp</port>
+                <nvt oid="1.3.6.1.4.1.25623.1.0.105042">
+                    <name>OpenSSL CCS Man in the Middle Security Bypass Vulnerability</name>
+                    <family>General</family>
+                    <cvss_base>6.8</cvss_base>
+                    <cve>CVE-2014-0224</cve>
+                    <bid>67899</bid>
+                    <tags>cvss_base_vector=AV:N/AC:M/Au:N/C:P/I:P/A:P|impact=Successfully exploiting this issue may allow attackers to obtain
+sensitive information by conducting a man-in-the-middle attack. This
+may lead to other attacks.|vuldetect=Send two SSL ChangeCipherSpec request and check the response.|insight=OpenSSL does not properly restrict processing of ChangeCipherSpec
+messages, which allows man-in-the-middle attackers to trigger use of a
+zero-length master key in certain OpenSSL-to-OpenSSL communications, and
+consequently hijack sessions or obtain sensitive information, via a crafted
+TLS handshake, aka the 'CCS Injection' vulnerability.|solution=Updates are available.|summary=OpenSSL is prone to security-bypass vulnerability.|affected=OpenSSL before 0.9.8za,
+1.0.0 before 1.0.0m and
+1.0.1 before 1.0.1h</tags>
+                    <cert>
+                        <cert_ref id="DFN-CERT-2014-1209" type="DFN-CERT"/>
+                        <cert_ref id="DFN-CERT-2014-0917" type="DFN-CERT"/>
+                        <cert_ref id="DFN-CERT-2014-0789" type="DFN-CERT"/>
+                        <cert_ref id="DFN-CERT-2014-0778" type="DFN-CERT"/>
+                        <cert_ref id="DFN-CERT-2014-0768" type="DFN-CERT"/>
+                        <cert_ref id="DFN-CERT-2014-0752" type="DFN-CERT"/>
+                        <cert_ref id="DFN-CERT-2014-0747" type="DFN-CERT"/>
+                        <cert_ref id="DFN-CERT-2014-0738" type="DFN-CERT"/>
+                        <cert_ref id="DFN-CERT-2014-0715" type="DFN-CERT"/>
+                        <cert_ref id="DFN-CERT-2014-0714" type="DFN-CERT"/>
+                        <cert_ref id="DFN-CERT-2014-0709" type="DFN-CERT"/>
+                    </cert>
+                    <xref>URL:http://www.securityfocus.com/bid/67899, URL:http://openssl.org/</xref>
+                </nvt>
+                <scan_nvt_version>$Revision: 494 $</scan_nvt_version>
+                <threat>Medium</threat>
+                <severity>6.8</severity>
+                <description/>
+                <original_threat>Medium</original_threat>
+                <original_severity>6.8</original_severity>
+                <notes/>
+                <overrides/>
+            </result>
+            <result id="4e116de0-992f-43b8-bf7b-3305d7192302">
+                <user_tags>
+                    <count>0</count>
+                </user_tags>
+                <detection>
+                    <result id="16c22b77-123d-4e35-bb84-699552c80400">
+                        <details>
+                            <detail>
+                                <name>product</name>
+                                <value>cpe:/a:apache:tomcat:6.0.26</value>
+                            </detail>
+                            <detail>
+                                <name>location</name>
+                                <value>8443/tcp</value>
+                            </detail>
+                            <detail>
+                                <name>source_oid</name>
+                                <value>1.3.6.1.4.1.25623.1.0.800371</value>
+                            </detail>
+                            <detail>
+                                <name>source_name</name>
+                                <value>Apache Tomcat Version Detection</value>
+                            </detail>
+                        </details>
+                    </result>
+                </detection>
+                <host>10.10.10.10</host>
+                <port>8443/tcp</port>
+                <nvt oid="1.3.6.1.4.1.25623.1.0.100712">
+                    <name>Apache Tomcat 'Transfer-Encoding' Information Disclosure and Denial Of Service Vulnerabilities</name>
+                    <family>Web Servers</family>
+                    <cvss_base>6.4</cvss_base>
+                    <cve>CVE-2010-2227</cve>
+                    <bid>41544</bid>
+                    <tags>cvss_base_vector=AV:N/AC:L/Au:N/C:P/I:N/A:P|solution=The vendor released updates. Please see the references for more information.|summary=Apache Tomcat is prone to multiple remote vulnerabilities including
+information-disclosure and denial-of-service issues.
+
+Remote attackers can exploit these issues to cause denial-of-service
+conditions or gain access to potentially sensitive information
+
+information obtained may lead to further attacks.
+
+The following versions are affected:
+
+Tomcat 5.5.0 to 5.5.29 Tomcat 6.0.0 to 6.0.27 Tomcat 7.0.0
+
+Tomcat 3.x, 4.x, and 5.0.x may also be affected.</tags>
+                    <cert>
+                        <cert_ref id="DFN-CERT-2012-1832" type="DFN-CERT"/>
+                        <cert_ref id="DFN-CERT-2012-0828" type="DFN-CERT"/>
+                        <cert_ref id="DFN-CERT-2011-0465" type="DFN-CERT"/>
+                        <cert_ref id="DFN-CERT-2011-0185" type="DFN-CERT"/>
+                        <cert_ref id="DFN-CERT-2010-1647" type="DFN-CERT"/>
+                        <cert_ref id="DFN-CERT-2010-1607" type="DFN-CERT"/>
+                        <cert_ref id="DFN-CERT-2010-1560" type="DFN-CERT"/>
+                        <cert_ref id="DFN-CERT-2010-1472" type="DFN-CERT"/>
+                        <cert_ref id="DFN-CERT-2010-1247" type="DFN-CERT"/>
+                        <cert_ref id="DFN-CERT-2010-1192" type="DFN-CERT"/>
+                        <cert_ref id="DFN-CERT-2010-1190" type="DFN-CERT"/>
+                        <cert_ref id="DFN-CERT-2010-0986" type="DFN-CERT"/>
+                        <cert_ref id="DFN-CERT-2010-0985" type="DFN-CERT"/>
+                        <cert_ref id="DFN-CERT-2010-0983" type="DFN-CERT"/>
+                    </cert>
+                    <xref>URL:https://www.securityfocus.com/bid/41544, URL:http://tomcat.apache.org/security-5.html, URL:http://tomcat.apache.org/security-6.html, URL:http://tomcat.apache.org/security-7.html, URL:http://tomcat.apache.org/, URL:http://www.securityfocus.com/archive/1/512272</xref>
+                </nvt>
+                <scan_nvt_version>$Revision: 14 $</scan_nvt_version>
+                <threat>Medium</threat>
+                <severity>6.4</severity>
+                <description/>
+                <original_threat>Medium</original_threat>
+                <original_severity>6.4</original_severity>
+                <notes/>
+                <overrides/>
+            </result>
+            <result id="c7809bd8-e17d-4602-89c9-66a391638f20">
+                <user_tags>
+                    <count>0</count>
+                </user_tags>
+                <host>10.10.10.10</host>
+                <port>3390/tcp</port>
+                <nvt oid="1.3.6.1.4.1.25623.1.0.103955">
+                    <name>SSL Certification Expired</name>
+                    <family>General</family>
+                    <cvss_base>5.0</cvss_base>
+                    <cve>NOCVE</cve>
+                    <bid>NOBID</bid>
+                    <tags>cvss_base_vector=AV:N/AC:L/Au:N/C:N/I:P/A:N|insight=This script checks expiry dates of certificates associated with
+SSL-enabled services on the target and reports whether any have already expired.|solution=Replace the SSL certificate by a new one.|summary=The remote server's SSL certificate has already expired.</tags>
+                    <cert/>
+                    <xref>NOXREF</xref>
+                </nvt>
+                <scan_nvt_version>$Revision: 626 $</scan_nvt_version>
+                <threat>Medium</threat>
+                <severity>5.0</severity>
+                <description>Expired Certificates:\
+\
+\
+The SSL certificate on the remote service expired on 2014-03-22 09:52:56
+Certificate details:
+subject ...: CN=office.domain.com,OU=Client,O=Client,L=null,ST=MB,C=CA
+issued by .: CN=office.domain.com,OU=Client,O=Client,L=null,ST=MB,C=CA
+serial ....: 4F685378
+valid from : 2012-03-20 09:52:56 UTC
+valid until: 2014-03-22 09:52:56 UTC
+fingerprint: 0C699AFA6640A42A199C7926F32CFBDA8FA0936C
+                </description>
+                <original_threat>Medium</original_threat>
+                <original_severity>5.0</original_severity>
+                <notes/>
+                <overrides/>
+            </result>
+            <result id="316bfba3-3fa4-46a7-83e4-ace6ac6f109b">
+                <user_tags>
+                    <count>0</count>
+                </user_tags>
+                <host>10.10.10.10</host>
+                <port>443/tcp</port>
+                <nvt oid="1.3.6.1.4.1.25623.1.0.103440">
+                    <name>Check for SSL Weak Ciphers</name>
+                    <family>General</family>
+                    <cvss_base>4.3</cvss_base>
+                    <cve>NOCVE</cve>
+                    <bid>NOBID</bid>
+                    <tags>cvss_base_vector=AV:N/AC:M/Au:N/C:P/I:N/A:N|summary=This routine search for weak SSL ciphers offered by a service.|solution=The configuration of this services should be changed so
+that it does not support the listed weak ciphers anymore.|insight=These rules are applied for the evaluation of the cryptographic strength:
+
+- Any SSL/TLS using no cipher is considered weak.
+
+- All SSLv2 ciphers are considered weak due to a design flaw within the SSLv2 protocol.
+
+- RC4 is considered to be weak.
+
+- Ciphers using 64 bit or less are considered to be vulnerable to brute force methods
+  and therefore considered as weak.
+
+- 1024 bit RSA authentication is considered to be insecure and therefore as weak.
+
+- CBC ciphers in TLS &lt; 1.2 are considered to be vulnerable to the BEAST or Lucky 13 attacks
+
+- Any cipher considered to be secure for only the next 10 years is considered as medium
+
+- Any other cipher is considered as strong</tags>
+                    <cert/>
+                    <xref>NOXREF</xref>
+                </nvt>
+                <scan_nvt_version>$Revision: 342 $</scan_nvt_version>
+                <threat>Medium</threat>
+                <severity>4.3</severity>
+                <description>
+
+Weak ciphers offered by this service:
+  SSL3_RSA_RC4_128_MD5
+  SSL3_RSA_RC4_128_SHA
+  TLS1_RSA_RC4_128_MD5
+  TLS1_RSA_RC4_128_SHA
+                </description>
+                <original_threat>Medium</original_threat>
+                <original_severity>4.3</original_severity>
+                <notes/>
+                <overrides/>
+            </result>
+            <result id="dda07a69-4a35-4ebf-a84b-1d98f179f8a9">
+                <user_tags>
+                    <count>0</count>
+                </user_tags>
+                <host>10.10.10.10</host>
+                <port>1443/tcp</port>
+                <nvt oid="1.3.6.1.4.1.25623.1.0.103440">
+                    <name>Check for SSL Weak Ciphers</name>
+                    <family>General</family>
+                    <cvss_base>4.3</cvss_base>
+                    <cve>NOCVE</cve>
+                    <bid>NOBID</bid>
+                    <tags>cvss_base_vector=AV:N/AC:M/Au:N/C:P/I:N/A:N|summary=This routine search for weak SSL ciphers offered by a service.|solution=The configuration of this services should be changed so
+that it does not support the listed weak ciphers anymore.|insight=These rules are applied for the evaluation of the cryptographic strength:
+
+- Any SSL/TLS using no cipher is considered weak.
+
+- All SSLv2 ciphers are considered weak due to a design flaw within the SSLv2 protocol.
+
+- RC4 is considered to be weak.
+
+- Ciphers using 64 bit or less are considered to be vulnerable to brute force methods
+  and therefore considered as weak.
+
+- 1024 bit RSA authentication is considered to be insecure and therefore as weak.
+
+- CBC ciphers in TLS &lt; 1.2 are considered to be vulnerable to the BEAST or Lucky 13 attacks
+
+- Any cipher considered to be secure for only the next 10 years is considered as medium
+
+- Any other cipher is considered as strong</tags>
+                    <cert/>
+                    <xref>NOXREF</xref>
+                </nvt>
+                <scan_nvt_version>$Revision: 342 $</scan_nvt_version>
+                <threat>Medium</threat>
+                <severity>4.3</severity>
+                <description>
+
+Weak ciphers offered by this service:
+  SSL3_RSA_RC4_128_MD5
+  SSL3_RSA_RC4_128_SHA
+  SSL3_RSA_DES_64_CBC_SHA
+  SSL3_EDH_RSA_DES_64_CBC_SHA
+  SSL3_RSA_WITH_SEED_SHA
+  TLS1_RSA_RC4_128_MD5
+  TLS1_RSA_RC4_128_SHA
+  TLS1_RSA_DES_64_CBC_SHA
+  TLS1_EDH_RSA_DES_64_CBC_SHA
+                </description>
+                <original_threat>Medium</original_threat>
+                <original_severity>4.3</original_severity>
+                <notes/>
+                <overrides/>
+            </result>
+            <result id="3e4674f3-a6a6-4d9c-b3e9-ff54222cecb6">
+                <user_tags>
+                    <count>0</count>
+                </user_tags>
+                <detection>
+                    <result id="16c22b77-123d-4e35-bb84-699552c80400">
+                        <details>
+                            <detail>
+                                <name>product</name>
+                                <value>cpe:/a:apache:tomcat:6.0.26</value>
+                            </detail>
+                            <detail>
+                                <name>location</name>
+                                <value>8443/tcp</value>
+                            </detail>
+                            <detail>
+                                <name>source_oid</name>
+                                <value>1.3.6.1.4.1.25623.1.0.800371</value>
+                            </detail>
+                            <detail>
+                                <name>source_name</name>
+                                <value>Apache Tomcat Version Detection</value>
+                            </detail>
+                        </details>
+                    </result>
+                </detection>
+                <host>10.10.10.10</host>
+                <port>8443/tcp</port>
+                <nvt oid="1.3.6.1.4.1.25623.1.0.103032">
+                    <name>Apache Tomcat 'sort' and 'orderBy' Parameters Cross Site Scripting Vulnerabilities</name>
+                    <family>Web Servers</family>
+                    <cvss_base>4.3</cvss_base>
+                    <cve>CVE-2010-4172</cve>
+                    <bid>45015</bid>
+                    <tags>cvss_base_vector=AV:N/AC:M/Au:N/C:N/I:P/A:N|solution=Updates are available
+ please see the references for more information.|summary=Apache Tomcat is prone to multiple cross-site scripting
+vulnerabilities because it fails to properly sanitize user-
+supplied input.
+
+An attacker may leverage these issues to execute arbitrary script code
+in the browser of an unsuspecting user in the context of the affected
+site. This may let the attacker steal cookie-based authentication
+credentials and launch other attacks.</tags>
+                    <cert>
+                        <cert_ref id="DFN-CERT-2012-1832" type="DFN-CERT"/>
+                        <cert_ref id="DFN-CERT-2011-0793" type="DFN-CERT"/>
+                        <cert_ref id="DFN-CERT-2011-0181" type="DFN-CERT"/>
+                    </cert>
+                    <xref>URL:https://www.securityfocus.com/bid/45015, URL:http://tomcat.apache.org/security-6.html, URL:http://tomcat.apache.org/security-7.html, URL:http://tomcat.apache.org/security-6.html, URL:http://tomcat.apache.org/security-7.html, URL:http://jakarta.apache.org/tomcat/, URL:http://www.securityfocus.com/archive/1/514866</xref>
+                </nvt>
+                <scan_nvt_version>$Revision: 13 $</scan_nvt_version>
+                <threat>Medium</threat>
+                <severity>4.3</severity>
+                <description/>
+                <original_threat>Medium</original_threat>
+                <original_severity>4.3</original_severity>
+                <notes/>
+                <overrides/>
+            </result>
+        </results>
+    </report>
+</report>
