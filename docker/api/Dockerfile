@@ -43,6 +43,9 @@ RUN chmod -R a+w /var/www/webapp/logs
 WORKDIR /var/www/webapp
 
 COPY composer.json composer.lock /var/www/webapp/
+COPY packages/ /var/www/webapp/packages/
+COPY src/ /var/www/webapp/src/
+
 RUN composer install --no-ansi --no-dev --no-interaction --no-plugins --no-progress --no-scripts --optimize-autoloader
 
 COPY public /var/www/webapp/public
@@ -50,8 +53,7 @@ COPY database/ /var/www/webapp/database/
 COPY docs/openapi.yaml /var/www/webapp/public/docs/openapi.yaml
 COPY docs/schemas/ /var/www/webapp/public/docs/schemas/
 COPY resources/ /var/www/webapp/resources/
-COPY packages/ /var/www/webapp/packages/
-COPY src/ /var/www/webapp/src/
+
 VOLUME /var/www/webapp
 
 COPY docker/api/entrypoint.sh /entrypoint
