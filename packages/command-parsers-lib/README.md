@@ -20,7 +20,7 @@
 
 ## Requirements
 
-* [PHP8.3](https://www.php.net/releases/8.3/en.php)
+* [PHP8.4](https://www.php.net/releases/8.4/en.php)
 * Composer
 
 ## Usage

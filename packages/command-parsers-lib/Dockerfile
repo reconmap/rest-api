@@ -1,4 +1,4 @@
-FROM php:8.3-cli
+FROM php:8.4-cli
 
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y git libzip-dev
