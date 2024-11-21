@@ -10,7 +10,7 @@ use Reconmap\Services\PaginationRequestHandler;
 
 class CommandRepository extends MysqlRepository
 {
-    public const UPDATABLE_COLUMNS_TYPES = [
+    public const array UPDATABLE_COLUMNS_TYPES = [
         'name' => 's',
         'description' => 's',
         'more_info_url' => 's',

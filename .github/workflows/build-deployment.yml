@@ -9,7 +9,7 @@ jobs:
     main:
         runs-on: ubuntu-latest
         env:
-          DOCKER_COMPOSE_VERSION: 1.29.2
+          DOCKER_COMPOSE_VERSION: 2.30.3
         steps:
             - uses: actions/checkout@v4
               with:

@@ -10,8 +10,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class EmailProcessorCommand extends Command
 {
-    public function __construct(private QueueProcessor     $queueProcessor,
-                                private EmailTaskProcessor $emailTaskProcessor)
+    public function __construct(private readonly QueueProcessor     $queueProcessor,
+                                private readonly EmailTaskProcessor $emailTaskProcessor)
     {
         parent::__construct();
     }
