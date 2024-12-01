@@ -1,9 +1,16 @@
 #!/usr/bin/env bash
 set -e
 
+export XDEBUG_MODE=coverage
+export XDEBUG_MODE=off
+export PHPUNIT_ARGS="--coverage-clover=\"/var/www/webapp/tests/clover.xml\""
+export PHPUNIT_ARGS="--no-coverage --display-warnings"
+
 pushd /var/www/webapp
-XDEBUG_MODE=coverage ./vendor/bin/phpunit --coverage-clover="/var/www/webapp/tests/clover.xml" --display-warnings
+./vendor/bin/phpunit $PHPUNIT_ARGS
 pushd packages/command-parsers-lib
-XDEBUG_MODE=coverage ./vendor/bin/phpunit --display-warnings
+./vendor/bin/phpunit $PHPUNIT_ARGS
 popd
 popd
+
+export XDEBUG_MODE=

@@ -1,8 +1,8 @@
 {
     "name": "reconmap/command-parsers",
     "description": "Parsers for many security command outputs in the form of a PHP library",
-    "version": "2.0",
     "type": "library",
+    "version": "2.0",
     "license": "LGPL-3.0-or-later",
     "authors": [
         {
@@ -13,6 +13,7 @@
     "prefer-stable": true,
     "require": {
         "php": "^8.4",
+        "reconmap/shared-models": "^1.0",
         "league/html-to-markdown": "^5",
         "ext-simplexml": "*",
         "ext-mbstring": "*"
@@ -33,5 +34,11 @@
     },
     "scripts": {
         "test": "phpunit"
-    }
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../shared-models-lib"
+        }
+    ]
 }

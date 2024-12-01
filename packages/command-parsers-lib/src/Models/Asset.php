@@ -8,38 +8,47 @@ class Asset
                                 private readonly string    $value,
                                 private array              $tags = [],
                                 private array              $children = [],
-                                private array              $vulnerabilities = []) {
+                                private array              $vulnerabilities = [])
+    {
     }
 
-    public function getValue():string {
+    public function getValue(): string
+    {
         return $this->value;
     }
 
-    public function getKind():AssetKind {
+    public function getKind(): AssetKind
+    {
         return $this->kind;
     }
 
-    public function addTag(string $tag): void {
+    public function addTag(string $tag): void
+    {
         $this->tags[] = $tag;
     }
 
-    public function getTags(): array {
+    public function getTags(): array
+    {
         return $this->tags;
     }
 
-    public function addChild(Asset $child): void {
+    public function addChild(Asset $child): void
+    {
         $this->children[] = $child;
     }
 
-    public function getChildren(): array {
+    public function getChildren(): array
+    {
         return $this->children;
     }
 
-    public function addVulnerability(Vulnerability $vulnerability): void {
+    public function addVulnerability(Vulnerability $vulnerability): void
+    {
         $this->vulnerabilities[] = $vulnerability;
     }
 
-    public function getVulnerabilities(): array {
+    public function getVulnerabilities(): array
+    {
         return $this->vulnerabilities;
     }
 }

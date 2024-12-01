@@ -12,9 +12,9 @@ use Reconmap\Services\Filesystem\AttachmentFilePath;
 
 class UpdateAttachmentController extends Controller
 {
-    public function __construct(protected AttachmentRepository $attachmentRepository,
-                                protected AttachmentFilePath   $attachmentFilePathService,
-                                private AuditLogService      $auditLogService)
+    public function __construct(protected AttachmentRepository   $attachmentRepository,
+                                protected AttachmentFilePath     $attachmentFilePathService,
+                                private readonly AuditLogService $auditLogService)
     {
     }
 

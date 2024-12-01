@@ -13,6 +13,7 @@ class User {
 	public ?string $last_login_ts;
 	public ?string $subject_id;
 	public ?bool $active = true;
+	public bool $mfa_enabled = false;
 	public string $full_name;
 	public ?string $short_bio;
 	public string $username;

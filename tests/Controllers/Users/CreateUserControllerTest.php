@@ -2,6 +2,7 @@
 
 namespace Reconmap\Controllers\Users;
 
+use GuzzleHttp\Psr7\Utils;
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
@@ -18,7 +19,7 @@ class CreateUserControllerTest extends TestCase
         $mockRequest = $this->createMock(ServerRequestInterface::class);
         $mockRequest->expects($this->once())
             ->method('getBody')
-            ->willReturn('{"email": "foo@bar.com", "full_name": "Foo Bar", "unencryptedPassword": null, "sendEmailToUser": true}');
+            ->willReturn(Utils::streamFor('{"email": "foo@bar.com", "full_name": "Foo Bar", "unencryptedPassword": null, "sendEmailToUser": true}'));
         $mockRequest->expects($this->once())
             ->method('getAttribute')
             ->with('userId')
@@ -59,7 +60,7 @@ class CreateUserControllerTest extends TestCase
         $mockRequest = $this->createMock(ServerRequestInterface::class);
         $mockRequest->expects($this->once())
             ->method('getBody')
-            ->willReturn('{"email": "foo@bar.com", "full_name": "Foo Bar", "unencryptedPassword": "mysecreto", "sendEmailToUser": true}');
+            ->willReturn(Utils::streamFor('{"email": "foo@bar.com", "full_name": "Foo Bar", "unencryptedPassword": "mysecreto", "sendEmailToUser": true}'));
         $mockRequest->expects($this->once())
             ->method('getAttribute')
             ->with('userId')

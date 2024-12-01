@@ -2,6 +2,7 @@
 
 namespace Reconmap\Controllers\Clients;
 
+use GuzzleHttp\Psr7\Utils;
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
@@ -10,6 +11,7 @@ use Reconmap\Models\AuditActions\ClientAuditActions;
 use Reconmap\Repositories\ClientRepository;
 use Reconmap\Services\ActivityPublisherService;
 use Reconmap\Services\Security\AuthorisationService;
+use Symfony\Component\HttpFoundation\Response;
 
 class UpdateClientControllerTest extends TestCase
 {
@@ -22,7 +24,7 @@ class UpdateClientControllerTest extends TestCase
         $mockRequest = $this->createMock(ServerRequestInterface::class);
         $mockRequest->expects($this->once())
             ->method('getBody')
-            ->willReturn('{"name": "Fancy new Client Name"}');
+            ->willReturn(Utils::streamFor('{"name": "Fancy new Client Name"}'));
         $mockRequest->expects($this->exactly(2))
             ->method('getAttribute')
             ->with(...$this->consecutiveParams(['role'], ['userId']))
@@ -49,6 +51,6 @@ class UpdateClientControllerTest extends TestCase
         $controller = new UpdateClientController($mockAuthorisationService, $mockPublisherService, $mockClientRepository);
         $controller->setLogger($this->createMock(Logger::class));
         $response = $controller($mockRequest, $args);
-        $this->assertEquals(\Symfony\Component\HttpFoundation\Response::HTTP_NO_CONTENT, $response->getStatusCode());
+        $this->assertEquals(Response::HTTP_NO_CONTENT, $response->getStatusCode());
     }
 }

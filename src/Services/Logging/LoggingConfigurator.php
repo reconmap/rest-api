@@ -13,7 +13,7 @@ use Reconmap\Services\ApplicationConfig;
 
 class LoggingConfigurator
 {
-    private const DEFAULT_LOG_LEVEL = 'info';
+    private const string DEFAULT_LOG_LEVEL = 'info';
 
     public function __construct(private readonly Logger $logger, private readonly ApplicationConfig $config)
     {

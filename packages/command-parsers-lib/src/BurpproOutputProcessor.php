@@ -6,7 +6,7 @@ use League\HTMLToMarkdown\HtmlConverter;
 use Reconmap\CommandOutputParsers\Models\Asset;
 use Reconmap\CommandOutputParsers\Models\AssetKind;
 use Reconmap\CommandOutputParsers\Models\ProcessorResult;
-use Reconmap\CommandOutputParsers\Models\Vulnerability;
+use Reconmap\Models\Vulnerability;
 
 class BurpproOutputProcessor extends AbstractOutputProcessor
 {
@@ -15,9 +15,9 @@ class BurpproOutputProcessor extends AbstractOutputProcessor
         $result = new ProcessorResult();
 
         $xml = simplexml_load_file($path);
-	if(!$xml) {
-		return $result;
-	}
+        if (!$xml) {
+            return $result;
+        }
         $markdown = new HtmlConverter();
 
         foreach ($xml->issue as $rawVulnerability) {

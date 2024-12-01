@@ -2,10 +2,12 @@
 
 namespace Reconmap\Controllers\Projects;
 
+use GuzzleHttp\Psr7\Utils;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Models\Project;
 use Reconmap\Repositories\ProjectRepository;
+use Symfony\Component\HttpFoundation\Response;
 
 class CreateProjectControllerTest extends TestCase
 {
@@ -29,11 +31,11 @@ class CreateProjectControllerTest extends TestCase
             ->willReturn(9);
         $mockRequest->expects($this->once())
             ->method('getBody')
-            ->willReturn('{"name": "exciting new project", "is_template": true}');
+            ->willReturn(Utils::streamFor('{"name": "exciting new project", "is_template": true}'));
 
         $controller = new CreateProjectController($mockProjectRepository);
         $response = $controller($mockRequest);
 
-        $this->assertEquals(\Symfony\Component\HttpFoundation\Response::HTTP_CREATED, $response->getStatusCode());
+        $this->assertEquals(Response::HTTP_CREATED, $response->getStatusCode());
     }
 }

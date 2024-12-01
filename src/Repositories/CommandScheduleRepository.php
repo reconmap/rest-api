@@ -10,7 +10,7 @@ use Reconmap\Services\PaginationRequestHandler;
 
 class CommandScheduleRepository extends MysqlRepository implements Deletable
 {
-    public const UPDATABLE_COLUMNS_TYPES = [
+    public const array UPDATABLE_COLUMNS_TYPES = [
         'name' => 's',
         'description' => 's',
         'output_parser' => 's',

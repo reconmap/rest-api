@@ -1,11 +1,10 @@
-IMAGE_NAME=reconmap/php-output-command-parsers
+IMAGE_NAME=reconmap/shared-models-lib
 
 all:
 	composer install
 
 test:
 	composer validate --strict --no-check-version
-	composer exec -- phpunit --no-coverage
 
 code-analysis:
 	vendor/bin/psalm --report=results.sarif

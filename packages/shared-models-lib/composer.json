@@ -1,0 +1,13 @@
+{
+    "name": "reconmap/shared-models",
+    "description": "Reconmap models",
+    "license": "LGPL-3.0-or-later",
+    "type": "library",
+    "version": "1.0",
+    "autoload": {
+        "psr-4": {
+            "Reconmap\\Models\\": "src/"
+        }
+    },
+    "require": {}
+}

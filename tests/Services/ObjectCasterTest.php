@@ -4,12 +4,13 @@ namespace Reconmap\Services;
 
 use PHPUnit\Framework\TestCase;
 use Reconmap\CommandOutputParsers\Models\Vulnerability;
+use Reconmap\DomainObjects\Vulnerability as DomainObjectVulnerability;
 
 class ObjectCasterTest extends TestCase
 {
     public function testCastVulnerabilities()
     {
-        $from = new Vulnerability();
+        $from = new DomainObjectVulnerability();
         $from->summary = 'From this object';
         $to = new \Reconmap\Models\Vulnerability();
 

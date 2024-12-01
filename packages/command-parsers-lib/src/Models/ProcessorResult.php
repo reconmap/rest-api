@@ -2,26 +2,33 @@
 
 namespace Reconmap\CommandOutputParsers\Models;
 
+use Reconmap\Models\Vulnerability;
+
 class ProcessorResult
 {
     public function __construct(
         private array $assets = [],
-        private array $vulnerabilities = []) {
+        private array $vulnerabilities = [])
+    {
     }
 
-    public function addAsset(Asset $asset): void {
+    public function addAsset(Asset $asset): void
+    {
         $this->assets[] = $asset;
     }
 
-    public function getAssets(): array {
+    public function getAssets(): array
+    {
         return $this->assets;
     }
 
-    public function addVulnerability(Vulnerability $vulnerability): void {
+    public function addVulnerability(Vulnerability $vulnerability): void
+    {
         $this->vulnerabilities[] = $vulnerability;
     }
 
-    public function getVulnerabilities(): array {
+    public function getVulnerabilities(): array
+    {
         return $this->vulnerabilities;
     }
 }

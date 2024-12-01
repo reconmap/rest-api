@@ -2,6 +2,7 @@
 
 namespace Reconmap\Controllers\Documents;
 
+use GuzzleHttp\Psr7\Utils;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Models\Document;
@@ -28,7 +29,7 @@ class CreateDocumentControllerTest extends TestCase
             ->willReturn(9);
         $mockRequest->expects($this->once())
             ->method('getBody')
-            ->willReturn('{"title": "Just a DOC"}');
+            ->willReturn(Utils::streamFor('{"title": "Just a DOC"}'));
 
         $controller = new CreateDocumentController($mockDocumentRepository);
         $response = $controller($mockRequest);

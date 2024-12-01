@@ -47,7 +47,7 @@ SQL;
         return $attachment;
     }
 
-    public function findByParentId(string $parentType, int $parentId, string $mimeType = null): array
+    public function findByParentId(string $parentType, int $parentId, ?string $mimeType = null): array
     {
         $queryBuilder = new SelectQueryBuilder('attachment a');
         $queryBuilder->setColumns('a.*, u.full_name AS submitter_name');

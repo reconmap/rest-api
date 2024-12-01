@@ -5,7 +5,7 @@ namespace Reconmap\CommandOutputParsers;
 use Reconmap\CommandOutputParsers\Models\Asset;
 use Reconmap\CommandOutputParsers\Models\AssetKind;
 use Reconmap\CommandOutputParsers\Models\ProcessorResult;
-use Reconmap\CommandOutputParsers\Models\Vulnerability;
+use Reconmap\Models\Vulnerability;
 
 class TestsslOutputProcessor extends AbstractOutputProcessor
 {

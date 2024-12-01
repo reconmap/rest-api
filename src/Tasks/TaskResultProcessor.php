@@ -8,12 +8,10 @@ use Reconmap\CommandOutputParsers\Models\Asset;
 use Reconmap\CommandOutputParsers\ProcessorFactory;
 use Reconmap\Models\Notification;
 use Reconmap\Models\Target;
-use Reconmap\Models\Vulnerability;
 use Reconmap\Repositories\NotificationsRepository;
 use Reconmap\Repositories\TargetRepository;
 use Reconmap\Repositories\TaskRepository;
 use Reconmap\Repositories\VulnerabilityRepository;
-use Reconmap\Services\ObjectCaster;
 use Reconmap\Services\RedisServer;
 
 readonly class TaskResultProcessor implements ItemProcessor
@@ -80,10 +78,8 @@ readonly class TaskResultProcessor implements ItemProcessor
             $numVulnerabilities = count($vulnerabilities);
             $this->logger->debug("Number of vulnerabilities in uploaded file: " . $numVulnerabilities);
 
-            foreach ($vulnerabilities as $parsedVulnerability) {
+            foreach ($vulnerabilities as $vulnerability) {
                 try {
-                    /** @var Vulnerability $vulnerability */
-                    $vulnerability = ObjectCaster::cast(new Vulnerability(), $parsedVulnerability);
                     if (is_array($vulnerability->tags)) {
                         $vulnerability->tags[] = $outputParserName;
                     } else {

@@ -5,7 +5,7 @@ namespace Reconmap\CommandOutputParsers;
 use Reconmap\CommandOutputParsers\Models\Asset;
 use Reconmap\CommandOutputParsers\Models\AssetKind;
 use Reconmap\CommandOutputParsers\Models\ProcessorResult;
-use Reconmap\CommandOutputParsers\Models\Vulnerability;
+use Reconmap\Models\Vulnerability;
 
 class NucleiOutputProcessor extends AbstractOutputProcessor
 {
@@ -40,7 +40,6 @@ class NucleiOutputProcessor extends AbstractOutputProcessor
             $vulnerability->summary = $json->info->name;
             $vulnerability->description = $line;
             $vulnerability->tags = explode(',', $json->info->tags);
-            $vulnerability->severity = $json->info->severity;
             $vulnerability->severity = (string)$json->info->severity;
 
             $vulnerability->asset = $hostAsset;

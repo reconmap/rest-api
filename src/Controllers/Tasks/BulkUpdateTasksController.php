@@ -4,7 +4,7 @@ namespace Reconmap\Controllers\Tasks;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Models\AuditActions\AuditLogAction;
+use Reconmap\Models\AuditActions\TaskAuditActions;
 use Reconmap\Repositories\TaskRepository;
 use Reconmap\Services\AuditLogService;
 
@@ -33,12 +33,12 @@ class BulkUpdateTasksController extends Controller
                 foreach ($taskIds as $taskId) {
                     $numSuccesses = $this->taskRepository->updateById($taskId, ['status' => $requestData['newStatus']]);
                 }
-                $this->auditLogService->insert($loggedInUserId, AuditLogAction::TASK_MODIFIED, ['type' => 'tasks', 'ids' => $taskIds]);
+                $this->auditLogService->insert($loggedInUserId, TaskAuditActions::TASK_MODIFIED, ['type' => 'tasks', 'ids' => $taskIds]);
                 break;
             case 'DELETE':
                 $taskIds = $requestData;
                 $numSuccesses = $this->taskRepository->deleteByIds($taskIds);
-                $this->auditLogService->insert($loggedInUserId, AuditLogAction::TASK_DELETED, ['type' => 'tasks', 'ids' => $taskIds]);
+                $this->auditLogService->insert($loggedInUserId, TaskAuditActions::TASK_DELETED, ['type' => 'tasks', 'ids' => $taskIds]);
                 break;
         }
 

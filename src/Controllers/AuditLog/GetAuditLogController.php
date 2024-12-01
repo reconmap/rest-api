@@ -2,10 +2,9 @@
 
 namespace Reconmap\Controllers\AuditLog;
 
-use OpenApi\Attributes as OpenApi;
-
 use GeoIp2\Database\Reader;
 use GuzzleHttp\Psr7\Response;
+use OpenApi\Attributes as OpenApi;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\SecureController;
@@ -19,7 +18,7 @@ use Reconmap\Services\Security\AuthorisationService;
 #[OpenApi\Response(response: 403, description: "Authorization error")]
 class GetAuditLogController extends SecureController
 {
-    private const PAGE_LIMIT = 20;
+    private const int PAGE_LIMIT = 20;
 
     public function __construct(AuthorisationService                $authorisationService,
                                 private readonly AuditLogRepository $repository,

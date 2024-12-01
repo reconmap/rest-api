@@ -2,6 +2,7 @@
 
 namespace Reconmap\Controllers\Reports;
 
+use GuzzleHttp\Psr7\Utils;
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
@@ -35,7 +36,7 @@ class SendReportControllerTest extends TestCase
         $mockServerRequest = $this->createMock(ServerRequestInterface::class);
         $mockServerRequest->expects($this->once())
             ->method('getBody')
-            ->willReturn('{"subject": "Your report is ready", "report_id": 14, "body": "Find attached the report", "recipients": "foo@bar."}');
+            ->willReturn(Utils::streamFor('{"subject": "Your report is ready", "report_id": 14, "body": "Find attached the report", "recipients": "foo@bar."}'));
 
         $mockContainer = $this->createMock(ContainerInterface::class);
         $mockContainer->expects($this->once())

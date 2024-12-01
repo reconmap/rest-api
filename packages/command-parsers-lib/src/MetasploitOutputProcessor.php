@@ -5,7 +5,7 @@ namespace Reconmap\CommandOutputParsers;
 use Reconmap\CommandOutputParsers\Models\Asset;
 use Reconmap\CommandOutputParsers\Models\AssetKind;
 use Reconmap\CommandOutputParsers\Models\ProcessorResult;
-use Reconmap\CommandOutputParsers\Models\Vulnerability;
+use Reconmap\Models\Vulnerability;
 
 class MetasploitOutputProcessor extends AbstractOutputProcessor
 {
@@ -15,9 +15,9 @@ class MetasploitOutputProcessor extends AbstractOutputProcessor
         $result = new ProcessorResult();
 
         $xml = simplexml_load_file($path);
-	if(!$xml) {
-		return $result;
-	}
+        if (!$xml) {
+            return $result;
+        }
 
         foreach ($xml->hosts->host as $rawHost) {
             $asset = new Asset(kind: AssetKind::Hostname, value: (string)$rawHost->name);

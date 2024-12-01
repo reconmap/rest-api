@@ -2,6 +2,7 @@
 
 namespace Reconmap\Controllers\Vault;
 
+use GuzzleHttp\Psr7\Utils;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Models\AuditActions\VaultAuditActions;
@@ -20,7 +21,7 @@ class UpdateVaultItemControllerTest extends TestCase
         $mockRequest = $this->createMock(ServerRequestInterface::class);
         $mockRequest->expects($this->once())
             ->method('getBody')
-            ->willReturn('{"anything":"will not be in the filtered array","name":"compromised account","value":"secret text","note":"Some note for other testers","reportable":false,"type":"password","password":"UltimateP4ssw0rd!"}');
+            ->willReturn(Utils::streamFor('{"anything":"will not be in the filtered array","name":"compromised account","value":"secret text","note":"Some note for other testers","reportable":false,"type":"password","password":"UltimateP4ssw0rd!"}'));
         $mockRequest->expects($this->once())
             ->method('getAttribute')
             ->with('userId')

@@ -2,6 +2,7 @@
 
 namespace Reconmap\Controllers\Clients;
 
+use GuzzleHttp\Psr7\Utils;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Models\AuditActions\ClientAuditActions;
@@ -32,7 +33,7 @@ class CreateClientControllerTest extends TestCase
             ->willReturn(9);
         $mockRequest->expects($this->once())
             ->method('getBody')
-            ->willReturn('{"name":"exciting new client","address":"evergreen","url":"1.1.1.1"}');
+            ->willReturn(Utils::streamFor('{"name":"exciting new client","address":"evergreen","url":"1.1.1.1"}'));
 
         $mockActivityPublisherService = $this->createMock(ActivityPublisherService::class);
         $mockActivityPublisherService->expects($this->once())

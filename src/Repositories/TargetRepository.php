@@ -9,7 +9,7 @@ use Reconmap\Services\PaginationRequestHandler;
 
 class TargetRepository extends MysqlRepository implements Findable
 {
-    public const UPDATABLE_COLUMNS_TYPES = [
+    public const array UPDATABLE_COLUMNS_TYPES = [
         'project_id' => 'i',
         'name' => 's',
         'kind' => 's',
@@ -40,14 +40,14 @@ class TargetRepository extends MysqlRepository implements Findable
     public function findOrInsert(Target $target): int
     {
         $queryBuilder = $this->getBaseSelectQueryBuilder();
-        if ($target->hasParent()) {
+        if ($target->parent_id !== null) {
             $queryBuilder->setWhere('t.project_id = ? AND t.parent_id = ? AND t.name = ?');
         } else {
             $queryBuilder->setWhere('t.project_id = ? AND t.parent_id IS NULL AND t.name = ?');
         }
 
         $stmt = $this->db->prepare($queryBuilder->toSql());
-        if ($target->hasParent()) {
+        if ($target->parent_id !== null) {
             $stmt->bind_param('iis', $target->project_id, $target->parent_id, $target->name);
         } else {
             $stmt->bind_param('is', $target->project_id, $target->name);

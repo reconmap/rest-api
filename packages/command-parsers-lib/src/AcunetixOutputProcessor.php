@@ -3,7 +3,7 @@
 namespace Reconmap\CommandOutputParsers;
 
 use Reconmap\CommandOutputParsers\Models\ProcessorResult;
-use Reconmap\CommandOutputParsers\Models\Vulnerability;
+use Reconmap\Models\Vulnerability;
 
 class AcunetixOutputProcessor extends AbstractOutputProcessor
 {
@@ -13,9 +13,9 @@ class AcunetixOutputProcessor extends AbstractOutputProcessor
         $result = new ProcessorResult();
 
         $xml = simplexml_load_file($path);
-	if(!$xml) {
-		return $result;
-	}
+        if (!$xml) {
+            return $result;
+        }
 
         foreach ($xml->Scan->ReportItems->ReportItem as $reportItem) {
             $vulnerability = new Vulnerability();

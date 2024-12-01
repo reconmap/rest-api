@@ -57,6 +57,7 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+
   api:
     container_name: rmap-api
     image: quay.io/reconmap/rest-api:latest

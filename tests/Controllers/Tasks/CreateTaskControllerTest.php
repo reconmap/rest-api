@@ -2,6 +2,7 @@
 
 namespace Reconmap\Controllers\Tasks;
 
+use GuzzleHttp\Psr7\Utils;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Models\Task;
@@ -14,7 +15,7 @@ class CreateTaskControllerTest extends TestCase
         $mockRequest = $this->createMock(ServerRequestInterface::class);
         $mockRequest->expects($this->once())
             ->method('getBody')
-            ->willReturn('{}');
+            ->willReturn(Utils::streamFor('{}'));
         $mockRequest->expects($this->once())
             ->method('getAttribute')
             ->with('userId')

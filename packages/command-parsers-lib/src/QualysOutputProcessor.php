@@ -5,7 +5,7 @@ namespace Reconmap\CommandOutputParsers;
 use Reconmap\CommandOutputParsers\Models\Asset;
 use Reconmap\CommandOutputParsers\Models\AssetKind;
 use Reconmap\CommandOutputParsers\Models\ProcessorResult;
-use Reconmap\CommandOutputParsers\Models\Vulnerability;
+use Reconmap\Models\Vulnerability;
 
 class QualysOutputProcessor extends AbstractOutputProcessor
 {
@@ -16,9 +16,9 @@ class QualysOutputProcessor extends AbstractOutputProcessor
         $result = new ProcessorResult();
 
         $xml = simplexml_load_file($path);
-	if(!$xml) {
-		return $result;
-	}
+        if (!$xml) {
+            return $result;
+        }
         foreach ($xml->HOST_LIST->HOST as $rawHost) {
             $host = new Asset(AssetKind::Hostname, (string)$rawHost->DNS);
             $result->addAsset($host);

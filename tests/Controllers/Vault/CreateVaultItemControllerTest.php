@@ -2,6 +2,7 @@
 
 namespace Reconmap\Controllers\Vault;
 
+use GuzzleHttp\Psr7\Utils;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Models\AuditActions\VaultAuditActions;
@@ -19,7 +20,7 @@ class CreateVaultItemControllerTest extends TestCase
         $mockRequest = $this->createMock(ServerRequestInterface::class);
         $mockRequest->expects($this->once())
             ->method('getBody')
-            ->willReturn('{"name":"compromised account","value":"secret text","note":"Some note for other testers","reportable":false,"type":"password","password":"UltimateP4ssw0rd!"}');
+            ->willReturn(Utils::streamFor('{"name":"compromised account","value":"secret text","note":"Some note for other testers","reportable":false,"type":"password","password":"UltimateP4ssw0rd!"}'));
         $mockRequest->expects($this->once())
             ->method('getAttribute')
             ->with('userId')

@@ -4,7 +4,7 @@ namespace Reconmap\Services\Security;
 
 class Permissions
 {
-    public const ByRoles = [
+    public const array ByRoles = [
         'administrator' => [
             '*.*'
         ],

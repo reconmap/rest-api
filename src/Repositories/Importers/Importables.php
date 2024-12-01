@@ -4,7 +4,7 @@ namespace Reconmap\Repositories\Importers;
 
 class Importables
 {
-    public const List = [
+    public const array List = [
         'projects' => ProjectsImporter::class,
         'project_templates' => ProjectsImporter::class,
         'commands' => CommandsImporter::class,

@@ -2,9 +2,10 @@
 
 namespace Reconmap\Controllers\Tasks;
 
+use GuzzleHttp\Psr7\Utils;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
-use Reconmap\Models\AuditActions\AuditLogAction;
+use Reconmap\Models\AuditActions\TaskAuditActions;
 use Reconmap\Repositories\TaskRepository;
 use Reconmap\Services\ActivityPublisherService;
 
@@ -17,7 +18,7 @@ class UpdateTaskControllerTest extends TestCase
         $mockRequest = $this->createMock(ServerRequestInterface::class);
         $mockRequest->expects($this->once())
             ->method('getBody')
-            ->willReturn('{"summary": "new task name"}');
+            ->willReturn(Utils::streamFor('{"summary": "new task name"}'));
         $mockRequest->expects($this->once())
             ->method('getAttribute')
             ->with('userId')
@@ -32,7 +33,7 @@ class UpdateTaskControllerTest extends TestCase
         $mockPublisherService = $this->createMock(ActivityPublisherService::class);
         $mockPublisherService->expects($this->once())
             ->method('publish')
-            ->with(9, AuditLogAction::TASK_MODIFIED, ['type' => 'task', 'id' => $fakeTaskId]);
+            ->with(9, TaskAuditActions::TASK_MODIFIED, ['type' => 'task', 'id' => $fakeTaskId]);
 
         $args = ['taskId' => $fakeTaskId];
 

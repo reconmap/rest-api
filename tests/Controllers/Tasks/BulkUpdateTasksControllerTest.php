@@ -2,6 +2,7 @@
 
 namespace Reconmap\Controllers\Tasks;
 
+use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\ConsecutiveParamsTrait;
 use Reconmap\ControllerTestCase;
@@ -23,7 +24,7 @@ class BulkUpdateTasksControllerTest extends ControllerTestCase
             ->willReturn($userId);
         $request->expects($this->once())
             ->method('getBody')
-            ->willReturn(json_encode([1, 2, 3]));
+            ->willReturn(Utils::streamFor(json_encode([1, 2, 3])));
         $request->expects($this->once())
             ->method('getHeaderLine')
             ->with('Bulk-Operation')
@@ -53,7 +54,7 @@ class BulkUpdateTasksControllerTest extends ControllerTestCase
             ->willReturn($userId);
         $request->expects($this->once())
             ->method('getBody')
-            ->willReturn(json_encode(['taskIds' => [1, 2, 3], 'newStatus' => 'closed']));
+            ->willReturn(Utils::streamFor(json_encode(['taskIds' => [1, 2, 3], 'newStatus' => 'closed'])));
         $request->expects($this->once())
             ->method('getHeaderLine')
             ->with('Bulk-Operation')

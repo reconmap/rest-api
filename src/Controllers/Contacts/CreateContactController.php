@@ -7,12 +7,11 @@ use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\Contact;
 use Reconmap\Repositories\ClientContactRepository;
-use Reconmap\Repositories\ContactContactRepository;
 use Reconmap\Repositories\ContactRepository;
 
 class CreateContactController extends Controller
 {
-    public function __construct(private readonly ContactRepository $repository,
+    public function __construct(private readonly ContactRepository       $repository,
                                 private readonly ClientContactRepository $clientContactRepository)
     {
     }

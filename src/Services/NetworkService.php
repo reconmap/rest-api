@@ -6,7 +6,7 @@ class NetworkService
 {
     private array $serverVars;
 
-    public function __construct(array $serverVars = null)
+    public function __construct(?array $serverVars = null)
     {
         $this->serverVars = $serverVars ?? $_SERVER;
     }

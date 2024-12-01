@@ -3,7 +3,7 @@
 namespace Reconmap\CommandOutputParsers;
 
 use Reconmap\CommandOutputParsers\Models\ProcessorResult;
-use Reconmap\CommandOutputParsers\Models\Vulnerability;
+use Reconmap\Models\Vulnerability;
 
 class SqlmapOutputProcessor extends AbstractOutputProcessor
 {

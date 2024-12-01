@@ -66,7 +66,6 @@ class AuthMiddlewareTest extends TestCase
 
         $mockLogger = $this->createMock(Logger::class);
 
-        /** @var AuthMiddleware */
         $middleware = new AuthMiddleware($mockUserRepository, $mockKeycloak, $mockLogger, $config);
         $response = $middleware->process($request, $handler);
 
@@ -78,7 +77,7 @@ class AuthMiddlewareTest extends TestCase
         $request = $this->createMock(ServerRequestInterface::class);
         $request->expects($this->once())
             ->method('getHeader')
-            ->willReturn(null);
+            ->willReturn([]);
 
         $handler = $this->createMock(RequestHandlerInterface::class);
         $handler->expects($this->never())

@@ -2,10 +2,8 @@
 
 namespace Reconmap\CommandOutputParsers;
 
-use Reconmap\CommandOutputParsers\Models\Asset;
-use Reconmap\CommandOutputParsers\Models\AssetKind;
 use Reconmap\CommandOutputParsers\Models\ProcessorResult;
-use Reconmap\CommandOutputParsers\Models\Vulnerability;
+use Reconmap\Models\Vulnerability;
 
 class ShcheckOutputProcessor extends AbstractOutputProcessor
 {
@@ -32,12 +30,12 @@ class ShcheckOutputProcessor extends AbstractOutputProcessor
          * ]
          * }
          * }
- */
+         */
 
         $output = json_decode(file_get_contents($path), associative: true);
-        foreach($output as $value) {
-            if(isset($value['missing']) && is_array($value['missing'])) {
-                foreach($value['missing'] as $missingHeader) {
+        foreach ($output as $value) {
+            if (isset($value['missing']) && is_array($value['missing'])) {
+                foreach ($value['missing'] as $missingHeader) {
                     $vulnerability = new Vulnerability();
                     $vulnerability->summary = "Missing security header: $missingHeader";
                     $vulnerability->description = "Missing security header: $missingHeader";

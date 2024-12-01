@@ -2,12 +2,14 @@
 
 namespace Reconmap\Controllers\Vault;
 
+use GuzzleHttp\Psr7\Utils;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Models\AuditActions\VaultAuditActions;
 use Reconmap\Models\Vault;
 use Reconmap\Repositories\VaultRepository;
 use Reconmap\Services\AuditLogService;
+use Symfony\Component\HttpFoundation\Response;
 
 class ReadVaultItemControllerTest extends TestCase
 {
@@ -20,7 +22,7 @@ class ReadVaultItemControllerTest extends TestCase
         $mockRequest = $this->createMock(ServerRequestInterface::class);
         $mockRequest->expects($this->once())
             ->method('getBody')
-            ->willReturn('{"password":"P4ssw0rd!"}');
+            ->willReturn(Utils::streamFor('{"password":"P4ssw0rd!"}'));
         $mockRequest->expects($this->once())
             ->method('getAttribute')
             ->with('userId')
@@ -49,6 +51,6 @@ class ReadVaultItemControllerTest extends TestCase
 
         $controller = new ReadVaultItemController($mockRepository, $mockAuditLogService);
         $response = $controller($mockRequest, $args);
-        $this->assertEquals(\Symfony\Component\HttpFoundation\Response::HTTP_CREATED, $response->getStatusCode());
+        $this->assertEquals(Response::HTTP_CREATED, $response->getStatusCode());
     }
 }

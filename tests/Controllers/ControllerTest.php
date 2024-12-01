@@ -2,6 +2,7 @@
 
 namespace Reconmap\Controllers;
 
+use GuzzleHttp\Psr7\Utils;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\ConsecutiveParamsTrait;
@@ -23,7 +24,7 @@ class ControllerTest extends TestCase
         $mockRequest = $this->createMock(ServerRequestInterface::class);
         $mockRequest->expects($this->once())
             ->method('getBody')
-            ->willReturn('{"prop": "propvalue"}');
+            ->willReturn(Utils::streamFor('{"prop": "propvalue"}'));
         $decodedObject = $subject->getJsonBodyDecoded($mockRequest);
 
         $this->assertEquals('propvalue', $decodedObject->prop);
@@ -35,7 +36,7 @@ class ControllerTest extends TestCase
         $mockRequest = $this->createMock(ServerRequestInterface::class);
         $mockRequest->expects($this->once())
             ->method('getBody')
-            ->willReturn('{"prop": "propvalue"}');
+            ->willReturn(Utils::streamFor('{"prop": "propvalue"}'));
         $decodedObject = $subject->getJsonBodyDecodedAsArray($mockRequest);
 
         $this->assertEquals('propvalue', $decodedObject['prop']);

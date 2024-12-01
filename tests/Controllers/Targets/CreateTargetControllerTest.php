@@ -2,10 +2,12 @@
 
 namespace Reconmap\Controllers\Targets;
 
+use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\ControllerTestCase;
 use Reconmap\Models\Target;
 use Reconmap\Repositories\TargetRepository;
+use Symfony\Component\HttpFoundation\Response;
 
 class CreateTargetControllerTest extends ControllerTestCase
 {
@@ -14,7 +16,7 @@ class CreateTargetControllerTest extends ControllerTestCase
         $request = $this->createMock(ServerRequestInterface::class);
         $request->expects($this->once())
             ->method('getBody')
-            ->willReturn(json_encode(['project_id' => 1, 'name' => '192.168.0.1', 'kind' => 'host']));
+            ->willReturn(Utils::streamFor(json_encode(['project_id' => 1, 'name' => '192.168.0.1', 'kind' => 'host'])));
 
         $target = new Target();
         $target->project_id = 1;
@@ -30,7 +32,7 @@ class CreateTargetControllerTest extends ControllerTestCase
         $controller = $this->injectController(new CreateTargetController($mockVulnerabilityRepository));
         $response = $controller($request);
 
-        $this->assertEquals(\Symfony\Component\HttpFoundation\Response::HTTP_CREATED, $response->getStatusCode());
+        $this->assertEquals(Response::HTTP_CREATED, $response->getStatusCode());
         $this->assertEquals('{"targetId":5}', (string)$response->getBody());
     }
 }

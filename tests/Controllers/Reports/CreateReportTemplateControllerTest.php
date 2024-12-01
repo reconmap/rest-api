@@ -19,6 +19,10 @@ class CreateReportTemplateControllerTest extends TestCase
         $mockAttachmentFilePath->expects($this->once())
             ->method('generateFilePath')
             ->willReturn(__FILE__);
+        $mockAttachmentFilePath->expects($this->once())
+            ->method('generateBasePath')
+            ->willReturn(__DIR__);
+
         $mockRedisServer = $this->createMock(RedisServer::class);
         $mockReportRepository = $this->createMock(ReportRepository::class);
 

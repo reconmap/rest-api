@@ -2,6 +2,7 @@
 
 namespace Reconmap\Controllers\Commands;
 
+use GuzzleHttp\Psr7\Utils;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Models\Command;
@@ -28,7 +29,7 @@ class CreateCommandControllerTest extends TestCase
             ->willReturn(9);
         $mockRequest->expects($this->once())
             ->method('getBody')
-            ->willReturn('{"name": "co_mmand"}');
+            ->willReturn(Utils::streamFor('{"name": "co_mmand"}'));
 
         $controller = new CreateCommandController($mockProjectRepository);
         $response = $controller($mockRequest);

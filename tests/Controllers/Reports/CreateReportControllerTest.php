@@ -2,6 +2,7 @@
 
 namespace Reconmap\Controllers\Reports;
 
+use GuzzleHttp\Psr7\Utils;
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
@@ -22,7 +23,7 @@ class CreateReportControllerTest extends TestCase
             ->willReturn(9);
         $mockRequest->expects($this->once())
             ->method('getBody')
-            ->willReturn('{"projectId": 5, "reportTemplateId": 1, "name": "1.0", "description": "Draft"}');
+            ->willReturn(Utils::streamFor('{"projectId": 5, "reportTemplateId": 1, "name": "1.0", "description": "Draft"}'));
 
         $mockProject = ['name' => 'A project'];
 

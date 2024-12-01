@@ -4,7 +4,7 @@ namespace Reconmap\Repositories\Exporters;
 
 class Exportables
 {
-    public const List = [
+    public const array List = [
         ['key' => 'audit_log', 'description' => 'Audit log', 'className' => AuditLogExporter::class],
         ['key' => 'clients', 'description' => 'Clients', 'className' => ClientsExporter::class],
         ['key' => 'commands', 'description' => 'Commands', 'className' => CommandsExporter::class],
