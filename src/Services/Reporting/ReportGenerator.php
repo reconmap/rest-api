@@ -4,11 +4,11 @@ namespace Reconmap\Services\Reporting;
 
 use Reconmap\Services\TemplateEngine;
 
-class ReportGenerator
+readonly class ReportGenerator
 {
     public function __construct(
-        private readonly ReportDataCollector $reportDataCollector,
-        private readonly TemplateEngine      $templateEngine)
+        private ReportDataCollector $reportDataCollector,
+        private TemplateEngine      $templateEngine)
     {
     }
 

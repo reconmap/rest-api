@@ -3,6 +3,7 @@
 namespace Reconmap\Controllers;
 
 use GuzzleHttp\Psr7\Response;
+use JsonMapper;
 use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -43,7 +44,7 @@ abstract class Controller implements ServiceSubscriberInterface
 
     public function getJsonAsClass(array|object $json, object $instance, bool $strictNullTypes = true): object
     {
-        $jsonMapper = new \JsonMapper();
+        $jsonMapper = new JsonMapper();
         $jsonMapper->bStrictNullTypes = $strictNullTypes;
         $object = $jsonMapper->map($json, $instance);
         if ($object instanceof Cleanable) {
@@ -59,27 +60,27 @@ abstract class Controller implements ServiceSubscriberInterface
 
     protected function createInternalServerErrorResponse(): ResponseInterface
     {
-        return (new Response())->withStatus(\Symfony\Component\HttpFoundation\Response::HTTP_INTERNAL_SERVER_ERROR);
+        return new Response()->withStatus(\Symfony\Component\HttpFoundation\Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     protected function createForbiddenResponse(): ResponseInterface
     {
-        return (new Response())->withStatus(\Symfony\Component\HttpFoundation\Response::HTTP_FORBIDDEN);
+        return new Response()->withStatus(\Symfony\Component\HttpFoundation\Response::HTTP_FORBIDDEN);
     }
 
     protected function createNoContentResponse(): ResponseInterface
     {
-        return (new Response())->withStatus(\Symfony\Component\HttpFoundation\Response::HTTP_NO_CONTENT);
+        return new Response()->withStatus(\Symfony\Component\HttpFoundation\Response::HTTP_NO_CONTENT);
     }
 
     protected function createBadRequestResponse(): ResponseInterface
     {
-        return (new Response())->withStatus(\Symfony\Component\HttpFoundation\Response::HTTP_BAD_REQUEST);
+        return new Response()->withStatus(\Symfony\Component\HttpFoundation\Response::HTTP_BAD_REQUEST);
     }
 
     protected function createNotFoundResponse(): ResponseInterface
     {
-        return (new Response())->withStatus(\Symfony\Component\HttpFoundation\Response::HTTP_NOT_FOUND);
+        return new Response()->withStatus(\Symfony\Component\HttpFoundation\Response::HTTP_NOT_FOUND);
     }
 
     protected function createDeletedResponse(): ResponseInterface
@@ -89,14 +90,14 @@ abstract class Controller implements ServiceSubscriberInterface
 
     protected function createOkResponse(): ResponseInterface
     {
-        return (new Response())->withStatus(\Symfony\Component\HttpFoundation\Response::HTTP_OK);
+        return new Response()->withStatus(\Symfony\Component\HttpFoundation\Response::HTTP_OK);
     }
 
     protected function createStatusCreatedResponse(string|array|object $body): ResponseInterface
     {
         $jsonBody = is_string($body) ? $body : json_encode($body);
 
-        $response = (new Response())
+        $response = new Response()
             ->withStatus(\Symfony\Component\HttpFoundation\Response::HTTP_CREATED)
             ->withHeader('Content-type', 'application/json');
         $response->getBody()->write($jsonBody);

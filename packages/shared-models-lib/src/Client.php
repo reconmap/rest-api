@@ -9,6 +9,7 @@ class Client {
 
 	public ?int $id;
 	public ?int $creator_uid;
+	public string $kind;
 	public ?string $insert_ts;
 	public ?string $update_ts;
 	public ?string $name;

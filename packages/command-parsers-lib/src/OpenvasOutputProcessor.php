@@ -27,7 +27,7 @@ class OpenvasOutputProcessor extends AbstractOutputProcessor
 
             foreach ($rawHost->nvt as $rawVulnerability) {
                 $vulnerability = new Vulnerability();
-                $vulnerability->summary = (string)$rawVulnerability->name . ' - ' . (string)$rawVulnerability->cve;
+                $vulnerability->summary = $rawVulnerability->name . ' - ' . $rawVulnerability->cve;
 
                 $tags = explode('|', (string)$rawVulnerability->tags);
                 foreach ($tags as $tag) {
@@ -49,7 +49,7 @@ class OpenvasOutputProcessor extends AbstractOutputProcessor
                 $vulnerability->external_refs = (string)$rawVulnerability->xref;
 
                 // @todo process refs/ref type[url] id
-                $vulnerability->description = preg_replace('/^ +/', '', (string)$rawVulnerability->description);
+                $vulnerability->description = ltrim((string)$rawVulnerability->description, " ");
                 $vulnerability->severity = (string)$rawVulnerability->severity;
 
                 $risk = strtolower((string)$rawVulnerability->threat);

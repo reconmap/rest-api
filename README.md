@@ -47,7 +47,8 @@ curl http://localhost:5510
 
 **We are glad you are thinking about contributing to this project.** All help is hugely appreciated.
 
-Before you jump to make any changes make sure you have read the [contributing guidelines](CONTRIBUTING.md). This would
+Before you jump to make any changes make sure you have read
+the [contributing guidelines](https://github.com/reconmap/.github/blob/main/CONTRIBUTING.md). This would
 save us all time. Thanks!
 
 ## How to report bugs or feature requests

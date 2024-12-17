@@ -31,7 +31,7 @@ class NessusOutputProcessor extends AbstractOutputProcessor
 
                 $vulnerability = new Vulnerability();
                 $vulnerability->summary = (string)$rawVulnerability->synopsis;
-                $vulnerability->description = preg_replace('/^ +/', '', (string)$rawVulnerability->description);
+                $vulnerability->description = ltrim((string)$rawVulnerability->description, " ");
                 $vulnerability->risk = $risk;
                 $vulnerability->remediation = $remediation;
                 $vulnerability->severity = (string)$rawVulnerability['severity'];

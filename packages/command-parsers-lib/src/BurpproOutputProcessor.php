@@ -36,7 +36,7 @@ class BurpproOutputProcessor extends AbstractOutputProcessor
             $vulnerability->summary = (string)$rawVulnerability->name;
             $htmlDescription = (string)$rawVulnerability->issueDetail;
             $description = $markdown->convert($htmlDescription);
-            $vulnerability->description = preg_replace('/^ +/', '', $description);
+            $vulnerability->description = ltrim($description, " ");
             $vulnerability->remediation = $remediation;
 
             $vulnerability->asset = new Asset(kind: AssetKind::Hostname, value: (string)$rawVulnerability->host);

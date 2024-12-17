@@ -13,7 +13,6 @@ use Reconmap\Controllers\Commands\CommandsRouter;
 use Reconmap\Controllers\Contacts\ContactsRouter;
 use Reconmap\Controllers\Documents\DocumentsRouter;
 use Reconmap\Controllers\Notes\NotesRouter;
-use Reconmap\Controllers\Organisations\OrganisationsRouter;
 use Reconmap\Controllers\Projects\ProjectsRouter;
 use Reconmap\Controllers\Reports\ReportsRouter;
 use Reconmap\Controllers\System\SystemRouter;
@@ -35,7 +34,6 @@ class ControllerRoutesTest extends TestCase
             [ClientsRouter::class],
             [DocumentsRouter::class],
             [NotesRouter::class],
-            [OrganisationsRouter::class],
             [ProjectsRouter::class],
             [ReportsRouter::class],
             [SystemRouter::class],

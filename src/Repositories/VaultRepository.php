@@ -109,8 +109,7 @@ class VaultRepository extends MysqlRepository
     {
         $searchCriteria = new VaultSearchCriteria();
         $searchCriteria->addProjectCriterion($projectId);
-        $test = $this->search($searchCriteria);
-        return $test;
+        return $this->search($searchCriteria);
     }
 
     public function readVaultItem(int $projectId, int $vaultItemId, string $password): Vault|null

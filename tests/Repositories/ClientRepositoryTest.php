@@ -43,6 +43,8 @@ class ClientRepositoryTest extends DatabaseTestCase
         $client = new Client();
         $client->creator_uid = 1;
         $client->name = 'Awesome client';
+        $client->kind = 'client';
+        $client->address = 'Fake address 123';
         $client->contact_name = 'Some Body';
         $client->contact_email = 'some@body';
         $this->assertIsInt($this->subject->insert($client));

@@ -166,11 +166,11 @@ INSERT INTO project (creator_uid, name, description, engagement_end_date)
 VALUES (1, 'Onboarding to Reconmap', 'Project to ensure all Reconmap\'s onboarding tasks are done in order.',
         CURRENT_DATE);
 
-INSERT INTO task (creator_uid, assignee_uid, project_id, summary, description)
-VALUES (1, 1, 1, '1. Update your organisation details', '[Follow this link](/settings/organisation)'),
-       (1, 1, 1, '2. Update your preferences', '[Follow this link](/users/preferences)'),
-       (1, 1, 1, '3. Invite your team', '[Follow this link](/users/create)'),
-       (1, 1, 1, '4. Create client', '[Follow this link](/clients/create)'),
-       (1, 1, 1, '5. Create project', '[Follow this link](/projects/create)'),
-       (1, 1, 1, '6. Archive the onboarding project', NULL);
+INSERT INTO task (creator_uid, assignee_uid, project_id, summary, description, priority)
+VALUES (1, 1, 1, '1. Update your organisation details', '[Follow this link](/settings/organisation)', 'medium'),
+       (1, 1, 1, '2. Update your preferences', '[Follow this link](/users/preferences)', 'medium'),
+       (1, 1, 1, '3. Invite your team', '[Follow this link](/users/create)', 'medium'),
+       (1, 1, 1, '4. Create client', '[Follow this link](/clients/create)', 'medium'),
+       (1, 1, 1, '5. Create project', '[Follow this link](/projects/create)', 'medium'),
+       (1, 1, 1, '6. Archive the onboarding project', NULL, 'medium');
 

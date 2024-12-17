@@ -69,7 +69,7 @@ class CreateReportController extends Controller
         try {
             $templateFilePath = $this->attachmentFilePathService->generateFilePathFromAttachment($reportTemplateAttachment);
             $template = new TemplateProcessor($templateFilePath);
-            $template->setUpdateFields(true);
+            $template->setUpdateFields();
 
             $template->setValue('date', $vars['date']);
             foreach (ArrayUtils::flatten($vars['project'], 'project.') as $key => $value) {
@@ -84,7 +84,7 @@ class CreateReportController extends Controller
             }
 
             $attachments = $vars['project']['attachments'] ?? [];
-            if(!empty($attachments)) {
+            if (!empty($attachments)) {
                 $template->cloneBlock('attachments', count($attachments), true, true);
                 foreach ($attachments as $index => $attach) {
                     $template->setImageValue('attachment.image#' . ($index + 1), $attach);
@@ -92,7 +92,7 @@ class CreateReportController extends Controller
             }
 
             try {
-                $template->cloneRow('user.full_name', count($vars['users']), true, true);
+                $template->cloneRow('user.full_name', count($vars['users']));
                 foreach ($vars['users'] as $index => $user) {
                     $template->setValue('user.full_name#' . ($index + 1), $user['full_name']);
                     $template->setValue('user.short_bio#' . ($index + 1), $user['short_bio']);
@@ -120,7 +120,7 @@ class CreateReportController extends Controller
                 $this->logger->warning("Error in logo section: [$msg]");
             }
 
-            if(!empty($vars['vault'])) {
+            if (!empty($vars['vault'])) {
                 try {
                     $template->cloneRow('vault.name', count($vars['vault']));
                     foreach ($vars['vault'] as $index => $item) {
@@ -224,7 +224,7 @@ class CreateReportController extends Controller
                 $this->logger->warning("Error in vulnerabilities section: [$msg]");
             }
 
-            if(!empty($vars['contacts'])) {
+            if (!empty($vars['contacts'])) {
                 try {
                     $template->cloneBlock('contacts', count($vars['contacts']), true, true);
                     foreach ($vars['contacts'] as $index => $vulnerability) {
@@ -240,7 +240,7 @@ class CreateReportController extends Controller
                 }
             }
 
-            if(!empty($vars['parentCategories'])) {
+            if (!empty($vars['parentCategories'])) {
                 try {
                     $template->cloneBlock('category.group', count($vars['parentCategories']), true, true);
                     foreach ($vars['parentCategories'] as $index => $category) {
@@ -253,7 +253,7 @@ class CreateReportController extends Controller
                 }
             }
 
-            if(!empty($vars['categories'])) {
+            if (!empty($vars['categories'])) {
                 try {
                     $template->cloneBlock('category.name', count($vars['categories']), true, true);
                     foreach ($vars['categories'] as $index => $category) {

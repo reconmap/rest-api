@@ -46,9 +46,11 @@ class TestDataGenerator
         $contact->id = $this->contactRepository->insert($contact);
 
         $client = new Client();
+        $client->kind = 'client';
         $client->creator_uid = 1;
         $client->name = 'Insecure Co.';
         $client->url = 'http://in.se.cure';
+        $client->address = 'Fake address 124';
         $client->contact_id = $contact->id;
         $this->clientRepository->insert($client);
 
@@ -60,10 +62,12 @@ class TestDataGenerator
         $contact->id = $this->contactRepository->insert($contact);
 
         $client = new Client();
+        $client->kind = 'client';
         $client->creator_uid = 1;
         $client->name = 'The OWASP Foundation';
         $client->url = 'https://owasp.org';
         $client->contact_id = $contact->id;
+        $client->address = 'Fake address 124';
         $this->clientRepository->insert($client);
 
         $document = new Document();

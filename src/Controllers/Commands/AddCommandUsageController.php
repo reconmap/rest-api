@@ -5,9 +5,7 @@ namespace Reconmap\Controllers\Commands;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Models\CommandSchedule;
 use Reconmap\Models\CommandUsage;
-use Reconmap\Repositories\CommandScheduleRepository;
 use Reconmap\Repositories\CommandUsageRepository;
 
 class AddCommandUsageController extends Controller

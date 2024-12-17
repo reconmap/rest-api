@@ -6,7 +6,6 @@ use League\CommonMark\GithubFlavoredMarkdownConverter;
 use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Repositories\ClientRepository;
 use Reconmap\Repositories\ContactRepository;
-use Reconmap\Repositories\OrganisationRepository;
 use Reconmap\Repositories\ProjectRepository;
 use Reconmap\Repositories\ReportConfigurationRepository;
 use Reconmap\Repositories\ReportRepository;
@@ -21,23 +20,24 @@ use Reconmap\Repositories\VulnerabilityCategoryRepository;
 use Reconmap\Repositories\VulnerabilityRepository;
 use Reconmap\Services\Filesystem\AttachmentFilePath;
 
-class ReportDataCollector
+readonly class ReportDataCollector
 {
+    private const int RootOrganisationId = 1;
+
     public function __construct(
-        private readonly ProjectRepository               $projectRepository,
-        private readonly ReportRepository                $reportRepository,
-        private readonly ReportConfigurationRepository   $reportConfigurationRepository,
-        private readonly VulnerabilityRepository         $vulnerabilityRepository,
-        private readonly VulnerabilityCategoryRepository $vulnerabilityCategoryRepository,
-        private readonly OrganisationRepository          $organisationRepository,
-        private readonly UserRepository                  $userRepository,
-        private readonly ClientRepository                $clientRepository,
-        private readonly TaskRepository                  $taskRepository,
-        private readonly TargetRepository                $targetRepository,
-        private readonly ContactRepository               $contactRepository,
-        private readonly AttachmentRepository            $attachmentRepository,
-        private readonly AttachmentFilePath              $attachmentFilePathService,
-        private readonly VaultRepository                 $vaultRepository,
+        private ProjectRepository               $projectRepository,
+        private ReportRepository                $reportRepository,
+        private ReportConfigurationRepository   $reportConfigurationRepository,
+        private VulnerabilityRepository         $vulnerabilityRepository,
+        private VulnerabilityCategoryRepository $vulnerabilityCategoryRepository,
+        private UserRepository                  $userRepository,
+        private ClientRepository                $clientRepository,
+        private TaskRepository                  $taskRepository,
+        private TargetRepository                $targetRepository,
+        private ContactRepository               $contactRepository,
+        private AttachmentRepository            $attachmentRepository,
+        private AttachmentFilePath              $attachmentFilePathService,
+        private VaultRepository                 $vaultRepository,
     )
     {
     }
@@ -76,7 +76,7 @@ class ReportDataCollector
 
         $markdownParser = new GithubFlavoredMarkdownConverter();
 
-        $organisation = $this->organisationRepository->findRootOrganisation();
+        $organisation = $this->clientRepository->findById(self::RootOrganisationId);
         $logos = [];
         if ($organisation and $organisation->small_logo_attachment_id) {
             $logos['org_small_logo'] = $this->attachmentFilePathService->generateFilePath($this->attachmentRepository->getFileNameById($organisation->small_logo_attachment_id));

@@ -8,7 +8,7 @@ use Reconmap\Repositories\ReportRepository;
 
 class GetReportsController extends Controller
 {
-    public function __construct(private ReportRepository $reportRepository)
+    public function __construct(private readonly ReportRepository $reportRepository)
     {
     }
 

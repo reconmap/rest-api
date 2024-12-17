@@ -7,6 +7,7 @@ use Reconmap\Models\Client;
 class ClientRepository extends MysqlRepository implements Updateable, Findable
 {
     public const array UPDATABLE_COLUMNS_TYPES = [
+        'kind' => 's',
         'name' => 's',
         'address' => 's',
         'url' => 's',
@@ -58,9 +59,11 @@ SQL;
 
     public function insert(Client $client): int
     {
-        $stmt = $this->db->prepare('INSERT INTO client (creator_uid, name, address, url, logo_attachment_id, small_logo_attachment_id) VALUES (?, ?, ?, ?, ?, ?)');
-        $stmt->bind_param('isssii', $client->creator_uid, $client->name, $client->address, $client->url, $client->logo_attachment_id, $client->small_logo_attachment_id);
-        return $this->executeInsertStatement($stmt);
+        $stmt = $this->db->prepare('INSERT INTO client (kind, creator_uid, name, address, url, logo_attachment_id, small_logo_attachment_id) VALUES (?, ?, ?, ?, ?, ?, ?)');
+        if (false === $stmt->execute([$client->kind, $client->creator_uid, $client->name, $client->address, $client->url, $client->logo_attachment_id, $client->small_logo_attachment_id])) {
+            throw new \Exception('Failed to insert organisation record');
+        }
+        return $stmt->insert_id;
     }
 
     public function updateById(int $id, array $newColumnValues): bool

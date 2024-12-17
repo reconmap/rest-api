@@ -26,7 +26,7 @@ class GetHealthController extends Controller
         return [
             'attachmentsDirectory' => $this->directoryChecker->checkDirectoryIsWriteable($attachmentBasePath),
             'databaseServer' => [
-                'reachable' => $this->mysqlServer->ping()
+                'reachable' => $this->mysqlServer->ping() // @todo Replace or remove
             ],
             'keyValueServer' => [
                 'reachable' => $this->isRedisServerReachable()
