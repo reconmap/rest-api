@@ -8,7 +8,6 @@ use Reconmap\Models\ReportConfiguration;
 use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Repositories\ClientRepository;
 use Reconmap\Repositories\ContactRepository;
-use Reconmap\Repositories\OrganisationRepository;
 use Reconmap\Repositories\ProjectRepository;
 use Reconmap\Repositories\ReportConfigurationRepository;
 use Reconmap\Repositories\ReportRepository;
@@ -29,7 +28,6 @@ class ReportDataCollectorTest extends TestCase
         $reportConfigurationRepository = $this->createMock(ReportConfigurationRepository::class);
         $vulnerabilityRepository = $this->createMock(VulnerabilityRepository::class);
         $vulnerabilityCategoryRepository = $this->createMock(VulnerabilityCategoryRepository::class);
-        $organisationRepository = $this->createMock(OrganisationRepository::class);
         $userRepository = $this->createMock(UserRepository::class);
         $clientRepository = $this->createMock(ClientRepository::class);
         $taskRepository = $this->createMock(TaskRepository::class);
@@ -39,8 +37,8 @@ class ReportDataCollectorTest extends TestCase
         $attachmentFilePath = $this->createMock(AttachmentFilePath::class);
         $vaultRepository = $this->createMock(VaultRepository::class);
 
-        $dataCollector = new ReportDataCollector($projectRepository, $reportRepository, $reportConfigurationRepository, $vulnerabilityRepository, $vulnerabilityCategoryRepository, $organisationRepository,
-                            $userRepository, $clientRepository, $taskRepository, $targetRepository, $contactRepository, $attachmentRepository, $attachmentFilePath, $vaultRepository);
+        $dataCollector = new ReportDataCollector($projectRepository, $reportRepository, $reportConfigurationRepository, $vulnerabilityRepository, $vulnerabilityCategoryRepository,
+            $userRepository, $clientRepository, $taskRepository, $targetRepository, $contactRepository, $attachmentRepository, $attachmentFilePath, $vaultRepository);
         $result = $dataCollector->collectForProject(0);
         $this->assertEquals([], $result);
     }
@@ -62,7 +60,6 @@ class ReportDataCollectorTest extends TestCase
 
         $vulnerabilityRepository = $this->createMock(VulnerabilityRepository::class);
         $vulnerabilityCategoryRepository = $this->createMock(VulnerabilityCategoryRepository::class);
-        $organisationRepository = $this->createMock(OrganisationRepository::class);
         $userRepository = $this->createMock(UserRepository::class);
         $clientRepository = $this->createMock(ClientRepository::class);
         $taskRepository = $this->createMock(TaskRepository::class);
@@ -72,8 +69,8 @@ class ReportDataCollectorTest extends TestCase
         $attachmentFilePath = $this->createMock(AttachmentFilePath::class);
         $vaultRepository = $this->createMock(VaultRepository::class);
 
-        $dataCollector = new ReportDataCollector($projectRepository, $reportRepository, $reportConfigurationRepository, $vulnerabilityRepository, $vulnerabilityCategoryRepository, $organisationRepository,
-                            $userRepository, $clientRepository, $taskRepository, $targetRepository, $contactRepository, $attachmentRepository, $attachmentFilePath, $vaultRepository);
+        $dataCollector = new ReportDataCollector($projectRepository, $reportRepository, $reportConfigurationRepository, $vulnerabilityRepository, $vulnerabilityCategoryRepository,
+            $userRepository, $clientRepository, $taskRepository, $targetRepository, $contactRepository, $attachmentRepository, $attachmentFilePath, $vaultRepository);
         $result = $dataCollector->collectForProject(0);
 
         $expectedResult = ['configuration' => $reportConfiguration,

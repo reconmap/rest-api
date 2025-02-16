@@ -8,7 +8,7 @@ use Reconmap\Repositories\IntegrationsRepository;
 
 class GetIntegrationsController extends Controller
 {
-    public function __construct(private IntegrationsRepository $integrationsRepository)
+    public function __construct(private readonly IntegrationsRepository $integrationsRepository)
     {
     }
 
