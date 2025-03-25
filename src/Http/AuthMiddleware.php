@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Http;
 
@@ -20,12 +22,12 @@ use Reconmap\Services\KeycloakService;
 
 readonly class AuthMiddleware implements MiddlewareInterface
 {
-    public function __construct(private UserRepository    $userRepository,
-                                private KeycloakService   $keycloak,
-                                private Logger            $logger,
-                                private ApplicationConfig $config)
-    {
-    }
+    public function __construct(
+        private UserRepository    $userRepository,
+        private KeycloakService   $keycloak,
+        private Logger            $logger,
+        private ApplicationConfig $config
+    ) {}
 
     /**
      * @throws ForbiddenException|Exception
@@ -43,7 +45,7 @@ readonly class AuthMiddleware implements MiddlewareInterface
                 throw new ForbiddenException("Invalid JWT issuer: " . $token->iss);
             }
 
-            if (isset($token->clientId) && $token->clientId === 'admin-cli') {
+            if (isset($token->azp) && $token->azp === 'admin-cli') {
                 $request = $request->withAttribute('userId', 0)
                     ->withAttribute('role', 'administrator'); // api
 
@@ -60,10 +62,9 @@ readonly class AuthMiddleware implements MiddlewareInterface
                 $tokenRole = $this->extractRoleFromToken($token);
                 $request = $request->withAttribute('userId', $dbUser['id'])
                     ->withAttribute('role', $tokenRole);
-
             }
             return $handler->handle($request);
-        } catch (ForbiddenException|ExpiredException $e) {
+        } catch (ForbiddenException | ExpiredException $e) {
             $this->logger->warning($e->getMessage());
             return (new Response)->withStatus(\Symfony\Component\HttpFoundation\Response::HTTP_UNAUTHORIZED)
                 ->withBody(Utils::streamFor($e->getMessage()));
