@@ -24,7 +24,7 @@ endif
 define composer_install 
 	echo
 	echo Running composer install on $(1)
-	docker-compose run --rm --user reconmapper -w $(1) --entrypoint composer api install
+	docker compose run --rm --user reconmapper -w $(1) --entrypoint composer api install
 endef
 
 .PHONY: prepare-config
@@ -46,47 +46,47 @@ prepare: prepare-config prepare-dirs build install-deps
 
 .PHONY: build
 build:
-	docker-compose build --no-cache --build-arg HOST_UID=$(HOST_UID) --build-arg HOST_GID=$(HOST_GID)
+	docker compose build --no-cache --build-arg HOST_UID=$(HOST_UID) --build-arg HOST_GID=$(HOST_GID)
 
 .PHONY: tests
 tests: start validate
-	docker-compose run --rm -e WAIT_HOSTS=$(DB_CONTAINER):3306 -e WAIT_TIMEOUT=60 --entrypoint /usr/local/bin/wait waiter
+	docker compose run --rm -e WAIT_HOSTS=$(DB_CONTAINER):3306 -e WAIT_TIMEOUT=60 --entrypoint /usr/local/bin/wait waiter
 	echo Importing SQL files: $(wildcard database/0*.sql)
 	cat tests/database.sql | docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet
 	cat database/0*.sql | sed "s/USE reconmap;/USE reconmap_test;/" | docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet reconmap_test
-	docker-compose run --rm -w /var/www/webapp --entrypoint php api src/Cli/app.php test:generate-data --use-test-database
-	docker-compose run --rm -w /var/www/webapp -e CURRENT_PLANET=Moon --entrypoint ./run-tests.sh api
+	docker compose run --rm -w /var/www/webapp --entrypoint php api src/Cli/app.php test:generate-data --use-test-database
+	docker compose run --rm -w /var/www/webapp -e CURRENT_PLANET=Moon --entrypoint ./run-tests.sh api
 	docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet -e "DROP DATABASE reconmap_test"
 
 .PHONY: security-tests
 security-tests:
-	docker-compose run --rm -w /var/www/webapp --entrypoint bash api -c "wget https://github.com/fabpot/local-php-security-checker/releases/download/v2.0.5/local-php-security-checker_2.0.5_linux_amd64 -O security-checker && chmod +x security-checker && ./security-checker"
+	docker compose run --rm -w /var/www/webapp --entrypoint bash api -c "wget https://github.com/fabpot/local-php-security-checker/releases/download/v2.0.5/local-php-security-checker_2.0.5_linux_amd64 -O security-checker && chmod +x security-checker && ./security-checker"
 
 .PHONY: start
 start: prepare-config prepare-dirs
-	docker-compose up -d
+	docker compose up -d
 
 .PHONY: validate
 validate:
-	docker-compose run --rm -w /var/www/webapp --entrypoint composer api validate --strict
+	docker compose run --rm -w /var/www/webapp --entrypoint composer api validate --strict
 
 .PHONY: stop
 stop:
-	docker-compose stop
+	docker compose stop
 
 .PHONY: clean
 clean: stop
-	docker-compose down -v --remove-orphans
-	docker-compose rm
+	docker compose down -v --remove-orphans
+	docker compose rm
 	rm -rf {data-mysql,data-redis}
 
 .PHONY: api-shell
 api-shell:
-	@docker-compose exec -u reconmapper -w /var/www/webapp api bash
+	@docker compose exec -u reconmapper -w /var/www/webapp api bash
 
 .PHONY: api-rootshell
 api-rootshell:
-	@docker-compose exec -u root -w /var/www/webapp api bash
+	@docker compose exec -u root -w /var/www/webapp api bash
 
 .PHONY: cache-clear
 cache-clear:
@@ -97,13 +97,13 @@ push:
 	docker tag $(DOCKER_IMAGE_NAME):latest $(DOCKER_IMAGE_NAME):$(GIT_BRANCH_NAME)
 	docker push $(DOCKER_IMAGE_NAME):$(GIT_BRANCH_NAME)
 	docker push $(DOCKER_IMAGE_NAME):latest
-	docker-compose push mysql
+	docker compose push mysql
 
 # Database targets
 
 .PHONY: db-shell
 db-shell:
-	@docker-compose exec mysql mysql --silent -uroot -preconmuppet reconmap
+	@docker compose exec mysql mysql --silent -uroot -preconmuppet reconmap
 
 .PHONY: db-reset
 db-reset:
@@ -119,4 +119,4 @@ db-migrate:
 
 .PHONY: redis-shell
 redis-shell:
-	@docker-compose exec redis redis-cli
+	@docker compose exec redis redis-cli
