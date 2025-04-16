@@ -33,7 +33,7 @@ class TaskRepository extends MysqlRepository implements Findable
         }
         $sql = $selectQueryBuilder->toSql();
 
-        $result = $this->db->query($sql);
+        $result = $this->mysqlServer->query($sql);
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
@@ -58,7 +58,7 @@ class TaskRepository extends MysqlRepository implements Findable
 
         $keywordsLike = "%$keywords%";
 
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->mysqlServer->prepare($sql);
         $stmt->bind_param('ss', $keywordsLike, $keywordsLike);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -103,7 +103,7 @@ class TaskRepository extends MysqlRepository implements Findable
         $queryBuilder->setWhere('t.id = ?');
         $sql = $queryBuilder->toSql();
 
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->mysqlServer->prepare($sql);
         $stmt->bind_param('i', $id);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -132,7 +132,7 @@ class TaskRepository extends MysqlRepository implements Findable
     {
         $insertStmt = new InsertQueryBuilder('task');
         $insertStmt->setColumns('creator_uid, project_id, priority, summary, description, due_date, command_id');
-        $stmt = $this->db->prepare($insertStmt->toSql());
+        $stmt = $this->mysqlServer->prepare($insertStmt->toSql());
         $stmt->bind_param('iissssi', $task->creator_uid, $task->project_id, $task->priority, $task->summary, $task->description, $task->due_date, $task->command_id);
         return $this->executeInsertStatement($stmt);
     }

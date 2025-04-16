@@ -5,7 +5,6 @@ namespace Reconmap\Repositories;
 use Ponup\SqlBuilders\InsertQueryBuilder;
 use Ponup\SqlBuilders\SearchCriteria;
 use Ponup\SqlBuilders\SelectQueryBuilder;
-use Reconmap\Models\Command;
 use Reconmap\Models\CommandUsage;
 use Reconmap\Services\PaginationRequestHandler;
 
@@ -33,7 +32,7 @@ FROM
 WHERE c.id = ?
 SQL;
 
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->mysqlServer->prepare($sql);
         $stmt->bind_param('i', $id);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -49,7 +48,7 @@ SQL;
         $queryBuilder->setWhere('cu.command_id = ?');
         $sql = $queryBuilder->toSql();
 
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->mysqlServer->prepare($sql);
         $stmt->execute([$commandId]);
         $result = $stmt->get_result();
         return $result->fetch_all(MYSQLI_ASSOC);
@@ -60,7 +59,7 @@ SQL;
         $selectQueryBuilder = $this->getBaseSelectQueryBuilder();
         $sql = $selectQueryBuilder->toSql();
 
-        $result = $this->db->query($sql);
+        $result = $this->mysqlServer->query($sql);
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
@@ -85,8 +84,8 @@ SQL;
     {
         $insertStmt = new InsertQueryBuilder('command_usage');
         $insertStmt->setColumns('creator_uid, command_id, name, description, arguments, executable_path, output_filename, tags, output_parser');
-        $stmt = $this->db->prepare($insertStmt->toSql());
-        $stmt->bind_param('iisssssss', $command->creator_uid,  $command->command_id, $command->name, $command->description, $command->arguments, $command->executable_path, $command->output_filename, $command->tags, $command->output_parser);
+        $stmt = $this->mysqlServer->prepare($insertStmt->toSql());
+        $stmt->bind_param('iisssssss', $command->creator_uid, $command->command_id, $command->name, $command->description, $command->arguments, $command->executable_path, $command->output_filename, $command->tags, $command->output_parser);
         return $this->executeInsertStatement($stmt);
     }
 

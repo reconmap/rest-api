@@ -8,7 +8,7 @@ class NoteRepository extends MysqlRepository
 {
     public function findByParentId(?string $parentType, int $parentId): array
     {
-        $stmt = $this->db->prepare('SELECT n.*, u.username AS user_name FROM note AS n INNER JOIN user u ON (u.id = n.user_id) WHERE n.parent_type = ? AND n.parent_id = ? ORDER BY n.insert_ts DESC');
+        $stmt = $this->mysqlServer->prepare('SELECT n.*, u.username AS user_name FROM note AS n INNER JOIN user u ON (u.id = n.user_id) WHERE n.parent_type = ? AND n.parent_id = ? ORDER BY n.insert_ts DESC');
         $stmt->bind_param('si', $parentType, $parentId);
         $stmt->execute();
         $rs = $stmt->get_result();
@@ -25,7 +25,7 @@ class NoteRepository extends MysqlRepository
 
     public function insert(Note $note): int
     {
-        $stmt = $this->db->prepare('INSERT INTO note (user_id, parent_type, parent_id, visibility, content) VALUES (?, ?, ?, ?, ?)');
+        $stmt = $this->mysqlServer->prepare('INSERT INTO note (user_id, parent_type, parent_id, visibility, content) VALUES (?, ?, ?, ?, ?)');
         $stmt->bind_param('isiss', $note->user_id, $note->parent_type, $note->parent_id, $note->visibility, $note->content);
         return $this->executeInsertStatement($stmt);
     }

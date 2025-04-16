@@ -26,7 +26,7 @@ class VaultRepository extends MysqlRepository
         $encrypted_data = $this->encryptRecord($vault->value, $password);
         $insertStmt = new InsertQueryBuilder(self::TABLE_NAME);
         $insertStmt->setColumns('name, value, reportable, note, type, project_id, record_iv');
-        $stmt = $this->db->prepare($insertStmt->toSql());
+        $stmt = $this->mysqlServer->prepare($insertStmt->toSql());
         $stmt->bind_param('ssissis', $vault->name, $encrypted_data['cipher_text'], $vault->reportable, $vault->note, $vault->type, $vault->project_id, $encrypted_data['iv']);
         return $this->executeInsertStatement($stmt);
     }

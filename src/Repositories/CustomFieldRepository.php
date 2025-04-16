@@ -24,7 +24,7 @@ class CustomFieldRepository extends MysqlRepository implements Deletable
             $queryBuilder->setWhere('n.parent_type = ? AND n.parent_id = ?');
         }
 
-        $stmt = $this->db->prepare($queryBuilder->toSql());
+        $stmt = $this->mysqlServer->prepare($queryBuilder->toSql());
         if (is_null($parentId)) {
             $stmt->bind_param('s', $parentType);
         } else {
@@ -42,7 +42,7 @@ class CustomFieldRepository extends MysqlRepository implements Deletable
     {
         $queryBuilder = $this->getBaseSelectQueryBuilder();
         $queryBuilder->setWhere('n.id = ?');
-        $stmt = $this->db->prepare($queryBuilder->toSql());
+        $stmt = $this->mysqlServer->prepare($queryBuilder->toSql());
         $stmt->bind_param('i', $id);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -59,7 +59,7 @@ class CustomFieldRepository extends MysqlRepository implements Deletable
 
     public function insert(CustomField $customField): bool
     {
-        $stmt = $this->db->prepare('INSERT INTO custom_field (parent_type, name, label, kind, config) VALUES (?, ?, ?, ?, ?)');
+        $stmt = $this->mysqlServer->prepare('INSERT INTO custom_field (parent_type, name, label, kind, config) VALUES (?, ?, ?, ?, ?)');
         return $stmt->execute([$customField->parent_type, $customField->name, $customField->label, $customField->kind, $customField->config]);
     }
 
@@ -74,7 +74,7 @@ class CustomFieldRepository extends MysqlRepository implements Deletable
     public function findAll(): array
     {
         $sql = $this->getBaseSelectQueryBuilder()->toSql();
-        $resultSet = $this->db->query($sql);
+        $resultSet = $this->mysqlServer->query($sql);
         return $resultSet->fetch_all(MYSQLI_ASSOC);
     }
 

@@ -26,7 +26,7 @@ FROM client
 ORDER BY name ASC
 SQL;
 
-        $result = $this->db->query($sql);
+        $result = $this->mysqlServer->query($sql);
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
@@ -42,7 +42,7 @@ FROM
 WHERE c.id = ?
 SQL;
 
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->mysqlServer->prepare($sql);
         $stmt->bind_param('i', $id);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -59,7 +59,7 @@ SQL;
 
     public function insert(Client $client): int
     {
-        $stmt = $this->db->prepare('INSERT INTO client (kind, creator_uid, name, address, url, logo_attachment_id, small_logo_attachment_id) VALUES (?, ?, ?, ?, ?, ?, ?)');
+        $stmt = $this->mysqlServer->prepare('INSERT INTO client (kind, creator_uid, name, address, url, logo_attachment_id, small_logo_attachment_id) VALUES (?, ?, ?, ?, ?, ?, ?)');
         if (false === $stmt->execute([$client->kind, $client->creator_uid, $client->name, $client->address, $client->url, $client->logo_attachment_id, $client->small_logo_attachment_id])) {
             throw new \Exception('Failed to insert organisation record');
         }

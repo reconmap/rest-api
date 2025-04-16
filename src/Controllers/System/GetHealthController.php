@@ -1,9 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Controllers\System;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
+use Reconmap\Database\MysqlServer;
 use Reconmap\Services\Filesystem\AttachmentFilePath;
 use Reconmap\Services\Filesystem\DirectoryChecker;
 use Reconmap\Services\RedisServer;
@@ -13,7 +16,7 @@ class GetHealthController extends Controller
     public function __construct(
         private readonly AttachmentFilePath $attachmentFilePath,
         private readonly DirectoryChecker   $directoryChecker,
-        private readonly \mysqli            $mysqlServer,
+        private readonly MysqlServer        $mysqlServer,
         private readonly RedisServer        $redisServer,
     )
     {
@@ -26,7 +29,7 @@ class GetHealthController extends Controller
         return [
             'attachmentsDirectory' => $this->directoryChecker->checkDirectoryIsWriteable($attachmentBasePath),
             'databaseServer' => [
-                'reachable' => $this->mysqlServer->ping() // @todo Replace or remove
+                'reachable' => $this->mysqlServer->tryDummyQuery()
             ],
             'keyValueServer' => [
                 'reachable' => $this->isRedisServerReachable()

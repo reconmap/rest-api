@@ -15,7 +15,7 @@ class NotificationsRepository extends MysqlRepository implements Updateable, Del
 
     public function insert(Notification $notification): int
     {
-        $stmt = $this->db->prepare('INSERT INTO notification (to_user_id, title, content) VALUES (?, ?, ?)');
+        $stmt = $this->mysqlServer->prepare('INSERT INTO notification (to_user_id, title, content) VALUES (?, ?, ?)');
         $stmt->bind_param('iss', $notification->toUserId, $notification->title, $notification->content);
         return $this->executeInsertStatement($stmt);
     }

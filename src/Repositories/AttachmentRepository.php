@@ -22,7 +22,7 @@ class AttachmentRepository extends MysqlRepository
     {
         $insertQueryBuilder = new InsertQueryBuilder('attachment');
         $insertQueryBuilder->setColumns('parent_type, parent_id, submitter_uid, client_file_name, file_name, file_hash, file_size, file_mimetype');
-        $stmt = $this->db->prepare($insertQueryBuilder->toSql());
+        $stmt = $this->mysqlServer->prepare($insertQueryBuilder->toSql());
         $stmt->bind_param('siisssis', $attachment->parent_type, $attachment->parent_id, $attachment->submitter_uid, $attachment->client_file_name, $attachment->file_name, $attachment->file_hash, $attachment->file_size, $attachment->file_mimetype);
         return $this->executeInsertStatement($stmt);
     }
@@ -37,7 +37,7 @@ FROM
 WHERE a.id = ?
 SQL;
 
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->mysqlServer->prepare($sql);
         $stmt->bind_param('i', $attachmentId);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -58,7 +58,7 @@ SQL;
             $queryBuilder->setWhere('AND a.file_mimetype = ?');
         }
 
-        $stmt = $this->db->prepare($queryBuilder->toSql());
+        $stmt = $this->mysqlServer->prepare($queryBuilder->toSql());
 
         if ($mimeType) {
             $stmt->bind_param('sis', $parentType, $parentId, $mimeType);
@@ -87,7 +87,7 @@ SQL;
         FROM attachment
         SQL;
 
-        $result = $this->db->query($sql);
+        $result = $this->mysqlServer->query($sql);
         $usage = $result->fetch_assoc();
         $result->close();
 
@@ -99,7 +99,7 @@ SQL;
         $queryBuilder = new SelectQueryBuilder('attachment');
         $queryBuilder->setColumns('file_name');
         $queryBuilder->setWhere('id = ?');
-        $stmt = $this->db->prepare($queryBuilder->toSql());
+        $stmt = $this->mysqlServer->prepare($queryBuilder->toSql());
         $stmt->bind_param('i', $id);
         $stmt->execute();
         $result = $stmt->get_result();

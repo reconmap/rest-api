@@ -6,14 +6,14 @@ class ClientContactRepository extends MysqlRepository
 {
     public function create(int $clientId, int $contactId): int
     {
-        $stmt = $this->db->prepare('INSERT INTO client_contact (client_id, contact_id) VALUES (?, ?)');
+        $stmt = $this->mysqlServer->prepare('INSERT INTO client_contact (client_id, contact_id) VALUES (?, ?)');
         $stmt->bind_param('ii', $clientId, $contactId);
         return $this->executeInsertStatement($stmt);
     }
 
     public function deleteById(int $id): bool
     {
-        $stmt = $this->db->prepare('DELETE FROM client_contact WHERE id = ?');
+        $stmt = $this->mysqlServer->prepare('DELETE FROM client_contact WHERE id = ?');
         $stmt->bind_param('i', $id);
         $result = $stmt->execute();
         $success = $result && 1 === $stmt->affected_rows;

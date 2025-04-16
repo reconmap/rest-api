@@ -13,7 +13,7 @@ class ContactRepository extends MysqlRepository implements Deletable
     {
         $insertStmt = new InsertQueryBuilder(self::TABLE_NAME);
         $insertStmt->setColumns('kind, name, email, phone, role');
-        $stmt = $this->db->prepare($insertStmt->toSql());
+        $stmt = $this->mysqlServer->prepare($insertStmt->toSql());
         $stmt->bind_param('sssss', $contact->kind, $contact->name, $contact->email, $contact->phone, $contact->role);
         return $this->executeInsertStatement($stmt);
     }
@@ -28,7 +28,7 @@ WHERE
       cc.client_id = ?
 SQL;
 
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->mysqlServer->prepare($sql);
         $stmt->bind_param('i', $clientId);
 
         $stmt->execute();

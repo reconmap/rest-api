@@ -7,6 +7,7 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\CommandOutputParsers\ProcessorFactory;
 use Reconmap\Database\ConnectionFactory;
+use Reconmap\Database\MysqlServer;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -34,7 +35,7 @@ class ApplicationContainer extends ContainerBuilder
     public static function initialise(ContainerInterface $container, ApplicationConfig $config, Logger $logger): void
     {
         $container->set(ApplicationConfig::class, $config);
-        $container->set(\mysqli::class, ConnectionFactory::createConnection($config));
+        $container->set(MysqlServer::class, ConnectionFactory::createConnection($config));
         $container->set(Logger::class, $logger);
         $container->set(ProcessorFactory::class, new ProcessorFactory());
         $container->set(ContainerInterface::class, $container);
@@ -65,8 +66,7 @@ class ApplicationContainer extends ContainerBuilder
             ->set(ProcessorFactory::class)->synthetic()
             ->set(ContainerInterface::class)->synthetic()
             ->set(EventDispatcher::class)->synthetic()
-            ->set(\mysqli::class)->synthetic();
-
+            ->set(MysqlServer::class)->synthetic();
     }
 }
 

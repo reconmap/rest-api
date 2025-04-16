@@ -8,7 +8,7 @@ class ReportRepository extends MysqlRepository
 {
     public function findById(int $reportId): ?array
     {
-        $stmt = $this->db->prepare('SELECT * FROM report WHERE id = ?');
+        $stmt = $this->mysqlServer->prepare('SELECT * FROM report WHERE id = ?');
         $stmt->bind_param('i', $reportId);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -28,13 +28,13 @@ class ReportRepository extends MysqlRepository
             ORDER BY r.insert_ts DESC
             LIMIT 20
         SQL;
-        $result = $this->db->query($sql);
+        $result = $this->mysqlServer->query($sql);
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
     public function insert(Report $report): int
     {
-        $stmt = $this->db->prepare('INSERT INTO report (project_id, generated_by_uid, is_template, version_name, version_description) VALUES (?, ?, ?, ?, ?)');
+        $stmt = $this->mysqlServer->prepare('INSERT INTO report (project_id, generated_by_uid, is_template, version_name, version_description) VALUES (?, ?, ?, ?, ?)');
         $stmt->bind_param('iiiss', $report->projectId, $report->generatedByUid, $report->is_template, $report->versionName, $report->versionDescription);
         return $this->executeInsertStatement($stmt);
     }
@@ -58,7 +58,7 @@ ORDER BY
     r.insert_ts DESC
 SQL;
 
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->mysqlServer->prepare($sql);
         $stmt->bind_param('i', $projectId);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -87,7 +87,7 @@ ORDER BY
     r.insert_ts DESC
 SQL;
 
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->mysqlServer->prepare($sql);
         $stmt->execute();
         $result = $stmt->get_result();
         $reports = $result->fetch_all(MYSQLI_ASSOC);

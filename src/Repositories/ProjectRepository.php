@@ -33,7 +33,7 @@ LEFT JOIN project_user pu ON (pu.project_id = p.id)
 WHERE p.id = ? AND (p.visibility = 'public' OR pu.user_id = ?)
 SQL;
 
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->mysqlServer->prepare($sql);
         $stmt->bind_param('ii', $projectId, $userId);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -48,7 +48,7 @@ SQL;
         $queryBuilder = $this->getBaseSelectQueryBuilder();
         $queryBuilder->setWhere('p.id = ?');
 
-        $stmt = $this->db->prepare($queryBuilder->toSql());
+        $stmt = $this->mysqlServer->prepare($queryBuilder->toSql());
         $stmt->execute([$id]);
         $result = $stmt->get_result();
         $project = $result->fetch_assoc();
@@ -65,26 +65,26 @@ SQL;
 
     public function clone(int $templateId, int $userId): array
     {
-        $this->db->begin_transaction();
+        $this->mysqlServer->begin_transaction();
 
         $projectSql = <<<SQL
         INSERT INTO project (creator_uid, name, description, category_id, engagement_start_date, engagement_end_date, vulnerability_metrics) SELECT ?, CONCAT(name, ' - ', CURRENT_TIMESTAMP()), description, category_id, engagement_start_date, engagement_end_date, vulnerability_metrics FROM project WHERE id = ?
         SQL;
-        $stmt = $this->db->prepare($projectSql);
+        $stmt = $this->mysqlServer->prepare($projectSql);
         $stmt->bind_param('ii', $userId, $templateId);
         $projectId = $this->executeInsertStatement($stmt);
 
         $tasksSql = <<<SQL
         INSERT INTO task (project_id, creator_uid, command_id, summary, description, priority) SELECT ?, creator_uid, command_id, summary, description, priority FROM task WHERE project_id = ?
         SQL;
-        $stmt = $this->db->prepare($tasksSql);
+        $stmt = $this->mysqlServer->prepare($tasksSql);
         $stmt->bind_param('ii', $projectId, $templateId);
         $this->executeInsertStatement($stmt);
 
-        $repository = new ProjectUserRepository($this->db);
+        $repository = new ProjectUserRepository($this->mysqlServer);
         $repository->create($projectId, $userId);
 
-        $this->db->commit();
+        $this->mysqlServer->commit();
 
         return ['projectId' => $projectId];
     }
@@ -94,7 +94,7 @@ SQL;
         $insertStmt = new InsertQueryBuilder('project');
         $insertStmt->setColumns('creator_uid, client_id, name, description, is_template, category_id, engagement_start_date, engagement_end_date, visibility, external_id, vulnerability_metrics');
 
-        $stmt = $this->db->prepare($insertStmt->toSql());
+        $stmt = $this->mysqlServer->prepare($insertStmt->toSql());
         $stmt->bind_param('iississssss', $project->creator_uid, $project->client_id, $project->name, $project->description, $project->is_template, $project->category_id, $project->engagement_start_date, $project->engagement_end_date, $project->visibility, $project->external_id, $project->vulnerability_metrics);
         return $this->executeInsertStatement($stmt);
     }

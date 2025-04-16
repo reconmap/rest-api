@@ -13,7 +13,7 @@ class AuditLogRepository extends MysqlRepository
 
         $limitOffset = $page * $limitPerPage;
 
-        $stmt = $this->db->prepare($queryBuilder->toSql());
+        $stmt = $this->mysqlServer->prepare($queryBuilder->toSql());
         $stmt->bind_param('ii', $limitOffset, $limitPerPage);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -28,7 +28,7 @@ class AuditLogRepository extends MysqlRepository
         INNER JOIN user u ON (u.id = al.user_id)
         SQL;
 
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->mysqlServer->prepare($sql);
         $stmt->execute();
         $result = $stmt->get_result();
         $row = $result->fetch_assoc();
@@ -41,7 +41,7 @@ class AuditLogRepository extends MysqlRepository
         $queryBuilder->setWhere('al.user_id = ?');
         $queryBuilder->setLimit('10');
 
-        $stmt = $this->db->prepare($queryBuilder->toSql());
+        $stmt = $this->mysqlServer->prepare($queryBuilder->toSql());
         $stmt->bind_param('i', $userId);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -57,13 +57,13 @@ class AuditLogRepository extends MysqlRepository
         ORDER BY log_date
         SQL;
 
-        $rs = $this->db->query($sql);
+        $rs = $this->mysqlServer->query($sql);
         return $rs->fetch_all(MYSQLI_ASSOC);
     }
 
     public function insert(?int $userId, ?string $userAgent, string $clientIp, string $action, ?string $object = null): int
     {
-        $stmt = $this->db->prepare('INSERT INTO audit_log (user_id, user_agent, client_ip, action, object) VALUES (?, ?, INET_ATON(?), ?, ?)');
+        $stmt = $this->mysqlServer->prepare('INSERT INTO audit_log (user_id, user_agent, client_ip, action, object) VALUES (?, ?, INET_ATON(?), ?, ?)');
         $stmt->bind_param('issss', $userId, $userAgent, $clientIp, $action, $object);
         return $this->executeInsertStatement($stmt);
     }

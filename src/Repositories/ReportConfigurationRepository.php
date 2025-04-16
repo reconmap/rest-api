@@ -19,7 +19,7 @@ class ReportConfigurationRepository extends MysqlRepository
 SELECT * FROM report_configuration WHERE project_id = ?
 SQL;
 
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->mysqlServer->prepare($sql);
         $stmt->bind_param('i', $projectId);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -38,7 +38,7 @@ SQL;
         /**
          * @var ReportConfiguration $reportConfiguration
          */
-        $stmt = $this->db->prepare('REPLACE INTO report_configuration (project_id) VALUES (?)');
+        $stmt = $this->mysqlServer->prepare('REPLACE INTO report_configuration (project_id) VALUES (?)');
         $stmt->bind_param('i', $reportConfiguration->project_id);
         return $this->executeInsertStatement($stmt);
     }

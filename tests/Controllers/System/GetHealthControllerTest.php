@@ -4,7 +4,7 @@ namespace Reconmap\Controllers\System;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
-use Reconmap\Services\Filesystem\ApplicationLogFilePath;
+use Reconmap\Database\MysqlServer;
 use Reconmap\Services\Filesystem\AttachmentFilePath;
 use Reconmap\Services\Filesystem\DirectoryChecker;
 use Reconmap\Services\RedisServer;
@@ -27,9 +27,9 @@ class GetHealthControllerTest extends TestCase
                 'exists' => false,
                 'writeable' => false
             ]);
-        $mockMysql = $this->createMock(\mysqli::class);
+        $mockMysql = $this->createMock(MysqlServer::class);
         $mockMysql->expects($this->once())
-            ->method('ping')
+            ->method('tryDummyQuery')
             ->willReturn(true);
 
         $mockRedis = $this->createMock(RedisServer::class);

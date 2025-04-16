@@ -29,7 +29,7 @@ FROM
 WHERE c.id = ?
 SQL;
 
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->mysqlServer->prepare($sql);
         $stmt->bind_param('i', $id);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -44,7 +44,7 @@ SQL;
         $selectQueryBuilder = $this->getBaseSelectQueryBuilder();
         $sql = $selectQueryBuilder->toSql();
 
-        $result = $this->db->query($sql);
+        $result = $this->mysqlServer->query($sql);
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
@@ -69,7 +69,7 @@ SQL;
     {
         $insertStmt = new InsertQueryBuilder('command');
         $insertStmt->setColumns('creator_uid, name, description, more_info_url, tags');
-        $stmt = $this->db->prepare($insertStmt->toSql());
+        $stmt = $this->mysqlServer->prepare($insertStmt->toSql());
         $stmt->bind_param('issss', $command->creator_uid, $command->name, $command->description, $command->more_info_url, $command->tags);
         return $this->executeInsertStatement($stmt);
     }

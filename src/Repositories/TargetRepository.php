@@ -20,7 +20,7 @@ class TargetRepository extends MysqlRepository implements Findable
     {
         $queryBuilder = $this->getBaseSelectQueryBuilder();
         $queryBuilder->setWhere('t.id = ?');
-        $stmt = $this->db->prepare($queryBuilder->toSql());
+        $stmt = $this->mysqlServer->prepare($queryBuilder->toSql());
         $stmt->bind_param('i', $id);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -33,7 +33,7 @@ class TargetRepository extends MysqlRepository implements Findable
     public function findAll(): array
     {
         $queryBuilder = $this->getBaseSelectQueryBuilder();
-        $result = $this->db->query($queryBuilder->toSql());
+        $result = $this->mysqlServer->query($queryBuilder->toSql());
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
@@ -46,7 +46,7 @@ class TargetRepository extends MysqlRepository implements Findable
             $queryBuilder->setWhere('t.project_id = ? AND t.parent_id IS NULL AND t.name = ?');
         }
 
-        $stmt = $this->db->prepare($queryBuilder->toSql());
+        $stmt = $this->mysqlServer->prepare($queryBuilder->toSql());
         if ($target->parent_id !== null) {
             $stmt->bind_param('iis', $target->project_id, $target->parent_id, $target->name);
         } else {
@@ -84,7 +84,7 @@ class TargetRepository extends MysqlRepository implements Findable
 
     public function insert(Target $target): int
     {
-        $stmt = $this->db->prepare('INSERT INTO target (project_id, parent_id, name, kind, tags) VALUES (?, ?, ?, ?, ?)');
+        $stmt = $this->mysqlServer->prepare('INSERT INTO target (project_id, parent_id, name, kind, tags) VALUES (?, ?, ?, ?, ?)');
         $stmt->bind_param('iisss', $target->project_id, $target->parent_id, $target->name, $target->kind, $target->tags);
         return $this->executeInsertStatement($stmt);
     }

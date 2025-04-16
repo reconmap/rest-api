@@ -28,7 +28,7 @@ class CommandScheduleRepository extends MysqlRepository implements Deletable
         $queryBuilder->setWhere('ce.command_id = ?');
         $sql = $queryBuilder->toSql();
 
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->mysqlServer->prepare($sql);
         $stmt->execute([$commandId]);
         $result = $stmt->get_result();
         return $result->fetch_all(MYSQLI_ASSOC);
@@ -46,7 +46,7 @@ FROM
 WHERE c.id = ?
 SQL;
 
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->mysqlServer->prepare($sql);
         $stmt->bind_param('i', $id);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -61,7 +61,7 @@ SQL;
         $selectQueryBuilder = $this->getBaseSelectQueryBuilder();
         $sql = $selectQueryBuilder->toSql();
 
-        $result = $this->db->query($sql);
+        $result = $this->mysqlServer->query($sql);
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
@@ -86,7 +86,7 @@ SQL;
     {
         $insertStmt = new InsertQueryBuilder('command_schedule');
         $insertStmt->setColumns('command_id, creator_uid, argument_values, cron_expression');
-        $stmt = $this->db->prepare($insertStmt->toSql());
+        $stmt = $this->mysqlServer->prepare($insertStmt->toSql());
         $stmt->bind_param('iiss', $commandSchedule->command_id, $commandSchedule->creator_uid, $commandSchedule->argument_values, $commandSchedule->cron_expression);
         return $this->executeInsertStatement($stmt);
     }

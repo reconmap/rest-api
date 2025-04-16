@@ -24,7 +24,7 @@ class UserRepository extends MysqlRepository
     {
         $queryBuilder = $this->getBaseSelectQueryBuilder();
 
-        $result = $this->db->query($queryBuilder->toSql());
+        $result = $this->mysqlServer->query($queryBuilder->toSql());
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
@@ -33,7 +33,7 @@ class UserRepository extends MysqlRepository
         $queryBuilder = $this->getBaseSelectQueryBuilder();
         $queryBuilder->setWhere('u.id = ?');
 
-        $stmt = $this->db->prepare($queryBuilder->toSql());
+        $stmt = $this->mysqlServer->prepare($queryBuilder->toSql());
         $stmt->bind_param('i', $id);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -49,7 +49,7 @@ class UserRepository extends MysqlRepository
         $queryBuilder->setColumns($queryBuilder->getColumns());
         $queryBuilder->setWhere('u.subject_id = ?');
 
-        $stmt = $this->db->prepare($queryBuilder->toSql());
+        $stmt = $this->mysqlServer->prepare($queryBuilder->toSql());
         $stmt->bind_param('s', $subjectId);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -72,7 +72,7 @@ class UserRepository extends MysqlRepository
         $queryBuilder->setColumns($queryBuilder->getColumns());
         $queryBuilder->setWhere('u.active AND u.username = ?');
 
-        $stmt = $this->db->prepare($queryBuilder->toSql());
+        $stmt = $this->mysqlServer->prepare($queryBuilder->toSql());
         $stmt->bind_param('s', $username);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -96,7 +96,7 @@ class UserRepository extends MysqlRepository
     {
         $insertStmt = new InsertQueryBuilder('user');
         $insertStmt->setColumns('subject_id, active, full_name, short_bio, username, email, role');
-        $stmt = $this->db->prepare($insertStmt->toSql());
+        $stmt = $this->mysqlServer->prepare($insertStmt->toSql());
         $stmt->bind_param('sisssss', $user->subject_id, $user->active, $user->full_name, $user->short_bio, $user->username, $user->email, $user->role);
         return $this->executeInsertStatement($stmt);
     }
@@ -114,7 +114,7 @@ class UserRepository extends MysqlRepository
         ORDER BY
             u.username
         SQL;
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->mysqlServer->prepare($sql);
         $stmt->bind_param('i', $projectId);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -130,7 +130,7 @@ class UserRepository extends MysqlRepository
 
     public function updateLastLoginTime(int $userId): bool
     {
-        $stmt = $this->db->prepare('UPDATE user SET last_login_ts = NOW() WHERE id = ?');
+        $stmt = $this->mysqlServer->prepare('UPDATE user SET last_login_ts = NOW() WHERE id = ?');
         return $stmt->execute([$userId]);
     }
 }

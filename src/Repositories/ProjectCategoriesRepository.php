@@ -9,7 +9,7 @@ class ProjectCategoriesRepository extends MysqlRepository
     public function findAll(): array
     {
         $queryBuilder = $this->getBaseSelectQueryBuilder();
-        $resultSet = $this->db->query($queryBuilder->toSql());
+        $resultSet = $this->mysqlServer->query($queryBuilder->toSql());
         return $resultSet->fetch_all(MYSQLI_ASSOC);
     }
 

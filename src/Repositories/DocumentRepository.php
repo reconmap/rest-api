@@ -22,7 +22,7 @@ class DocumentRepository extends MysqlRepository implements Deletable
             $queryBuilder->setWhere('n.parent_type = ? AND n.parent_id = ?');
         }
 
-        $stmt = $this->db->prepare($queryBuilder->toSql());
+        $stmt = $this->mysqlServer->prepare($queryBuilder->toSql());
         if (is_null($parentId)) {
             $stmt->bind_param('s', $parentType);
         } else {
@@ -40,7 +40,7 @@ class DocumentRepository extends MysqlRepository implements Deletable
     {
         $queryBuilder = $this->getBaseSelectQueryBuilder();
         $queryBuilder->setWhere('n.id = ?');
-        $stmt = $this->db->prepare($queryBuilder->toSql());
+        $stmt = $this->mysqlServer->prepare($queryBuilder->toSql());
         $stmt->bind_param('i', $id);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -57,7 +57,7 @@ class DocumentRepository extends MysqlRepository implements Deletable
 
     public function insert(Document|\Reconmap\DomainObjects\Document $document): int
     {
-        $stmt = $this->db->prepare('INSERT INTO document (user_id, parent_type, parent_id, visibility, title, content) VALUES (?, ?, ?, ?, ?, ?)');
+        $stmt = $this->mysqlServer->prepare('INSERT INTO document (user_id, parent_type, parent_id, visibility, title, content) VALUES (?, ?, ?, ?, ?, ?)');
         $stmt->bind_param('isisss', $document->user_id, $document->parent_type, $document->parent_id, $document->visibility, $document->title, $document->content);
         return $this->executeInsertStatement($stmt);
     }
@@ -75,7 +75,7 @@ class DocumentRepository extends MysqlRepository implements Deletable
     public function findAll(): array
     {
         $sql = $this->getBaseSelectQueryBuilder()->toSql();
-        $resultSet = $this->db->query($sql);
+        $resultSet = $this->mysqlServer->query($sql);
         return $resultSet->fetch_all(MYSQLI_ASSOC);
     }
 

@@ -7,15 +7,15 @@ use Reconmap\Services\ApplicationConfig;
 class ConnectionFactory
 {
 
-    static public function createConnection(ApplicationConfig $config): \mysqli
+    static public function createConnection(ApplicationConfig $config): MysqlServer
     {
         mysqli_report(MYSQLI_REPORT_ALL ^ MYSQLI_REPORT_INDEX);
 
         $dbSettings = $config->getSettings('database');
-        $conn = new \mysqli;
-        $conn->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, true);
-        $conn->real_connect($dbSettings['host'], $dbSettings['username'], $dbSettings['password'], $dbSettings['name'], flags: MYSQLI_CLIENT_FOUND_ROWS);
+        $mysqlServer = new MysqlServer();
+        $mysqlServer->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, true);
+        $mysqlServer->real_connect($dbSettings['host'], $dbSettings['username'], $dbSettings['password'], $dbSettings['name'], flags: MYSQLI_CLIENT_FOUND_ROWS);
 
-        return $conn;
+        return $mysqlServer;
     }
 }

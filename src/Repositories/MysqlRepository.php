@@ -7,13 +7,14 @@ use Ponup\SqlBuilders\DeleteQueryBuilder;
 use Ponup\SqlBuilders\SearchCriteria;
 use Ponup\SqlBuilders\SelectQueryBuilder;
 use Ponup\SqlBuilders\UpdateQueryBuilder;
+use Reconmap\Database\MysqlServer;
 use Reconmap\Services\PaginationRequestHandler;
 
 abstract class MysqlRepository
 {
     protected ?Logger $logger = null;
 
-    public function __construct(protected readonly \mysqli $db)
+    public function __construct(protected readonly MysqlServer $mysqlServer)
     {
     }
 
@@ -52,7 +53,7 @@ abstract class MysqlRepository
         $successfulDeleteCount = 0;
 
         $deleteQueryBuilder = new DeleteQueryBuilder($tableName);
-        $stmt = $this->db->prepare($deleteQueryBuilder->toSql());
+        $stmt = $this->mysqlServer->prepare($deleteQueryBuilder->toSql());
         $stmt->bind_param('i', $id);
         foreach ($ids as $id) {
             $result = $stmt->execute();
@@ -74,7 +75,7 @@ abstract class MysqlRepository
         $updateQueryBuilder->setColumnValues(array_map(fn() => '?', $newColumnValues));
         $updateQueryBuilder->setWhereConditions('id = ?');
 
-        $stmt = $this->db->prepare($updateQueryBuilder->toSql());
+        $stmt = $this->mysqlServer->prepare($updateQueryBuilder->toSql());
         $stmt->bind_param($this->generateParamTypes(array_keys($newColumnValues)) . 'i', ...array_merge(array_values($newColumnValues), [$id]));
         $result = $stmt->execute();
         $success = $result && 1 === $stmt->affected_rows;
@@ -99,7 +100,7 @@ abstract class MysqlRepository
         }
 
         $sql = $queryBuilder->toSql();
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->mysqlServer->prepare($sql);
 
         $values = $searchCriteria->getValues();
         if ($paginator) {

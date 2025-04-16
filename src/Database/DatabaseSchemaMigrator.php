@@ -6,11 +6,11 @@ use Monolog\Logger;
 use Reconmap\AppVersion;
 use Reconmap\Services\ApplicationConfig;
 
-class DatabaseSchemaMigrator
+readonly class DatabaseSchemaMigrator
 {
-    public function __construct(private readonly \mysqli $db,
-                                private readonly ApplicationConfig $config,
-                                private readonly Logger $logger)
+    public function __construct(private MysqlServer       $mysqlServer,
+                                private ApplicationConfig $config,
+                                private Logger            $logger)
     {
     }
 
@@ -50,21 +50,21 @@ class DatabaseSchemaMigrator
             }
 
             try {
-                if (false !== $this->db->multi_query($sql)) {
+                if (false !== $this->mysqlServer->multi_query($sql)) {
                     do {
-                        if ($result = $this->db->store_result()) {
-                            if ($this->db->errno) {
-                                $this->logger->warning('Step query error: ' . $this->db->error);
+                        if ($result = $this->mysqlServer->store_result()) {
+                            if ($this->mysqlServer->errno) {
+                                $this->logger->warning('Step query error: ' . $this->mysqlServer->error);
                             }
                             $result->close();
                         }
-                    } while ($this->db->next_result());
+                    } while ($this->mysqlServer->next_result());
                 }
             } catch (\Exception $e) {
                 $this->logger->error($e->getMessage());
             }
 
-            $stmt = $this->db->prepare("INSERT INTO database_migration (from_version, to_version) VALUES (?, ?)");
+            $stmt = $this->mysqlServer->prepare("INSERT INTO database_migration (from_version, to_version) VALUES (?, ?)");
             $stmt->bind_param('ii', $fromVersion, $toStepVersion);
             if (false === $stmt->execute()) {
                 $this->logger->warning("Unable to record migration from $fromVersion to $toStepVersion");
@@ -79,7 +79,7 @@ class DatabaseSchemaMigrator
     private function getLatestDatabaseMigrationVersion(): int
     {
         try {
-            $result = $this->db->query('SELECT MAX(to_version) FROM database_migration');
+            $result = $this->mysqlServer->query('SELECT MAX(to_version) FROM database_migration');
             $maxToVersion = $result->fetch_column(0);
             $result->close();
             return null === $maxToVersion ? 0 : $maxToVersion;
