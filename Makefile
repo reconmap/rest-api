@@ -50,7 +50,6 @@ build:
 
 .PHONY: tests
 tests: start validate
-	docker compose run --rm -e WAIT_HOSTS=$(DB_CONTAINER):3306 -e WAIT_TIMEOUT=60 --entrypoint /usr/local/bin/wait waiter
 	echo Importing SQL files: $(wildcard database/0*.sql)
 	cat tests/database.sql | docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet
 	cat database/0*.sql | sed "s/USE reconmap;/USE reconmap_test;/" | docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet reconmap_test
