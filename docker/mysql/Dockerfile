@@ -1,4 +1,4 @@
-FROM mysql:8.4
+FROM mysql:9.3
 
 LABEL maintainer="Reconmap engineering" \
     org.opencontainers.image.title="Reconmap Rest API database" \
