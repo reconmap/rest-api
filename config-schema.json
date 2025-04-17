@@ -1,0 +1,175 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Reconmap API Configuration Schema",
+    "type": "object",
+    "properties": {
+        "keycloak": {
+            "type": "object",
+            "properties": {
+                "baseUri": {
+                    "type": "string",
+                    "format": "uri"
+                },
+                "realmName": {
+                    "type": "string"
+                },
+                "clientId": {
+                    "type": "string"
+                },
+                "clientSecret": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "baseUri",
+                "realmName",
+                "clientId",
+                "clientSecret"
+            ]
+        },
+        "jwt": {
+            "type": "object",
+            "properties": {
+                "issuer": {
+                    "type": "string",
+                    "format": "uri"
+                },
+                "audience": {
+                    "type": "string"
+                },
+                "key": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "issuer",
+                "audience",
+                "key"
+            ]
+        },
+        "cors": {
+            "type": "object",
+            "properties": {
+                "allowedOrigins": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "minItems": 1
+                }
+            },
+            "required": [
+                "allowedOrigins"
+            ]
+        },
+        "database": {
+            "type": "object",
+            "properties": {
+                "host": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "host",
+                "username",
+                "password",
+                "name"
+            ]
+        },
+        "smtp": {
+            "type": "object",
+            "properties": {
+                "host": {
+                    "type": "string"
+                },
+                "port": {
+                    "type": "integer"
+                },
+                "username": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "verifyPeer": {
+                    "type": "string",
+                    "enum": [
+                        "true",
+                        "false"
+                    ]
+                },
+                "fromEmail": {
+                    "type": "string",
+                    "format": "email"
+                },
+                "fromName": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "host",
+                "port",
+                "username",
+                "password",
+                "verifyPeer",
+                "fromEmail",
+                "fromName"
+            ]
+        },
+        "logging": {
+            "type": "object",
+            "patternProperties": {
+                "^.*$": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "enabled"
+                    ]
+                }
+            },
+            "minProperties": 0,
+            "additionalProperties": false
+        },
+        "integrations": {
+            "type": "object",
+            "patternProperties": {
+                "^.*$": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "enabled"
+                    ]
+                }
+            },
+            "minProperties": 0,
+            "additionalProperties": false
+        }
+    },
+    "required": [
+        "keycloak",
+        "jwt",
+        "cors",
+        "database",
+        "smtp",
+        "logging",
+        "integrations"
+    ]
+}

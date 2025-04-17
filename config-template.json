@@ -1,4 +1,5 @@
 {
+  "$schema": "./config-schema.json",
   "keycloak": {
     "baseUri": "http://keycloak:8080",
     "realmName": "reconmap",
