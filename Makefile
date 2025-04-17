@@ -15,9 +15,7 @@ HOST_GID=$(shell id -g)
 DOCKER_IMAGE_NAME = quay.io/reconmap/rest-api
 DOCKER_DEFAULT_TAG = $(DOCKER_IMAGE_NAME)
 
-ifdef TRAVIS_BRANCH
-GIT_BRANCH_NAME = $(TRAVIS_BRANCH)
-else
+ifndef GIT_BRANCH_NAME
 GIT_BRANCH_NAME = $(shell git rev-parse --abbrev-ref HEAD)
 endif
 
