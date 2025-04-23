@@ -3,10 +3,9 @@
 namespace Reconmap\Controllers\Reports;
 
 use GuzzleHttp\Psr7\Utils;
-use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
-use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Log\LoggerInterface;
 use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Services\EmailService;
 use Reconmap\Services\Filesystem\AttachmentFilePath;
@@ -38,13 +37,10 @@ class SendReportControllerTest extends TestCase
             ->method('getBody')
             ->willReturn(Utils::streamFor('{"subject": "Your report is ready", "report_id": 14, "body": "Find attached the report", "recipients": "foo@bar."}'));
 
-        $mockContainer = $this->createMock(ContainerInterface::class);
-        $mockContainer->expects($this->once())
-            ->method('get')
-            ->willReturn($this->createStub(Logger::class));
+        $mockLogger = $this->createMock(LoggerInterface::class);
 
         $controller = new SendReportController($mockAttachmentFilePath, $mockAttachmentRepository, $mockEmailService);
-        $controller->setContainer($mockContainer);
+        $controller->setLogger($mockLogger);
         $controller($mockServerRequest);
     }
 }

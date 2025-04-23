@@ -2,10 +2,9 @@
 
 namespace Reconmap\Controllers\Attachments;
 
-use Monolog\Logger;
-use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;
+use Psr\Log\LoggerInterface;
 use Reconmap\ControllerTestCase;
 use Reconmap\Models\Attachment;
 use Reconmap\Repositories\AttachmentRepository;
@@ -69,13 +68,10 @@ class UploadAttachmentControllerTest extends ControllerTestCase
 
         $args = ['attachmentId' => $fakeAttachmentId];
 
-        $mockContainer = $this->createMock(ContainerInterface::class);
-        $mockContainer->expects($this->once())
-            ->method('get')
-            ->willReturn($this->createStub(Logger::class));
+        $mockLogger = $this->createMock(LoggerInterface::class);
 
         $controller = $this->injectController(new UploadAttachmentController($mockAttachmentRepository, $mockAttachmentFilePath, $mockRedisServer));
-        $controller->setContainer($mockContainer);
+        $controller->setLogger($mockLogger);
         $response = $controller($mockRequest, $args);
 
         $this->assertTrue($response['success']);
