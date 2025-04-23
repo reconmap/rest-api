@@ -46,10 +46,11 @@ class ReportRepository extends MysqlRepository
 
     public function findByProjectId(int $projectId): array
     {
+        //  AND file_mimetype = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
         $sql = <<<SQL
 SELECT
        r.*,
-       (SELECT id FROM attachment WHERE parent_type = 'report' AND parent_id = r.id AND file_mimetype = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') AS docx_attachment_id
+       (SELECT id FROM attachment WHERE parent_type = 'report' AND parent_id = r.id) AS docx_attachment_id
 FROM
     report r
 WHERE

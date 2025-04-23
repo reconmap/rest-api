@@ -3,14 +3,14 @@
 namespace Reconmap\Services;
 
 use GuzzleHttp\Client;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Reconmap\Models\User;
 
 readonly class KeycloakService
 {
     private array $config;
 
-    public function __construct(private Logger $logger, ApplicationConfig $applicationConfig)
+    public function __construct(private LoggerInterface $logger, ApplicationConfig $applicationConfig)
     {
         $this->config = $applicationConfig->getSettings('keycloak');
     }

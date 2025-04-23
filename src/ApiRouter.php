@@ -5,10 +5,10 @@ namespace Reconmap;
 use GuzzleHttp\Psr7\HttpFactory;
 use League\Route\RouteGroup;
 use League\Route\Router;
-use Monolog\Logger;
 use OpenApi\Attributes\Info;
 use OpenApi\Attributes\SecurityScheme;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 use Reconmap\{Controllers\Attachments\ServeAttachmentController,
     Controllers\AuditLog\AuditLogRouter,
     Controllers\Auth\AuthRouter,
@@ -67,7 +67,7 @@ class ApiRouter extends Router
         $responseFactory = new HttpFactory();
 
         $corsResponseDecorator = $container->get(CorsResponseDecorator::class);
-        $logger = $container->get(Logger::class);
+        $logger = $container->get(LoggerInterface::class);
 
         $strategy = new ApiStrategy($responseFactory, $corsResponseDecorator, $logger);
         $strategy->setContainer($container);

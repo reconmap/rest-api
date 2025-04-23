@@ -2,14 +2,14 @@
 
 namespace Reconmap\Http;
 
-use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Log\LoggerInterface;
 use Reconmap\Services\ApplicationConfig;
 
 readonly class CorsResponseDecorator
 {
-    public function __construct(private Logger            $logger,
+    public function __construct(private LoggerInterface   $logger,
                                 private ApplicationConfig $config)
     {
     }

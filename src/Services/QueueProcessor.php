@@ -2,14 +2,14 @@
 
 namespace Reconmap\Services;
 
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Reconmap\ExitCode;
 use Reconmap\Tasks\ItemProcessor;
 
 readonly class QueueProcessor
 {
-    public function __construct(private RedisServer $redis,
-                                private Logger      $logger)
+    public function __construct(private RedisServer     $redis,
+                                private LoggerInterface $logger)
     {
     }
 

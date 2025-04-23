@@ -7,6 +7,7 @@ use Ponup\SqlBuilders\DeleteQueryBuilder;
 use Ponup\SqlBuilders\SearchCriteria;
 use Ponup\SqlBuilders\SelectQueryBuilder;
 use Ponup\SqlBuilders\UpdateQueryBuilder;
+use Psr\Log\LoggerInterface;
 use Reconmap\Database\MysqlServer;
 use Reconmap\Services\PaginationRequestHandler;
 
@@ -18,7 +19,7 @@ abstract class MysqlRepository
     {
     }
 
-    public function setLogger(Logger $logger): void
+    public function setLogger(LoggerInterface $logger): void
     {
         $this->logger = $logger;
     }

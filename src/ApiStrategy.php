@@ -12,8 +12,8 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 use Reconmap\Http\CorsResponseDecorator;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class ApiStrategy extends JsonStrategy
@@ -22,7 +22,7 @@ class ApiStrategy extends JsonStrategy
 
     public function __construct(ResponseFactoryInterface               $responseFactory,
                                 private readonly CorsResponseDecorator $corsResponseDecorator,
-                                private readonly Logger                $logger)
+                                private readonly LoggerInterface       $logger)
     {
         parent::__construct($responseFactory);
 
@@ -36,8 +36,7 @@ class ApiStrategy extends JsonStrategy
 
         if ($response instanceof Response) {
             $response = $this->corsResponseDecorator->decorate($request, $this->convertSymfonyToPsr7($response));
-        }
-        else if ($this->isJsonSerializable($response)) {
+        } else if ($this->isJsonSerializable($response)) {
             $body = json_encode($response, $this->jsonFlags);
             $response = $this->responseFactory->createResponse();
             $response->getBody()->write($body);

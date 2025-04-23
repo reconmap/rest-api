@@ -11,11 +11,11 @@ use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Utils;
 use League\Route\Http\Exception;
 use League\Route\Http\Exception\ForbiddenException;
-use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\KeycloakService;
@@ -25,9 +25,11 @@ readonly class AuthMiddleware implements MiddlewareInterface
     public function __construct(
         private UserRepository    $userRepository,
         private KeycloakService   $keycloak,
-        private Logger            $logger,
+        private LoggerInterface   $logger,
         private ApplicationConfig $config
-    ) {}
+    )
+    {
+    }
 
     /**
      * @throws ForbiddenException|Exception
@@ -64,7 +66,7 @@ readonly class AuthMiddleware implements MiddlewareInterface
                     ->withAttribute('role', $tokenRole);
             }
             return $handler->handle($request);
-        } catch (ForbiddenException | ExpiredException $e) {
+        } catch (ForbiddenException|ExpiredException $e) {
             $this->logger->warning($e->getMessage());
             return (new Response)->withStatus(\Symfony\Component\HttpFoundation\Response::HTTP_UNAUTHORIZED)
                 ->withBody(Utils::streamFor($e->getMessage()));

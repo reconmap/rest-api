@@ -2,7 +2,7 @@
 
 namespace Reconmap\Services\Reporting;
 
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Reconmap\Repositories\ProjectRepository;
 use Reconmap\Repositories\SearchCriterias\ProjectSearchCriteria;
 use Reconmap\Repositories\TaskRepository;
@@ -15,7 +15,7 @@ class WeeklyReportGenerator
                                 private UserRepository    $userRepository,
                                 private TaskRepository    $taskRepository,
                                 private EmailService      $emailService,
-                                private Logger            $logger)
+                                private LoggerInterface   $logger)
     {
     }
 

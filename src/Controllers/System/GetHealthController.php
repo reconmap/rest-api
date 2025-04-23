@@ -42,7 +42,7 @@ class GetHealthController extends Controller
         try {
             return $this->redisServer->ping();
         } catch (\RedisException $e) {
-            $this->logger()->warning($e->getMessage());
+            $this->logger->warning($e->getMessage());
             return false;
         }
     }

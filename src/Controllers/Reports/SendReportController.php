@@ -24,7 +24,7 @@ class SendReportController extends Controller
         $attachments = $this->attachmentRepository->findByParentId('report', $reportId, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
 
         if (count($attachments) === 0) {
-            $this->logger()->warning("Unable to find PDF for report $reportId");
+            $this->logger->warning("Unable to find PDF for report $reportId");
         }
 
         $attachment = $attachments[0];
@@ -33,7 +33,7 @@ class SendReportController extends Controller
 
         $emailBody = $deliverySettings->body;
         $recipients = explode(',', $deliverySettings->recipients);
-        $this->logger()->debug('recipients', [$recipients]);
+        $this->logger->debug('recipients', [$recipients]);
 
         $this->emailService->queueEmail($deliverySettings->subject, $recipients, $emailBody, $attachmentFilePath);
 

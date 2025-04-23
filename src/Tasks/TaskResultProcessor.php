@@ -3,7 +3,7 @@
 namespace Reconmap\Tasks;
 
 use Exception;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Reconmap\CommandOutputParsers\Models\Asset;
 use Reconmap\CommandOutputParsers\ProcessorFactory;
 use Reconmap\Models\Notification;
@@ -17,7 +17,7 @@ use Reconmap\Services\RedisServer;
 readonly class TaskResultProcessor implements ItemProcessor
 {
     public function __construct(
-        private Logger                  $logger,
+        private LoggerInterface         $logger,
         private RedisServer             $redis,
         private VulnerabilityRepository $vulnerabilityRepository,
         private NotificationsRepository $notificationsRepository,

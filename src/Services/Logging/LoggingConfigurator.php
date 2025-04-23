@@ -5,15 +5,19 @@ namespace Reconmap\Services\Logging;
 use Gelf\Publisher;
 use Gelf\Transport\IgnoreErrorTransportWrapper;
 use Gelf\Transport\UdpTransport;
+use Monolog\Formatter\JsonFormatter;
 use Monolog\Handler\GelfHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
+use Psr\Log\LogLevel;
 use Reconmap\Services\ApplicationConfig;
+use Symfony\Component\DependencyInjection\Attribute\Exclude;
 
+#[Exclude]
 class LoggingConfigurator
 {
-    private const string DEFAULT_LOG_LEVEL = 'info';
+    private const string DEFAULT_LOG_LEVEL = LogLevel::INFO;
 
     public function __construct(private readonly Logger $logger, private readonly ApplicationConfig $config)
     {
@@ -27,7 +31,9 @@ class LoggingConfigurator
 
         if ($this->isLoggingHandlerEnabled($loggingConfig, 'file') && isset($loggingConfig['file']['path'])) {
             $level = Level::fromName($loggingConfig['file']['level'] ?? self::DEFAULT_LOG_LEVEL);
-            $this->logger->pushHandler(new StreamHandler($loggingConfig['file']['path'], $level));
+            $handler = new StreamHandler($loggingConfig['file']['path'], $level);
+            $handler->setFormatter(new JsonFormatter());
+            $this->logger->pushHandler($handler);
         }
 
         if ($this->isLoggingHandlerEnabled($loggingConfig, 'gelf') && isset($loggingConfig['gelf']['serverName'], $loggingConfig['gelf']['serverPort'])) {

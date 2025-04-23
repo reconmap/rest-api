@@ -26,7 +26,7 @@ class GetUserController extends Controller
         if (is_string($user['preferences']) && json_validate($user['preferences'])) {
             $user['preferences'] = json_decode($user['preferences'], true);
         } else {
-            $this->logger()->warning("Invalid user preferences provided");
+            $this->logger->warning("Invalid user preferences provided");
         }
 
         return $user;

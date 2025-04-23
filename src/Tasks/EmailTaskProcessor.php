@@ -2,7 +2,7 @@
 
 namespace Reconmap\Tasks;
 
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Reconmap\Services\ApplicationConfig;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\Mailer;
@@ -13,7 +13,7 @@ use Symfony\Component\Mime\Email;
 readonly class EmailTaskProcessor implements ItemProcessor
 {
     public function __construct(private ApplicationConfig $config,
-                                private Logger            $logger)
+                                private LoggerInterface   $logger)
     {
     }
 

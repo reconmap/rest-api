@@ -4,7 +4,9 @@ namespace Reconmap\Http;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Models\User;
+use Symfony\Component\DependencyInjection\Attribute\Exclude;
 
+#[Exclude]
 class ApplicationRequest
 {
     private ?User $user = null;

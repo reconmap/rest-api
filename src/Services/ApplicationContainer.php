@@ -2,9 +2,9 @@
 
 namespace Reconmap\Services;
 
-use Monolog\Logger;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Log\LoggerInterface;
 use Reconmap\CommandOutputParsers\ProcessorFactory;
 use Reconmap\Database\ConnectionFactory;
 use Reconmap\Database\MysqlServer;
@@ -32,11 +32,11 @@ class ApplicationContainer extends ContainerBuilder
         $this->register(Filesystem::class);
     }
 
-    public static function initialise(ContainerInterface $container, ApplicationConfig $config, Logger $logger): void
+    public static function initialise(ContainerInterface $container, ApplicationConfig $config, LoggerInterface $logger): void
     {
         $container->set(ApplicationConfig::class, $config);
         $container->set(MysqlServer::class, ConnectionFactory::createConnection($config));
-        $container->set(Logger::class, $logger);
+        $container->set(LoggerInterface::class, $logger);
         $container->set(ProcessorFactory::class, new ProcessorFactory());
         $container->set(ContainerInterface::class, $container);
         $container->set(EventDispatcher::class, new EventDispatcher());
@@ -53,15 +53,13 @@ class ApplicationContainer extends ContainerBuilder
             ->public()
             ->load('Reconmap\\Cli\\Commands\\', $prefix . 'Cli/Commands/*')
             ->load('Reconmap\\Services\\', $prefix . 'Services/*')
-            ->exclude([$prefix . 'Services/QueryParams/OrderByRequestHandler.php'])
             ->load('Reconmap\\Repositories\\', $prefix . 'Repositories/*')
             ->load('Reconmap\\Database\\', $prefix . 'Database/*')
             ->load('Reconmap\\Tasks\\', $prefix . 'Tasks/*')
             ->load('Reconmap\\Http\\', $prefix . 'Http/*')
-            ->exclude($prefix . 'Http/ApplicationRequest.php')
             ->load('Reconmap\\Controllers\\', $prefix . 'Controllers/*')
             ->set(ServerRequestInterface::class)->synthetic()
-            ->set(Logger::class)->synthetic()
+            ->set(LoggerInterface::class)->synthetic()
             ->set(ApplicationConfig::class)->synthetic()
             ->set(ProcessorFactory::class)->synthetic()
             ->set(ContainerInterface::class)->synthetic()

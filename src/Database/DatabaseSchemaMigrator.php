@@ -2,7 +2,7 @@
 
 namespace Reconmap\Database;
 
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Reconmap\AppVersion;
 use Reconmap\Services\ApplicationConfig;
 
@@ -10,7 +10,7 @@ readonly class DatabaseSchemaMigrator
 {
     public function __construct(private MysqlServer       $mysqlServer,
                                 private ApplicationConfig $config,
-                                private Logger            $logger)
+                                private LoggerInterface   $logger)
     {
     }
 

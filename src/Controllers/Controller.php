@@ -4,13 +4,13 @@ namespace Reconmap\Controllers;
 
 use GuzzleHttp\Psr7\Response;
 use JsonMapper;
-use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Log\LoggerInterface;
 use Reconmap\DomainObjects\User;
 use Reconmap\Models\Cleanable;
 use Reconmap\Services\TemplateEngine;
-use Symfony\Contracts\Service\Attribute\SubscribedService;
+use Symfony\Contracts\Service\Attribute\Required;
 use Symfony\Contracts\Service\ServiceMethodsSubscriberTrait;
 use Symfony\Contracts\Service\ServiceSubscriberInterface;
 
@@ -18,18 +18,13 @@ abstract class Controller implements ServiceSubscriberInterface
 {
     use ServiceMethodsSubscriberTrait;
 
-    protected ?Logger $logger = null;
+    protected ?LoggerInterface $logger = null;
     protected ?TemplateEngine $template = null;
 
-    public function setLogger(Logger $logger): void
+    #[Required]
+    public function setLogger(LoggerInterface $logger): void
     {
         $this->logger = $logger;
-    }
-
-    #[SubscribedService]
-    public function logger(): Logger
-    {
-        return $this->container->get(Logger::class);
     }
 
     public function getJsonBodyDecoded(ServerRequestInterface $request): object

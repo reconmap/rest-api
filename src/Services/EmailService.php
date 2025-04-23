@@ -2,15 +2,15 @@
 
 namespace Reconmap\Services;
 
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 
 class EmailService
 {
     public function __construct(
-        private readonly TemplateEngine $templateEngine,
-        private readonly RedisServer $redisServer,
+        private readonly TemplateEngine    $templateEngine,
+        private readonly RedisServer       $redisServer,
         private readonly ApplicationConfig $applicationConfig,
-        private readonly Logger $logger
+        private readonly LoggerInterface   $logger
     )
     {
     }

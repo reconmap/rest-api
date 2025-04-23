@@ -2,6 +2,9 @@
 
 namespace Reconmap\Services\QueryParams;
 
+use Symfony\Component\DependencyInjection\Attribute\Exclude;
+
+#[Exclude]
 class OrderByRequestHandler
 {
     private string $orderColumn;
