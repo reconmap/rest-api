@@ -12,11 +12,11 @@ use Reconmap\Services\RedisServer;
 
 class UploadCommandOutputController extends UploadAttachmentController
 {
-    public function __construct(AttachmentRepository $attachmentRepository,
-                                AttachmentFilePath   $attachmentFilePathService,
-                                RedisServer          $redisServer,
-                                private              readonly CommandRepository $commandRepository,
-    private readonly CommandUsageRepository $commandUsageRepository,
+    public function __construct(AttachmentRepository                    $attachmentRepository,
+                                AttachmentFilePath                      $attachmentFilePathService,
+                                RedisServer                             $redisServer,
+                                private readonly CommandRepository      $commandRepository,
+                                private readonly CommandUsageRepository $commandUsageRepository,
     )
     {
         parent::__construct($attachmentRepository, $attachmentFilePathService, $redisServer);
@@ -26,13 +26,13 @@ class UploadCommandOutputController extends UploadAttachmentController
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
         $params = $request->getParsedBody();
-        $commandId = (int)$params['commandId'];
+        $commandUsageId = (int)$params['commandUsageId'];
         $taskId = isset($params['taskId']) ? intval($params['taskId']) : null;
 
         $files = $request->getUploadedFiles();
         $resultFile = $files['resultFile'];
 
-        $usage = $this->commandUsageRepository->findById($commandId);
+        $usage = $this->commandUsageRepository->findById($commandUsageId);
         $command = $this->commandRepository->findById($usage['command_id']);
 
         $userId = $request->getAttribute('userId');

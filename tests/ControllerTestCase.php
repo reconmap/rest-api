@@ -2,7 +2,7 @@
 
 namespace Reconmap;
 
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Services\Security\AuthorisationService;
 
@@ -10,7 +10,7 @@ class ControllerTestCase extends DatabaseTestCase
 {
     public function injectController(Controller $controller): Controller
     {
-        $mockLogger = $this->createMock(Logger::class);
+        $mockLogger = $this->createMock(LoggerInterface::class);
         $controller->setLogger($mockLogger);
 
         return $controller;

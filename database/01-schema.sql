@@ -396,11 +396,13 @@ INSERT INTO command(id, creator_uid, name)
 VALUES (1, 1, 'nmap');
 
 TRUNCATE TABLE command_usage;
-INSERT INTO command_usage(id, creator_uid, command_id, description, executable_path, arguments, output_filename,
+INSERT INTO command_usage(id, creator_uid, command_id, name, description, executable_path, arguments, output_filename,
                           output_parser)
-VALUES (1, 1, 1, "Scan all reserved TCP ports on the machine. The -v option enables verbose mode.", "nmap",
+VALUES (1, 1, 1, "Normal scan", "Scan all reserved TCP ports on the machine. The -v option enables verbose mode.",
+        "nmap",
         "  -v scanme.nmap.org", "STDOUT", "nmap"),
        (2, 1, 1,
+        "Stealth scan",
         "Launches a stealth SYN scan against each machine that is up out of the 256 IPs on the /24 sized network where Scanme resides. It also tries to determine what operating system is running on each host that is up and running. This requires root privileges because of the SYN scan and OS detection.",
         "nmap", " -sS -O scanme.nmap.org/24", "STDOUT", "nmap");
 

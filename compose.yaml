@@ -29,6 +29,7 @@ services:
       retries: 3
 
   keycloak:
+    container_name: rmap-keycloak
     image: quay.io/reconmap/keycloak-custom:latest
     command: "start --hostname=http://localhost:8080 --proxy-headers xforwarded --http-enabled true --import-realm"
     environment:
