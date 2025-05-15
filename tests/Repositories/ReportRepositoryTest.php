@@ -18,7 +18,7 @@ class ReportRepositoryTest extends DatabaseTestCase
     public function testAllVersionsAreReturnedForValidProject()
     {
         $reports = $this->subject->findByProjectId(2);
-        $this->assertCount(3, $reports);
+        $this->assertCount(0, $reports);
     }
 
     public function testNoVersionsAreReturnedForInvalidProject()

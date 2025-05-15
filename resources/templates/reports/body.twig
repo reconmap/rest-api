@@ -80,55 +80,49 @@
 
 <body>
 
-{% if configuration.include_revisions_table and reports %}
-    <div style="break-after:page;page-break-after: always;"></div>
-
-    <h2>Version control</h2>
-
-    <table>
-        <thead>
-        <tr>
-            <th>Date/Time</th>
-            <th>Version</th>
-            <th>Description</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for version in reports %}
-            <tr>
-                <td>{{ version.insert_ts }}</td>
-                <td>{{ version.version_name }}</td>
-                <td>{{ version.version_description }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-{% endif %}
-
-<div style="break-after:page;page-break-after: always;"></div>
-
 <h1>{{ project.name }}</h1>
 <p>{{ project.description }}</p>
 <hr>
 
 <div style="break-after:page;page-break-after: always;"></div>
 
-{% if configuration.include_team_bios and users %}
-    <h1><a id="pentesting-team">Pentesting team</a></h1>
+<h2>Version control</h2>
 
-    <table>
-        <tbody>
-        {% for user in users %}
-            <tr>
-                <td style="border: 0;">
-                    <h3>{{ user.full_name }}</h3>
-                    <p>{{ user.short_bio }}</p>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-{% endif %}
+<table>
+    <thead>
+    <tr>
+        <th>Date/Time</th>
+        <th>Version</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for version in reports %}
+        <tr>
+            <td>{{ version.insert_ts }}</td>
+            <td>{{ version.version_name }}</td>
+            <td>{{ version.version_description }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<div style="break-after:page;page-break-after: always;"></div>
+
+<h1><a id="pentesting-team">Pentesting team</a></h1>
+
+<table>
+    <tbody>
+    {% for user in users %}
+        <tr>
+            <td style="border: 0;">
+                <h3>{{ user.full_name }}</h3>
+                <p>{{ user.short_bio }}</p>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
 
 {% if targets %}
     <div style="break-after:page;page-break-after: always;"></div>
@@ -144,27 +138,24 @@
 
 <div style="break-after:page;page-break-after: always;"></div>
 
+<h1><a id="findings-overview">Findings overview</a></h1>
 
-{% if configuration.include_findings_overview %}
-    <h1><a id="findings-overview">Findings overview</a></h1>
-
-    <table>
-        <thead>
+<table>
+    <thead>
+    <tr>
+        <th>Severity</th>
+        <th>Count</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in findingsOverview %}
         <tr>
-            <th>Severity</th>
-            <th>Count</th>
+            <td class="risk-{{ item.severity }}">{{ item.severity|capitalize }}</td>
+            <td>{{ item.count }}</td>
         </tr>
-        </thead>
-        <tbody>
-        {% for item in findingsOverview %}
-            <tr>
-                <td class="risk-{{ item.severity }}">{{ item.severity|capitalize }}</td>
-                <td>{{ item.count }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-{% endif %}
+    {% endfor %}
+    </tbody>
+</table>
 
 <div style="break-after:page;page-break-after: always;"></div>
 

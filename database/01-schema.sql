@@ -442,18 +442,6 @@ CREATE TABLE report
     KEY (is_template)
 ) ENGINE = InnoDB;
 
-DROP TABLE IF EXISTS report_configuration;
-
-CREATE TABLE report_configuration
-(
-    id         INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    project_id INT UNSIGNED NOT NULL,
-
-    PRIMARY KEY (id),
-    UNIQUE (project_id),
-    FOREIGN KEY (project_id) REFERENCES project (id) ON DELETE CASCADE
-) ENGINE = InnoDB;
-
 DROP TABLE IF EXISTS custom_field;
 
 CREATE TABLE custom_field

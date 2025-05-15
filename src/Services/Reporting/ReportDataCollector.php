@@ -7,7 +7,6 @@ use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Repositories\ClientRepository;
 use Reconmap\Repositories\ContactRepository;
 use Reconmap\Repositories\ProjectRepository;
-use Reconmap\Repositories\ReportConfigurationRepository;
 use Reconmap\Repositories\ReportRepository;
 use Reconmap\Repositories\SearchCriterias\TargetSearchCriteria;
 use Reconmap\Repositories\SearchCriterias\VaultSearchCriteria;
@@ -22,12 +21,11 @@ use Reconmap\Services\Filesystem\AttachmentFilePath;
 
 readonly class ReportDataCollector
 {
-    private const int RootOrganisationId = 1;
+    private const int RootOrganisationId = 2;
 
     public function __construct(
         private ProjectRepository               $projectRepository,
         private ReportRepository                $reportRepository,
-        private ReportConfigurationRepository   $reportConfigurationRepository,
         private VulnerabilityRepository         $vulnerabilityRepository,
         private VulnerabilityCategoryRepository $vulnerabilityCategoryRepository,
         private UserRepository                  $userRepository,
@@ -48,8 +46,6 @@ readonly class ReportDataCollector
         if (is_null($project)) {
             return [];
         }
-
-        $configuration = $this->reportConfigurationRepository->findByProjectId($projectId);
 
         $vulnerabilitySearchCriteria = new VulnerabilitySearchCriteria();
         $vulnerabilitySearchCriteria->addProjectCriterion($projectId);
@@ -78,19 +74,19 @@ readonly class ReportDataCollector
 
         $organisation = $this->clientRepository->findById(self::RootOrganisationId);
         $logos = [];
-        if ($organisation and $organisation->small_logo_attachment_id) {
+        if ($organisation && $organisation->small_logo_attachment_id) {
             $logos['org_small_logo'] = $this->attachmentFilePathService->generateFilePath($this->attachmentRepository->getFileNameById($organisation->small_logo_attachment_id));
         }
-        if ($organisation and $organisation->logo_attachment_id) {
+        if ($organisation && $organisation->logo_attachment_id) {
             $logos['org_logo'] = $this->attachmentFilePathService->generateFilePath($this->attachmentRepository->getFileNameById($organisation->logo_attachment_id));
         }
 
         if (isset($project['client_id'])) {
             $client = $this->clientRepository->findById($project['client_id']);
-            if ($client and $client->small_logo_attachment_id) {
+            if ($client && $client->small_logo_attachment_id) {
                 $logos['client_small_logo'] = $this->attachmentFilePathService->generateFilePath($this->attachmentRepository->getFileNameById($client->small_logo_attachment_id));
             }
-            if ($client and $client->logo_attachment_id) {
+            if ($client && $client->logo_attachment_id) {
                 $logos['client_logo'] = $this->attachmentFilePathService->generateFilePath($this->attachmentRepository->getFileNameById($client->logo_attachment_id));
             }
         }
@@ -123,7 +119,6 @@ readonly class ReportDataCollector
         $project['attachments'] = $att;
 
         $vars = [
-            'configuration' => $configuration,
             'project' => $project,
             'contacts' => $contacts,
             'org' => $organisation,

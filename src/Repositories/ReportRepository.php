@@ -22,9 +22,11 @@ class ReportRepository extends MysqlRepository
     {
         $sql = <<<SQL
         SELECT
-            r.*, p.id AS project_id, p.name AS project_name
+            r.*, p.id AS project_id, p.name AS project_name,
+            a.id AS attachment_id, a.client_file_name
             FROM report r
             INNER JOIN project p ON (p.id = r.project_id)
+            INNER JOIN attachment a ON (a.parent_id = r.id AND a.parent_type = 'report')
             ORDER BY r.insert_ts DESC
             LIMIT 20
         SQL;
@@ -50,9 +52,12 @@ class ReportRepository extends MysqlRepository
         $sql = <<<SQL
 SELECT
        r.*,
-       (SELECT id FROM attachment WHERE parent_type = 'report' AND parent_id = r.id) AS docx_attachment_id
+       a.id AS attachment_id,
+       a.client_file_name
 FROM
     report r
+INNER JOIN
+    attachment a ON (a.parent_id = r.id AND a.parent_type = 'report')
 WHERE
     r.project_id = ?
 ORDER BY

@@ -64,7 +64,7 @@ class CreateReportController extends Controller
                     break;
                 case 'txt':
                 case 'md':
-                case 'lex':
+                case 'tex':
                 case 'html':
                     $textReportRenderer = new PlainTextReportRenderer($this->logger, $this->attachmentFilePathService, $this->attachmentRepository);
                     $attachmentIds[] = $textReportRenderer->render($project, $report, $reportTemplateAttachment, $vars);

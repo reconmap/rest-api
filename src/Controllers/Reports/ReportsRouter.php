@@ -13,8 +13,6 @@ class ReportsRouter
         $router->map('GET', '/reports/templates', GetReportTemplatesController::class);
         $router->map('POST', '/reports/templates', CreateReportTemplateController::class);
         $router->map('GET', '/reports/preview', GetReportPreviewController::class);
-        $router->map('GET', '/reports/{projectId:number}/configuration', GetReportConfigurationController::class);
-        $router->map('PUT', '/reports/{projectId:number}/configuration', ReplaceReportConfigurationController::class);
         $router->map('POST', '/reports/{reportId:number}/send', SendReportController::class);
         $router->map('POST', '/reports', CreateReportController::class);
         $router->map('DELETE', '/reports/{reportId:number}', DeleteReportController::class);
