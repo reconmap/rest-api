@@ -169,6 +169,7 @@ CREATE TABLE project
     insert_ts             TIMESTAMP                  NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_ts             TIMESTAMP                  NULL ON UPDATE CURRENT_TIMESTAMP,
     creator_uid           INT UNSIGNED               NOT NULL,
+    service_provider_id   INT UNSIGNED               NULL COMMENT 'Null when project is template',
     client_id             INT UNSIGNED               NULL COMMENT 'Null when project is template',
     category_id           INT UNSIGNED               NULL,
     is_template           BOOLEAN                    NOT NULL DEFAULT FALSE,

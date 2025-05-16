@@ -21,8 +21,6 @@ use Reconmap\Services\Filesystem\AttachmentFilePath;
 
 readonly class ReportDataCollector
 {
-    private const int RootOrganisationId = 2;
-
     public function __construct(
         private ProjectRepository               $projectRepository,
         private ReportRepository                $reportRepository,
@@ -72,7 +70,7 @@ readonly class ReportDataCollector
 
         $markdownParser = new GithubFlavoredMarkdownConverter();
 
-        $organisation = $this->clientRepository->findById(self::RootOrganisationId);
+        $organisation = $this->clientRepository->findById($project['service_provider_id']);
         $logos = [];
         if ($organisation && $organisation->small_logo_attachment_id) {
             $logos['org_small_logo'] = $this->attachmentFilePathService->generateFilePath($this->attachmentRepository->getFileNameById($organisation->small_logo_attachment_id));

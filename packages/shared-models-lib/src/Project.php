@@ -9,6 +9,7 @@ class Project {
 
 	public ?int $id = null;
 	public ?int $creator_uid;
+	public ?int $service_provider_id;
 	public ?int $client_id;
 	public ?string $name;
 	public ?string $description;

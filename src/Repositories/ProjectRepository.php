@@ -11,6 +11,7 @@ use Reconmap\Services\PaginationRequestHandler;
 class ProjectRepository extends MysqlRepository
 {
     public const array UPDATABLE_COLUMNS_TYPES = [
+        'service_provider_id' => 'i',
         'client_id' => 'i',
         'category_id' => 'i',
         'name' => 's',
@@ -92,10 +93,10 @@ SQL;
     public function insert(Project $project): int
     {
         $insertStmt = new InsertQueryBuilder('project');
-        $insertStmt->setColumns('creator_uid, client_id, name, description, is_template, category_id, engagement_start_date, engagement_end_date, visibility, external_id, vulnerability_metrics');
+        $insertStmt->setColumns('creator_uid, service_provider_id, client_id, name, description, is_template, category_id, engagement_start_date, engagement_end_date, visibility, external_id, vulnerability_metrics');
 
         $stmt = $this->mysqlServer->prepare($insertStmt->toSql());
-        $stmt->bind_param('iississssss', $project->creator_uid, $project->client_id, $project->name, $project->description, $project->is_template, $project->category_id, $project->engagement_start_date, $project->engagement_end_date, $project->visibility, $project->external_id, $project->vulnerability_metrics);
+        $stmt->bind_param('iiississssss', $project->creator_uid, $project->service_provider_id, $project->client_id, $project->name, $project->description, $project->is_template, $project->category_id, $project->engagement_start_date, $project->engagement_end_date, $project->visibility, $project->external_id, $project->vulnerability_metrics);
         return $this->executeInsertStatement($stmt);
     }
 

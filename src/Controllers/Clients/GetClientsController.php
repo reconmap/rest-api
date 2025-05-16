@@ -22,6 +22,11 @@ class GetClientsController extends SecureController
 
     public function process(ServerRequestInterface $request, array $args): array
     {
+        $params = $request->getQueryParams();
+
+        if (isset($params['kind'])) {
+            return $this->repository->findByType($params['kind']);
+        }
         return $this->repository->findAll();
     }
 }

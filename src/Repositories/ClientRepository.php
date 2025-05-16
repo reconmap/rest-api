@@ -30,6 +30,25 @@ SQL;
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
+    public function findByType(string $kind): array
+    {
+        $sql = <<<SQL
+SELECT *, (SELECT COUNT(*) FROM client_contact WHERE client_id = client.id) AS num_contacts
+FROM client
+WHERE kind = ?
+ORDER BY name ASC
+SQL;
+
+        $stmt = $this->mysqlServer->prepare($sql);
+        $stmt->bind_param('s', $kind);
+        $stmt->execute();
+        $rs = $stmt->get_result();
+        $notes = $rs->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+
+        return $notes;
+    }
+
     public function findById(int $id): ?Client
     {
         $sql = <<<SQL
