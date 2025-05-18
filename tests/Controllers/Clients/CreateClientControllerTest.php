@@ -2,13 +2,14 @@
 
 namespace Reconmap\Controllers\Clients;
 
-use GuzzleHttp\Psr7\Utils;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Models\AuditActions\ClientAuditActions;
 use Reconmap\Models\Client;
 use Reconmap\Repositories\ClientRepository;
 use Reconmap\Services\ActivityPublisherService;
+use Reconmap\Services\Filesystem\AttachmentSaver;
+use Symfony\Component\HttpFoundation\Response;
 
 class CreateClientControllerTest extends TestCase
 {
@@ -19,6 +20,7 @@ class CreateClientControllerTest extends TestCase
         $expectedClient->address = 'evergreen';
         $expectedClient->url = '1.1.1.1';
         $expectedClient->creator_uid = 9;
+        $expectedClient->kind = 'client';
 
         $mockProjectRepository = $this->createMock(ClientRepository::class);
         $mockProjectRepository->expects($this->once())
@@ -32,17 +34,19 @@ class CreateClientControllerTest extends TestCase
             ->with('userId')
             ->willReturn(9);
         $mockRequest->expects($this->once())
-            ->method('getBody')
-            ->willReturn(Utils::streamFor('{"name":"exciting new client","address":"evergreen","url":"1.1.1.1"}'));
+            ->method('getParsedBody')
+            ->willReturn(["name" => "exciting new client", "kind" => "client", "address" => "evergreen", "url" => "1.1.1.1"]);
 
         $mockActivityPublisherService = $this->createMock(ActivityPublisherService::class);
         $mockActivityPublisherService->expects($this->once())
             ->method('publish')
             ->with(9, ClientAuditActions::CREATED, ['type' => 'client', 'id' => 1, 'name' => $expectedClient->name]);
 
-        $controller = new CreateClientController($mockProjectRepository, $mockActivityPublisherService);
+        $mockAttachmentSaver = $this->createMock(AttachmentSaver::class);
+
+        $controller = new CreateClientController($mockProjectRepository, $mockAttachmentSaver, $mockActivityPublisherService);
         $response = $controller($mockRequest);
 
-        $this->assertEquals(\Symfony\Component\HttpFoundation\Response::HTTP_CREATED, $response->getStatusCode());
+        $this->assertEquals(Response::HTTP_CREATED, $response->getStatusCode());
     }
 }

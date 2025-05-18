@@ -40,6 +40,7 @@ class ProjectRepositoryTest extends DatabaseTestCase
             'external_id' => null,
             'vulnerability_metrics' => null,
             'num_tasks' => 3,
+            'service_provider_id' => null
         ];
 
         $project1 = $this->subject->findById($projectId);

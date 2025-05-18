@@ -19,7 +19,7 @@ class IntegrationsRepository
         foreach ($processorFactory->getAll() as $parser) {
             $this->integrations[] = new class($parser['name']) implements Integration {
 
-                public function __construct(private string $parserName)
+                public function __construct(private readonly string $parserName)
                 {
                 }
 
@@ -45,7 +45,7 @@ class IntegrationsRepository
 
                 public function getExternalUrl(): string
                 {
-                    return 'https://github.com/reconmap/php-command-output-parsers';
+                    return 'https://github.com/reconmap/rest-api/tree/master/packages/command-parsers-lib';
                 }
             };
         }

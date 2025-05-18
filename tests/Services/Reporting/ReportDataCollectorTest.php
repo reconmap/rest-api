@@ -45,7 +45,7 @@ class ReportDataCollectorTest extends TestCase
         $projectRepository = $this->createMock(ProjectRepository::class);
         $projectRepository->expects($this->once())
             ->method('findById')
-            ->willReturn([]);
+            ->willReturn(['service_provider_id' => 1]);
 
         $reportRepository = $this->createMock(ReportRepository::class);
         $vulnerabilityRepository = $this->createMock(VulnerabilityRepository::class);
@@ -65,7 +65,8 @@ class ReportDataCollectorTest extends TestCase
 
         $expectedResult = [
             'project' => array(
-                'attachments' => array()
+                'attachments' => array(),
+                'service_provider_id' => 1
             ),
             'org' => null,
             'date' => date('Y-m-d'),
