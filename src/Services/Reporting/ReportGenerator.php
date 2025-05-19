@@ -2,22 +2,26 @@
 
 namespace Reconmap\Services\Reporting;
 
-use Reconmap\Services\TemplateEngine;
+use Reconmap\Services\Filesystem\AttachmentFilePath;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
 
 readonly class ReportGenerator
 {
     public function __construct(
         private ReportDataCollector $reportDataCollector,
-        private TemplateEngine      $templateEngine)
+        private AttachmentFilePath  $attachmentFilePathService)
     {
     }
 
-    public function generate(int $projectId): array
+    public function generate(int $projectId): string
     {
         $vars = $this->reportDataCollector->collectForProject($projectId);
 
-        return [
-            'body' => $this->templateEngine->render('reports/body', $vars)
-        ];
+
+        $basePath = $this->attachmentFilePathService->generateBasePath();
+        $filesystemLoader = new FileSystemLoader($basePath);
+        $twig = new Environment($filesystemLoader, ['strict_variables' => false]);
+        return $twig->render('default-report-template.html', $vars);
     }
 }

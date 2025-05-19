@@ -22,7 +22,7 @@ class GetReportPreviewController extends Controller
         $html = $this->reportGenerator->generate($projectId);
 
         $response = new Response;
-        $response->getBody()->write($html['body']);
+        $response->getBody()->write($html);
         return $response
             ->withHeader('Content-type', 'text/html');
     }

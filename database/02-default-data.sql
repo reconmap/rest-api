@@ -1,7 +1,9 @@
 USE reconmap;
 
+SET @admin_user_id = 1;
+
 INSERT INTO user (id, subject_id, full_name, username, email, role)
-VALUES (1, 'fec17265-a0ae-4d5a-9e20-63487fc21b67', 'Administrator', 'admin', 'admin@localhost',
+VALUES (@admin_user_id, 'fec17265-a0ae-4d5a-9e20-63487fc21b67', 'Administrator', 'admin', 'admin@localhost',
         'administrator');
 
 INSERT INTO audit_log (user_id, client_ip, action)
@@ -137,12 +139,44 @@ INSERT INTO organisation (name, url, contact_id)
 VALUES ('Reconmap organisation', 'https://reconmap.com', LAST_INSERT_ID());
 
 INSERT INTO report (project_id, generated_by_uid, is_template, version_name, version_description)
-VALUES (NULL, 1, 1, 'Default', 'Default report template');
+VALUES (NULL, @admin_user_id, TRUE, 'Report template (HTML)', 'Default report template in HTML format');
 
 INSERT INTO attachment (parent_type, parent_id, submitter_uid, client_file_name, file_name, file_size, file_mimetype,
                         file_hash)
-VALUES ('report', LAST_INSERT_ID(), 1, 'default-report-template.docx', 'default-report-template.docx', 0,
+VALUES ('report', LAST_INSERT_ID(), @admin_user_id, 'default-report-template.html', 'default-report-template.html', 0,
+        'text/html', '');
+
+INSERT INTO report (project_id, generated_by_uid, is_template, version_name, version_description)
+VALUES (NULL, @admin_user_id, TRUE, 'Report template (Word)', 'Default report template in Word format');
+
+INSERT INTO attachment (parent_type, parent_id, submitter_uid, client_file_name, file_name, file_size, file_mimetype,
+                        file_hash)
+VALUES ('report', LAST_INSERT_ID(), @admin_user_id, 'default-report-template.docx', 'default-report-template.docx', 0,
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document', '');
+
+INSERT INTO report (project_id, generated_by_uid, is_template, version_name, version_description)
+VALUES (NULL, @admin_user_id, TRUE, 'Report template (MD)', 'Default report template in Markdown format');
+
+INSERT INTO attachment (parent_type, parent_id, submitter_uid, client_file_name, file_name, file_size, file_mimetype,
+                        file_hash)
+VALUES ('report', LAST_INSERT_ID(), @admin_user_id, 'default-report-template.md', 'default-report-template.md', 0,
+        'text/markdown', '');
+
+INSERT INTO report (project_id, generated_by_uid, is_template, version_name, version_description)
+VALUES (NULL, @admin_user_id, TRUE, 'Report template (TXT)', 'Default report template in Text format');
+
+INSERT INTO attachment (parent_type, parent_id, submitter_uid, client_file_name, file_name, file_size, file_mimetype,
+                        file_hash)
+VALUES ('report', LAST_INSERT_ID(), @admin_user_id, 'default-report-template.txt', 'default-report-template.txt', 0,
+        'text/plain', '');
+
+INSERT INTO report (project_id, generated_by_uid, is_template, version_name, version_description)
+VALUES (NULL, @admin_user_id, TRUE, 'Report template (TEX)', 'Default report template in LaTeX format');
+
+INSERT INTO attachment (parent_type, parent_id, submitter_uid, client_file_name, file_name, file_size, file_mimetype,
+                        file_hash)
+VALUES ('report', LAST_INSERT_ID(), @admin_user_id, 'default-report-template.tex', 'default-report-template.tex', 0,
+        'application/x-tex', '');
 
 INSERT INTO project_category (name, description)
 VALUES ('Managed security monitoring',
@@ -163,7 +197,8 @@ VALUES ('Managed security monitoring',
         'Also known as pentesting, which entails simulating a cyberattack against the organization’s information and technology assets to check for exploitable vulnerabilities. This service constitutes a form of ethical hacking that can be very effective at uncovering the vulnerabilities that may be successfully targeted by hackers ');
 
 INSERT INTO project (creator_uid, name, description, engagement_end_date)
-VALUES (1, 'Onboarding to Reconmap', 'Project to ensure all Reconmap\'s onboarding tasks are done in order.',
+VALUES (@admin_user_id, 'Onboarding to Reconmap',
+        'Project to ensure all Reconmap\'s onboarding tasks are done in order.',
         CURRENT_DATE);
 
 INSERT INTO task (creator_uid, assignee_uid, project_id, summary, description, priority)

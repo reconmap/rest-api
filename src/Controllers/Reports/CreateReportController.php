@@ -55,7 +55,6 @@ class CreateReportController extends Controller
         $attachmentIds = [];
 
         try {
-            $this->logger->info('renderning', ['template' => $reportTemplateAttachment]);
             $ext = pathinfo($reportTemplateAttachment['client_file_name'], PATHINFO_EXTENSION);
             switch ($ext) {
                 case 'docx':
@@ -73,7 +72,7 @@ class CreateReportController extends Controller
 
         } catch (\Exception $e) {
             $msg = $e->getMessage();
-            $this->logger->error("General error: [$msg]");
+            $this->logger->error("General error: $msg");
         }
 
         return $attachmentIds;
