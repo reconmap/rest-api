@@ -7,7 +7,6 @@ use Psr\Http\Message\UploadedFileInterface;
 use Reconmap\ControllerTestCase;
 use Reconmap\Models\Attachment;
 use Reconmap\Models\AuditActions\AuditActions;
-use Reconmap\Models\AuditActions\AuditLogAction;
 use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Services\AuditLogService;
 use Reconmap\Services\Filesystem\AttachmentFilePath;
@@ -67,6 +66,6 @@ class UpdateAttachmentControllerTest extends ControllerTestCase
         $controller = $this->injectController(new UpdateAttachmentController($mockAttachmentRepository, $mockAttachmentFilePath, $mockAuditLogService));
         $response = $controller($mockRequest, $args);
 
-        $this->assertTrue($response['success']);
+        $this->assertEquals(204, $response->getStatusCode());;
     }
 }

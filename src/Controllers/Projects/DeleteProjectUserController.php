@@ -2,22 +2,23 @@
 
 namespace Reconmap\Controllers\Projects;
 
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\ProjectUserRepository;
 
 class DeleteProjectUserController extends Controller
 {
-    public function __construct(private ProjectUserRepository $projectUserRepository)
+    public function __construct(private readonly ProjectUserRepository $projectUserRepository)
     {
     }
 
-    public function __invoke(ServerRequestInterface $request, array $args): array
+    public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
     {
         $membershipId = (int)$args['membershipId'];
 
-        $result = $this->projectUserRepository->deleteById($membershipId);
+        $success = $this->projectUserRepository->deleteById($membershipId);
 
-        return ['success' => $result];
+        return $success ? $this->createNoContentResponse() : $this->createInternalServerErrorResponse();
     }
 }

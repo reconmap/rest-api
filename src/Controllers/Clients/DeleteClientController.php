@@ -2,6 +2,7 @@
 
 namespace Reconmap\Controllers\Clients;
 
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditActions\AuditActions;
@@ -17,7 +18,7 @@ class DeleteClientController extends Controller
     {
     }
 
-    public function __invoke(ServerRequestInterface $request, array $args): array
+    public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
     {
         $clientId = (int)$args['clientId'];
 
@@ -26,7 +27,7 @@ class DeleteClientController extends Controller
         $userId = $request->getAttribute('userId');
         $this->auditAction($userId, $clientId);
 
-        return ['success' => $success];
+        return $success ? $this->createNoContentResponse() : $this->createInternalServerErrorResponse();
     }
 
     private function auditAction(int $loggedInUserId, int $clientId): void

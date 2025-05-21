@@ -2,6 +2,7 @@
 
 namespace Reconmap\Controllers\Commands;
 
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\CommandRepository;
@@ -12,12 +13,12 @@ class DeleteCommandController extends Controller
     {
     }
 
-    public function __invoke(ServerRequestInterface $request, array $args): array
+    public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
     {
         $commandId = intval($args['commandId']);
 
         $success = $this->repository->deleteById($commandId);
 
-        return ['success' => $success];
+        return $success ? $this->createNoContentResponse() : $this->createInternalServerErrorResponse();
     }
 }

@@ -5,7 +5,6 @@ namespace Reconmap\Controllers\Projects;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Models\AuditActions\AuditActions;
-use Reconmap\Models\AuditActions\AuditLogAction;
 use Reconmap\Repositories\ProjectRepository;
 use Reconmap\Services\AuditLogService;
 
@@ -37,6 +36,6 @@ class DeleteProjectControllerTest extends TestCase
         $controller = new DeleteProjectController($mockProjectRepository, $mockAuditLogService);
         $response = $controller($mockRequest, $args);
 
-        $this->assertTrue($response['success']);
+        $this->assertEquals(204, $response->getStatusCode());
     }
 }

@@ -5,7 +5,6 @@ namespace Reconmap\Controllers\Tasks;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Models\AuditActions\AuditActions;
-use Reconmap\Models\AuditActions\AuditLogAction;
 use Reconmap\Repositories\TaskRepository;
 use Reconmap\Services\ActivityPublisherService;
 
@@ -37,6 +36,6 @@ class DeleteTaskControllerTest extends TestCase
         $controller = new DeleteTaskController($mockTaskRepository, $mockPublisherService);
         $response = $controller($mockRequest, $args);
 
-        $this->assertTrue($response['success']);
+        $this->assertEquals(204, $response->getStatusCode());
     }
 }

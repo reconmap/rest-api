@@ -37,6 +37,6 @@ class DeleteClientControllerTest extends TestCase
         $controller = new DeleteClientController($mockClientRepository, $mockPublisherService);
         $response = $controller($mockRequest, $args);
 
-        $this->assertTrue($response['success']);
+        $this->assertEquals(204, $response->getStatusCode());
     }
 }

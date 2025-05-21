@@ -2,6 +2,7 @@
 
 namespace Reconmap\Controllers\Reports;
 
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\AttachmentRepository;
@@ -12,14 +13,14 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class DeleteReportController extends Controller
 {
-    public function __construct(private readonly AttachmentFilePath $attachmentFilePathService,
-                                private readonly ReportRepository $reportRepository,
+    public function __construct(private readonly AttachmentFilePath   $attachmentFilePathService,
+                                private readonly ReportRepository     $reportRepository,
                                 private readonly AttachmentRepository $attachmentRepository,
-                                private readonly Filesystem $filesystem)
+                                private readonly Filesystem           $filesystem)
     {
     }
 
-    public function __invoke(ServerRequestInterface $request, array $args): array
+    public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
     {
         $reportId = (int)$args['reportId'];
 
@@ -36,6 +37,6 @@ class DeleteReportController extends Controller
             }
         }
 
-        return ['success' => $success];
+        return $success ? $this->createNoContentResponse() : $this->createInternalServerErrorResponse();
     }
 }

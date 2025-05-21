@@ -49,6 +49,6 @@ class DeleteReportControllerTest extends TestCase
         $controller = new DeleteReportController($mockAttachmentFilePath, $mockReportRepository, $mockAttachmentRepository, $mockFilesystem);
         $response = $controller($mockRequest, $args);
 
-        $this->assertTrue($response['success']);
+        $this->assertEquals(204, $response->getStatusCode());
     }
 }

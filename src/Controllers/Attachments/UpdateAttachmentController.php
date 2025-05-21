@@ -2,11 +2,11 @@
 
 namespace Reconmap\Controllers\Attachments;
 
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditActions\AuditActions;
-use Reconmap\Models\AuditActions\AuditLogAction;
 use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Services\AuditLogService;
 use Reconmap\Services\Filesystem\AttachmentFilePath;
@@ -19,7 +19,7 @@ class UpdateAttachmentController extends Controller
     {
     }
 
-    public function __invoke(ServerRequestInterface $request, array $args): array
+    public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
     {
         $params = $request->getParsedBody();
         $parentType = $params['parentType'];
@@ -29,20 +29,20 @@ class UpdateAttachmentController extends Controller
         $files = $request->getUploadedFiles()['attachment'];
 
         $attachmentId = (int)$params['attachmentId'];
-        $result = true;
+
         foreach ($files as $file) {
             /** @var UploadedFileInterface $file */
             $this->logger->debug('file updated', ['filename' => $file->getClientFilename(), 'type' => $file->getClientMediaType(), 'size' => $file->getSize()]);
             if ($this->updateAttachment($file, $parentType, $parentId, $userId, $attachmentId)) {
                 $this->auditAction($userId, $attachmentId);
             } else {
-                $result = false;
                 $this->logger->error('Failed to update attachment\' attributes in DB', ['filename' => $file->getClientFilename(), 'type' => $file->getClientMediaType(), 'size' => $file->getSize()]);
+
+                return $this->createInternalServerErrorResponse();
             }
         }
 
-
-        return ['success' => $result];
+        return $this->createNoContentResponse();
     }
 
     /**

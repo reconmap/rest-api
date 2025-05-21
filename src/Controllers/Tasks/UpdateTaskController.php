@@ -6,14 +6,13 @@ use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Database\NullColumnReplacer;
 use Reconmap\Models\AuditActions\AuditActions;
-use Reconmap\Models\AuditActions\AuditLogAction;
 use Reconmap\Repositories\TaskRepository;
 use Reconmap\Services\ActivityPublisherService;
 
 class UpdateTaskController extends Controller
 {
-    public function __construct(private TaskRepository           $repository,
-                                private ActivityPublisherService $activityPublisherService)
+    public function __construct(private readonly TaskRepository           $repository,
+                                private readonly ActivityPublisherService $activityPublisherService)
     {
     }
 

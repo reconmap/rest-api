@@ -2,7 +2,6 @@
 
 namespace Reconmap\Controllers\Targets;
 
-use League\Plates\Engine;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\ControllerTestCase;
 use Reconmap\Repositories\TargetRepository;
@@ -32,6 +31,6 @@ class DeleteTargetControllerTest extends ControllerTestCase
 
         $controller = $this->injectController(new DeleteTargetController($mockRepository, $mockAuditLogService));
         $response = $controller($request, $args);
-        $this->assertEquals(['success' => true], $response);
+        $this->assertEquals(204, $response->getStatusCode());;
     }
 }

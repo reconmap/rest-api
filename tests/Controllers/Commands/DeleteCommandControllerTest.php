@@ -25,6 +25,6 @@ class DeleteCommandControllerTest extends TestCase
         $controller = new DeleteCommandController($mockCommandRepository);
         $response = $controller($mockRequest, $args);
 
-        $this->assertTrue($response['success']);
+        $this->assertEquals(204, $response->getStatusCode());
     }
 }

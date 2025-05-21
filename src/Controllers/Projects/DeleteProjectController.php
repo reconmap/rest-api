@@ -2,21 +2,21 @@
 
 namespace Reconmap\Controllers\Projects;
 
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditActions\AuditActions;
-use Reconmap\Models\AuditActions\AuditLogAction;
 use Reconmap\Repositories\ProjectRepository;
 use Reconmap\Services\AuditLogService;
 
 class DeleteProjectController extends Controller
 {
-    public function __construct(private ProjectRepository $projectRepository,
-                                private AuditLogService   $auditLogService)
+    public function __construct(private readonly ProjectRepository $projectRepository,
+                                private readonly AuditLogService   $auditLogService)
     {
     }
 
-    public function __invoke(ServerRequestInterface $request, array $args): array
+    public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
     {
         $projectId = (int)$args['projectId'];
 
@@ -26,7 +26,7 @@ class DeleteProjectController extends Controller
             $this->auditAction($userId, $projectId);
         }
 
-        return ['success' => $success];
+        return $success ? $this->createNoContentResponse() : $this->createInternalServerErrorResponse();
     }
 
     private function auditAction(int $loggedInUserId, int $projectId): void

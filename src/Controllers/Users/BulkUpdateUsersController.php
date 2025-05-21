@@ -5,14 +5,13 @@ namespace Reconmap\Controllers\Users;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditActions\AuditActions;
-use Reconmap\Models\AuditActions\AuditLogAction;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\AuditLogService;
 
 class BulkUpdateUsersController extends Controller
 {
-    public function __construct(private UserRepository  $userRepository,
-                                private AuditLogService $auditLogService)
+    public function __construct(private readonly UserRepository  $userRepository,
+                                private readonly AuditLogService $auditLogService)
     {
     }
 
