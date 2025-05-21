@@ -26,11 +26,13 @@ class GitterIntegration implements Integration, ActivityPublisher
         return 'https://gitter.im';
     }
 
-    public function publishActivity(string $activity): void
+    public function publishActivity(\BackedEnum $action): void
     {
         if (!$this->hasConfiguration()) {
             return;
         }
+
+        $activity = $action->value;
 
         $configuration = (object)$this->getConfiguration();
 

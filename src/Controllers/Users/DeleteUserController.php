@@ -6,7 +6,7 @@ use GuzzleHttp\Exception\ClientException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Models\AuditActions\UserAuditActions;
+use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\ActivityPublisherService;
 use Reconmap\Services\KeycloakService;
@@ -46,6 +46,6 @@ class DeleteUserController extends Controller
 
     private function auditAction(int $loggedInUserId, int $userId): void
     {
-        $this->activityPublisherService->publish($loggedInUserId, UserAuditActions::USER_DELETED, ['id' => $userId]);
+        $this->activityPublisherService->publish($loggedInUserId, AuditActions::DELETED, 'User', ['id' => $userId]);
     }
 }

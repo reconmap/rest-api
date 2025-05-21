@@ -4,6 +4,7 @@ namespace Reconmap\Controllers\Users;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
+use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Models\AuditActions\AuditLogAction;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\AuditLogService;
@@ -37,6 +38,6 @@ class BulkUpdateUsersController extends Controller
 
     private function auditAction(int $loggedInUserId, array $userIds): void
     {
-        $this->auditLogService->insert($loggedInUserId, AuditLogAction::USER_DELETED, ['type' => 'users', 'ids' => $userIds]);
+        $this->auditLogService->insert($loggedInUserId, AuditActions::DELETED, 'User', ['ids' => $userIds]);
     }
 }

@@ -4,7 +4,6 @@ namespace Reconmap\Controllers\Commands;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Repositories\CommandRepository;
 use Reconmap\Repositories\CommandUsageRepository;
 
 class DeleteCommandUsageController extends Controller

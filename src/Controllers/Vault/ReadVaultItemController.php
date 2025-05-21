@@ -5,6 +5,7 @@ namespace Reconmap\Controllers\Vault;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
+use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Models\AuditActions\VaultAuditActions;
 use Reconmap\Repositories\VaultRepository;
 use Reconmap\Services\AuditLogService;
@@ -24,20 +25,17 @@ class ReadVaultItemController extends Controller
         $vault_item_id = (int)$args['vaultItemId'];
 
         $vault = $this->repository->readVaultItem($project_id, $vault_item_id, $password);
-        if ($vault)
-        {
+        if ($vault) {
             $userId = $request->getAttribute('userId');
             $this->auditAction($userId, $vault->name);
             return $this->createStatusCreatedResponse($vault);
-        }
-        else
-        {
-            return $this->createStatusCreatedResponse( ['success' => false]);
+        } else {
+            return $this->createStatusCreatedResponse(['success' => false]);
         }
     }
 
     private function auditAction(int $loggedInUserId, string $name): void
     {
-        $this->auditLogService->insert($loggedInUserId, VaultAuditActions::ITEM_READ, [$name]);
+        $this->auditLogService->insert($loggedInUserId, AuditActions::READ, 'Vault Item', [$name]);
     }
 }

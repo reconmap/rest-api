@@ -2,10 +2,7 @@
 
 namespace Reconmap\Models\AuditActions;
 
-interface AttachmentAuditActions
+enum AttachmentAuditActions: string
 {
-    public const ATTACHMENT_CREATED = 'Created attachment';
-    public const ATTACHMENT_DELETED = 'Deleted attachment';
-    public const ATTACHMENT_UPDATED = 'Updated attachment';
-    public const ATTACHMENT_DOWNLOADED = 'Downloaded attachment';
+    case DOWNLOADED = 'Downloaded';
 }

@@ -5,6 +5,7 @@ namespace Reconmap\Controllers\System;
 use GuzzleHttp\Psr7\ServerRequest;
 use Psr\Container\ContainerInterface;
 use Reconmap\ControllerTestCase;
+use Reconmap\Models\AuditActions\DataAuditActions;
 use Reconmap\Repositories\Exporters\ClientsExporter;
 use Reconmap\Services\AuditLogService;
 
@@ -15,7 +16,7 @@ class ExportDataControllerTest extends ControllerTestCase
         $mockAuditLogService = $this->createPartialMock(AuditLogService::class, ['insert']);
         $mockAuditLogService->expects($this->once())
             ->method('insert')
-            ->with(6, 'Exported data', ['clients']);
+            ->with(6, DataAuditActions::EXPORTED, 'Data', ['clients']);
         $request = (new ServerRequest('get', '/system/data'))
             ->withAttribute('userId', 6)
             ->withQueryParams([

@@ -5,6 +5,7 @@ namespace Reconmap\Controllers\Tasks;
 use GuzzleHttp\Psr7\Utils;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Models\AuditActions\TaskAuditActions;
 use Reconmap\Repositories\TaskRepository;
 use Reconmap\Services\ActivityPublisherService;
@@ -33,7 +34,7 @@ class UpdateTaskControllerTest extends TestCase
         $mockPublisherService = $this->createMock(ActivityPublisherService::class);
         $mockPublisherService->expects($this->once())
             ->method('publish')
-            ->with(9, TaskAuditActions::TASK_MODIFIED, ['type' => 'task', 'id' => $fakeTaskId]);
+            ->with(9, AuditActions::UPDATED, 'Task', ['id' => $fakeTaskId]);
 
         $args = ['taskId' => $fakeTaskId];
 

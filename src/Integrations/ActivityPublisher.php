@@ -7,5 +7,5 @@ namespace Reconmap\Integrations;
 interface ActivityPublisher
 {
 
-    public function publishActivity(string $activity): void;
+    public function publishActivity(\BackedEnum $action): void;
 }

@@ -4,6 +4,7 @@ namespace Reconmap\Controllers\Vulnerabilities;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
+use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Models\AuditActions\VulnerabilityLogActions;
 use Reconmap\Repositories\VulnerabilityRepository;
 use Reconmap\Services\AuditLogService;
@@ -29,7 +30,7 @@ class BulkUpdateVulnerabilitiesController extends Controller
         if ($operation == 'DELETE') {
             $vulnerabilityIds = $requestData;
             $numSuccesses = $this->vulnerabilityRepository->deleteByIds($vulnerabilityIds);
-            $this->auditLogService->insert($loggedInUserId, VulnerabilityLogActions::VULNERABILITY_DELETED, ['type' => 'vulnerability', 'ids' => $vulnerabilityIds]);
+            $this->auditLogService->insert($loggedInUserId, AuditActions::DELETED, 'Vulnerability', ['ids' => $vulnerabilityIds]);
         }
 
         return ['numSuccesses' => $numSuccesses];

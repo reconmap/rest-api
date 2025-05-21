@@ -15,7 +15,7 @@ abstract class UpdateEntityController extends Controller
         private ActivityPublisherService $activityPublisherService,
         private Updateable               $repository,
         private string                   $entityName,
-        private string                   $auditLogAction,
+        private \BackedEnum              $auditLogAction,
         private string                   $idParamName)
     {
     }
@@ -52,6 +52,6 @@ abstract class UpdateEntityController extends Controller
 
     private function auditAction(int $loggedInUserId, int $entityId): void
     {
-        $this->activityPublisherService->publish($loggedInUserId, $this->auditLogAction, ['type' => $this->entityName, 'id' => $entityId]);
+        $this->activityPublisherService->publish($loggedInUserId, $this->auditLogAction, $this->entityName, ['id' => $entityId]);
     }
 }

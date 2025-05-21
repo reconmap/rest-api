@@ -5,7 +5,7 @@ namespace Reconmap\Controllers\Attachments;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Models\Attachment;
-use Reconmap\Models\AuditActions\AttachmentAuditActions;
+use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Services\ActivityPublisherService;
 use Reconmap\Services\Filesystem\AttachmentFilePath;
@@ -35,8 +35,7 @@ class DeleteAttachmentControllerTest extends TestCase
         $mockPublisherService = $this->createMock(ActivityPublisherService::class);
         $mockPublisherService->expects($this->once())
             ->method('publish')
-            ->with(9, AttachmentAuditActions::ATTACHMENT_DELETED, ['type' => 'attachment', 'id' => $fakeAttachmentId]);
-
+            ->with(9, AuditActions::DELETED, 'Attachment');
         $mockRequest = $this->createMock(ServerRequestInterface::class);
         $mockRequest->expects($this->once())
             ->method('getAttribute')

@@ -4,6 +4,7 @@ namespace Reconmap\Controllers\Vault;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
+use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Models\AuditActions\VaultAuditActions;
 use Reconmap\Repositories\VaultRepository;
 use Reconmap\Services\AuditLogService;
@@ -30,6 +31,6 @@ class DeleteVaultItemController extends Controller
 
     private function auditAction(int $loggedInUserId, int $projectId, int $vaultId, string $name): void
     {
-        $this->auditLogService->insert($loggedInUserId, VaultAuditActions::ITEM_DELETED, [$projectId, $vaultId, $name]);
+        $this->auditLogService->insert($loggedInUserId, AuditActions::DELETED, 'Vault Item', [$projectId, $vaultId, $name]);
     }
 }

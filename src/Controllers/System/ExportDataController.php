@@ -7,7 +7,7 @@ use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Models\AuditActions\AuditLogAction;
+use Reconmap\Models\AuditActions\DataAuditActions;
 use Reconmap\Repositories\Exporters\Exportable;
 use Reconmap\Repositories\Exporters\Exportables;
 use Reconmap\Services\AuditLogService;
@@ -63,6 +63,6 @@ class ExportDataController extends Controller
 
     private function auditAction(int $loggedInUserId, array $entities): void
     {
-        $this->auditLogService->insert($loggedInUserId, AuditLogAction::DATA_EXPORTED, $entities);
+        $this->auditLogService->insert($loggedInUserId, DataAuditActions::EXPORTED, 'Data', $entities);
     }
 }

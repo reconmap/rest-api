@@ -3,6 +3,7 @@
 namespace Reconmap\Controllers\Documents;
 
 use Reconmap\Controllers\DeleteEntityController;
+use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Models\AuditActions\DocumentAuditActions;
 use Reconmap\Repositories\DocumentRepository;
 use Reconmap\Services\ActivityPublisherService;
@@ -21,7 +22,7 @@ class DeleteDocumentController extends DeleteEntityController
             $this->activityPublisherService,
             $this->repository,
             'document',
-            DocumentAuditActions::DELETED,
+            AuditActions::DELETED,
             'documentId'
         );
     }

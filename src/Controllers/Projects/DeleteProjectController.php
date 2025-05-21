@@ -4,6 +4,7 @@ namespace Reconmap\Controllers\Projects;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
+use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Models\AuditActions\AuditLogAction;
 use Reconmap\Repositories\ProjectRepository;
 use Reconmap\Services\AuditLogService;
@@ -30,6 +31,6 @@ class DeleteProjectController extends Controller
 
     private function auditAction(int $loggedInUserId, int $projectId): void
     {
-        $this->auditLogService->insert($loggedInUserId, AuditLogAction::PROJECT_DELETED, ['type' => 'project', 'id' => $projectId]);
+        $this->auditLogService->insert($loggedInUserId, AuditActions::DELETED, 'Project', ['id' => $projectId]);
     }
 }

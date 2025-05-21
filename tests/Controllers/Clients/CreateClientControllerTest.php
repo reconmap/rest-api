@@ -4,6 +4,7 @@ namespace Reconmap\Controllers\Clients;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Models\AuditActions\ClientAuditActions;
 use Reconmap\Models\Client;
 use Reconmap\Repositories\ClientRepository;
@@ -40,7 +41,7 @@ class CreateClientControllerTest extends TestCase
         $mockActivityPublisherService = $this->createMock(ActivityPublisherService::class);
         $mockActivityPublisherService->expects($this->once())
             ->method('publish')
-            ->with(9, ClientAuditActions::CREATED, ['type' => 'client', 'id' => 1, 'name' => $expectedClient->name]);
+            ->with(9, AuditActions::CREATED, 'Client', ['id' => 1, 'name' => $expectedClient->name]);
 
         $mockAttachmentSaver = $this->createMock(AttachmentSaver::class);
 

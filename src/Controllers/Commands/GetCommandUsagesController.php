@@ -4,7 +4,6 @@ namespace Reconmap\Controllers\Commands;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\SecureController;
-use Reconmap\Repositories\CommandScheduleRepository;
 use Reconmap\Repositories\CommandUsageRepository;
 use Reconmap\Services\Security\AuthorisationService;
 

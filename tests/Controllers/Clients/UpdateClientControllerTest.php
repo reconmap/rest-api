@@ -7,6 +7,7 @@ use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\ConsecutiveParamsTrait;
+use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Models\AuditActions\ClientAuditActions;
 use Reconmap\Repositories\ClientRepository;
 use Reconmap\Services\ActivityPublisherService;
@@ -44,7 +45,7 @@ class UpdateClientControllerTest extends TestCase
         $mockPublisherService = $this->createMock(ActivityPublisherService::class);
         $mockPublisherService->expects($this->once())
             ->method('publish')
-            ->with(9, ClientAuditActions::UPDATED, ['type' => 'client', 'id' => $fakeClientId]);
+            ->with(9, AuditActions::UPDATED, 'client', ['id' => $fakeClientId]);
 
         $args = ['clientId' => $fakeClientId];
 

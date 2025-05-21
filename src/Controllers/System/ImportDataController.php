@@ -6,6 +6,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditActions\AuditLogAction;
+use Reconmap\Models\AuditActions\DataAuditActions;
 use Reconmap\Repositories\Importers\Importable;
 use Reconmap\Repositories\Importers\Importables;
 use Reconmap\Services\AuditLogService;
@@ -60,6 +61,6 @@ class ImportDataController extends Controller
 
     private function auditAction(int $loggedInUserId, array $entities): void
     {
-        $this->auditLogService->insert($loggedInUserId, AuditLogAction::DATA_IMPORTED, $entities);
+        $this->auditLogService->insert($loggedInUserId, DataAuditActions::IMPORTED, 'Data', $entities);
     }
 }

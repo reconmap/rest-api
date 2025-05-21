@@ -16,9 +16,9 @@ use Reconmap\Services\RedisServer;
 class ServeAttachmentController extends Controller
 {
     public function __construct(private readonly AttachmentRepository $attachmentRepository,
-                                private readonly AttachmentFilePath $attachmentFilePathService,
-                                private readonly AuditLogService $auditLogService,
-                                private readonly RedisServer $redisServer)
+                                private readonly AttachmentFilePath   $attachmentFilePathService,
+                                private readonly AuditLogService      $auditLogService,
+                                private readonly RedisServer          $redisServer)
     {
     }
 
@@ -37,7 +37,7 @@ class ServeAttachmentController extends Controller
 
         $pathName = $this->attachmentFilePathService->generateFilePathFromAttachment((array)$attachment);
 
-        //$this->auditAction($userId, $attachment->client_file_name);
+        $this->auditAction($userId, $attachment->client_file_name);
 
         $response = new Response;
         return $response
@@ -47,6 +47,6 @@ class ServeAttachmentController extends Controller
 
     private function auditAction(int $loggedInUserId, string $fileName): void
     {
-//        $this->auditLogService->insert($loggedInUserId, AttachmentAuditActions::ATTACHMENT_DOWNLOADED, [$fileName]);
+        $this->auditLogService->insert($loggedInUserId, AttachmentAuditActions::DOWNLOADED, 'Attachment', [$fileName]);
     }
 }

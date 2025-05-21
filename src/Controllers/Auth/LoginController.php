@@ -67,6 +67,6 @@ class LoginController extends ControllerV2
 
     private function audit(?int $userId): void
     {
-        $this->auditLogService->insert($userId, UserAuditActions::USER_LOGGED_IN);
+        $this->auditLogService->insert($userId, UserAuditActions::LOGGED_IN, 'User');
     }
 }

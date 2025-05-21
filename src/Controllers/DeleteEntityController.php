@@ -16,7 +16,7 @@ abstract class DeleteEntityController extends Controller
         private readonly ActivityPublisherService $activityPublisherService,
         private readonly Deletable                $repository,
         private readonly string                   $entityName,
-        private readonly string                   $auditLogAction,
+        private readonly \BackedEnum              $auditLogAction,
         private readonly string                   $idParamName
     )
     {
@@ -49,6 +49,6 @@ abstract class DeleteEntityController extends Controller
 
     private function auditAction(int $loggedInUserId, int $entityId): void
     {
-        $this->activityPublisherService->publish($loggedInUserId, $this->auditLogAction, ['type' => $this->entityName, 'id' => $entityId]);
+        $this->activityPublisherService->publish($loggedInUserId, $this->auditLogAction, $this->entityName, ['id' => $entityId]);
     }
 }

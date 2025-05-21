@@ -5,7 +5,7 @@ namespace Reconmap\Controllers\Users;
 use GuzzleHttp\Psr7\Utils;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
-use Reconmap\Models\AuditActions\UserAuditActions;
+use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\ActivityPublisherService;
 use Reconmap\Services\EmailService;
@@ -40,7 +40,7 @@ class UpdateUserControllerTest extends TestCase
         $mockPublisherService = $this->createMock(ActivityPublisherService::class);
         $mockPublisherService->expects($this->once())
             ->method('publish')
-            ->with(9, UserAuditActions::USER_MODIFIED, ['type' => 'user', 'id' => $fakeUserId]);
+            ->with(9, AuditActions::UPDATED, 'User', ['id' => $fakeUserId]);
 
         $args = ['userId' => $fakeUserId];
 

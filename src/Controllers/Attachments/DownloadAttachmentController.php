@@ -15,8 +15,8 @@ use Reconmap\Services\Filesystem\AttachmentFilePath;
 class DownloadAttachmentController extends Controller
 {
     public function __construct(private readonly AttachmentRepository $attachmentRepository,
-                                private readonly AttachmentFilePath $attachmentFilePathService,
-                                private readonly AuditLogService $auditLogService)
+                                private readonly AttachmentFilePath   $attachmentFilePathService,
+                                private readonly AuditLogService      $auditLogService)
     {
     }
 
@@ -45,6 +45,6 @@ class DownloadAttachmentController extends Controller
 
     private function auditAction(int $loggedInUserId, string $fileName): void
     {
-        $this->auditLogService->insert($loggedInUserId, AttachmentAuditActions::ATTACHMENT_DOWNLOADED, [$fileName]);
+        $this->auditLogService->insert($loggedInUserId, AttachmentAuditActions::DOWNLOADED, 'Attachment', [$fileName]);
     }
 }

@@ -4,6 +4,7 @@ namespace Reconmap\Controllers\Projects;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Models\AuditActions\AuditLogAction;
 use Reconmap\Repositories\ProjectRepository;
 use Reconmap\Services\AuditLogService;
@@ -23,7 +24,7 @@ class DeleteProjectControllerTest extends TestCase
         $mockAuditLogService = $this->createMock(AuditLogService::class);
         $mockAuditLogService->expects($this->once())
             ->method('insert')
-            ->with(9, AuditLogAction::PROJECT_DELETED, ['type' => 'project', 'id' => $fakeProjectId]);
+            ->with(9, AuditActions::DELETED, 'Project', ['id' => $fakeProjectId]);
 
         $mockRequest = $this->createMock(ServerRequestInterface::class);
         $mockRequest->expects($this->once())

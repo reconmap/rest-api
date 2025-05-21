@@ -4,7 +4,7 @@ namespace Reconmap\Controllers\Users;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Models\AuditActions\UserAuditActions;
+use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\ActivityPublisherService;
 use Reconmap\Services\EmailService;
@@ -12,8 +12,8 @@ use Reconmap\Services\EmailService;
 class UpdateUserController extends Controller
 {
     public function __construct(
-        private readonly UserRepository $userRepository,
-        private readonly EmailService $emailService,
+        private readonly UserRepository           $userRepository,
+        private readonly EmailService             $emailService,
         private readonly ActivityPublisherService $activityPublisherService)
     {
     }
@@ -54,6 +54,6 @@ class UpdateUserController extends Controller
 
     private function auditAction(int $loggedInUserId, int $userId): void
     {
-        $this->activityPublisherService->publish($loggedInUserId, UserAuditActions::USER_MODIFIED, ['type' => 'user', 'id' => $userId]);
+        $this->activityPublisherService->publish($loggedInUserId, AuditActions::UPDATED, 'User', ['id' => $userId]);
     }
 }

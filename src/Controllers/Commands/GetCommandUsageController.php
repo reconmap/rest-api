@@ -5,7 +5,6 @@ namespace Reconmap\Controllers\Commands;
 use League\Route\Http\Exception\NotFoundException;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Repositories\CommandRepository;
 use Reconmap\Repositories\CommandUsageRepository;
 
 class GetCommandUsageController extends Controller

@@ -5,6 +5,7 @@ namespace Reconmap\Controllers\Tasks;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Database\NullColumnReplacer;
+use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Models\AuditActions\AuditLogAction;
 use Reconmap\Repositories\TaskRepository;
 use Reconmap\Services\ActivityPublisherService;
@@ -42,6 +43,6 @@ class UpdateTaskController extends Controller
 
     private function auditAction(int $loggedInUserId, int $taskId): void
     {
-        $this->activityPublisherService->publish($loggedInUserId, AuditLogAction::TASK_MODIFIED, ['type' => 'task', 'id' => $taskId]);
+        $this->activityPublisherService->publish($loggedInUserId, AuditActions::UPDATED, 'Task', ['id' => $taskId]);
     }
 }

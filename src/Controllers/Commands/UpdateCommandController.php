@@ -4,13 +4,14 @@ namespace Reconmap\Controllers\Commands;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
+use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Models\AuditActions\CommandAuditActions;
 use Reconmap\Repositories\CommandRepository;
 use Reconmap\Services\ActivityPublisherService;
 
 class UpdateCommandController extends Controller
 {
-    public function __construct(private readonly CommandRepository $repository,
+    public function __construct(private readonly CommandRepository        $repository,
                                 private readonly ActivityPublisherService $activityPublisherService)
     {
     }
@@ -40,6 +41,6 @@ class UpdateCommandController extends Controller
 
     private function auditAction(int $loggedInUserId, int $commandId): void
     {
-        $this->activityPublisherService->publish($loggedInUserId, CommandAuditActions::UPDATED, ['type' => 'command', 'id' => $commandId]);
+        $this->activityPublisherService->publish($loggedInUserId, AuditActions::UPDATED, 'Command', ['id' => $commandId]);
     }
 }

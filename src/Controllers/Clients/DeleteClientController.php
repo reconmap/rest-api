@@ -4,6 +4,7 @@ namespace Reconmap\Controllers\Clients;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
+use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Models\AuditActions\ClientAuditActions;
 use Reconmap\Repositories\ClientRepository;
 use Reconmap\Services\ActivityPublisherService;
@@ -30,6 +31,6 @@ class DeleteClientController extends Controller
 
     private function auditAction(int $loggedInUserId, int $clientId): void
     {
-        $this->activityPublisherService->publish($loggedInUserId, ClientAuditActions::DELETED, ['type' => 'client', 'id' => $clientId]);
+        $this->activityPublisherService->publish($loggedInUserId, AuditActions::DELETED, 'Client', ['id' => $clientId]);
     }
 }

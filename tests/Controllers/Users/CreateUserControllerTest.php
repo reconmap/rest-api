@@ -6,6 +6,7 @@ use GuzzleHttp\Psr7\Utils;
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\AuditLogService;
 use Reconmap\Services\EmailService;
@@ -38,7 +39,7 @@ class CreateUserControllerTest extends TestCase
         $mockAuditLogService = $this->createMock(AuditLogService::class);
         $mockAuditLogService->expects($this->once())
             ->method('insert')
-            ->with(9, 'Created user');
+            ->with(9, AuditActions::CREATED, 'User');
 
         $mockLogger = $this->createMock(Logger::class);
 
@@ -77,7 +78,7 @@ class CreateUserControllerTest extends TestCase
         $mockAuditLogService = $this->createMock(AuditLogService::class);
         $mockAuditLogService->expects($this->once())
             ->method('insert')
-            ->with(9, 'Created user');
+            ->with(9, AuditActions::CREATED, 'User');
 
         $mockLogger = $this->createMock(Logger::class);
 

@@ -17,9 +17,9 @@ class ActivityPublisherService
         $this->integrationsRepository = $integrationsRepository;
     }
 
-    public function publish(int $loggedInUserId, string $action, ?array $object = null): void
+    public function publish(int $loggedInUserId, \BackedEnum $action, string $object, ?array $context = null): void
     {
-        $this->auditLogService->insert($loggedInUserId, $action, $object);
+        $this->auditLogService->insert($loggedInUserId, $action, $object, $context);
 
         /** @var ActivityPublisher $integrations */
         $integrations = $this->integrationsRepository->findByInterface(ActivityPublisher::class);

@@ -61,10 +61,10 @@ class AuditLogRepository extends MysqlRepository
         return $rs->fetch_all(MYSQLI_ASSOC);
     }
 
-    public function insert(?int $userId, ?string $userAgent, string $clientIp, string $action, ?string $object = null): int
+    public function insert(?int $userId, ?string $userAgent, string $clientIp, string $action, string $object, ?string $context = null): int
     {
-        $stmt = $this->mysqlServer->prepare('INSERT INTO audit_log (user_id, user_agent, client_ip, action, object) VALUES (?, ?, INET_ATON(?), ?, ?)');
-        $stmt->bind_param('issss', $userId, $userAgent, $clientIp, $action, $object);
+        $stmt = $this->mysqlServer->prepare('INSERT INTO audit_log (user_id, user_agent, client_ip, action, object, context) VALUES (?, ?, INET_ATON(?), ?, ?, ?)');
+        $stmt->bind_param('isssss', $userId, $userAgent, $clientIp, $action, $object, $context);
         return $this->executeInsertStatement($stmt);
     }
 

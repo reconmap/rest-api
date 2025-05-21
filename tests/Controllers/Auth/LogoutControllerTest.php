@@ -30,7 +30,7 @@ class LogoutControllerTest extends TestCase
         $mockAuditLogService = $this->createMock(AuditLogService::class);
         $mockAuditLogService->expects($this->once())
             ->method('insert')
-            ->with(509, UserAuditActions::USER_LOGGED_OUT);
+            ->with(509, UserAuditActions::LOGGED_OUT, 'User');
 
         $controller = new LogoutController($mockAuditLogService);
         $controller->setAuthorisationService($mockAuthorisationService);

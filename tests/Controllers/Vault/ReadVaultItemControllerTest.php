@@ -5,6 +5,7 @@ namespace Reconmap\Controllers\Vault;
 use GuzzleHttp\Psr7\Utils;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Models\AuditActions\VaultAuditActions;
 use Reconmap\Models\Vault;
 use Reconmap\Repositories\VaultRepository;
@@ -31,7 +32,7 @@ class ReadVaultItemControllerTest extends TestCase
         $mockAuditLogService = $this->createMock(AuditLogService::class);
         $mockAuditLogService->expects($this->once())
             ->method('insert')
-            ->with($user_id, VaultAuditActions::ITEM_READ, ['compromised account']);
+            ->with($user_id, AuditActions::READ, 'Vault Item', ['compromised account']);
 
         $vault = new Vault();
         $vault->name = "compromised account";

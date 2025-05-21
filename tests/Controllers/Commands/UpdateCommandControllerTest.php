@@ -5,6 +5,7 @@ namespace Reconmap\Controllers\Commands;
 use GuzzleHttp\Psr7\Utils;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Models\AuditActions\CommandAuditActions;
 use Reconmap\Repositories\CommandRepository;
 use Reconmap\Services\ActivityPublisherService;
@@ -33,7 +34,7 @@ class UpdateCommandControllerTest extends TestCase
         $mockPublisherService = $this->createMock(ActivityPublisherService::class);
         $mockPublisherService->expects($this->once())
             ->method('publish')
-            ->with(9, CommandAuditActions::UPDATED, ['type' => 'command', 'id' => $fakeCommandId]);
+            ->with(9, AuditActions::UPDATED, 'Command', ['id' => $fakeCommandId]);
 
         $args = ['commandId' => $fakeCommandId];
 

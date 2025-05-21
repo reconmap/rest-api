@@ -5,6 +5,7 @@ namespace Reconmap\Controllers\Attachments;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Reconmap\Controllers\Controller;
+use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Models\AuditActions\AuditLogAction;
 use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Services\AuditLogService;
@@ -80,6 +81,6 @@ class UpdateAttachmentController extends Controller
 
     private function auditAction(int $loggedInUserId, int $attachmentId): void
     {
-        $this->auditLogService->insert($loggedInUserId, AuditLogAction::ATTACHMENT_UPDATED, [$attachmentId]);
+        $this->auditLogService->insert($loggedInUserId, AuditActions::UPDATED, 'Attachment', [$attachmentId]);
     }
 }

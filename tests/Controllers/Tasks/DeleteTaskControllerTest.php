@@ -4,6 +4,7 @@ namespace Reconmap\Controllers\Tasks;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Models\AuditActions\AuditLogAction;
 use Reconmap\Repositories\TaskRepository;
 use Reconmap\Services\ActivityPublisherService;
@@ -29,7 +30,7 @@ class DeleteTaskControllerTest extends TestCase
         $mockPublisherService = $this->createMock(ActivityPublisherService::class);
         $mockPublisherService->expects($this->once())
             ->method('publish')
-            ->with(9, AuditLogAction::TASK_DELETED, ['type' => 'task', 'id' => $fakeTaskId]);
+            ->with(9, AuditActions::DELETED, 'Task', ['id' => $fakeTaskId]);
 
         $args = ['taskId' => $fakeTaskId];
 

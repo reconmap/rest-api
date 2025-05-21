@@ -4,7 +4,7 @@ namespace Reconmap\Controllers\Users;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Models\AuditActions\UserAuditActions;
+use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Models\User;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\AuditLogService;
@@ -64,6 +64,6 @@ class CreateUserController extends Controller
 
     private function auditAction(int $loggedInUserId, int $userId): void
     {
-        $this->auditLogService->insert($loggedInUserId, UserAuditActions::USER_CREATED, ['type' => 'user', 'id' => $userId]);
+        $this->auditLogService->insert($loggedInUserId, AuditActions::CREATED, 'User', ['id' => $userId]);
     }
 }

@@ -5,7 +5,7 @@ namespace Reconmap\Controllers\Attachments;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Models\AuditActions\AttachmentAuditActions;
+use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Services\ActivityPublisherService;
 use Reconmap\Services\Filesystem\AttachmentFilePath;
@@ -14,10 +14,10 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class DeleteAttachmentController extends Controller
 {
-    public function __construct(private readonly AttachmentRepository $attachmentRepository,
-                                private readonly AttachmentFilePath $attachmentFilePathService,
+    public function __construct(private readonly AttachmentRepository     $attachmentRepository,
+                                private readonly AttachmentFilePath       $attachmentFilePathService,
                                 private readonly ActivityPublisherService $activityPublisherService,
-                                private readonly Filesystem $filesystem)
+                                private readonly Filesystem               $filesystem)
     {
     }
 
@@ -45,6 +45,6 @@ class DeleteAttachmentController extends Controller
 
     private function auditAction(int $loggedInUserId, int $attachmentId): void
     {
-        $this->activityPublisherService->publish($loggedInUserId, AttachmentAuditActions::ATTACHMENT_DELETED, ['type' => 'attachment', 'id' => $attachmentId]);
+        $this->activityPublisherService->publish($loggedInUserId, AuditActions::DELETED, 'Attachment', ['id' => $attachmentId]);
     }
 }

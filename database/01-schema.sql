@@ -58,13 +58,15 @@ CREATE TABLE audit_log
 (
     id         INT UNSIGNED NOT NULL AUTO_INCREMENT,
     insert_ts  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    user_id    INT UNSIGNED NULL COMMENT 'Null is system',
+    user_id    INT UNSIGNED NULL COMMENT 'The subject/actor. Null is system',
     user_agent VARCHAR(250) NULL,
     client_ip  INT UNSIGNED NOT NULL COMMENT 'IPv4 IP',
     action     VARCHAR(200) NOT NULL,
-    object     JSON         NULL,
+    object     VARCHAR(200) NOT NULL COMMENT 'The entity',
+    context    JSON         NULL,
 
     PRIMARY KEY (id),
+    KEY (user_id),
     CONSTRAINT audit_log_fk_user_id FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE
 ) ENGINE = InnoDB;
 

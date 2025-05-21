@@ -3,7 +3,6 @@
 namespace Reconmap\Controllers\AuditLog;
 
 use OpenApi\Attributes as OpenApi;
-
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Repositories\AuditLogRepository;

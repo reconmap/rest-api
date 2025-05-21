@@ -6,10 +6,11 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Reconmap\ControllerTestCase;
 use Reconmap\Models\Attachment;
-use Reconmap\Repositories\AttachmentRepository;
-use Reconmap\Services\Filesystem\AttachmentFilePath;
-use Reconmap\Services\AuditLogService;
+use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Models\AuditActions\AuditLogAction;
+use Reconmap\Repositories\AttachmentRepository;
+use Reconmap\Services\AuditLogService;
+use Reconmap\Services\Filesystem\AttachmentFilePath;
 
 class UpdateAttachmentControllerTest extends ControllerTestCase
 {
@@ -39,7 +40,7 @@ class UpdateAttachmentControllerTest extends ControllerTestCase
         $mockAuditLogService = $this->createMock(AuditLogService::class);
         $mockAuditLogService->expects($this->once())
             ->method('insert')
-            ->with(9, AuditLogAction::ATTACHMENT_UPDATED, [$fakeAttachmentId]);
+            ->with(9, AuditActions::UPDATED, 'Attachment', [$fakeAttachmentId]);
 
         $fakeUploadedFile = $this->createMock(UploadedFileInterface::class);
         $fakeUploadedFile->expects($this->exactly(2))

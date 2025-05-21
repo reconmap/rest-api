@@ -22,7 +22,7 @@ class LogoutController extends ControllerV2
     {
         $user = $request->getUser();
 
-        $this->auditLogService->insert($user->id, UserAuditActions::USER_LOGGED_OUT);
+        $this->auditLogService->insert($user->id, UserAuditActions::LOGGED_OUT, 'User');
 
         $staticCookie = new Cookie('reconmap-static', '', -1, '/');
 

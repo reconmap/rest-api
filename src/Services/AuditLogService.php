@@ -13,11 +13,11 @@ readonly class AuditLogService
     {
     }
 
-    public function insert(?int $loggedInUserId, string $action, ?array $object = null): int
+    public function insert(?int $subjectId, \BackedEnum $action, string $object, ?array $context = null): int
     {
         $clientIp = $this->networkService->getClientIp();
         $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? null;
 
-        return $this->repository->insert($loggedInUserId, $userAgent, $clientIp, $action, $object ? json_encode($object) : null);
+        return $this->repository->insert($subjectId, $userAgent, $clientIp, $action->value, $object, $context ? json_encode($context) : null);
     }
 }

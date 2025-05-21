@@ -3,6 +3,7 @@
 namespace Reconmap\Services;
 
 use PHPUnit\Framework\TestCase;
+use Reconmap\Models\AuditActions\SystemAuditActions;
 use Reconmap\Repositories\AuditLogRepository;
 
 class AuditLogServiceTest extends TestCase
@@ -12,7 +13,7 @@ class AuditLogServiceTest extends TestCase
         $mockAuditLogRepository = $this->createMock(AuditLogRepository::class);
         $mockAuditLogRepository->expects($this->once())
             ->method('insert')
-            ->with(400, null, '1.2.3.4', 'Do something')
+            ->with(400, null, '1.2.3.4', 'Tested', 'System')
             ->willReturn(1);
 
         $mockNetworkService = $this->createMock(NetworkService::class);
@@ -21,6 +22,6 @@ class AuditLogServiceTest extends TestCase
             ->willReturn('1.2.3.4');
 
         $service = new AuditLogService($mockAuditLogRepository, $mockNetworkService);
-        $this->assertEquals(1, $service->insert(400, 'Do something'));
+        $this->assertEquals(1, $service->insert(400, SystemAuditActions::TEST, 'System'));
     }
 }

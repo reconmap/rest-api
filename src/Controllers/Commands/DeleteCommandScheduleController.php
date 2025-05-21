@@ -3,6 +3,7 @@
 namespace Reconmap\Controllers\Commands;
 
 use Reconmap\Controllers\DeleteEntityController;
+use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Models\AuditActions\DocumentAuditActions;
 use Reconmap\Repositories\CommandScheduleRepository;
 use Reconmap\Services\ActivityPublisherService;
@@ -21,7 +22,7 @@ class DeleteCommandScheduleController extends DeleteEntityController
             $this->activityPublisherService,
             $this->repository,
             'command_schedule',
-            DocumentAuditActions::DELETED,
+            AuditActions::DELETED,
             'commandScheduleId'
         );
     }

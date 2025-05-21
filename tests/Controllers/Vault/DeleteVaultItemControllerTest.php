@@ -4,9 +4,9 @@ namespace Reconmap\Controllers\Vault;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
-use Reconmap\Models\Vault;
-use Reconmap\Repositories\VaultRepository;
+use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Models\AuditActions\VaultAuditActions;
+use Reconmap\Repositories\VaultRepository;
 use Reconmap\Services\AuditLogService;
 
 class DeleteVaultItemControllerTest extends TestCase
@@ -26,18 +26,18 @@ class DeleteVaultItemControllerTest extends TestCase
         $mockAuditLogService = $this->createMock(AuditLogService::class);
         $mockAuditLogService->expects($this->once())
             ->method('insert')
-            ->with(7, VaultAuditActions::ITEM_DELETED, [$project_id, $vault_item_id, $vault_item_name]);
+            ->with(7, AuditActions::DELETED, 'Vault Item', [$project_id, $vault_item_id, $vault_item_name]);
 
 
         $mockRepository = $this->createMock(VaultRepository::class);
         $mockRepository->expects($this->once())
-        ->method('getVaultItemName')
-        ->with($vault_item_id, $project_id)
-        ->willReturn($vault_item_name);
+            ->method('getVaultItemName')
+            ->with($vault_item_id, $project_id)
+            ->willReturn($vault_item_name);
         $mockRepository->expects($this->once())
-        ->method('deleteByIdAndProjectId')
-        ->with($vault_item_id, $project_id)
-        ->willReturn(true);
+            ->method('deleteByIdAndProjectId')
+            ->with($vault_item_id, $project_id)
+            ->willReturn(true);
 
         $args = ['projectId' => $project_id, 'vaultItemId' => $vault_item_id];
 

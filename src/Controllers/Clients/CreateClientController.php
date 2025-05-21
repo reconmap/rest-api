@@ -5,6 +5,7 @@ namespace Reconmap\Controllers\Clients;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
+use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Models\AuditActions\ClientAuditActions;
 use Reconmap\Models\Client;
 use Reconmap\Repositories\ClientRepository;
@@ -49,6 +50,6 @@ class CreateClientController extends Controller
 
     private function auditAction(int $loggedInUserId, Client $client): void
     {
-        $this->activityPublisherService->publish($loggedInUserId, ClientAuditActions::CREATED, ['type' => 'client', 'id' => $client->id, 'name' => $client->name]);
+        $this->activityPublisherService->publish($loggedInUserId, AuditActions::CREATED, 'Client', ['id' => $client->id, 'name' => $client->name]);
     }
 }

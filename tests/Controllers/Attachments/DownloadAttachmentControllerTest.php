@@ -34,7 +34,7 @@ class DownloadAttachmentControllerTest extends TestCase
         $mockAuditLogService = $this->createMock(AuditLogService::class);
         $mockAuditLogService->expects($this->once())
             ->method('insert')
-            ->with(9, AttachmentAuditActions::ATTACHMENT_DOWNLOADED, ['foo.jpg']);
+            ->with(9, AttachmentAuditActions::DOWNLOADED, 'Attachment', ['foo.jpg']);
 
         $mockRequest = $this->createMock(ServerRequestInterface::class);
         $mockRequest->expects($this->once())
