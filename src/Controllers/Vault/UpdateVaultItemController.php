@@ -6,14 +6,13 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditActions\AuditActions;
-use Reconmap\Models\AuditActions\VaultAuditActions;
 use Reconmap\Repositories\VaultRepository;
 use Reconmap\Services\AuditLogService;
 
 class UpdateVaultItemController extends Controller
 {
-    public function __construct(private VaultRepository $repository,
-                                private AuditLogService $auditLogService)
+    public function __construct(private readonly VaultRepository $repository,
+                                private readonly AuditLogService $auditLogService)
     {
     }
 

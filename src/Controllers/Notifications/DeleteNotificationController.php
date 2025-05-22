@@ -3,7 +3,7 @@
 namespace Reconmap\Controllers\Notifications;
 
 use Reconmap\Controllers\DeleteEntityController;
-use Reconmap\Models\AuditActions\NotificationAuditActions;
+use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Repositories\NotificationsRepository;
 use Reconmap\Services\ActivityPublisherService;
 use Reconmap\Services\Security\AuthorisationService;
@@ -11,9 +11,9 @@ use Reconmap\Services\Security\AuthorisationService;
 class DeleteNotificationController extends DeleteEntityController
 {
     public function __construct(
-        private AuthorisationService     $authorisationService,
-        private ActivityPublisherService $activityPublisherService,
-        private NotificationsRepository  $repository,
+        private readonly AuthorisationService     $authorisationService,
+        private readonly ActivityPublisherService $activityPublisherService,
+        private readonly NotificationsRepository  $repository,
     )
     {
         parent::__construct(
@@ -21,7 +21,7 @@ class DeleteNotificationController extends DeleteEntityController
             $this->activityPublisherService,
             $this->repository,
             'notification',
-            NotificationAuditActions::DELETED,
+            AuditActions::DELETED,
             'notificationId'
         );
     }

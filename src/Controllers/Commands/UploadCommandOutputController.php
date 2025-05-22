@@ -27,7 +27,6 @@ class UploadCommandOutputController extends UploadAttachmentController
     {
         $params = $request->getParsedBody();
         $commandUsageId = (int)$params['commandUsageId'];
-        $taskId = isset($params['taskId']) ? intval($params['taskId']) : null;
 
         $files = $request->getUploadedFiles();
         $resultFile = $files['resultFile'];
@@ -39,16 +38,19 @@ class UploadCommandOutputController extends UploadAttachmentController
 
         $attachment = $this->uploadAttachment($resultFile, 'command', $command['id'], $userId);
 
-        $result = $this->redisServer->lPush('tasks:queue',
-            json_encode([
-                'commandId' => $command['id'],
-                'taskId' => $taskId,
-                'userId' => $userId,
-                'filePath' => $this->attachmentFilePathService->generateFilePath($attachment->file_name)
-            ])
-        );
-        if (false === $result) {
-            $this->logger->error('Item could not be pushed to the queue', ['queue' => 'tasks-results:queue']);
+        $projectId = isset($params['projectId']) ? intval($params['projectId']) : null;
+        if ($projectId) {
+            $result = $this->redisServer->lPush('tasks:queue',
+                json_encode([
+                    'commandUsageId' => $commandUsageId,
+                    'projectId' => $projectId,
+                    'userId' => $userId,
+                    'filePath' => $this->attachmentFilePathService->generateFilePath($attachment->file_name)
+                ])
+            );
+            if (false === $result) {
+                $this->logger->error('Item could not be pushed to the queue', ['queue' => 'tasks-results:queue']);
+            }
         }
 
         return ['success' => true];

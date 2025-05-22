@@ -33,6 +33,6 @@ class CreateTaskControllerTest extends TestCase
         $controller = new CreateTaskController($mockTaskRepository);
         $response = $controller($mockRequest);
 
-        $this->assertTrue($response['success']);
+        $this->assertEquals(201, $response->getStatusCode());
     }
 }

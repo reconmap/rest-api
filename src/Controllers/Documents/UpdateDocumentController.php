@@ -5,15 +5,14 @@ namespace Reconmap\Controllers\Documents;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditActions\AuditActions;
-use Reconmap\Models\AuditActions\DocumentAuditActions;
 use Reconmap\Repositories\DocumentRepository;
 use Reconmap\Services\ActivityPublisherService;
 
 class UpdateDocumentController extends Controller
 {
     public function __construct(
-        private DocumentRepository       $repository,
-        private ActivityPublisherService $activityPublisherService)
+        private readonly DocumentRepository       $repository,
+        private readonly ActivityPublisherService $activityPublisherService)
     {
     }
 

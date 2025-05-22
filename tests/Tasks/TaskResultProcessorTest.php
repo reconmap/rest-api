@@ -2,9 +2,9 @@
 
 namespace Reconmap\Tasks;
 
-use Monolog\Logger;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 use Reconmap\CommandOutputParsers\Models\Asset;
 use Reconmap\CommandOutputParsers\Models\AssetKind;
 use Reconmap\CommandOutputParsers\Models\ProcessorResult;
@@ -12,9 +12,9 @@ use Reconmap\CommandOutputParsers\NmapOutputProcessor;
 use Reconmap\CommandOutputParsers\ProcessorFactory;
 use Reconmap\Models\Target;
 use Reconmap\Models\Vulnerability;
+use Reconmap\Repositories\CommandUsageRepository;
 use Reconmap\Repositories\NotificationsRepository;
 use Reconmap\Repositories\TargetRepository;
-use Reconmap\Repositories\TaskRepository;
 use Reconmap\Repositories\VulnerabilityRepository;
 use Reconmap\Services\RedisServer;
 
@@ -25,13 +25,13 @@ class TaskResultProcessorTest extends TestCase
      */
     public function testSuccess()
     {
-        $mockLogger = $this->createMock(Logger::class);
+        $mockLogger = $this->createMock(LoggerInterface::class);
         $mockRedisServer = $this->createMock(RedisServer::class);
         $mockRedisServer->expects($this->once())
             ->method('lPush');
         $mockVulnerabilityRepository = $this->createMock(VulnerabilityRepository::class);
-        $mockTaskRepository = $this->createMock(TaskRepository::class);
-        $mockTaskRepository->expects($this->once())
+        $mockCommandUsageRepository = $this->createMock(CommandUsageRepository::class);
+        $mockCommandUsageRepository->expects($this->once())
             ->method('findById')
             ->with(4)
             ->willReturn(['command_name' => 'Nmap', 'output_parser' => 'nmap', 'project_id' => 5]);
@@ -70,10 +70,11 @@ class TaskResultProcessorTest extends TestCase
 
         $mockItem = new \stdClass();
         $mockItem->filePath = 'foo.bar';
-        $mockItem->taskId = 4;
+        $mockItem->projectId = 5;
+        $mockItem->commandUsageId = 4;
         $mockItem->userId = 1;
 
-        $controller = new TaskResultProcessor($mockLogger, $mockRedisServer, $mockVulnerabilityRepository, $mockNotificationRepository, $mockTaskRepository, $mockTargetRepository, $mockProcessorFactory);
+        $controller = new TaskResultProcessor($mockLogger, $mockRedisServer, $mockVulnerabilityRepository, $mockNotificationRepository, $mockCommandUsageRepository, $mockTargetRepository, $mockProcessorFactory);
         $controller->process($mockItem);
     }
 }

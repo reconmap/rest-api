@@ -2,6 +2,7 @@
 
 namespace Reconmap\Controllers\Tasks;
 
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\Task;
@@ -9,18 +10,18 @@ use Reconmap\Repositories\TaskRepository;
 
 class CreateTaskController extends Controller
 {
-    public function __construct(private TaskRepository $repository)
+    public function __construct(private readonly TaskRepository $repository)
     {
     }
 
-    public function __invoke(ServerRequestInterface $request): array
+    public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
         /** @var Task $task */
         $task = $this->getJsonBodyDecodedAsClass($request, new Task());
         $task->creator_uid = $request->getAttribute('userId');
 
-        $this->repository->insert($task);
+        $taskId = $this->repository->insert($task);
 
-        return ['success' => true];
+        return $this->createStatusCreatedResponse(['taskId' => $taskId]);
     }
 }
