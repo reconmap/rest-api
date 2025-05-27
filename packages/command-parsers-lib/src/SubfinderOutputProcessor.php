@@ -8,6 +8,10 @@ use Reconmap\CommandOutputParsers\Models\ProcessorResult;
 
 class SubfinderOutputProcessor extends AbstractOutputProcessor
 {
+    public function getCommandUsageExample(): string
+    {
+        return 'subfinder -output subfinder-output.json -json -d localhost';
+    }
 
     public function process(string $path): ProcessorResult
     {

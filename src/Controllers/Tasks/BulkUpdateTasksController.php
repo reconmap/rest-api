@@ -5,14 +5,13 @@ namespace Reconmap\Controllers\Tasks;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditActions\AuditActions;
-use Reconmap\Models\AuditActions\TaskAuditActions;
 use Reconmap\Repositories\TaskRepository;
 use Reconmap\Services\AuditLogService;
 
 class BulkUpdateTasksController extends Controller
 {
-    public function __construct(private TaskRepository  $taskRepository,
-                                private AuditLogService $auditLogService)
+    public function __construct(private readonly TaskRepository  $taskRepository,
+                                private readonly AuditLogService $auditLogService)
     {
     }
 

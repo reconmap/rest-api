@@ -9,7 +9,7 @@ use Reconmap\Services\PaginationRequestHandler;
 
 class NotificationsRepository extends MysqlRepository implements Updateable, Deletable
 {
-    public const UPDATABLE_COLUMNS_TYPES = [
+    public const array UPDATABLE_COLUMNS_TYPES = [
         'status' => 's',
     ];
 
@@ -24,6 +24,13 @@ class NotificationsRepository extends MysqlRepository implements Updateable, Del
     {
         $queryBuilder = $this->getBaseSelectQueryBuilder();
         return $this->searchAll($queryBuilder, $searchCriteria, $paginator);
+    }
+
+    public function bulkUpdateStatusByUserId(array $notificationIds, string $status, int $userId): bool
+    {
+        $notificationIdsString = implode(',', array_filter($notificationIds, 'is_numeric'));
+        $stmt = $this->mysqlServer->prepare('UPDATE notification SET status = ? WHERE to_user_id = ? AND id IN (' . $notificationIdsString . ')');
+        return $stmt->execute([$status, $userId]);
     }
 
     public function updateById(int $id, array $newColumnValues): bool

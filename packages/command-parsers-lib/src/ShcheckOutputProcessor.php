@@ -7,6 +7,10 @@ use Reconmap\Models\Vulnerability;
 
 class ShcheckOutputProcessor extends AbstractOutputProcessor
 {
+    public function getCommandUsageExample(): string
+    {
+        return 'shcheck --json-output http://localhost';
+    }
 
     public function process(string $path): ProcessorResult
     {

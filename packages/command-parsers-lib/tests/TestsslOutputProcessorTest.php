@@ -9,11 +9,11 @@ class TestsslOutputProcessorTest extends ParserTestCase
         $processor = new TestsslOutputProcessor;
         $processorResults = $processor->process($this->getResourceFilePath('testssl.json'));
         $vulnerabilities = $processorResults->getVulnerabilities();
-        $this->assertCount(5, $vulnerabilities);
+        $this->assertCount(4, $vulnerabilities);
 
-        $vulnerability = $vulnerabilities[4];
-        $this->assertEquals('potentially vulnerable, uses TLS CBC ciphers', $vulnerability->summary);
-        $this->assertEquals('low', $vulnerability->severity);
-        $this->assertEquals('example.org', $vulnerability->asset->getValue());
+        $vulnerability = $vulnerabilities[3];
+        $this->assertEquals('BREACH: potentially VULNERABLE, gzip HTTP compression detected  - only supplied \'/\' tested', $vulnerability->summary);
+        $this->assertEquals('medium', $vulnerability->severity);
+        $this->assertEquals('localhost', $vulnerability->asset->getValue());
     }
 }

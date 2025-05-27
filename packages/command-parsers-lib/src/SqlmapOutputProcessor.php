@@ -7,6 +7,10 @@ use Reconmap\Models\Vulnerability;
 
 class SqlmapOutputProcessor extends AbstractOutputProcessor
 {
+    public function getCommandUsageExample(): string
+    {
+        return 'sqlmap http://localhost/api/users?status=1';
+    }
 
     public function process(string $path): ProcessorResult
     {

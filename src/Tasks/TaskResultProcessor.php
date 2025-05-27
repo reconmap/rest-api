@@ -45,7 +45,13 @@ readonly class TaskResultProcessor implements ItemProcessor
             return;
         }
 
-        $result = $processor->process($path);
+        try {
+            $result = $processor->process($path);
+        } catch (\Exception $e) {
+            $this->logger->error('unable to process file: ' . $e->getMessage());
+            return;
+        }
+
         $hosts = $result->getAssets();
         if (!empty($hosts)) {
             foreach ($hosts as $host) {

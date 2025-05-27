@@ -9,6 +9,7 @@ class NotificationsRouter
     public function mapRoutes(RouteCollectionInterface $router): void
     {
         $router->map('GET', '/notifications', GetNotificationsController::class);
+        $router->map('PATCH', '/notifications', BulkUpdateNotificationsController::class);
         $router->map('PUT', '/notifications/{notificationId:number}', UpdateNotificationController::class);
         $router->map('DELETE', '/notifications/{notificationId:number}', DeleteNotificationController::class);
     }
