@@ -11,7 +11,7 @@ use Reconmap\Services\PaginationRequestHandler;
 
 class TaskRepository extends MysqlRepository implements Findable
 {
-    public const UPDATABLE_COLUMNS_TYPES = [
+    public const array UPDATABLE_COLUMNS_TYPES = [
         'project_id' => 'i',
         'assignee_uid' => 'i',
         'priority' => 's',
@@ -19,6 +19,7 @@ class TaskRepository extends MysqlRepository implements Findable
         'description' => 's',
         'command_id' => 'i',
         'status' => 's',
+        'duration_estimate' => 'i',
         'due_date' => 's'
     ];
 
@@ -82,7 +83,7 @@ class TaskRepository extends MysqlRepository implements Findable
     {
         $queryBuilder = new SelectQueryBuilder('task t');
         $queryBuilder->setColumns('
-            t.id, t.project_id, t.insert_ts, t.update_ts, t.priority, t.summary, t.description, t.status, t.due_date,
+            t.id, t.project_id, t.insert_ts, t.update_ts, t.priority, t.summary, t.description, t.status, t.duration_estimate, t.due_date,
             p.name AS project_name, p.is_template AS project_is_template,
             t.creator_uid, creator.full_name AS creator_full_name,
             t.assignee_uid, assignee.full_name AS assignee_full_name,
@@ -131,9 +132,9 @@ class TaskRepository extends MysqlRepository implements Findable
     public function insert(Task $task): int
     {
         $insertStmt = new InsertQueryBuilder('task');
-        $insertStmt->setColumns('creator_uid, project_id, priority, summary, description, due_date, command_id');
+        $insertStmt->setColumns('creator_uid, project_id, priority, summary, description, due_date, command_id, duration_estimate');
         $stmt = $this->mysqlServer->prepare($insertStmt->toSql());
-        $stmt->bind_param('iissssi', $task->creator_uid, $task->project_id, $task->priority, $task->summary, $task->description, $task->due_date, $task->command_id);
+        $stmt->bind_param('iissssii', $task->creator_uid, $task->project_id, $task->priority, $task->summary, $task->description, $task->due_date, $task->command_id, $task->duration_estimate);
         return $this->executeInsertStatement($stmt);
     }
 }

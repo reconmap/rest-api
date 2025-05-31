@@ -8,6 +8,7 @@ use Reconmap\Models\Document;
 use Reconmap\Models\Notification;
 use Reconmap\Models\Report;
 use Reconmap\Models\Target;
+use Reconmap\Repositories\ClientContactRepository;
 use Reconmap\Repositories\ClientRepository;
 use Reconmap\Repositories\ContactRepository;
 use Reconmap\Repositories\DocumentRepository;
@@ -22,6 +23,7 @@ class TestDataGenerator
         private readonly UserTestDataGenerator          $userTestDataGenerator,
         private readonly ContactRepository              $contactRepository,
         private readonly ClientRepository               $clientRepository,
+        private readonly ClientContactRepository        $clientContactRepository,
         private readonly ProjectTestDataGenerator       $projectTestDataGenerator,
         private readonly NoteTestDataGenerator          $noteTestDataGenerator,
         private readonly DocumentRepository             $documentRepository,
@@ -51,8 +53,8 @@ class TestDataGenerator
         $client->name = 'Insecure Co.';
         $client->url = 'http://in.se.cure';
         $client->address = 'Fake address 124';
-        $client->contact_id = $contact->id;
-        $this->clientRepository->insert($client);
+        $clientId = $this->clientRepository->insert($client);
+        $this->clientContactRepository->create($clientId, $contact->id);
 
         $contact = new Contact();
         $contact->kind = 'billing';
@@ -66,9 +68,9 @@ class TestDataGenerator
         $client->creator_uid = 1;
         $client->name = 'The OWASP Foundation';
         $client->url = 'https://owasp.org';
-        $client->contact_id = $contact->id;
         $client->address = 'Fake address 124';
-        $this->clientRepository->insert($client);
+        $clientId = $this->clientRepository->insert($client);
+        $this->clientContactRepository->create($clientId, $contact->id);
 
         $document = new Document();
         $document->user_id = 1;

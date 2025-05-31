@@ -17,6 +17,7 @@ class Task {
 	public string $summary = '';
 	public ?string $description = '';
 	public string $status = 'todo';
+	public ?int $duration_estimate = null;
 	public ?string $due_date = null;
 	public ?int $command_id;
 	public ?string $command;
