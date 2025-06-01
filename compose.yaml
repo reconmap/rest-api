@@ -10,7 +10,7 @@ services:
 
   mysql:
     container_name: rmap-mysql
-    image: quay.io/reconmap/rest-api-db:latest
+    image: ghcr.io/reconmap/rest-api-db:latest
     build:
       context: ./
       dockerfile: docker/mysql/Dockerfile
@@ -30,7 +30,7 @@ services:
 
   keycloak:
     container_name: rmap-keycloak
-    image: quay.io/reconmap/keycloak-custom:latest
+    image: ghcr.io/reconmap/keycloak-custom:latest
     command: "start --hostname=http://localhost:8080 --proxy-headers xforwarded --http-enabled true --import-realm"
     environment:
       KEYCLOAK_ADMIN: admin
@@ -50,7 +50,11 @@ services:
     ports:
       - "8080:8080"
     healthcheck:
-      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/9000;echo -e 'GET /health/ready HTTP/1.1\r\nhost: http://localhost\r\nConnection: close\r\n\r\n' >&3;if [ $? -eq 0 ]; then echo 'Healthcheck Successful';exit 0;else echo 'Healthcheck Failed';exit 1;fi;"]
+      test:
+        [
+          "CMD-SHELL",
+          "exec 3<>/dev/tcp/127.0.0.1/9000;echo -e 'GET /health/ready HTTP/1.1\r\nhost: http://localhost\r\nConnection: close\r\n\r\n' >&3;if [ $? -eq 0 ]; then echo 'Healthcheck Successful';exit 0;else echo 'Healthcheck Failed';exit 1;fi;",
+        ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -60,7 +64,7 @@ services:
 
   api:
     container_name: rmap-api
-    image: quay.io/reconmap/rest-api:latest
+    image: ghcr.io/reconmap/rest-api:latest
     build:
       context: ./
       dockerfile: docker/api/Dockerfile
@@ -94,7 +98,7 @@ services:
 
   agent:
     container_name: rmap-agent
-    image: quay.io/reconmap/agent:latest
+    image: ghcr.io/reconmap/agent:latest
     ports:
       - "5520:5520"
     environment:

@@ -1,5 +1,9 @@
 FROM debian:bookworm-slim
 
+LABEL org.opencontainers.image.source=https://github.com/reconmap/reconmap
+LABEL org.opencontainers.image.description="reconmap/rest-api"
+LABEL org.opencontainers.image.licenses="Apache-2.0"
+
 ARG PHP_VERSION=8.4
 ARG DEBIAN_FRONTEND=noninteractive
 

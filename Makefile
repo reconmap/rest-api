@@ -12,7 +12,7 @@ DB_CONTAINER=rmap-mysql
 HOST_UID=$(shell id -u)
 HOST_GID=$(shell id -g)
 
-DOCKER_IMAGE_NAME = quay.io/reconmap/rest-api
+DOCKER_IMAGE_NAME = ghcr.io/reconmap/rest-api
 DOCKER_DEFAULT_TAG = $(DOCKER_IMAGE_NAME)
 
 ifndef GIT_BRANCH_NAME

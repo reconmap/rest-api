@@ -7,6 +7,8 @@ LABEL maintainer="Reconmap engineering" \
     org.opencontainers.image.documentation="https://docs.reconmap.com" \
     org.opencontainers.image.licenses="GPL" \
     org.opencontainers.image.url="https://github.com/reconmap/rest-api"
+LABEL org.opencontainers.image.source=https://github.com/reconmap/reconmap
+LABEL org.opencontainers.image.description="reconmap/rest-api-db"
 
 ARG HOST_UID
 ARG HOST_GID

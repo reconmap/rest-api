@@ -1,4 +1,4 @@
-FROM quay.io/reconmap/rest-api:latest
+FROM ghcr.io/reconmap/rest-api:latest
 
 RUN groupadd -g ${HOST_GID} reconmappers && \
     useradd -u ${HOST_UID} -g ${HOST_GID} -m -s /bin/bash reconmapper

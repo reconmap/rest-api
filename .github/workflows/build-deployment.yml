@@ -12,8 +12,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Login to Quay
-        run: echo "${{ secrets.QUAY_ROBOT_TOKEN }}" | docker login -u "${{ secrets.QUAY_ROBOT_USERNAME }}" --password-stdin quay.io
+      - name: Login to container registry
+        run: echo "${{ secrets.CR_PAT }}" | docker login ghcr.io -u "${{ secrets.CR_USERNAME }}" --password-stdin
       - name: Build
         run: |
           cp config-template.json config.json
@@ -25,4 +25,4 @@ jobs:
       - name: Upload CC report
         run: bash <(curl -s https://codecov.io/bash) -f tests/clover.xml
       - name: Deploy
-        run: ./docker/push_image.sh
+        run: make build push
