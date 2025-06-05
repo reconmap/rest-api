@@ -36,7 +36,6 @@ class CreateVaultItemControllerTest extends TestCase
         $vault->name = "compromised account";
         $vault->value = "secret text";
         $vault->note = "Some note for other testers";
-        $vault->reportable = false;
         $vault->type = "password";
         $vault->project_id = $project_id;
 

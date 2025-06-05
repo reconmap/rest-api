@@ -7,27 +7,29 @@ use Ponup\SqlBuilders\SelectQueryBuilder;
 use Reconmap\Models\Vault;
 use Reconmap\Repositories\SearchCriterias\VaultSearchCriteria;
 use Reconmap\Services\PaginationRequestHandler;
+use Reconmap\Services\Security\DataEncryptor;
 
 class VaultRepository extends MysqlRepository
 {
     private const string TABLE_NAME = 'vault';
 
     public const array UPDATABLE_COLUMNS_TYPES = [
+        'type' => 's',
         'name' => 's',
         'value' => 's',
+        'iv' => 's',
+        'tag' => 's',
         'note' => 's',
-        'type' => 's',
-        'reportable' => 'i',
-        'record_iv' => 's',
     ];
 
     public function insert(Vault $vault, string $password): int
     {
-        $encrypted_data = $this->encryptRecord($vault->value, $password);
+        $dataEncryptor = new DataEncryptor();
+        $encryptedData = $dataEncryptor->encrypt($vault->value, $password);
         $insertStmt = new InsertQueryBuilder(self::TABLE_NAME);
-        $insertStmt->setColumns('name, value, reportable, note, type, project_id, record_iv');
+        $insertStmt->setColumns('name, value, tag, note, type, project_id, iv');
         $stmt = $this->mysqlServer->prepare($insertStmt->toSql());
-        $stmt->bind_param('ssissis', $vault->name, $encrypted_data['cipher_text'], $vault->reportable, $vault->note, $vault->type, $vault->project_id, $encrypted_data['iv']);
+        $stmt->bind_param('sssssis', $vault->name, $encryptedData['cipherText'], $encryptedData['tag'], $vault->note, $vault->type, $vault->project_id, $encryptedData['iv']);
         return $this->executeInsertStatement($stmt);
     }
 
@@ -42,24 +44,24 @@ class VaultRepository extends MysqlRepository
     protected function getBaseSelectQueryBuilder(): SelectQueryBuilder
     {
         $queryBuilder = new SelectQueryBuilder('vault v');
-        $queryBuilder->setColumns('v.id, v.name, v.reportable, v.note, v.insert_ts, v.update_ts, v.type');
+        $queryBuilder->setColumns('v.id, v.name, v.note, v.insert_ts, v.update_ts, v.type');
         return $queryBuilder;
     }
 
     protected function getFullSelectQueryBuilder(): SelectQueryBuilder
     {
         $queryBuilder = new SelectQueryBuilder('vault v');
-        $queryBuilder->setColumns('v.id, v.name, v.value, v.reportable, v.note, v.insert_ts, v.update_ts, v.type, v.record_iv');
+        $queryBuilder->setColumns('v.id, v.name, v.value, v.tag, v.note, v.insert_ts, v.update_ts, v.type, v.iv');
         return $queryBuilder;
     }
 
     public function search(VaultSearchCriteria $searchCriteria, bool $fullQuery = false, ?PaginationRequestHandler $paginator = null, ?string $orderBy = 'v.insert_ts DESC'): array
     {
-        $queryBuilder = null;
         if ($fullQuery) {
             $queryBuilder = $this->getFullSelectQueryBuilder();
         } else {
             $queryBuilder = $this->getBaseSelectQueryBuilder();
+
         }
         return $this->searchAll($queryBuilder, $searchCriteria, $paginator, $orderBy);
     }
@@ -81,28 +83,9 @@ class VaultRepository extends MysqlRepository
     {
         $searchCriteria = new VaultSearchCriteria();
         $searchCriteria->addVaultItemAndProjectCriterion($projectId, $id);
-        $vault_items = $this->search($searchCriteria);
+        $results = $this->search($searchCriteria);
 
-        $exists = false;
-        if ($vault_items && $vault_items[0]) {
-            $exists = true;
-        }
-        return $exists;
-    }
-
-    private function encryptRecord(string $data, string $password): array
-    {
-        $cipher = 'AES-256-CTR';
-        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($cipher));
-        $result = [];
-        $result['cipher_text'] = openssl_encrypt($data, $cipher, $password, $options = 0, $iv);
-        $result['iv'] = $iv;
-        return $result;
-    }
-
-    private function decryptRecord(string $cipher_text, string $iv, string $password)
-    {
-        return openssl_decrypt($cipher_text, 'AES-256-CTR', $password, $options = 0, $iv);
+        return $results && $results[0];
     }
 
     public function findAll(int $projectId): array
@@ -114,46 +97,51 @@ class VaultRepository extends MysqlRepository
 
     public function readVaultItem(int $projectId, int $vaultItemId, string $password): Vault|null
     {
+        $dataEncryptor = new DataEncryptor();
+
         $searchCriteria = new VaultSearchCriteria();
         $searchCriteria->addVaultItemAndProjectCriterion($projectId, $vaultItemId);
-        $vault_items = $this->search($searchCriteria, true);
+        $results = $this->search($searchCriteria, true);
 
-        if ($vault_items && $vault_items[0]) {
+        if ($results && $results[0]) {
             $item = new Vault();
-            $item->name = $vault_items[0]['name'];
-            $item->id = $vault_items[0]['id'];
+            $item->name = $results[0]['name'];
+            $item->id = $results[0]['id'];
             $item->project_id = $projectId;
-            $item->insert_ts = $vault_items[0]['insert_ts'];
-            $item->update_ts = $vault_items[0]['update_ts'];
-            $item->reportable = (bool)($vault_items[0]['reportable']);
-            $item->note = $vault_items[0]['note'];
+            $item->insert_ts = $results[0]['insert_ts'];
+            $item->update_ts = $results[0]['update_ts'];
+            $item->note = $results[0]['note'];
 
-            $decrypted = (string)$this->decryptRecord($vault_items[0]['value'], $vault_items[0]['record_iv'], $password);
-            // with the wrong password, the decrypted string contains also nonASCII characters which lead to crash
-            if (mb_detect_encoding($decrypted, 'ASCII', true)) {
-                $item->value = $decrypted;
-                return $item;
+            $decrypted = $dataEncryptor->decrypt($results[0]['value'], $results[0]['iv'], $password, $results[0]['tag']);
+            if (false === $decrypted) {
+                //$this->logger->warning('wrong password provided for secret');
+                return null;
             }
+
+            $item->value = $decrypted;
+            return $item;
         }
+
         return null;
     }
 
-    public function updateVaultItemById(int $id, int $project_id, string $password, array $new_column_values): bool
+    public function updateVaultItemById(int $id, int $projectId, string $password, array $newColumnValues): bool
     {
-        $searchCriteria = new VaultSearchCriteria();
-        $searchCriteria->addVaultItemAndProjectCriterion($project_id, $id);
-        $vault_items = $this->search($searchCriteria, true);
+        $dataEncryptor = new DataEncryptor();
 
-        if ($vault_items && $vault_items[0]) {
-            $decrypted = $this->decryptRecord($vault_items[0]['value'], $vault_items[0]['record_iv'], $password);
-            if (mb_detect_encoding($decrypted, 'ASCII', true)) {
-                if ($new_column_values['value']) {
-                    $encrypted_data = $this->encryptRecord($new_column_values['value'], $password);
-                    $new_column_values['value'] = $encrypted_data['cipher_text'];
-                    $new_column_values['record_iv'] = $encrypted_data['iv'];
+        $searchCriteria = new VaultSearchCriteria();
+        $searchCriteria->addVaultItemAndProjectCriterion($projectId, $id);
+        $results = $this->search($searchCriteria, true);
+
+        if ($results && $results[0]) {
+            $decrypted = $dataEncryptor->decrypt($results[0]['value'], $results[0]['iv'], $password, $results[0]['tag']);
+            if (false !== $decrypted) {
+                if ($newColumnValues['value']) {
+                    $encryptedData = $dataEncryptor->encrypt($newColumnValues['value'], $password);
+                    $newColumnValues['value'] = $encryptedData['cipherText'];
+                    $newColumnValues['iv'] = $encryptedData['iv'];
                 }
-                $tmp = $new_column_values['reportable'];
-                return $this->updateByTableId('vault', $id, $new_column_values);
+                return $this->updateByTableId('vault', $id, $newColumnValues);
             }
         }
         return false;

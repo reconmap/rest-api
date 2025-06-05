@@ -22,7 +22,7 @@ class UpdateVaultItemControllerTest extends TestCase
         $mockRequest = $this->createMock(ServerRequestInterface::class);
         $mockRequest->expects($this->once())
             ->method('getBody')
-            ->willReturn(Utils::streamFor('{"anything":"will not be in the filtered array","name":"compromised account","value":"secret text","note":"Some note for other testers","reportable":false,"type":"password","password":"UltimateP4ssw0rd!"}'));
+            ->willReturn(Utils::streamFor('{"anything":"will not be in the filtered array","name":"compromised account","value":"secret text","note":"Some note for other testers","type":"password","password":"UltimateP4ssw0rd!"}'));
         $mockRequest->expects($this->once())
             ->method('getAttribute')
             ->with('userId')
@@ -36,7 +36,7 @@ class UpdateVaultItemControllerTest extends TestCase
         $mockRepository = $this->createMock(VaultRepository::class);
         $mockRepository->expects($this->once())
             ->method('updateVaultItemById')
-            ->with($vault_item_id, $project_id, "UltimateP4ssw0rd!", ['name' => 'compromised account', 'value' => 'secret text', 'note' => 'Some note for other testers', 'reportable' => false, 'type' => 'password'])
+            ->with($vault_item_id, $project_id, "UltimateP4ssw0rd!", ['name' => 'compromised account', 'value' => 'secret text', 'note' => 'Some note for other testers', 'type' => 'password'])
             ->willReturn(true);
 
         $args = ['projectId' => $project_id, 'vaultItemId' => $vault_item_id];

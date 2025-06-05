@@ -8,7 +8,7 @@ use Reconmap\Repositories\VaultRepository;
 
 class ReadProjectVaultController extends Controller
 {
-    public function __construct(private VaultRepository $repository)
+    public function __construct(private readonly VaultRepository $repository)
     {
     }
 

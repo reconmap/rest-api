@@ -18,6 +18,7 @@
         "ext-redis": "*",
         "ext-simplexml": "*",
         "ext-zip": "*",
+        "ext-openssl": "*",
         "firebase/php-jwt": "^v6.0",
         "geoip2/geoip2": "~3.0",
         "graylog2/gelf-php": "dev-master",

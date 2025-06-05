@@ -136,17 +136,16 @@ CREATE TABLE vault
     id         INT UNSIGNED                           NOT NULL AUTO_INCREMENT,
     insert_ts  TIMESTAMP                              NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_ts  TIMESTAMP                              NULL ON UPDATE CURRENT_TIMESTAMP,
-    name       VARCHAR(200)                           NOT NULL,
-    value      VARCHAR(2000)                          NOT NULL,
-    reportable BOOLEAN                                NOT NULL,
-    note       VARCHAR(1000)                          NULL,
-    type       ENUM ('password','note','token','key') NOT NULL,
     project_id INT UNSIGNED                           NOT NULL,
-    record_iv  BLOB                                   NOT NULL,
+    type       ENUM ('password','note','token','key') NOT NULL,
+    name       VARCHAR(200)                           NOT NULL,
+    value      VARBINARY(4096)                        NOT NULL,
+    iv         BINARY(12)                             NOT NULL,
+    tag        BINARY(16)                             NOT NULL,
+    note       VARCHAR(1000)                          NULL,
 
     PRIMARY KEY (id),
     UNIQUE KEY (project_id, name),
-    KEY (reportable),
     FOREIGN KEY (project_id) REFERENCES project (id) ON DELETE CASCADE
 ) Engine = InnoDB;
 

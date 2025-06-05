@@ -2,7 +2,6 @@
 
 namespace Reconmap\Repositories;
 
-use Monolog\Logger;
 use Ponup\SqlBuilders\DeleteQueryBuilder;
 use Ponup\SqlBuilders\SearchCriteria;
 use Ponup\SqlBuilders\SelectQueryBuilder;
@@ -13,7 +12,7 @@ use Reconmap\Services\PaginationRequestHandler;
 
 abstract class MysqlRepository
 {
-    protected ?Logger $logger = null;
+    protected ?LoggerInterface $logger = null;
 
     public function __construct(protected readonly MysqlServer $mysqlServer)
     {

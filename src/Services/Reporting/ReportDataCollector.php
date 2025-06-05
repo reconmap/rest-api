@@ -70,13 +70,16 @@ readonly class ReportDataCollector
 
         $markdownParser = new GithubFlavoredMarkdownConverter();
 
-        $organisation = $this->clientRepository->findById($project['service_provider_id']);
-        $logos = [];
-        if ($organisation && $organisation->small_logo_attachment_id) {
-            $logos['org_small_logo'] = $this->attachmentFilePathService->generateFilePath($this->attachmentRepository->getFileNameById($organisation->small_logo_attachment_id));
-        }
-        if ($organisation && $organisation->logo_attachment_id) {
-            $logos['org_logo'] = $this->attachmentFilePathService->generateFilePath($this->attachmentRepository->getFileNameById($organisation->logo_attachment_id));
+        $organisation = null;
+        if (isset($project['service_provider_id'])) {
+            $organisation = $this->clientRepository->findById($project['service_provider_id']);
+            $logos = [];
+            if ($organisation && $organisation->small_logo_attachment_id) {
+                $logos['org_small_logo'] = $this->attachmentFilePathService->generateFilePath($this->attachmentRepository->getFileNameById($organisation->small_logo_attachment_id));
+            }
+            if ($organisation && $organisation->logo_attachment_id) {
+                $logos['org_logo'] = $this->attachmentFilePathService->generateFilePath($this->attachmentRepository->getFileNameById($organisation->logo_attachment_id));
+            }
         }
 
         if (isset($project['client_id'])) {
@@ -103,7 +106,7 @@ readonly class ReportDataCollector
         $categories = $this->vulnerabilityCategoryRepository->getStatuses();
 
         $vaultSearchCriteria = new VaultSearchCriteria();
-        $vaultSearchCriteria->addReportableProjectCriterion($projectId);
+        $vaultSearchCriteria->addProjectCriterion($projectId);
         $vaultItems = $this->vaultRepository->search($vaultSearchCriteria);
 
         $pngs = $this->attachmentRepository->findByParentId('project', $projectId, 'image/png');
