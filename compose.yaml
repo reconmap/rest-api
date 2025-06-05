@@ -33,11 +33,10 @@ services:
     image: ghcr.io/reconmap/keycloak-custom:latest
     command: "start --hostname=http://localhost:8080 --proxy-headers xforwarded --http-enabled true --import-realm"
     environment:
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
       KEYCLOAK_WELCOME_THEME: "reconmap-theme"
       KEYCLOAK_DEFAULT_THEME: "reconmap-theme"
-      JAVA_OPTS_APPEND: ""
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
       KC_DB_VENDOR: MYSQL
       KC_DB: mysql
       KC_DB_URL: "jdbc:mysql://rmap-mysql/keycloak"
@@ -87,26 +86,6 @@ services:
       - "./database:/var/www/webapp/database"
     ports:
       - "5510:5510"
-    environment:
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      REDIS_USER: default
-      REDIS_PASSWORD: REconDIS
     depends_on:
       mysql:
         condition: service_healthy
-
-  agent:
-    container_name: rmap-agent
-    image: ghcr.io/reconmap/agent:latest
-    ports:
-      - "5520:5520"
-    environment:
-      RMAP_KEYCLOAK_HOSTNAME: "http://keycloak:8080"
-      RMAP_AGENT_CLIENT_ID: "admin-cli"
-      RMAP_AGENT_CLIENT_SECRET: "xxxxxxxxxxxxxxxxxxyyyyyyyyyyyyyy"
-      RMAP_REST_API_URL: "http://api:5510"
-      VALID_ORIGINS: http://localhost:5510
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      REDIS_PASSWORD: REconDIS

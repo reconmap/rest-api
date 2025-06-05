@@ -1,0 +1,15 @@
+services:
+  agent:
+    container_name: rmap-agent
+    image: ghcr.io/reconmap/agent:latest
+    ports:
+      - "5520:5520"
+    environment:
+      RMAP_KEYCLOAK_HOSTNAME: "http://keycloak:8080"
+      RMAP_AGENT_CLIENT_ID: "admin-cli"
+      RMAP_AGENT_CLIENT_SECRET: "xxxxxxxxxxxxxxxxxxyyyyyyyyyyyyyy"
+      RMAP_REST_API_URL: "http://api:5510"
+      VALID_ORIGINS: http://localhost:5510
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: REconDIS

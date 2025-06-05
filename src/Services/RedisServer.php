@@ -8,21 +8,22 @@ class RedisServer extends \Redis
      * @throws \RedisException
      * @throws \Exception
      */
-    public function __construct(Environment $env)
+    public function __construct(ApplicationConfig $config)
     {
         parent::__construct();
 
-        $host = $env->getValue('REDIS_HOST');
-        $port = $env->getValue('REDIS_PORT');
+        $redisConfig = $config->getSettings('redis');
+        $host = $redisConfig['host'];
+        $port = intval($redisConfig['port']);
 
-        if (false === $this->connect($host, (int)$port)) {
+        if (false === $this->connect($host, $port)) {
             throw new \Exception("Unable to connect to Redis server $host:$port");
         }
 
-        $user = $env->getValue('REDIS_USER');
-        $password = $env->getValue('REDIS_PASSWORD');
+        $username = $redisConfig['username'];
+        $password = $redisConfig['password'];
 
-        if (false === $this->auth([$user, $password])) {
+        if (false === $this->auth([$username, $password])) {
             throw new \Exception('Unable to authenticate to Redis');
         }
     }

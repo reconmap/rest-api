@@ -11,11 +11,11 @@ class RedisServerTest extends TestCase
 
     public function testAuth()
     {
-        $mockEnvironment = $this->createMock(Environment::class);
-        $mockEnvironment->expects($this->exactly(4))
-            ->method('getValue')
-            ->with(...$this->consecutiveParams(['REDIS_HOST'], ['REDIS_PORT'], ['REDIS_USER'], ['REDIS_PASSWORD']))
-            ->willReturnOnConsecutiveCalls('localhost', '1111', 'root', 'roto');
+        $applicationConfigMock = $this->createMock(ApplicationConfig::class);
+        $applicationConfigMock->expects($this->once())
+            ->method('getSettings')
+            ->with('redis')
+            ->willReturn(['host' => '127.0.0.1', 'port' => 6379, 'username' => 'user', 'password' => 'pass']);
 
         $redisServer = $this->getMockBuilder(RedisServer::class)
             ->disableOriginalConstructor()
@@ -23,13 +23,13 @@ class RedisServerTest extends TestCase
             ->getMock();
         $redisServer->expects($this->once())
             ->method('connect')
-            ->with('localhost', 1111)
+            ->with('127.0.0.1', 6379)
             ->willReturn(true);
         $redisServer->expects($this->once())
             ->method('auth')
-            ->with(['root', 'roto'])
+            ->with(['user', 'pass'])
             ->willReturn(true);
 
-        $redisServer->__construct($mockEnvironment);
+        $redisServer->__construct($applicationConfigMock);
     }
 }
