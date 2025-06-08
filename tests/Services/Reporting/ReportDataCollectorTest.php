@@ -12,7 +12,6 @@ use Reconmap\Repositories\ReportRepository;
 use Reconmap\Repositories\TargetRepository;
 use Reconmap\Repositories\TaskRepository;
 use Reconmap\Repositories\UserRepository;
-use Reconmap\Repositories\VaultRepository;
 use Reconmap\Repositories\VulnerabilityCategoryRepository;
 use Reconmap\Repositories\VulnerabilityRepository;
 use Reconmap\Services\Filesystem\AttachmentFilePath;
@@ -32,10 +31,9 @@ class ReportDataCollectorTest extends TestCase
         $contactRepository = $this->createMock(ContactRepository::class);
         $attachmentRepository = $this->createMock(AttachmentRepository::class);
         $attachmentFilePath = $this->createMock(AttachmentFilePath::class);
-        $vaultRepository = $this->createMock(VaultRepository::class);
 
         $dataCollector = new ReportDataCollector($projectRepository, $reportRepository, $vulnerabilityRepository, $vulnerabilityCategoryRepository,
-            $userRepository, $clientRepository, $taskRepository, $targetRepository, $contactRepository, $attachmentRepository, $attachmentFilePath, $vaultRepository);
+            $userRepository, $clientRepository, $taskRepository, $targetRepository, $contactRepository, $attachmentRepository, $attachmentFilePath);
         $result = $dataCollector->collectForProject(0);
         $this->assertEquals([], $result);
     }
@@ -57,10 +55,9 @@ class ReportDataCollectorTest extends TestCase
         $contactRepository = $this->createMock(ContactRepository::class);
         $attachmentRepository = $this->createMock(AttachmentRepository::class);
         $attachmentFilePath = $this->createMock(AttachmentFilePath::class);
-        $vaultRepository = $this->createMock(VaultRepository::class);
 
         $dataCollector = new ReportDataCollector($projectRepository, $reportRepository, $vulnerabilityRepository, $vulnerabilityCategoryRepository,
-            $userRepository, $clientRepository, $taskRepository, $targetRepository, $contactRepository, $attachmentRepository, $attachmentFilePath, $vaultRepository);
+            $userRepository, $clientRepository, $taskRepository, $targetRepository, $contactRepository, $attachmentRepository, $attachmentFilePath);
         $result = $dataCollector->collectForProject(0);
 
         $expectedResult = [
@@ -85,7 +82,6 @@ class ReportDataCollectorTest extends TestCase
             'users' => array(),
             'contacts' => [],
             'logos' => array(),
-            'vault' => array(),
             'parentCategories' => array(),
             'categories' => array(),
         ];

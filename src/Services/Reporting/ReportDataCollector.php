@@ -2,19 +2,16 @@
 
 namespace Reconmap\Services\Reporting;
 
-use League\CommonMark\GithubFlavoredMarkdownConverter;
 use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Repositories\ClientRepository;
 use Reconmap\Repositories\ContactRepository;
 use Reconmap\Repositories\ProjectRepository;
 use Reconmap\Repositories\ReportRepository;
 use Reconmap\Repositories\SearchCriterias\TargetSearchCriteria;
-use Reconmap\Repositories\SearchCriterias\VaultSearchCriteria;
 use Reconmap\Repositories\SearchCriterias\VulnerabilitySearchCriteria;
 use Reconmap\Repositories\TargetRepository;
 use Reconmap\Repositories\TaskRepository;
 use Reconmap\Repositories\UserRepository;
-use Reconmap\Repositories\VaultRepository;
 use Reconmap\Repositories\VulnerabilityCategoryRepository;
 use Reconmap\Repositories\VulnerabilityRepository;
 use Reconmap\Services\Filesystem\AttachmentFilePath;
@@ -32,8 +29,7 @@ readonly class ReportDataCollector
         private TargetRepository                $targetRepository,
         private ContactRepository               $contactRepository,
         private AttachmentRepository            $attachmentRepository,
-        private AttachmentFilePath              $attachmentFilePathService,
-        private VaultRepository                 $vaultRepository,
+        private AttachmentFilePath              $attachmentFilePathService
     )
     {
     }
@@ -66,14 +62,12 @@ readonly class ReportDataCollector
             $vulnerabilities[$key]['attachments'] = $att;
         }
 
-        $reports = $this->reportRepository->findByProjectId($projectId);
+        $reportRevisions = $this->reportRepository->findByProjectId($projectId);
 
-        $markdownParser = new GithubFlavoredMarkdownConverter();
-
+        $logos = [];
         $organisation = null;
         if (isset($project['service_provider_id'])) {
             $organisation = $this->clientRepository->findById($project['service_provider_id']);
-            $logos = [];
             if ($organisation && $organisation->small_logo_attachment_id) {
                 $logos['org_small_logo'] = $this->attachmentFilePathService->generateFilePath($this->attachmentRepository->getFileNameById($organisation->small_logo_attachment_id));
             }
@@ -105,10 +99,6 @@ readonly class ReportDataCollector
         $parentCategories = $this->vulnerabilityCategoryRepository->findMaxSeverityForEachParentCategory();
         $categories = $this->vulnerabilityCategoryRepository->getStatuses();
 
-        $vaultSearchCriteria = new VaultSearchCriteria();
-        $vaultSearchCriteria->addProjectCriterion($projectId);
-        $vaultItems = $this->vaultRepository->search($vaultSearchCriteria);
-
         $pngs = $this->attachmentRepository->findByParentId('project', $projectId, 'image/png');
         $jpegs = $this->attachmentRepository->findByParentId('project', $projectId, 'image/jpeg');
         $gifs = $this->attachmentRepository->findByParentId('project', $projectId, 'image/gif');
@@ -124,28 +114,24 @@ readonly class ReportDataCollector
             'contacts' => $contacts,
             'org' => $organisation,
             'date' => date('Y-m-d'),
-            'reports' => $reports,
-            'markdownParser' => $markdownParser,
+            'reports' => $reportRevisions,
+            'revisions' => $reportRevisions,
             'client' => isset($project['client_id']) ? $this->clientRepository->findById($project['client_id']) : null,
             'targets' => $targets,
             'tasks' => $this->taskRepository->findByProjectId($projectId),
             'vulnerabilities' => $vulnerabilities,
             'findingsOverview' => $this->createFindingsOverview($vulnerabilities),
-            'vault' => $vaultItems,
             'logos' => $logos,
             'parentCategories' => $parentCategories,
             'categories' => $categories,
         ];
 
-        if (!empty($reports)) {
-            $latestVersion = $reports[0];
+        if (!empty($reportRevisions)) {
+            $latestVersion = $reportRevisions[0];
             $vars['version'] = $latestVersion['version_name'];
         }
 
         $users = $this->userRepository->findByProjectId($projectId);
-        foreach ($users as &$user) {
-            $user['email_md5'] = md5($user['email']);
-        }
         $vars['users'] = $users;
 
         return $vars;

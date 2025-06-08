@@ -22,6 +22,8 @@ use Reconmap\Services\KeycloakService;
 
 readonly class AuthMiddleware implements MiddlewareInterface
 {
+    private const array AUTHORIZED_PARTIES = ['reconmapd-client'];
+
     public function __construct(
         private UserRepository    $userRepository,
         private KeycloakService   $keycloak,
@@ -47,18 +49,18 @@ readonly class AuthMiddleware implements MiddlewareInterface
                 throw new ForbiddenException("Invalid JWT issuer: " . $token->iss);
             }
 
-            if (isset($token->azp) && $token->azp === 'admin-cli') {
+            if (isset($token->azp) && in_array($token->azp, self::AUTHORIZED_PARTIES)) {
                 $request = $request->withAttribute('userId', 0)
                     ->withAttribute('role', 'administrator'); // api
 
-            } else {
+            } elseif (in_array($token->azp, ['web-client', 'rmap-client'])) {
                 $dbUser = $this->userRepository->findBySubjectId($token->sub);
                 if (is_null($dbUser)) {
                     $this->logger->error('No user with subject: ' . $token->sub);
                 }
 
-                if ($token->aud !== $jwtConfig['audience']) {
-                    $this->logger->warning("Invalid JWT audience: " . $token->aud);
+                if (!in_array($jwtConfig['audience'], is_array($token->aud) ? $token->aud : [$token->aud])) {
+                    $this->logger->warning("Invalid JWT audience: " . var_export($token->aud, true));
                 }
 
                 $tokenRole = $this->extractRoleFromToken($token);
@@ -70,8 +72,6 @@ readonly class AuthMiddleware implements MiddlewareInterface
             $this->logger->warning($e->getMessage());
             return (new Response)->withStatus(\Symfony\Component\HttpFoundation\Response::HTTP_UNAUTHORIZED)
                 ->withBody(Utils::streamFor($e->getMessage()));
-        } catch (Exception $httpException) {
-            throw $httpException;
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
             return (new Response)->withStatus(\Symfony\Component\HttpFoundation\Response::HTTP_BAD_REQUEST);
