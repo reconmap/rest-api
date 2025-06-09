@@ -5,8 +5,11 @@ namespace Reconmap\Controllers\Projects;
 use GuzzleHttp\Psr7\Utils;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
+use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Models\Project;
 use Reconmap\Repositories\ProjectRepository;
+use Reconmap\Repositories\ProjectUserRepository;
+use Reconmap\Services\AuditLogService;
 use Symfony\Component\HttpFoundation\Response;
 
 class CreateProjectControllerTest extends TestCase
@@ -33,7 +36,13 @@ class CreateProjectControllerTest extends TestCase
             ->method('getBody')
             ->willReturn(Utils::streamFor('{"name": "exciting new project", "is_template": true}'));
 
-        $controller = new CreateProjectController($mockProjectRepository);
+        $mockProjectUserRepository = $this->createMock(ProjectUserRepository::class);
+        $mockAuditLogService = $this->createMock(AuditLogService::class);
+        $mockAuditLogService->expects($this->once())
+            ->method('insert')
+            ->with(9, AuditActions::CREATED, 'Project', ['id' => 1]);
+
+        $controller = new CreateProjectController($mockProjectRepository, $mockProjectUserRepository, $mockAuditLogService);
         $response = $controller($mockRequest);
 
         $this->assertEquals(Response::HTTP_CREATED, $response->getStatusCode());

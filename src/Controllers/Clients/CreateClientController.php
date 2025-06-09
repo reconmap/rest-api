@@ -33,10 +33,10 @@ class CreateClientController extends Controller
         $client->id = $this->repository->insert($client);
 
         $logoAttachment = $smallLogoAttachment = null;
-        if ($files['logo'])
+        if (isset($files['logo']))
             $logoAttachment = $this->attachmentSaver->uploadAttachment($files['logo'], 'client', $client->id, $loggedInUserId);
 
-        if ($files['smallLogo'])
+        if (isset($files['smallLogo']))
             $smallLogoAttachment = $this->attachmentSaver->uploadAttachment($files['smallLogo'], 'client', $client->id, $loggedInUserId);
 
         if ($logoAttachment || $smallLogoAttachment)

@@ -14,6 +14,7 @@ class CommandUsage {
 	public ?string $description;
 	public ?string $executable_path;
 	public ?string $arguments;
+	public string $output_capturing_mode = 'none';
 	public ?string $output_filename;
 	public ?string $output_parser;
 }

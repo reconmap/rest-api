@@ -71,7 +71,7 @@ class AuditLogRepository extends MysqlRepository
     protected function getBaseSelectQueryBuilder(): SelectQueryBuilder
     {
         $queryBuilder = new SelectQueryBuilder('audit_log al');
-        $queryBuilder->setColumns('al.id, al.insert_ts, al.user_agent, INET_NTOA(al.client_ip) AS client_ip, al.action, al.object,
+        $queryBuilder->setColumns('al.id, al.insert_ts, al.user_agent, INET_NTOA(al.client_ip) AS client_ip, al.action, al.object, al.context,
                u.id AS user_id, u.username AS user_name, COALESCE(u.role, \'system\') AS user_role');
         $queryBuilder->addJoin('LEFT JOIN user u ON (u.id = al.user_id)');
         $queryBuilder->setOrderBy('al.insert_ts DESC');

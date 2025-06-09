@@ -2,7 +2,6 @@
 
 namespace Reconmap\Services\Reporting;
 
-use League\CommonMark\GithubFlavoredMarkdownConverter;
 use PHPUnit\Framework\TestCase;
 use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Repositories\ClientRepository;
@@ -68,7 +67,6 @@ class ReportDataCollectorTest extends TestCase
             'org' => null,
             'date' => date('Y-m-d'),
             'reports' => array(),
-            'markdownParser' => new GithubFlavoredMarkdownConverter(),
             'client' => null,
             'targets' => array(),
             'tasks' => array(),
@@ -84,6 +82,7 @@ class ReportDataCollectorTest extends TestCase
             'logos' => array(),
             'parentCategories' => array(),
             'categories' => array(),
+            'revisions' => array()
         ];
         $this->assertEquals($expectedResult, $result);
     }

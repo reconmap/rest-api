@@ -52,7 +52,7 @@ class UploadCommandOutputControllerTest extends ControllerTestCase
             ->willReturn(9);
         $mockRequest->expects($this->once())
             ->method('getParsedBody')
-            ->willReturn(['parentType' => 'task', 'parentId' => 10, 'commandId' => 5]);
+            ->willReturn(['parentType' => 'task', 'parentId' => 10, 'commandUsageId' => 5]);
         $mockRequest->expects($this->once())
             ->method('getUploadedFiles')
             ->willReturn(['resultFile' => $fakeUploadedFile]);

@@ -14,10 +14,11 @@ class CommandUsageRepository extends MysqlRepository
         'command_id' => 'i',
         'name' => 's',
         'description' => 's',
-        'output_parser' => 's',
         'executable_path' => 's',
         'arguments' => 's',
+        'output_capturing_mode' => 's',
         'output_filename' => 's',
+        'output_parser' => 's',
     ];
 
     public function findById(int $id): ?array
@@ -83,9 +84,9 @@ SQL;
     public function insert(\stdClass|CommandUsage $command): int
     {
         $insertStmt = new InsertQueryBuilder('command_usage');
-        $insertStmt->setColumns('creator_uid, command_id, name, description, arguments, executable_path, output_filename, tags, output_parser');
+        $insertStmt->setColumns('creator_uid, command_id, name, description, arguments, executable_path, output_capturing_mode, output_filename, tags, output_parser');
         $stmt = $this->mysqlServer->prepare($insertStmt->toSql());
-        $stmt->bind_param('iisssssss', $command->creator_uid, $command->command_id, $command->name, $command->description, $command->arguments, $command->executable_path, $command->output_filename, $command->tags, $command->output_parser);
+        $stmt->bind_param('iissssssss', $command->creator_uid, $command->command_id, $command->name, $command->description, $command->arguments, $command->executable_path, $command->output_capturing_mode, $command->output_filename, $command->tags, $command->output_parser);
         return $this->executeInsertStatement($stmt);
     }
 
