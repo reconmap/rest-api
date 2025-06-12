@@ -87,13 +87,13 @@ class TaskRepository extends MysqlRepository implements Findable
             p.name AS project_name, p.is_template AS project_is_template,
             t.creator_uid, creator.full_name AS creator_full_name,
             t.assignee_uid, assignee.full_name AS assignee_full_name,
-            c.id AS command_id, c.name AS command_name, cu.output_parser, cu.docker_image AS command_docker_image, cu.arguments AS command_container_args
+            c.id AS command_id, c.name AS command_name
         ');
+
         $queryBuilder->addJoin('INNER JOIN user creator ON (creator.id = t.creator_uid)');
         $queryBuilder->addJoin('LEFT JOIN user assignee ON (assignee.id = t.assignee_uid)');
         $queryBuilder->addJoin('LEFT JOIN project p ON (p.id = t.project_id)');
         $queryBuilder->addJoin('LEFT JOIN command c ON (c.id = t.command_id)');
-        $queryBuilder->addJoin('LEFT JOIN command_usage cu ON (cu.command_id = t.command_id)');
         $queryBuilder->setOrderBy('t.insert_ts DESC');
         return $queryBuilder;
     }
