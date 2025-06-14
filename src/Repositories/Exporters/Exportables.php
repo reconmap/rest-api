@@ -15,7 +15,7 @@ class Exportables
         ['key' => 'targets', 'description' => 'Targets', 'className' => TargetsExporter::class],
         ['key' => 'users', 'description' => 'Users', 'className' => UsersExporter::class],
         ['key' => 'vulnerabilities', 'description' => 'Vulnerabilities', 'className' => VulnerabilitiesExporter::class],
-        ['key' => 'vulnerability_category', 'description' => 'Vulnerability categories', 'className' => VulnerabilityCategoriesExporter::class],
+        ['key' => 'vulnerability_categories', 'description' => 'Vulnerability categories', 'className' => VulnerabilityCategoriesExporter::class],
         ['key' => 'vulnerability_templates', 'description' => 'Vulnerability templates', 'className' => VulnerabilityTemplatesExporter::class],
     ];
 }

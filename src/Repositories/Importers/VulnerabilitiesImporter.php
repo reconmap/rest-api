@@ -5,7 +5,7 @@ namespace Reconmap\Repositories\Importers;
 use Reconmap\Models\Vulnerability;
 use Reconmap\Repositories\VulnerabilityRepository;
 
-class VulnerabilitiesImporter implements Importable
+readonly class VulnerabilitiesImporter implements Importable
 {
     public function __construct(private VulnerabilityRepository $repository)
     {

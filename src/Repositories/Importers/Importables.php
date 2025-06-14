@@ -12,6 +12,7 @@ class Importables
         'targets' => TargetsImporter::class,
         'tasks' => TasksImporter::class,
         'vulnerabilities' => VulnerabilitiesImporter::class,
+        'vulnerability_categories' => VulnerabilityCategoriesImporter::class,
         'vulnerability_templates' => VulnerabilityTemplatesImporter::class,
     ];
 }

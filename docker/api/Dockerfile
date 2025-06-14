@@ -1,5 +1,7 @@
 FROM debian:bookworm-slim
 
+ENV TZ="Europe/London"
+
 LABEL org.opencontainers.image.source=https://github.com/reconmap/reconmap
 LABEL org.opencontainers.image.description="reconmap/rest-api"
 LABEL org.opencontainers.image.licenses="Apache-2.0"

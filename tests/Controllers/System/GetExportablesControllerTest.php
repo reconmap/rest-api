@@ -25,7 +25,7 @@ class GetExportablesControllerTest extends TestCase
             ['key' => 'targets', 'description' => 'Targets'],
             ["key" => "users", "description" => "Users"],
             ["key" => "vulnerabilities", "description" => "Vulnerabilities"],
-            ["key" => "vulnerability_category", "description" => "Vulnerability categories"],
+            ["key" => "vulnerability_categories", "description" => "Vulnerability categories"],
             ["key" => "vulnerability_templates", "description" => "Vulnerability templates"]
         ];
 
