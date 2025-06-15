@@ -2,35 +2,37 @@
 
 namespace Reconmap\Controllers\Vault;
 
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditActions\AuditActions;
-use Reconmap\Models\AuditActions\VaultAuditActions;
 use Reconmap\Repositories\VaultRepository;
 use Reconmap\Services\AuditLogService;
 
 class DeleteVaultItemController extends Controller
 {
-    public function __construct(private VaultRepository $repository,
-                                private AuditLogService $auditLogService)
+    public function __construct(private readonly VaultRepository $repository,
+                                private readonly AuditLogService $auditLogService)
     {
     }
 
-    public function __invoke(ServerRequestInterface $request, array $args): array
+    public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
     {
-        $projectId = (int)$args['projectId'];
         $vaultId = (int)$args['vaultItemId'];
-
-        $name = $this->repository->getVaultItemName($vaultId, $projectId);
-        $success = $this->repository->deleteByIdAndProjectId($vaultId, $projectId);
         $userId = $request->getAttribute('userId');
-        $this->auditAction($userId, $projectId, $vaultId, $name);
 
-        return ['success' => $success];
+        $success = $this->repository->deleteByIdAndUserId($vaultId, $userId);
+
+        if ($success) {
+            $this->auditAction($userId, $vaultId);
+            return $this->createDeletedResponse();
+        }
+
+        return $this->createBadRequestResponse();
     }
 
-    private function auditAction(int $loggedInUserId, int $projectId, int $vaultId, string $name): void
+    private function auditAction(int $loggedInUserId, int $vaultId): void
     {
-        $this->auditLogService->insert($loggedInUserId, AuditActions::DELETED, 'Vault Item', [$projectId, $vaultId, $name]);
+        $this->auditLogService->insert($loggedInUserId, AuditActions::DELETED, 'Vault Secret', [$vaultId]);
     }
 }

@@ -5,17 +5,16 @@ namespace Reconmap\Controllers\Vault;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Models\AuditActions\AuditActions;
-use Reconmap\Models\AuditActions\VaultAuditActions;
 use Reconmap\Repositories\VaultRepository;
 use Reconmap\Services\AuditLogService;
+use Symfony\Component\HttpFoundation\Response;
 
 class DeleteVaultItemControllerTest extends TestCase
 {
     public function testHappyPath()
     {
-        $project_id = 3;
-        $vault_item_id = 7;
-        $vault_item_name = "name of the item";
+        $projectId = 3;
+        $vaultSecretId = 7;
 
         $mockRequest = $this->createMock(ServerRequestInterface::class);
         $mockRequest->expects($this->once())
@@ -26,23 +25,19 @@ class DeleteVaultItemControllerTest extends TestCase
         $mockAuditLogService = $this->createMock(AuditLogService::class);
         $mockAuditLogService->expects($this->once())
             ->method('insert')
-            ->with(7, AuditActions::DELETED, 'Vault Item', [$project_id, $vault_item_id, $vault_item_name]);
+            ->with(7, AuditActions::DELETED, 'Vault Secret', [$vaultSecretId]);
 
 
         $mockRepository = $this->createMock(VaultRepository::class);
         $mockRepository->expects($this->once())
-            ->method('getVaultItemName')
-            ->with($vault_item_id, $project_id)
-            ->willReturn($vault_item_name);
-        $mockRepository->expects($this->once())
-            ->method('deleteByIdAndProjectId')
-            ->with($vault_item_id, $project_id)
+            ->method('deleteByIdAndUserId')
+            ->with($vaultSecretId, 7)
             ->willReturn(true);
 
-        $args = ['projectId' => $project_id, 'vaultItemId' => $vault_item_id];
+        $args = ['projectId' => $projectId, 'vaultItemId' => $vaultSecretId];
 
         $controller = new DeleteVaultItemController($mockRepository, $mockAuditLogService);
         $response = $controller($mockRequest, $args);
-        $this->assertEquals(['success' => true], $response);
+        $this->assertEquals(Response::HTTP_NO_CONTENT, $response->getStatusCode());
     }
 }

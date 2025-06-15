@@ -60,6 +60,11 @@
     "maxmind": {
       "enabled": false,
       "dbPath": "/var/www/webapp/data/GeoLite2-City.mmdb"
+    },
+    "ollama": {
+    	"enabled": true,
+    	"model": "llama3.2",
+    	"url": "http://localhost:11434/api/"
     }
   }
 }

@@ -8,9 +8,9 @@ class VaultRouter
 {
     public function mapRoutes(RouteCollectionInterface $router): void
     {
-        $router->map('POST', '/vault/{projectId:number}', CreateVaultItemController::class);
-        $router->map('DELETE', '/vault/{projectId:number}/{vaultItemId:number}', DeleteVaultItemController::class);
-        $router->map('GET', '/vault/{projectId:number}', ReadProjectVaultController::class);
+        $router->map('GET', '/vault', GetVaultSecretsController::class);
+        $router->map('POST', '/vault', CreateVaultItemController::class);
+        $router->map('DELETE', '/vault/{vaultItemId:number}', DeleteVaultItemController::class);
         $router->map('POST', '/vault/{projectId:number}/{vaultItemId:number}', ReadVaultItemController::class);
         $router->map('PUT', '/vault/{projectId:number}/{vaultItemId:number}', UpdateVaultItemController::class);
     }

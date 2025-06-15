@@ -19,16 +19,18 @@ class CreateVaultItemController extends Controller
 
     public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
     {
-        $request_array = $this->getJsonBodyDecodedAsArray($request);
-        $password = $request_array['password'];
-        unset($request_array['password']);
-        $json_request = json_decode(json_encode($request_array));
-        $json_mapper = new \JsonMapper();
-        $vault = $json_mapper->map($json_request, new Vault());
-        $vault->project_id = (int)$args['projectId'];
+        $requestArray = $this->getJsonBodyDecodedAsArray($request);
+        $password = $requestArray['password'];
+        unset($requestArray['password']);
+
+        $jsonRequest = json_decode(json_encode($requestArray));
+        $jsonMapper = new \JsonMapper();
+        $vault = $jsonMapper->map($jsonRequest, new Vault());
+
+        $userId = $request->getAttribute('userId');
+        $vault->owner_uid = $userId;
 
         $this->repository->insert($vault, $password);
-        $userId = $request->getAttribute('userId');
 
         $this->auditAction($userId, $vault->name);
 
@@ -37,6 +39,6 @@ class CreateVaultItemController extends Controller
 
     private function auditAction(int $loggedInUserId, string $name): void
     {
-        $this->auditLogService->insert($loggedInUserId, AuditActions::CREATED, 'Vault Item', [$name]);
+        $this->auditLogService->insert($loggedInUserId, AuditActions::CREATED, 'Vault Secret', [$name]);
     }
 }

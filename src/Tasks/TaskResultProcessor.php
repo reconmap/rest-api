@@ -125,8 +125,8 @@ readonly class TaskResultProcessor implements ItemProcessor
         if ($numVulnerabilities > 0) {
             $notification = new Notification();
             $notification->toUserId = $item->userId;
-            $notification->title = "New vulnerabilities found";
-            $notification->content = "A total of '$numVulnerabilities' new vulnerabilities have been found by the '$outputParserName' command";
+            $notification->title = "New findings found";
+            $notification->content = "A total of '$numVulnerabilities' new findings have been found by the '$outputParserName' command";
             $this->notificationsRepository->insert($notification);
             $this->redis->lPush("notifications:queue", json_encode(['type' => 'message']));
         }

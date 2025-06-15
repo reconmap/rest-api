@@ -10,9 +10,12 @@ class Vault {
 	public ?int $id = null;
 	public ?string $insert_ts = null;
 	public ?string $update_ts = null;
+	public ?int $owner_uid = null;
 	public ?int $project_id = null;
 	public string $type = 'password';
 	public ?string $name = null;
 	public ?string $value = null;
+	public ?string $url = null;
+	public ?string $expiration_date = null;
 	public ?string $note = null;
 }

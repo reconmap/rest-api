@@ -3,6 +3,7 @@
 namespace Reconmap\Controllers\Projects;
 
 use League\Route\RouteCollectionInterface;
+use Reconmap\Controllers\Vault\ReadProjectVaultController;
 
 class ProjectsRouter
 {
@@ -11,6 +12,7 @@ class ProjectsRouter
         $router->map('GET', '/projects', GetProjectsController::class);
         $router->map('GET', '/projects/{projectId:number}', GetProjectController::class);
         $router->map('DELETE', '/projects/{projectId:number}', DeleteProjectController::class);
+        $router->map('GET', '/projects/{projectId:number}/vault', ReadProjectVaultController::class);
         $router->map('PUT', '/projects/{projectId:number}', UpdateProjectController::class);
         $router->map('PATCH', '/projects/{projectId:number}', UpdateProjectController::class);
         $router->map('POST', '/projects', CreateProjectController::class);

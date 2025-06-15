@@ -44,7 +44,8 @@
         "twig/twig": "^3.0",
         "zircote/swagger-php": "^5",
         "symfony/routing": "^7.1",
-        "doctrine/annotations": "^2.0"
+        "doctrine/annotations": "^2.0",
+        "theodo-group/llphant": "^0.10.2"
     },
     "autoload": {
         "psr-4": {
@@ -68,5 +69,10 @@
             "type": "path",
             "url": "packages/command-parsers-lib"
         }
-    ]
+    ],
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
+    }
 }

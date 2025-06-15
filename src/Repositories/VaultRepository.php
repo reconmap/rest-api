@@ -17,6 +17,8 @@ class VaultRepository extends MysqlRepository
         'type' => 's',
         'name' => 's',
         'value' => 's',
+        'url' => 's',
+        'expiration_date' => 's',
         'iv' => 's',
         'tag' => 's',
         'note' => 's',
@@ -27,31 +29,28 @@ class VaultRepository extends MysqlRepository
         $dataEncryptor = new DataEncryptor();
         $encryptedData = $dataEncryptor->encrypt($vault->value, $password);
         $insertStmt = new InsertQueryBuilder(self::TABLE_NAME);
-        $insertStmt->setColumns('name, value, tag, note, type, project_id, iv');
+        $insertStmt->setColumns('owner_uid, name, value, tag, note, type, project_id, iv, url, expiration_date');
         $stmt = $this->mysqlServer->prepare($insertStmt->toSql());
-        $stmt->bind_param('sssssis', $vault->name, $encryptedData['cipherText'], $encryptedData['tag'], $vault->note, $vault->type, $vault->project_id, $encryptedData['iv']);
+        $stmt->bind_param('isssssisss', $vault->owner_uid, $vault->name, $encryptedData['cipherText'], $encryptedData['tag'], $vault->note, $vault->type, $vault->project_id, $encryptedData['iv'], $vault->url, $vault->expiration_date);
         return $this->executeInsertStatement($stmt);
     }
 
-    public function deleteByIdAndProjectId(int $id, int $projectId): bool
+    public function deleteByIdAndUserId(int $id, int $userId): bool
     {
-        if ($this->checkIfProjectHasVaultId($id, $projectId)) {
-            return $this->deleteByTableId(self::TABLE_NAME, $id);
-        }
-        return false;
+        return $this->deleteByTableId(self::TABLE_NAME, $id);
     }
 
     protected function getBaseSelectQueryBuilder(): SelectQueryBuilder
     {
         $queryBuilder = new SelectQueryBuilder('vault v');
-        $queryBuilder->setColumns('v.id, v.name, v.note, v.insert_ts, v.update_ts, v.type');
+        $queryBuilder->setColumns('v.id, v.name, v.note, v.insert_ts, v.update_ts, v.type, v.url, v.expiration_date');
         return $queryBuilder;
     }
 
     protected function getFullSelectQueryBuilder(): SelectQueryBuilder
     {
         $queryBuilder = new SelectQueryBuilder('vault v');
-        $queryBuilder->setColumns('v.id, v.name, v.value, v.tag, v.note, v.insert_ts, v.update_ts, v.type, v.iv');
+        $queryBuilder->setColumns('v.id, v.name, v.value, v.tag, v.note, v.insert_ts, v.update_ts, v.type, v.iv, v.url, v.expiration_date');
         return $queryBuilder;
     }
 
@@ -79,19 +78,18 @@ class VaultRepository extends MysqlRepository
         return $name;
     }
 
-    private function checkIfProjectHasVaultId(int $id, int $projectId): bool
-    {
-        $searchCriteria = new VaultSearchCriteria();
-        $searchCriteria->addVaultItemAndProjectCriterion($projectId, $id);
-        $results = $this->search($searchCriteria);
-
-        return $results && $results[0];
-    }
-
     public function findAll(int $projectId): array
     {
         $searchCriteria = new VaultSearchCriteria();
         $searchCriteria->addProjectCriterion($projectId);
+        return $this->search($searchCriteria);
+    }
+
+    public function findByUserId(int $userId): array
+    {
+        $searchCriteria = new VaultSearchCriteria();
+        $searchCriteria->addUserIdCriterion($userId);
+        $searchCriteria->addIsProjectLessCriterion();
         return $this->search($searchCriteria);
     }
 
@@ -114,7 +112,6 @@ class VaultRepository extends MysqlRepository
 
             $decrypted = $dataEncryptor->decrypt($results[0]['value'], $results[0]['iv'], $password, $results[0]['tag']);
             if (false === $decrypted) {
-                //$this->logger->warning('wrong password provided for secret');
                 return null;
             }
 

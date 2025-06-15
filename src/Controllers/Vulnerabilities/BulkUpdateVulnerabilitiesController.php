@@ -5,14 +5,13 @@ namespace Reconmap\Controllers\Vulnerabilities;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Models\AuditActions\AuditActions;
-use Reconmap\Models\AuditActions\VulnerabilityLogActions;
 use Reconmap\Repositories\VulnerabilityRepository;
 use Reconmap\Services\AuditLogService;
 
 class BulkUpdateVulnerabilitiesController extends Controller
 {
-    public function __construct(private VulnerabilityRepository $vulnerabilityRepository,
-                                private AuditLogService         $auditLogService)
+    public function __construct(private readonly VulnerabilityRepository $vulnerabilityRepository,
+                                private readonly AuditLogService         $auditLogService)
     {
     }
 
