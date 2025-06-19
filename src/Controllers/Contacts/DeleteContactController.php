@@ -3,7 +3,7 @@
 namespace Reconmap\Controllers\Contacts;
 
 use Reconmap\Controllers\DeleteEntityController;
-use Reconmap\Models\AuditActions\ContactAuditActions;
+use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Repositories\ContactRepository;
 use Reconmap\Services\ActivityPublisherService;
 use Reconmap\Services\Security\AuthorisationService;
@@ -21,7 +21,7 @@ class DeleteContactController extends DeleteEntityController
             $activityPublisherService,
             $repository,
             'contact',
-            ContactAuditActions::DELETED,
+            AuditActions::DELETED,
             'contactId'
         );
     }

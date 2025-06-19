@@ -18,23 +18,22 @@ class UpdateVaultItemController extends Controller
 
     public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
     {
-        $request_array = $this->getJsonBodyDecodedAsArray($request);
-        $password = $request_array['password'];
-        $project_id = (int)$args['projectId'];
+        $requestArray = $this->getJsonBodyDecodedAsArray($request);
+        $password = $requestArray['password'];
         $id = (int)$args['vaultItemId'];
 
-        $new_column_values = array_filter(
-            $request_array,
+        $newColumnValues = array_filter(
+            $requestArray,
             fn(string $key) => in_array($key, array_keys(VaultRepository::UPDATABLE_COLUMNS_TYPES)),
             ARRAY_FILTER_USE_KEY
         );
 
         $success = false;
-        if (!empty($new_column_values)) {
-            $success = $this->repository->updateVaultItemById($id, $project_id, $password, $new_column_values);
+        if (!empty($newColumnValues)) {
+            $success = $this->repository->updateVaultItemById($id, $password, $newColumnValues);
 
             $userId = $request->getAttribute('userId');
-            $this->auditAction($userId, $new_column_values['name']);
+            $this->auditAction($userId, $newColumnValues['name']);
         }
 
         return $this->createStatusCreatedResponse(['success' => $success]);

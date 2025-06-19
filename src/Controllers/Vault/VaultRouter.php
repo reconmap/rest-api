@@ -11,7 +11,7 @@ class VaultRouter
         $router->map('GET', '/vault', GetVaultSecretsController::class);
         $router->map('POST', '/vault', CreateVaultItemController::class);
         $router->map('DELETE', '/vault/{vaultItemId:number}', DeleteVaultItemController::class);
-        $router->map('POST', '/vault/{projectId:number}/{vaultItemId:number}', ReadVaultItemController::class);
-        $router->map('PUT', '/vault/{projectId:number}/{vaultItemId:number}', UpdateVaultItemController::class);
+        $router->map('POST', '/vault/{vaultItemId:number}', ReadVaultItemController::class);
+        $router->map('PUT', '/vault/{vaultItemId:number}', UpdateVaultItemController::class);
     }
 }

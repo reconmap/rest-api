@@ -15,9 +15,9 @@ class ReadVaultItemControllerTest extends TestCase
 {
     public function testHappyPath()
     {
-        $project_id = 3;
-        $vault_item_id = 7;
-        $user_id = 5;
+        $projectId = 3;
+        $vaultItemId = 7;
+        $userId = 5;
 
         $mockRequest = $this->createMock(ServerRequestInterface::class);
         $mockRequest->expects($this->once())
@@ -26,27 +26,27 @@ class ReadVaultItemControllerTest extends TestCase
         $mockRequest->expects($this->once())
             ->method('getAttribute')
             ->with('userId')
-            ->willReturn($user_id);
+            ->willReturn($userId);
 
         $mockAuditLogService = $this->createMock(AuditLogService::class);
         $mockAuditLogService->expects($this->once())
             ->method('insert')
-            ->with($user_id, AuditActions::READ, 'Vault Item', ['compromised account']);
+            ->with($userId, AuditActions::READ, 'Vault Item', ['compromised account']);
 
         $vault = new Vault();
         $vault->name = "compromised account";
         $vault->value = "secret text";
         $vault->note = "Some note for other testers";
         $vault->type = "password";
-        $vault->project_id = $project_id;
+        $vault->project_id = $projectId;
 
         $mockRepository = $this->createMock(VaultRepository::class);
         $mockRepository->expects($this->once())
             ->method('readVaultItem')
-            ->with($project_id, $vault_item_id, "P4ssw0rd!")
+            ->with($vaultItemId, "P4ssw0rd!")
             ->willReturn($vault);
 
-        $args = ['projectId' => $project_id, 'vaultItemId' => $vault_item_id];
+        $args = ['projectId' => $projectId, 'vaultItemId' => $vaultItemId];
 
         $controller = new ReadVaultItemController($mockRepository, $mockAuditLogService);
         $response = $controller($mockRequest, $args);

@@ -3,7 +3,7 @@
 namespace Reconmap\Controllers\System\CustomFields;
 
 use Reconmap\Controllers\DeleteEntityController;
-use Reconmap\Models\AuditActions\ContactAuditActions;
+use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Repositories\CustomFieldRepository;
 use Reconmap\Services\ActivityPublisherService;
 use Reconmap\Services\Security\AuthorisationService;
@@ -21,7 +21,7 @@ class DeleteCustomFieldController extends DeleteEntityController
             $activityPublisherService,
             $repository,
             'custom_field',
-            ContactAuditActions::DELETED,
+            AuditActions::DELETED,
             'fieldId'
         );
     }

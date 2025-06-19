@@ -43,14 +43,14 @@ class VaultRepository extends MysqlRepository
     protected function getBaseSelectQueryBuilder(): SelectQueryBuilder
     {
         $queryBuilder = new SelectQueryBuilder('vault v');
-        $queryBuilder->setColumns('v.id, v.name, v.note, v.insert_ts, v.update_ts, v.type, v.url, v.expiration_date');
+        $queryBuilder->setColumns('v.id, v.project_id, v.name, v.note, v.insert_ts, v.update_ts, v.type, v.url, v.expiration_date');
         return $queryBuilder;
     }
 
     protected function getFullSelectQueryBuilder(): SelectQueryBuilder
     {
         $queryBuilder = new SelectQueryBuilder('vault v');
-        $queryBuilder->setColumns('v.id, v.name, v.value, v.tag, v.note, v.insert_ts, v.update_ts, v.type, v.iv, v.url, v.expiration_date');
+        $queryBuilder->setColumns('v.id, v.project_id, v.name, v.value, v.tag, v.note, v.insert_ts, v.update_ts, v.type, v.iv, v.url, v.expiration_date');
         return $queryBuilder;
     }
 
@@ -93,19 +93,19 @@ class VaultRepository extends MysqlRepository
         return $this->search($searchCriteria);
     }
 
-    public function readVaultItem(int $projectId, int $vaultItemId, string $password): Vault|null
+    public function readVaultItem(int $vaultItemId, string $password): Vault|null
     {
         $dataEncryptor = new DataEncryptor();
 
         $searchCriteria = new VaultSearchCriteria();
-        $searchCriteria->addVaultItemAndProjectCriterion($projectId, $vaultItemId);
+        $searchCriteria->addIdCriterion($vaultItemId);
         $results = $this->search($searchCriteria, true);
 
         if ($results && $results[0]) {
             $item = new Vault();
             $item->name = $results[0]['name'];
             $item->id = $results[0]['id'];
-            $item->project_id = $projectId;
+            $item->project_id = $results[0]['project_id'];;
             $item->insert_ts = $results[0]['insert_ts'];
             $item->update_ts = $results[0]['update_ts'];
             $item->note = $results[0]['note'];
@@ -122,12 +122,12 @@ class VaultRepository extends MysqlRepository
         return null;
     }
 
-    public function updateVaultItemById(int $id, int $projectId, string $password, array $newColumnValues): bool
+    public function updateVaultItemById(int $id, string $password, array $newColumnValues): bool
     {
         $dataEncryptor = new DataEncryptor();
 
         $searchCriteria = new VaultSearchCriteria();
-        $searchCriteria->addVaultItemAndProjectCriterion($projectId, $id);
+        $searchCriteria->addIdCriterion($id);
         $results = $this->search($searchCriteria, true);
 
         if ($results && $results[0]) {
@@ -137,6 +137,7 @@ class VaultRepository extends MysqlRepository
                     $encryptedData = $dataEncryptor->encrypt($newColumnValues['value'], $password);
                     $newColumnValues['value'] = $encryptedData['cipherText'];
                     $newColumnValues['iv'] = $encryptedData['iv'];
+                    $newColumnValues['tag'] = $encryptedData['tag'];
                 }
                 return $this->updateByTableId('vault', $id, $newColumnValues);
             }

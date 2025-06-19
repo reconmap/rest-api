@@ -20,10 +20,9 @@ class ReadVaultItemController extends Controller
     {
         $requestArray = $this->getJsonBodyDecodedAsArray($request);
         $password = $requestArray['password'];
-        $projectId = (int)$args['projectId'];
         $vaultItemId = (int)$args['vaultItemId'];
 
-        $vault = $this->repository->readVaultItem($projectId, $vaultItemId, $password);
+        $vault = $this->repository->readVaultItem($vaultItemId, $password);
         if ($vault) {
             $userId = $request->getAttribute('userId');
             $this->auditAction($userId, $vault->name);
