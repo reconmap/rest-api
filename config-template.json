@@ -3,13 +3,12 @@
   "keycloak": {
     "baseUri": "http://keycloak:8080",
     "realmName": "reconmap",
-    "clientId": "admin-cli",
-    "clientSecret": "xxxxxxxxxxxxxxxxxxyyyyyyyyyyyyyy"
+    "clientId": "api-client",
+    "clientSecret": "I0jppD5zSIXuBAql31zrXfe5OAa0nvyE"
   },
   "jwt": {
     "issuer": "http://localhost:8080/realms/reconmap",
-    "audience": "account",
-    "key": ""
+    "audience": "account"
   },
   "cors": {
     "allowedOrigins": [
@@ -35,7 +34,7 @@
     "username": "smtpuser",
     "password": "smtpsecret",
     "verifyPeer": "true",
-    "fromEmail": "no-reply@reconmap.org",
+    "fromEmail": "no-reply@reconmap.com",
     "fromName": "Reconmap"
   },
   "logging": {

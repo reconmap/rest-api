@@ -5,7 +5,6 @@ namespace Reconmap\Controllers\Clients;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Models\AuditActions\AuditActions;
-use Reconmap\Models\AuditActions\ClientAuditActions;
 use Reconmap\Models\Client;
 use Reconmap\Repositories\ClientRepository;
 use Reconmap\Services\ActivityPublisherService;

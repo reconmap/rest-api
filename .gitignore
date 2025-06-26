@@ -2,8 +2,6 @@ vendor
 logs/*
 data/attachments/*
 data/cache/*
-data-redis
-data-mysql
 config.json
 .phpunit.result.cache
 clover.xml

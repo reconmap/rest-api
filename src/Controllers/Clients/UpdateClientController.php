@@ -4,7 +4,6 @@ namespace Reconmap\Controllers\Clients;
 
 use Reconmap\Controllers\UpdateEntityController;
 use Reconmap\Models\AuditActions\AuditActions;
-use Reconmap\Models\AuditActions\ClientAuditActions;
 use Reconmap\Repositories\ClientRepository;
 use Reconmap\Services\ActivityPublisherService;
 use Reconmap\Services\Security\AuthorisationService;

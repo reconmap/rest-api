@@ -1,12 +1,16 @@
+volumes:
+  redis_data:
+  mysql_varlib: 
+
 services:
   redis:
     container_name: rmap-redis
     image: redis:7.4
-    command: redis-server --requirepass REconDIS
+    command: redis-server --requirepass REconDIS --save 20 1 --loglevel warning
     ports:
       - "6379:6379"
     volumes:
-      - ./data-redis:/data
+      - redis_data:/data
 
   mysql:
     container_name: rmap-mysql
@@ -15,7 +19,7 @@ services:
       context: ./
       dockerfile: docker/mysql/Dockerfile
     volumes:
-      - ./data-mysql:/var/lib/mysql
+      - mysql_varlib:/var/lib/mysql
       - ./database:/docker-entrypoint-initdb.d:ro
       - ./docker/mysql/overrides.cnf:/etc/mysql/conf.d/overrides.cnf:ro
     ports:

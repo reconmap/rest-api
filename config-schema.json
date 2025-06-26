@@ -37,15 +37,11 @@
         },
         "audience": {
           "type": "string"
-        },
-        "key": {
-          "type": "string"
         }
       },
       "required": [
         "issuer",
-        "audience",
-        "key"
+        "audience"
       ]
     },
     "cors": {

@@ -2,7 +2,7 @@
 
 namespace Reconmap\Services;
 
-class JwtPayloadCreator
+readonly class JwtPayloadCreator
 {
     public function __construct(private ApplicationConfig $config)
     {

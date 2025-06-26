@@ -9,7 +9,7 @@ The Reconmap API is a RESTful API that allows any of the clients (Web, CLI, Mobi
 entities: projects, tasks, commands, reports, users, etc. With the API you can extend Reconmap in any way you can
 imagine.
 
-This is a component of many in the [Reconmap's architecture](https://reconmap.org/development/architecture.html).
+This is a component of many in the [Reconmap's architecture](https://reconmap.com/development/architecture.html).
 
 ## Runtime requirements
 
@@ -20,7 +20,7 @@ This is a component of many in the [Reconmap's architecture](https://reconmap.or
 ## Documentation
 
 The API specs have been documented using the [OpenAPI](docs/openapi.yaml) specification. You can use the
-interactive [OpenAPI UI](https://api.reconmap.org/docs/) to play with it.
+interactive [OpenAPI UI](https://api.reconmap.com/docs/) to play with it.
 
 ## Build instructions
 
