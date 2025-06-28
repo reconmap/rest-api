@@ -11,7 +11,6 @@ use Reconmap\Repositories\ReportRepository;
 use Reconmap\Repositories\TargetRepository;
 use Reconmap\Repositories\TaskRepository;
 use Reconmap\Repositories\UserRepository;
-use Reconmap\Repositories\VulnerabilityCategoryRepository;
 use Reconmap\Repositories\VulnerabilityRepository;
 use Reconmap\Services\Filesystem\AttachmentFilePath;
 
@@ -22,7 +21,6 @@ class ReportDataCollectorTest extends TestCase
         $projectRepository = $this->createMock(ProjectRepository::class);
         $reportRepository = $this->createMock(ReportRepository::class);
         $vulnerabilityRepository = $this->createMock(VulnerabilityRepository::class);
-        $vulnerabilityCategoryRepository = $this->createMock(VulnerabilityCategoryRepository::class);
         $userRepository = $this->createMock(UserRepository::class);
         $clientRepository = $this->createMock(ClientRepository::class);
         $taskRepository = $this->createMock(TaskRepository::class);
@@ -31,7 +29,7 @@ class ReportDataCollectorTest extends TestCase
         $attachmentRepository = $this->createMock(AttachmentRepository::class);
         $attachmentFilePath = $this->createMock(AttachmentFilePath::class);
 
-        $dataCollector = new ReportDataCollector($projectRepository, $reportRepository, $vulnerabilityRepository, $vulnerabilityCategoryRepository,
+        $dataCollector = new ReportDataCollector($projectRepository, $reportRepository, $vulnerabilityRepository,
             $userRepository, $clientRepository, $taskRepository, $targetRepository, $contactRepository, $attachmentRepository, $attachmentFilePath);
         $result = $dataCollector->collectForProject(0);
         $this->assertEquals([], $result);
@@ -46,7 +44,6 @@ class ReportDataCollectorTest extends TestCase
 
         $reportRepository = $this->createMock(ReportRepository::class);
         $vulnerabilityRepository = $this->createMock(VulnerabilityRepository::class);
-        $vulnerabilityCategoryRepository = $this->createMock(VulnerabilityCategoryRepository::class);
         $userRepository = $this->createMock(UserRepository::class);
         $clientRepository = $this->createMock(ClientRepository::class);
         $taskRepository = $this->createMock(TaskRepository::class);
@@ -55,34 +52,31 @@ class ReportDataCollectorTest extends TestCase
         $attachmentRepository = $this->createMock(AttachmentRepository::class);
         $attachmentFilePath = $this->createMock(AttachmentFilePath::class);
 
-        $dataCollector = new ReportDataCollector($projectRepository, $reportRepository, $vulnerabilityRepository, $vulnerabilityCategoryRepository,
+        $dataCollector = new ReportDataCollector($projectRepository, $reportRepository, $vulnerabilityRepository,
             $userRepository, $clientRepository, $taskRepository, $targetRepository, $contactRepository, $attachmentRepository, $attachmentFilePath);
         $result = $dataCollector->collectForProject(0);
 
         $expectedResult = [
+            'date' => date('Y-m-d'),
+            'revisions' => array(),
             'project' => array(
                 'attachments' => array(),
                 'service_provider_id' => 1
             ),
-            'org' => null,
-            'date' => date('Y-m-d'),
-            'reports' => array(),
+            'serviceProvider' => null,
             'client' => null,
-            'targets' => array(),
+            'assets' => array(),
             'tasks' => array(),
-            'vulnerabilities' => array(),
-            'findingsOverview' => [
-                0 => ['severity' => 'low', 'count' => 0],
-                1 => ['severity' => 'medium', 'count' => 0],
-                2 => ['severity' => 'high', 'count' => 0],
-                3 => ['severity' => 'critical', 'count' => 0],
-            ],
+            'findings' => [
+                'list' => array(),
+                'stats' => [
+                    0 => ['severity' => 'low', 'count' => 0],
+                    1 => ['severity' => 'medium', 'count' => 0],
+                    2 => ['severity' => 'high', 'count' => 0],
+                    3 => ['severity' => 'critical', 'count' => 0],
+                ]],
             'users' => array(),
-            'contacts' => [],
-            'logos' => array(),
-            'parentCategories' => array(),
-            'categories' => array(),
-            'revisions' => array()
+            'lastRevisionName' => ''
         ];
         $this->assertEquals($expectedResult, $result);
     }

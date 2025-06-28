@@ -11,9 +11,6 @@ class ClientRepository extends MysqlRepository implements Updateable, Findable
         'name' => 's',
         'address' => 's',
         'url' => 's',
-        'contact_name' => 's',
-        'contact_email' => 's',
-        'contact_phone' => 's',
         'logo_attachment_id' => 'i',
         'small_logo_attachment_id' => 'i',
     ];

@@ -53,15 +53,17 @@ class CreateReportControllerTest extends TestCase
         $vars = [
             'configuration' => [],
             'project' => [],
-            'org' => [],
+            'serviceProvider' => [],
             'date' => date('Y-m-d'),
-            'reports' => [],
+            'revisions' => [],
             'markdownParser' => [],
             'client' => null,
-            'targets' => [],
+            'assets' => [],
             'tasks' => [],
-            'vulnerabilities' => [],
-            'findingsOverview' => [],
+            'findings' => [
+                'list' => [],
+                'stats' => []
+            ],
             'users' => [],
         ];
 

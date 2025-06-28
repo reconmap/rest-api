@@ -5,7 +5,7 @@ namespace Reconmap\Controllers\Projects;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Database\NullColumnReplacer;
-use Reconmap\Models\AuditActions\ProjectLogActions;
+use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Repositories\ProjectRepository;
 use Reconmap\Services\ActivityPublisherService;
 
@@ -42,6 +42,6 @@ class UpdateProjectController extends Controller
 
     private function auditAction(int $loggedInUserId, int $projectId): void
     {
-        $this->activityPublisherService->publish($loggedInUserId, ProjectLogActions::PROJECT_MODIFIED, ['projectId' => $projectId]);
+        $this->activityPublisherService->publish($loggedInUserId, AuditActions::UPDATED, 'Project', ['id' => $projectId]);
     }
 }

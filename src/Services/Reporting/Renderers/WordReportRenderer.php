@@ -17,11 +17,11 @@ use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Services\Filesystem\AttachmentFilePath;
 use Reconmap\Utils\ArrayUtils;
 
-class WordReportRenderer
+readonly class WordReportRenderer
 {
-    public function __construct(private readonly LoggerInterface      $logger,
-                                private readonly AttachmentFilePath   $attachmentFilePathService,
-                                private readonly AttachmentRepository $attachmentRepository,)
+    public function __construct(private LoggerInterface      $logger,
+                                private AttachmentFilePath   $attachmentFilePathService,
+                                private AttachmentRepository $attachmentRepository)
     {
         Settings::setOutputEscapingEnabled(true);
     }
@@ -39,13 +39,39 @@ class WordReportRenderer
         $template->setUpdateFields();
 
         $template->setValue('date', $vars['date']);
+        $template->setValue('lastRevisionName', $vars['lastRevisionName']);
+
+
         foreach (ArrayUtils::flatten($vars['project'], 'project.') as $key => $value) {
             $template->setValue($key, $value);
+        }
+
+        try {
+            if (isset($vars["serviceProvider"]["logo"])) {
+                $template->setImageValue('serviceProvider.logo', $vars["serviceProvider"]["logo"]);
+                unset($vars["serviceProvider"]["logo"]);
+            }
+            if (isset($vars["serviceProvider"]["smallLogo"])) {
+                $template->setImageValue('serviceProvider.smallLogo', $vars["serviceProvider"]["smallLogo"]);
+                unset($vars["serviceProvider"]["smallLogo"]);
+            }
+            if (isset($vars["client"]["logo"])) {
+                $template->setImageValue('client.logo', $vars["client"]["logo"]);
+                unset($vars["client"]["logo"]);
+            }
+            if (isset($vars["client"]["smallLogo"])) {
+                $template->setImageValue('client.smallLogo', $vars["client"]["smallLogo"]);
+                unset($vars["client"]["smallLogo"]);
+            }
+        } catch (\Exception $e) {
+            $msg = $e->getMessage();
+            $this->logger->warning("Error in logo section: [$msg]");
         }
         foreach (ArrayUtils::flatten($vars['client'], 'client.') as $key => $value) {
             $template->setValue($key, $value);
         }
-        foreach (ArrayUtils::flatten($vars['org'], 'org.') as $key => $value) {
+
+        foreach (ArrayUtils::flatten($vars['serviceProvider'], 'serviceProvider.') as $key => $value) {
             $template->setValue($key, $value);
         }
 
@@ -69,61 +95,28 @@ class WordReportRenderer
         }
 
         try {
-            if (isset($vars["logos"]["org_logo"])) {
-                $template->setImageValue('org.logo', $vars["logos"]["org_logo"]);
-            }
-            if (isset($vars["logos"]["org_small_logo"])) {
-                $template->setImageValue('org.small_logo', $vars["logos"]["org_small_logo"]);
-            }
-            if (isset($vars["logos"]["client_logo"])) {
-                $template->setImageValue('client.logo', $vars["logos"]["client_logo"]);
-            }
-            if (isset($vars["logos"]["client_small_logo"])) {
-                $template->setImageValue('client.small_logo', $vars["logos"]["client_small_logo"]);
-            }
-        } catch (\Exception $e) {
-            $msg = $e->getMessage();
-            $this->logger->warning("Error in logo section: [$msg]");
-        }
-
-        if (!empty($vars['vault'])) {
-            try {
-                $template->cloneRow('vault.name', count($vars['vault']));
-                foreach ($vars['vault'] as $index => $item) {
-                    $indexPlusOne = $index + 1;
-                    $template->setValue('vault.name#' . $indexPlusOne, $item['name']);
-                    $template->setValue('vault.note#' . $indexPlusOne, $item['note']);
-                    $template->setValue('vault.type#' . $indexPlusOne, $item['type']);
-                }
-            } catch (\Exception $e) {
-                $msg = $e->getMessage();
-                $this->logger->warning("Error in vault section: [$msg]");
-            }
-        }
-
-        try {
-            $template->cloneRow('target.name', count($vars['targets']));
-            foreach ($vars['targets'] as $index => $target) {
+            $template->cloneRow('asset.name', count($vars['assets']));
+            foreach ($vars['assets'] as $index => $target) {
                 $indexPlusOne = $index + 1;
-                $template->setValue('target.name#' . $indexPlusOne, $target['name']);
-                $template->setValue('target.kind#' . $indexPlusOne, $target['kind']);
+                $template->setValue('asset.name#' . $indexPlusOne, $target['name']);
+                $template->setValue('asset.kind#' . $indexPlusOne, $target['kind']);
             }
         } catch (\Exception $e) {
             $msg = $e->getMessage();
             $this->logger->warning("Error in target section: [$msg]");
         }
 
-        foreach ($vars['findingsOverview'] as $stat) {
-            $template->setValue('findings.count.' . $stat['severity'], $stat['count']);
+        foreach ($vars['findings']['stats'] as $stat) {
+            $template->setValue('findings.stats.count.' . $stat['severity'], $stat['count']);
         }
 
         $markdownParser = new GithubFlavoredMarkdownConverter();
         $word = new PhpWord();
 
         try {
-            $template->cloneBlock('vulnerabilities', count($vars['vulnerabilities']), true, true);
-            foreach ($vars['vulnerabilities'] as $index => $vulnerability) {
-                $template->setValue('vulnerability.name#' . ($index + 1), $vulnerability['summary']);
+            $template->cloneBlock('findings.list', count($vars['findings']['list']), true, true);
+            foreach ($vars['findings']['list'] as $index => $vulnerability) {
+                $template->setValue('findings.list.summary#' . ($index + 1), $vulnerability['summary']);
 
                 if (!is_null($vulnerability['description'])) {
                     $description = $markdownParser->convert($vulnerability['description']);
@@ -132,7 +125,7 @@ class WordReportRenderer
                     $cell = $tempTable->addRow()->addCell();
                     Html::addHtml($cell, $description);
 
-                    $template->setComplexBlock('vulnerability.description#' . ($index + 1), $tempTable);
+                    $template->setComplexBlock('findings.list.description#' . ($index + 1), $tempTable);
                 }
 
                 if (!is_null($vulnerability['remediation'])) {
@@ -142,13 +135,13 @@ class WordReportRenderer
                     $cell = $tempTable->addRow()->addCell();
                     Html::addHtml($cell, $remediation);
 
-                    $template->setComplexBlock('vulnerability.remediation#' . ($index + 1), $tempTable);
+                    $template->setComplexBlock('findings.list.remediation#' . ($index + 1), $tempTable);
                 }
 
                 $attachments = $vulnerability['attachments'];
-                $template->cloneBlock('vulnerability.attachments#' . ($index + 1), count($attachments), true, true);
+                $template->cloneBlock('findings.list.attachments#' . ($index + 1), count($attachments), true, true);
                 foreach ($attachments as $i => $attach) {
-                    $name = 'vulnerability.attachment.image#' . ($index + 1) . "#" . ($i + 1);
+                    $name = 'findings.list.attachment.image#' . ($index + 1) . "#" . ($i + 1);
                     $template->setImageValue($name, $attach);
                 }
 
@@ -172,33 +165,33 @@ class WordReportRenderer
                         }
                     }
 
-                    $template->setComplexBlock('vulnerability.proof_of_concept#' . ($index + 1), $tempTable);
+                    $template->setComplexBlock('findings.list.proof_of_concept#' . ($index + 1), $tempTable);
                 }
 
-                $template->setValue('vulnerability.category_name#' . ($index + 1), $vulnerability['category_name']);
-                $template->setValue('vulnerability.cvss_score#' . ($index + 1), $vulnerability['cvss_score']);
-                $template->setValue('vulnerability.owasp_vector#' . ($index + 1), $vulnerability['owasp_vector']);
-                $template->setValue('vulnerability.owasp_overall#' . ($index + 1), $vulnerability['owasp_overall']);
-                $template->setValue('vulnerability.owasp_likelihood#' . ($index + 1), $vulnerability['owasp_likehood']);
-                $template->setValue('vulnerability.owasp_impact#' . ($index + 1), $vulnerability['owasp_impact']);
-                $template->setValue('vulnerability.severity#' . ($index + 1), $vulnerability['risk']);
-                $template->setValue('vulnerability.impact#' . ($index + 1), $vulnerability['impact']);
-                $template->setValue('vulnerability.references#' . ($index + 1), $vulnerability['external_refs']);
+                $template->setValue('findings.list.category_name#' . ($index + 1), $vulnerability['category_name']);
+                $template->setValue('findings.list.cvss_score#' . ($index + 1), $vulnerability['cvss_score']);
+                $template->setValue('findings.list.owasp_vector#' . ($index + 1), $vulnerability['owasp_vector']);
+                $template->setValue('findings.list.owasp_overall#' . ($index + 1), $vulnerability['owasp_overall']);
+                $template->setValue('findings.list.owasp_likelihood#' . ($index + 1), $vulnerability['owasp_likehood']);
+                $template->setValue('findings.list.owasp_impact#' . ($index + 1), $vulnerability['owasp_impact']);
+                $template->setValue('findings.list.severity#' . ($index + 1), $vulnerability['risk']);
+                $template->setValue('findings.list.impact#' . ($index + 1), $vulnerability['impact']);
+                $template->setValue('findings.list.references#' . ($index + 1), $vulnerability['external_refs']);
             }
         } catch (\Exception $e) {
             $msg = $e->getMessage();
-            $this->logger->warning("Error in vulnerabilities section: [$msg]");
+            $this->logger->warning("Error in findings section: [$msg]");
         }
 
-        if (!empty($vars['contacts'])) {
+        if (!empty($vars['client']['contacts'])) {
             try {
-                $template->cloneBlock('contacts', count($vars['contacts']), true, true);
-                foreach ($vars['contacts'] as $index => $vulnerability) {
-                    $template->setValue('contact.kind#' . ($index + 1), $vulnerability['kind']);
-                    $template->setValue('contact.name#' . ($index + 1), $vulnerability['name']);
-                    $template->setValue('contact.phone#' . ($index + 1), $vulnerability['phone']);
-                    $template->setValue('contact.email#' . ($index + 1), $vulnerability['email']);
-                    $template->setValue('contact.role#' . ($index + 1), $vulnerability['role']);
+                $template->cloneBlock('client.contacts', count($vars['client']['contacts']), true, true);
+                foreach ($vars['client']['contacts'] as $index => $vulnerability) {
+                    $template->setValue('client.contacts.kind#' . ($index + 1), $vulnerability['kind']);
+                    $template->setValue('client.contacts.name#' . ($index + 1), $vulnerability['name']);
+                    $template->setValue('client.contacts.phone#' . ($index + 1), $vulnerability['phone']);
+                    $template->setValue('client.contacts.email#' . ($index + 1), $vulnerability['email']);
+                    $template->setValue('client.contacts.role#' . ($index + 1), $vulnerability['role']);
                 }
             } catch (\Exception $e) {
                 $msg = $e->getMessage();
@@ -206,35 +199,9 @@ class WordReportRenderer
             }
         }
 
-        if (!empty($vars['parentCategories'])) {
-            try {
-                $template->cloneBlock('category.group', count($vars['parentCategories']), true, true);
-                foreach ($vars['parentCategories'] as $index => $category) {
-                    $template->setValue('category.group#' . ($index + 1), $category['name']);
-                    $template->setValue('category.severity#' . ($index + 1), $category['owasp_overall']);
-                }
-            } catch (\Exception $e) {
-                $msg = $e->getMessage();
-                $this->logger->warning("Error in parent categories section: [$msg]");
-            }
-        }
-
-        if (!empty($vars['categories'])) {
-            try {
-                $template->cloneBlock('category.name', count($vars['categories']), true, true);
-                foreach ($vars['categories'] as $index => $category) {
-                    $template->setValue('category.name#' . ($index + 1), $category['name']);
-                    $template->setValue('category.status#' . ($index + 1), $category['status']);
-                }
-            } catch (\Exception $e) {
-                $msg = $e->getMessage();
-                $this->logger->warning("Error in categories section: [$msg]");
-            }
-        }
-
         try {
-            $template->cloneRow('revisionHistoryDateTime', count($vars['reports']));
-            foreach ($vars['reports'] as $index => $reportRevision) {
+            $template->cloneRow('revisionHistoryDateTime', count($vars['revisions']));
+            foreach ($vars['revisions'] as $index => $reportRevision) {
                 $indexPlusOne = $index + 1;
                 $template->setValue('revisionHistoryDateTime#' . $indexPlusOne, $reportRevision['insert_ts']);
                 $template->setValue('revisionHistoryVersionName#' . $indexPlusOne, $reportRevision['version_name']);

@@ -12,24 +12,22 @@ use Reconmap\Repositories\SearchCriterias\VulnerabilitySearchCriteria;
 use Reconmap\Repositories\TargetRepository;
 use Reconmap\Repositories\TaskRepository;
 use Reconmap\Repositories\UserRepository;
-use Reconmap\Repositories\VulnerabilityCategoryRepository;
 use Reconmap\Repositories\VulnerabilityRepository;
 use Reconmap\Services\Filesystem\AttachmentFilePath;
 
 readonly class ReportDataCollector
 {
     public function __construct(
-        private ProjectRepository               $projectRepository,
-        private ReportRepository                $reportRepository,
-        private VulnerabilityRepository         $vulnerabilityRepository,
-        private VulnerabilityCategoryRepository $vulnerabilityCategoryRepository,
-        private UserRepository                  $userRepository,
-        private ClientRepository                $clientRepository,
-        private TaskRepository                  $taskRepository,
-        private TargetRepository                $targetRepository,
-        private ContactRepository               $contactRepository,
-        private AttachmentRepository            $attachmentRepository,
-        private AttachmentFilePath              $attachmentFilePathService
+        private ProjectRepository       $projectRepository,
+        private ReportRepository        $reportRepository,
+        private VulnerabilityRepository $vulnerabilityRepository,
+        private UserRepository          $userRepository,
+        private ClientRepository        $clientRepository,
+        private TaskRepository          $taskRepository,
+        private TargetRepository        $targetRepository,
+        private ContactRepository       $contactRepository,
+        private AttachmentRepository    $attachmentRepository,
+        private AttachmentFilePath      $attachmentFilePathService
     )
     {
     }
@@ -45,11 +43,11 @@ readonly class ReportDataCollector
         $vulnerabilitySearchCriteria->addProjectCriterion($projectId);
         $vulnerabilitySearchCriteria->addPublicVisibilityCriterion();
 
-        $vulnerability_sort = "FIELD(v.risk, 'critical', 'high', 'medium', 'low', 'none')";
+        $vulnerabilitySort = "FIELD(v.risk, 'critical', 'high', 'medium', 'low', 'none')";
         if (isset($project['vulnerability_metrics']) && (strcmp($project['vulnerability_metrics'], "OWASP_RR") === 0)) {
-            $vulnerability_sort = "FIELD(v.owasp_overall, 'critical','high','medium','low','note')";
+            $vulnerabilitySort = "FIELD(v.owasp_overall, 'critical','high','medium','low','note')";
         }
-        $vulnerabilities = $this->vulnerabilityRepository->search($vulnerabilitySearchCriteria, null, $vulnerability_sort);
+        $vulnerabilities = $this->vulnerabilityRepository->search($vulnerabilitySearchCriteria, null, $vulnerabilitySort);
         foreach ($vulnerabilities as $key => $vuln) {
             $pngs = $this->attachmentRepository->findByParentId('vulnerability', $vuln['id'], 'image/png');
             $jpegs = $this->attachmentRepository->findByParentId('vulnerability', $vuln['id'], 'image/jpeg');
@@ -61,43 +59,24 @@ readonly class ReportDataCollector
             }
             $vulnerabilities[$key]['attachments'] = $att;
         }
+        $findingsForReport = [
+            "stats" => $this->createFindingsOverview($vulnerabilities),
+            "list" => $vulnerabilities
+        ];
 
+        $lastRevisionName = null;
         $reportRevisions = $this->reportRepository->findByProjectId($projectId);
-
-        $logos = [];
-        $organisation = null;
-        if (isset($project['service_provider_id'])) {
-            $organisation = $this->clientRepository->findById($project['service_provider_id']);
-            if ($organisation && $organisation->small_logo_attachment_id) {
-                $logos['org_small_logo'] = $this->attachmentFilePathService->generateFilePath($this->attachmentRepository->getFileNameById($organisation->small_logo_attachment_id));
-            }
-            if ($organisation && $organisation->logo_attachment_id) {
-                $logos['org_logo'] = $this->attachmentFilePathService->generateFilePath($this->attachmentRepository->getFileNameById($organisation->logo_attachment_id));
-            }
+        if (!empty($reportRevisions)) {
+            $latestVersion = $reportRevisions[0];
+            $lastRevisionName = $latestVersion['version_name'];
         }
 
-        if (isset($project['client_id'])) {
-            $client = $this->clientRepository->findById($project['client_id']);
-            if ($client && $client->small_logo_attachment_id) {
-                $logos['client_small_logo'] = $this->attachmentFilePathService->generateFilePath($this->attachmentRepository->getFileNameById($client->small_logo_attachment_id));
-            }
-            if ($client && $client->logo_attachment_id) {
-                $logos['client_logo'] = $this->attachmentFilePathService->generateFilePath($this->attachmentRepository->getFileNameById($client->logo_attachment_id));
-            }
-        }
+        $serviceProvider = $this->loadDataForOrganisation($project['service_provider_id']);
+        $client = $this->loadDataForOrganisation($project['client_id']);
 
         $targetSearchCriteria = new TargetSearchCriteria();
         $targetSearchCriteria->addProjectCriterion($projectId);
-        $targets = $this->targetRepository->search($targetSearchCriteria);
-
-        if (isset($project['client_id'])) {
-            $contacts = $this->contactRepository->findByClientId($project['client_id']);
-        } else {
-            $contacts = [];
-        }
-
-        $parentCategories = $this->vulnerabilityCategoryRepository->findMaxSeverityForEachParentCategory();
-        $categories = $this->vulnerabilityCategoryRepository->getStatuses();
+        $assets = $this->targetRepository->search($targetSearchCriteria);
 
         $pngs = $this->attachmentRepository->findByParentId('project', $projectId, 'image/png');
         $jpegs = $this->attachmentRepository->findByParentId('project', $projectId, 'image/jpeg');
@@ -109,30 +88,20 @@ readonly class ReportDataCollector
         }
         $project['attachments'] = $att;
 
-        $vars = [
-            'project' => $project,
-            'contacts' => $contacts,
-            'org' => $organisation,
-            'date' => date('Y-m-d'),
-            'reports' => $reportRevisions,
-            'revisions' => $reportRevisions,
-            'client' => isset($project['client_id']) ? $this->clientRepository->findById($project['client_id']) : null,
-            'targets' => $targets,
-            'tasks' => $this->taskRepository->findByProjectId($projectId),
-            'vulnerabilities' => $vulnerabilities,
-            'findingsOverview' => $this->createFindingsOverview($vulnerabilities),
-            'logos' => $logos,
-            'parentCategories' => $parentCategories,
-            'categories' => $categories,
-        ];
-
-        if (!empty($reportRevisions)) {
-            $latestVersion = $reportRevisions[0];
-            $vars['version'] = $latestVersion['version_name'];
-        }
-
         $users = $this->userRepository->findByProjectId($projectId);
-        $vars['users'] = $users;
+
+        $vars = [
+            'date' => date('Y-m-d'),
+            'revisions' => $reportRevisions,
+            'lastRevisionName' => $lastRevisionName,
+            'serviceProvider' => $serviceProvider,
+            'client' => $client,
+            'project' => $project,
+            'users' => $users,
+            'assets' => $assets,
+            'tasks' => $this->taskRepository->findByProjectId($projectId),
+            'findings' => $findingsForReport,
+        ];
 
         return $vars;
     }
@@ -151,5 +120,28 @@ readonly class ReportDataCollector
             return $b['count'] <=> $a['count'];
         });
         return $findingsOverview;
+    }
+
+    private function loadDataForOrganisation(?int $organisationId): ?array
+    {
+        if (!$organisationId) {
+            return null;
+        }
+
+        $org = $this->clientRepository->findById($organisationId);
+        if ($org) {
+            $orgForReport = (array)$org;
+            if ($org->small_logo_attachment_id) {
+                $orgForReport['smallLogo'] = $this->attachmentFilePathService->generateFilePath($this->attachmentRepository->getFileNameById($org->small_logo_attachment_id));
+            }
+            if ($org->logo_attachment_id) {
+                $orgForReport['logo'] = $this->attachmentFilePathService->generateFilePath($this->attachmentRepository->getFileNameById($org->logo_attachment_id));
+            }
+            $orgForReport['contacts'] = $this->contactRepository->findByClientId($organisationId);
+
+            return $orgForReport;
+        }
+
+        return null;
     }
 }
