@@ -2,13 +2,21 @@
 
 namespace Reconmap\Controllers\Clients;
 
+use OpenApi\Attributes as OpenApi;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
+use Reconmap\Http\Docs\Default204NoContentResponse;
+use Reconmap\Http\Docs\Default403UnauthorisedResponse;
+use Reconmap\Http\Docs\InPathIdParameter;
 use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Repositories\ClientRepository;
 use Reconmap\Services\ActivityPublisherService;
 
+
+#[OpenApi\Delete(path: "/clients/{clientId}", description: "Deletes client with the given id", security: ["bearerAuth"], tags: ["Clients"], parameters: [new InPathIdParameter("clientId")])]
+#[Default204NoContentResponse]
+#[Default403UnauthorisedResponse]
 class DeleteClientController extends Controller
 {
     public function __construct(

@@ -9,7 +9,7 @@ use Reconmap\Repositories\NoteRepository;
 
 class CreateNoteController extends Controller
 {
-    public function __construct(private NoteRepository $repository)
+    public function __construct(private readonly NoteRepository $repository)
     {
     }
 

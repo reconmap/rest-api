@@ -2,13 +2,20 @@
 
 namespace Reconmap\Controllers\Tasks;
 
+use OpenApi\Attributes as OpenApi;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
+use Reconmap\Http\Docs\Default204NoContentResponse;
+use Reconmap\Http\Docs\Default403UnauthorisedResponse;
+use Reconmap\Http\Docs\InPathIdParameter;
 use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Repositories\TaskRepository;
 use Reconmap\Services\ActivityPublisherService;
 
+#[OpenApi\Delete(path: "/tasks/{taskId}", description: "Deletes task with the given id", security: ["bearerAuth"], tags: ["Tasks"], parameters: [new InPathIdParameter("taskId")])]
+#[Default204NoContentResponse]
+#[Default403UnauthorisedResponse]
 class DeleteTaskController extends Controller
 {
     public function __construct(private readonly TaskRepository           $repository,

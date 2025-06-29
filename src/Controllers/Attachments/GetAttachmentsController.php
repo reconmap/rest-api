@@ -8,11 +8,9 @@ use Reconmap\Repositories\AttachmentRepository;
 
 class GetAttachmentsController extends Controller
 {
-    private AttachmentRepository $repository;
 
-    public function __construct(AttachmentRepository $repository)
+    public function __construct(private readonly AttachmentRepository $repository)
     {
-        $this->repository = $repository;
     }
 
     public function __invoke(ServerRequestInterface $request): array

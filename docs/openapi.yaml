@@ -13,56 +13,6 @@ security:
   - BearerAuth: [ ]
 
 paths:
-
-  /attachments:
-    post:
-      tags:
-        - Attachments
-      security:
-        - BearerAuth: [ ]
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Attachment'
-      responses:
-        '200':
-          description: Attachment successfully created response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Attachment'
-    get:
-      tags:
-        - Attachments
-      security:
-        - BearerAuth: [ ]
-      responses:
-        '200':
-          description: OK
-  '/attachments/{id}':
-    get:
-      tags:
-        - Attachments
-      parameters:
-        - $ref: '#/components/parameters/resourceId'
-      security:
-        - BearerAuth: [ ]
-      responses:
-        '200':
-          description: Successfully retrieved
-    delete:
-      tags:
-        - Attachments
-      parameters:
-        - $ref: '#/components/parameters/resourceId'
-      security:
-        - BearerAuth: [ ]
-      responses:
-        '200':
-          description: Successfully deleted
-
   /users/login:
     post:
       tags:
@@ -167,16 +117,6 @@ paths:
             application/json:
               schema:
                 $ref: './schemas/Client.yaml'
-    delete:
-      tags:
-        - Clients
-      parameters:
-        - $ref: '#/components/parameters/resourceId'
-      security:
-        - BearerAuth: [ ]
-      responses:
-        '200':
-          description: Successfully deleted
 
   /commands:
     post:
@@ -218,13 +158,6 @@ paths:
       responses:
         200:
           description: OK
-  '/commands/outputs/{id}':
-    delete:
-      tags:
-        - Commands
-      responses:
-        200:
-          description: OK
   '/commands/{id}':
     put:
       tags:
@@ -256,16 +189,6 @@ paths:
       responses:
         '200':
           description: Successfully retrieved
-    delete:
-      tags:
-        - Commands
-      parameters:
-        - $ref: '#/components/parameters/resourceId'
-      security:
-        - BearerAuth: [ ]
-      responses:
-        '200':
-          description: Successfully deleted
 
   /documents:
     get:
@@ -297,14 +220,6 @@ paths:
       responses:
         200:
           description: OK
-    delete:
-      tags:
-        - Documents
-      parameters:
-        - $ref: '#/components/parameters/resourceId'
-      responses:
-        200:
-          description: OK
 
   /notes:
     post:
@@ -316,15 +231,6 @@ paths:
     get:
       tags:
         - Notes
-      responses:
-        200:
-          description: OK
-  '/notes/{id}':
-    delete:
-      tags:
-        - Notes
-      parameters:
-        - $ref: '#/components/parameters/resourceId'
       responses:
         200:
           description: OK
@@ -381,7 +287,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Project'
+              $ref: './schemas/Project.yaml'
       responses:
         '201':
           description: Project successfully created response
@@ -411,16 +317,6 @@ paths:
             application/json:
               schema:
                 $ref: './schemas/Project.yaml'
-    delete:
-      tags:
-        - Projects
-      parameters:
-        - $ref: '#/components/parameters/resourceId'
-      security:
-        - BearerAuth: [ ]
-      responses:
-        '200':
-          description: Successfully deleted
 
   '/projects/{id}/tasks':
     get:
@@ -469,17 +365,6 @@ paths:
         '200':
           description: OK
 
-  '/reports/{id}':
-    delete:
-      tags:
-        - Reports
-      parameters:
-        - $ref: '#/components/parameters/resourceId'
-      security:
-        - BearerAuth: [ ]
-      responses:
-        '200':
-          description: OK
 
   '/reports/{id}/send':
     post:
@@ -645,16 +530,6 @@ paths:
       responses:
         '200':
           description: Successfully retrieved
-    delete:
-      tags:
-        - Targets
-      parameters:
-        - $ref: '#/components/parameters/resourceId'
-      security:
-        - BearerAuth: [ ]
-      responses:
-        '200':
-          description: Successfully deleted
 
   /tasks:
     post:
@@ -694,16 +569,6 @@ paths:
       responses:
         200:
           description: OK
-    delete:
-      tags:
-        - Tasks
-      parameters:
-        - $ref: '#/components/parameters/resourceId'
-      security:
-        - BearerAuth: [ ]
-      responses:
-        '200':
-          description: Successfully deleted
 
   /users:
     get:
@@ -780,16 +645,6 @@ paths:
       responses:
         200:
           description: OK
-    delete:
-      tags:
-        - Users
-      parameters:
-        - $ref: '#/components/parameters/resourceId'
-      security:
-        - BearerAuth: [ ]
-      responses:
-        '204':
-          description: Successfully deleted
 
   '/users/{id}/activity':
     get:
@@ -867,16 +722,6 @@ paths:
       responses:
         200:
           description: OK
-    delete:
-      tags:
-        - Vulnerabilities
-      parameters:
-        - $ref: '#/components/parameters/resourceId'
-      security:
-        - BearerAuth: [ ]
-      responses:
-        '200':
-          description: Successfully deleted
 
   /vulnerabilities/categories:
     get:
@@ -903,18 +748,6 @@ paths:
             application/json:
               schema:
                 $ref: './schemas/VulnerabilityCategory.yaml'
-
-  '/vulnerabilities/categories/{id}':
-    delete:
-      tags:
-        - Vulnerability categories
-      parameters:
-        - $ref: '#/components/parameters/resourceId'
-      security:
-        - BearerAuth: [ ]
-      responses:
-        '200':
-          description: Successfully deleted
 
   /vulnerabilities/stats:
     get:

@@ -8,14 +8,16 @@ use OpenApi\Attributes as OpenApi;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\SecureController;
+use Reconmap\Http\Docs\Default200OkResponse;
+use Reconmap\Http\Docs\Default403UnauthorisedResponse;
 use Reconmap\Repositories\AuditLogRepository;
 use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\PaginationRequestHandler;
 use Reconmap\Services\Security\AuthorisationService;
 
-#[OpenApi\Get(path: "/auditlog", description: "Get audit log entries", security: ["bearerAuth"], tags: ["Audit log"])]
-#[OpenApi\Response(response: 200, description: "Ok response")]
-#[OpenApi\Response(response: 403, description: "Authorization error")]
+#[OpenApi\Get(path: "/auditlog", description: "Returns all audit log entries", security: ["bearerAuth"], tags: ["Audit log"])]
+#[Default200OkResponse]
+#[Default403UnauthorisedResponse]
 class GetAuditLogController extends SecureController
 {
     private const int PAGE_LIMIT = 20;

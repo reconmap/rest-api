@@ -3,15 +3,22 @@
 namespace Reconmap\Controllers\Users;
 
 use GuzzleHttp\Exception\ClientException;
+use OpenApi\Attributes as OpenApi;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
+use Reconmap\Http\Docs\Default204NoContentResponse;
+use Reconmap\Http\Docs\Default403UnauthorisedResponse;
+use Reconmap\Http\Docs\InPathIdParameter;
 use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Repositories\UserRepository;
 use Reconmap\Services\ActivityPublisherService;
 use Reconmap\Services\KeycloakService;
 use Symfony\Component\HttpFoundation\Response;
 
+#[OpenApi\Delete(path: "/users/{userId}", description: "Deletes user with the given id", security: ["bearerAuth"], tags: ["Users"], parameters: [new InPathIdParameter("userId")])]
+#[Default204NoContentResponse]
+#[Default403UnauthorisedResponse]
 class DeleteUserController extends Controller
 {
     public function __construct(private readonly UserRepository           $userRepository,

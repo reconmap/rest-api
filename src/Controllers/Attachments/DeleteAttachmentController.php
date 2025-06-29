@@ -2,9 +2,13 @@
 
 namespace Reconmap\Controllers\Attachments;
 
+use OpenApi\Attributes as OpenApi;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
+use Reconmap\Http\Docs\Default204NoContentResponse;
+use Reconmap\Http\Docs\Default403UnauthorisedResponse;
+use Reconmap\Http\Docs\InPathIdParameter;
 use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Repositories\AttachmentRepository;
 use Reconmap\Services\ActivityPublisherService;
@@ -12,6 +16,10 @@ use Reconmap\Services\Filesystem\AttachmentFilePath;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 
+#[OpenApi\Delete(path: "/attachments/{attachmentId}", description: "Deletes attachment with the given id", security: ["bearerAuth"], tags: ["Attachments"],
+    parameters: [new InPathIdParameter("attachmentId")])]
+#[Default204NoContentResponse]
+#[Default403UnauthorisedResponse]
 class DeleteAttachmentController extends Controller
 {
     public function __construct(private readonly AttachmentRepository     $attachmentRepository,
