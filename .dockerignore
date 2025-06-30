@@ -2,8 +2,6 @@
 **/.git
 config.json
 data
-data-mysql
-data-redis
 docs/Makefile
 logs/**
 tests

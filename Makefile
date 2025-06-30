@@ -31,7 +31,7 @@ prepare-config:
 
 .PHONY: prepare-dirs
 prepare-dirs:
-	mkdir -p vendor logs data-mysql data-redis
+	mkdir -p vendor logs
 
 .SILENT: install-deps
 .PHONY: install-deps
