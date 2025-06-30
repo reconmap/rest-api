@@ -8,6 +8,7 @@ use Reconmap\ControllerTestCase;
 use Reconmap\Models\AuditActions\DataAuditActions;
 use Reconmap\Repositories\Exporters\ClientsExporter;
 use Reconmap\Services\AuditLogService;
+use Symfony\Component\HttpFoundation\Response;
 
 class ExportDataControllerTest extends ControllerTestCase
 {
@@ -16,11 +17,11 @@ class ExportDataControllerTest extends ControllerTestCase
         $mockAuditLogService = $this->createPartialMock(AuditLogService::class, ['insert']);
         $mockAuditLogService->expects($this->once())
             ->method('insert')
-            ->with(6, DataAuditActions::EXPORTED, 'Data', ['clients']);
+            ->with(6, DataAuditActions::EXPORTED, 'Data', ['organisations']);
         $request = (new ServerRequest('get', '/system/data'))
             ->withAttribute('userId', 6)
             ->withQueryParams([
-                'entities' => 'clients'
+                'entities' => 'organisations'
             ]);
 
         $mockClientExporter = $this->createMock(ClientsExporter::class);
@@ -39,9 +40,9 @@ class ExportDataControllerTest extends ControllerTestCase
         $controller->setContainer($mockContainer);
         $response = $controller($request);
 
-        $this->assertEquals(\Symfony\Component\HttpFoundation\Response::HTTP_OK, $response->getStatusCode());
-        $this->assertEquals('{"clients":["client1"]}', $response->getBody()->getContents());
-        $this->assertStringContainsString('attachment; filename="reconmap-clients-', $response->getHeaderLine('Content-Disposition'));
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+        $this->assertEquals('{"organisations":["client1"]}', $response->getBody()->getContents());
+        $this->assertStringContainsString('attachment; filename="reconmap-organisations-', $response->getHeaderLine('Content-Disposition'));
         $this->assertEquals('application/json; charset=UTF-8', $response->getHeaderLine('Content-Type'));
     }
 
@@ -63,6 +64,6 @@ class ExportDataControllerTest extends ControllerTestCase
         $controller->setContainer($mockContainer);
         $response = $controller($request);
 
-        $this->assertEquals(\Symfony\Component\HttpFoundation\Response::HTTP_BAD_REQUEST, $response->getStatusCode());
+        $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
     }
 }
