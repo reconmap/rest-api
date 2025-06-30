@@ -56,8 +56,6 @@ RUN composer install --no-ansi --no-dev --no-interaction --no-plugins --no-progr
 
 COPY public /var/www/webapp/public
 COPY database/ /var/www/webapp/database/
-COPY docs/openapi.yaml /var/www/webapp/public/docs/openapi.yaml
-COPY docs/schemas/ /var/www/webapp/public/docs/schemas/
 COPY resources/ /var/www/webapp/resources/
 
 VOLUME /var/www/webapp

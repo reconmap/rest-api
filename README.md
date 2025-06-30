@@ -19,8 +19,8 @@ This is a component of many in the [Reconmap's architecture](https://reconmap.co
 
 ## Documentation
 
-The API specs have been documented using the [OpenAPI](docs/openapi.yaml) specification. You can use the
-interactive [OpenAPI UI](https://api.reconmap.com/docs/) to play with it.
+The API specs have been documented using the **OpenAPI** specification. You can use the
+interactive [OpenAPI UI](https://demo.api.netfoe.com/docs/) to play with it.
 
 ## Build instructions
 
