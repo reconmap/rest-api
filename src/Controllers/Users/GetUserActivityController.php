@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Reconmap\Controllers\Users;
 
@@ -10,7 +8,7 @@ use Reconmap\Repositories\AuditLogRepository;
 
 class GetUserActivityController extends Controller
 {
-    public function __construct(private AuditLogRepository $auditLogRepository)
+    public function __construct(private readonly AuditLogRepository $auditLogRepository)
     {
     }
 

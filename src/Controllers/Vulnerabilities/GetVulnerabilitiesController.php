@@ -3,18 +3,29 @@
 namespace Reconmap\Controllers\Vulnerabilities;
 
 use GuzzleHttp\Psr7\Response;
+use OpenApi\Attributes as OpenApi;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
+use Reconmap\Http\Docs\Default200OkResponse;
+use Reconmap\Http\Docs\Default403UnauthorisedResponse;
 use Reconmap\Repositories\SearchCriterias\VulnerabilitySearchCriteria;
 use Reconmap\Repositories\VulnerabilityRepository;
 use Reconmap\Services\PaginationRequestHandler;
 use Reconmap\Services\QueryParams\OrderByRequestHandler;
 
+#[OpenApi\Get(
+    path: "/vulnerabilities",
+    description: "Returns all vulnerabilities",
+    security: ["bearerAuth"],
+    tags: ["Findings"],
+)]
+#[Default200OkResponse]
+#[Default403UnauthorisedResponse]
 class GetVulnerabilitiesController extends Controller
 {
     public function __construct(
-        private readonly VulnerabilityRepository $repository,
+        private readonly VulnerabilityRepository     $repository,
         private readonly VulnerabilitySearchCriteria $searchCriteria,
     )
     {

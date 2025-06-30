@@ -3,15 +3,26 @@
 namespace Reconmap\Controllers\Projects;
 
 use GuzzleHttp\Psr7\Response;
+use OpenApi\Attributes as OpenApi;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Events\SearchEvent;
+use Reconmap\Http\Docs\Default200OkResponse;
+use Reconmap\Http\Docs\Default403UnauthorisedResponse;
 use Reconmap\Repositories\ProjectRepository;
 use Reconmap\Repositories\SearchCriterias\ProjectSearchCriteria;
 use Reconmap\Services\PaginationRequestHandler;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
+#[OpenApi\Get(
+    path: "/projects",
+    description: "Returns all projects",
+    security: ["bearerAuth"],
+    tags: ["Projects"],
+)]
+#[Default200OkResponse]
+#[Default403UnauthorisedResponse]
 class GetProjectsController extends Controller
 {
     public function __construct(private readonly ProjectRepository     $projectRepository,
@@ -43,7 +54,7 @@ class GetProjectsController extends Controller
             $isTemplate = filter_var(false, FILTER_VALIDATE_BOOL);
         }
         $this->projectSearchCriteria->addTemplateCriterion($isTemplate);
-        
+
         if (!$user->isAdministrator()) {
             $this->projectSearchCriteria->addUserCriterion($user->id);
         }

@@ -6,7 +6,9 @@ use GuzzleHttp\Psr7\HttpFactory;
 use League\Route\RouteGroup;
 use League\Route\Router;
 use OpenApi\Attributes\Info;
+use OpenApi\Attributes\OpenApi;
 use OpenApi\Attributes\SecurityScheme;
+use OpenApi\Attributes\Server;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Reconmap\{Controllers\Attachments\ServeAttachmentController,
@@ -36,8 +38,12 @@ use Reconmap\{Controllers\Attachments\ServeAttachmentController,
     Services\ApplicationConfig};
 use Reconmap\Controllers\Attachments\AttachmentsRouter;
 
-#[Info(version: "1.0.0", description: "Reconmap REST API", title: "Reconmap API")]
-#[SecurityScheme(securityScheme: "bearerAuth", type: "http", bearerFormat: "JWT", scheme: "bearer")]
+#[OpenApi(
+    info: new Info(version: "1.5.0", description: "Welcome to the Reconmap REST API.", title: "Reconmap API"),
+    servers: [new Server("http://localhost:5510", "Local server")],
+    security: [["bearerAuth" => []]],
+)]
+#[SecurityScheme(securityScheme: "bearerAuth", type: "http", name: "bearerAuth", in: "header", bearerFormat: "JWT", scheme: "bearer")]
 class ApiRouter extends Router
 {
     private const array ROUTER_CLASSES = [

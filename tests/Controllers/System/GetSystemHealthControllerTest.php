@@ -9,7 +9,7 @@ use Reconmap\Services\Filesystem\AttachmentFilePath;
 use Reconmap\Services\Filesystem\DirectoryChecker;
 use Reconmap\Services\RedisServer;
 
-class GetHealthControllerTest extends TestCase
+class GetSystemHealthControllerTest extends TestCase
 {
     public function testResponse()
     {
@@ -37,7 +37,7 @@ class GetHealthControllerTest extends TestCase
             ->method('ping')
             ->willReturn(false);
 
-        $controller = new GetHealthController($mockAttachmentFilePath, $mockDirectoryChecker, $mockMysql, $mockRedis);
+        $controller = new GetSystemHealthController($mockAttachmentFilePath, $mockDirectoryChecker, $mockMysql, $mockRedis);
         $response = $controller($mockServerRequestInterface);
         $expectedResponse = [
             'attachmentsDirectory' => [

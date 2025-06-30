@@ -2,15 +2,26 @@
 
 namespace Reconmap\Controllers\Clients;
 
+use OpenApi\Attributes as OpenApi;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
+use Reconmap\Http\Docs\Default201CreatedResponse;
+use Reconmap\Http\Docs\Default403UnauthorisedResponse;
 use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Models\Client;
 use Reconmap\Repositories\ClientRepository;
 use Reconmap\Services\ActivityPublisherService;
 use Reconmap\Services\Filesystem\AttachmentSaver;
 
+#[OpenApi\Post(
+    path: "/clients",
+    description: "Creates a new organisation",
+    security: ["bearerAuth"],
+    tags: ["Organisations"],
+)]
+#[Default201CreatedResponse]
+#[Default403UnauthorisedResponse]
 class CreateClientController extends Controller
 {
     public function __construct(private readonly ClientRepository $repository, private readonly AttachmentSaver $attachmentSaver, private readonly ActivityPublisherService $activityPublisherService)

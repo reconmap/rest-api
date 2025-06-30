@@ -2,12 +2,23 @@
 
 namespace Reconmap\Controllers\Tasks;
 
+use OpenApi\Attributes as OpenApi;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
+use Reconmap\Http\Docs\Default200OkResponse;
+use Reconmap\Http\Docs\Default403UnauthorisedResponse;
 use Reconmap\Repositories\SearchCriterias\TaskSearchCriteria;
 use Reconmap\Repositories\TaskRepository;
 use Reconmap\Services\PaginationRequestHandler;
 
+#[OpenApi\Get(
+    path: "/tasks",
+    description: "Returns all tasks",
+    security: ["bearerAuth"],
+    tags: ["Tasks"],
+)]
+#[Default200OkResponse]
+#[Default403UnauthorisedResponse]
 class GetTasksController extends Controller
 {
     public function __construct(private readonly TaskRepository     $repository,

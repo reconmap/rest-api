@@ -2,11 +2,22 @@
 
 namespace Reconmap\Controllers\Clients;
 
+use OpenApi\Attributes as OpenApi;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\SecureController;
+use Reconmap\Http\Docs\Default200OkResponse;
+use Reconmap\Http\Docs\Default403UnauthorisedResponse;
 use Reconmap\Repositories\ClientRepository;
 use Reconmap\Services\Security\AuthorisationService;
 
+#[OpenApi\Get(
+    path: "/clients",
+    description: "Returns all organisations",
+    security: ["bearerAuth"],
+    tags: ["Organisations"],
+)]
+#[Default200OkResponse]
+#[Default403UnauthorisedResponse]
 class GetClientsController extends SecureController
 {
     public function __construct(AuthorisationService              $authorisationService,

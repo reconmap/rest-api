@@ -8,6 +8,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Http\Docs\Default204NoContentResponse;
 use Reconmap\Http\Docs\Default403UnauthorisedResponse;
+use Reconmap\Http\Docs\Default404NotFoundResponse;
 use Reconmap\Http\Docs\InPathIdParameter;
 use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Repositories\AttachmentRepository;
@@ -20,6 +21,7 @@ use Symfony\Component\Filesystem\Filesystem;
     parameters: [new InPathIdParameter("attachmentId")])]
 #[Default204NoContentResponse]
 #[Default403UnauthorisedResponse]
+#[Default404NotFoundResponse]
 class DeleteAttachmentController extends Controller
 {
     public function __construct(private readonly AttachmentRepository     $attachmentRepository,
@@ -34,6 +36,9 @@ class DeleteAttachmentController extends Controller
         $attachmentId = (int)$args['attachmentId'];
 
         $attachment = $this->attachmentRepository->findById($attachmentId);
+        if (empty($attachment)) {
+            return $this->createNotFoundResponse();
+        }
 
         $pathName = $this->attachmentFilePathService->generateFilePathFromAttachment((array)$attachment);
 

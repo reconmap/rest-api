@@ -2,15 +2,26 @@
 
 namespace Reconmap\Controllers\Projects;
 
+use OpenApi\Attributes as OpenApi;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
+use Reconmap\Http\Docs\Default201CreatedResponse;
+use Reconmap\Http\Docs\Default403UnauthorisedResponse;
 use Reconmap\Models\AuditActions\AuditActions;
 use Reconmap\Models\Project;
 use Reconmap\Repositories\ProjectRepository;
 use Reconmap\Repositories\ProjectUserRepository;
 use Reconmap\Services\AuditLogService;
 
+#[OpenApi\Post(
+    path: "/projects",
+    description: "Creates a new project",
+    security: ["bearerAuth"],
+    tags: ["Projects"],
+)]
+#[Default201CreatedResponse]
+#[Default403UnauthorisedResponse]
 class CreateProjectController extends Controller
 {
     public function __construct(private readonly ProjectRepository $projectRepository, private readonly ProjectUserRepository $projectUserRepository, private readonly AuditLogService $auditLogService)

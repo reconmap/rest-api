@@ -14,7 +14,7 @@ use Reconmap\Repositories\ClientRepository;
 use Reconmap\Services\ActivityPublisherService;
 
 
-#[OpenApi\Delete(path: "/clients/{clientId}", description: "Deletes client with the given id", security: ["bearerAuth"], tags: ["Clients"], parameters: [new InPathIdParameter("clientId")])]
+#[OpenApi\Delete(path: "/clients/{clientId}", description: "Deletes client with the given id", security: ["bearerAuth"], tags: ["Organisations"], parameters: [new InPathIdParameter("clientId")])]
 #[Default204NoContentResponse]
 #[Default403UnauthorisedResponse]
 class DeleteClientController extends Controller

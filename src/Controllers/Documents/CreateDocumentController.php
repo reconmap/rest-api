@@ -2,11 +2,22 @@
 
 namespace Reconmap\Controllers\Documents;
 
+use OpenApi\Attributes as OpenApi;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
+use Reconmap\Http\Docs\Default201CreatedResponse;
+use Reconmap\Http\Docs\Default403UnauthorisedResponse;
 use Reconmap\Models\Document;
 use Reconmap\Repositories\DocumentRepository;
 
+#[OpenApi\Post(
+    path: "/documents",
+    description: "Creates a new document",
+    security: ["bearerAuth"],
+    tags: ["Documents"],
+)]
+#[Default201CreatedResponse]
+#[Default403UnauthorisedResponse]
 class CreateDocumentController extends Controller
 {
     public function __construct(private readonly DocumentRepository $repository)

@@ -3,16 +3,26 @@
 namespace Reconmap\Controllers\Targets;
 
 use GuzzleHttp\Psr7\Response;
+use OpenApi\Attributes as OpenApi;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
+use Reconmap\Http\Docs\Default200OkResponse;
+use Reconmap\Http\Docs\Default403UnauthorisedResponse;
 use Reconmap\Repositories\SearchCriterias\TargetSearchCriteria;
 use Reconmap\Repositories\TargetRepository;
 use Reconmap\Services\PaginationRequestHandler;
 
+#[OpenApi\Get(
+    path: "/targets",
+    description: "Returns all assets",
+    tags: ["Assets"],
+)]
+#[Default200OkResponse]
+#[Default403UnauthorisedResponse]
 class GetTargetsController extends Controller
 {
-    public function __construct(private readonly TargetRepository $repository,
+    public function __construct(private readonly TargetRepository     $repository,
                                 private readonly TargetSearchCriteria $searchCriteria)
     {
     }
