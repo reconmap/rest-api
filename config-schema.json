@@ -1,9 +1,24 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://reconmap.com/rest-api.schema.json",
-  "title": "Reconmap API Configuration Schema",
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "$id": "https://reconmap.com/reconmap-api.schema.json",
+  "title": "Reconmap API configuration schema",
+  "description": "Schema for the configuration of the Reconmap API",
   "type": "object",
+  "required": [
+    "$schema",
+    "keycloak",
+    "jwt",
+    "cors",
+    "database",
+    "smtp",
+    "logging",
+    "integrations"
+  ],
   "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "string-uri"
+    },
     "keycloak": {
       "type": "object",
       "properties": {
@@ -122,11 +137,7 @@
           "type": "string"
         },
         "verifyPeer": {
-          "type": "string",
-          "enum": [
-            "true",
-            "false"
-          ]
+          "type": "boolean"
         },
         "fromEmail": {
           "type": "string",
@@ -183,14 +194,5 @@
       "additionalProperties": false
     }
   },
-  "required": [
-    "keycloak",
-    "jwt",
-    "cors",
-    "database",
-    "smtp",
-    "logging",
-    "integrations"
-  ],
   "additionalProperties": false
 }

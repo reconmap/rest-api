@@ -36,7 +36,7 @@ readonly class EmailTaskProcessor implements ItemProcessor
                 $addresses[] = new Address($toEmail, $toName);
             }
 
-            $email = (new Email())
+            $email = new Email()
                 ->subject('[Reconmap] ' . $message->subject)
                 ->from(new Address($smtpSettings['fromEmail'], $smtpSettings['fromName']))
                 ->to(...$addresses)
