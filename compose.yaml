@@ -48,19 +48,12 @@ services:
       KC_DB_USERNAME: keycloaker
       KC_DB_PASSWORD: keycloaked
       KC_LOG_LEVEL: INFO
-      VAR_ADMIN_CLI_SECRET: "xxxxxxxxxxxxxxxxxxyyyyyyyyyyyyyy"
       VAR_WEB_CLIENT_URL: "http://localhost:5500"
+      VAR_ADMIN_CLIENT_SECRET: "r2TO5uRy0RlpB5TRI6GvvXtBKxUCaaz0"
+      VAR_RECONMAPD_CLIENT_SECRET: "VH8HDKabxlTpnpPkEgLlTq2dEanedEGC"
+      VAR_API_CLIENT_SECRET: "I0jppD5zSIXuBAql31zrXfe5OAa0nvyE"
     ports:
       - "8080:8080"
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "exec 3<>/dev/tcp/127.0.0.1/9000;echo -e 'GET /health/ready HTTP/1.1\r\nhost: http://localhost\r\nConnection: close\r\n\r\n' >&3;if [ $? -eq 0 ]; then echo 'Healthcheck Successful';exit 0;else echo 'Healthcheck Failed';exit 1;fi;",
-        ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
     depends_on:
       mysql:
         condition: service_healthy

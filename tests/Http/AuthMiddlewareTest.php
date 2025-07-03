@@ -79,7 +79,7 @@ EOD;
             ->willReturn($publicKey);
 
         $jwtPayload = new JwtPayloadCreator($config)->createFromUserArray($user);
-        //$jwtPayload['azp'] = 'reconmapd-client';
+        $jwtPayload['azp'] = 'test-client';
         $jwt = JWT::encode($jwtPayload, self::PRIVATE_KEY, 'RS256');
 
         $mockUserRepository = $this->createMock(UserRepository::class);

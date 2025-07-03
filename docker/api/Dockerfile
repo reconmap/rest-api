@@ -2,9 +2,14 @@ FROM debian:bookworm-slim
 
 ENV TZ="Europe/London"
 
-LABEL org.opencontainers.image.source=https://github.com/reconmap/reconmap
-LABEL org.opencontainers.image.description="reconmap/rest-api"
-LABEL org.opencontainers.image.licenses="Apache-2.0"
+LABEL org.opencontainers.image.vendor="Netfoe" \
+    org.opencontainers.image.authors="Santiago Lizardo" \
+	org.opencontainers.image.title="Reconmap API" \
+	org.opencontainers.image.description="Rest API for Reconmap" \
+	org.opencontainers.image.licenses="Apache-2.0" \
+    org.opencontainers.image.url="https://github.com/reconmap/reconmap" \
+	org.opencontainers.image.source="https://github.com/reconmap/rest-api" \
+	org.opencontainers.image.documentation="https://github.com/reconmap/documentation"
 
 ARG PHP_VERSION=8.4
 ARG DEBIAN_FRONTEND=noninteractive

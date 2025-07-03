@@ -56,6 +56,7 @@ class CreateReportControllerTest extends TestCase
             'serviceProvider' => [],
             'date' => date('Y-m-d'),
             'revisions' => [],
+            'lastRevisionName' => null,
             'markdownParser' => [],
             'client' => null,
             'assets' => [],

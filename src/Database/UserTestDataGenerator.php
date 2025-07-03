@@ -14,13 +14,15 @@ readonly class UserTestDataGenerator
     public function run(): void
     {
         $this->userRepository->updateById(1, [
-            'full_name' => 'Jane Doe',
+            'first_name' => 'Jane',
+            'last_name' => 'Doe',
             'short_bio' => 'CEO and CTO of Amazing Pentest Company Limited'
         ]);
 
         $user = new User();
         $user->id = 2;
-        $user->full_name = 'Lead pentester';
+        $user->first_name = 'Lead';
+        $user->last_name = 'pentester';
         $user->username = 'su';
         $user->subject_id = 'xxxx';
         $user->email = 'su@localhost';
@@ -28,7 +30,8 @@ readonly class UserTestDataGenerator
         $this->userRepository->create($user);
 
         $user->id = 3;
-        $user->full_name = 'Infosec pro';
+        $user->first_name = 'Infosec';
+        $user->last_name = 'pro';
         $user->username = 'user';
         $user->subject_id = 'xxxx';
         $user->email = 'user@localhost';
@@ -36,7 +39,8 @@ readonly class UserTestDataGenerator
         $this->userRepository->create($user);
 
         $user->id = 4;
-        $user->full_name = 'Dear Customer';
+        $user->first_name = 'Dear';
+        $user->last_name = 'Customer';
         $user->username = 'cust';
         $user->subject_id = 'xxxx';
         $user->email = 'cust@localhost';

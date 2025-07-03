@@ -5,7 +5,6 @@ namespace Reconmap\Controllers\Commands;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\CommandOutputParsers\ProcessorFactory;
 use Reconmap\Controllers\Controller;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 class GetCommandOutputParsersController extends Controller
 {
@@ -13,8 +12,8 @@ class GetCommandOutputParsersController extends Controller
     {
     }
 
-    public function __invoke(ServerRequestInterface $request): JsonResponse
+    public function __invoke(ServerRequestInterface $request): array
     {
-        return new JsonResponse($this->processorFactory->getAll());
+        return $this->processorFactory->getAll();
     }
 }

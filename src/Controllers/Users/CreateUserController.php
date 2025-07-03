@@ -27,33 +27,23 @@ class CreateUserController extends Controller
     public function __invoke(ServerRequestInterface $request): array
     {
         /** @var User $user */
-        $user = $this->getJsonBodyDecodedAsClass($request, new class() extends User {
-            public ?string $unencryptedPassword;
-            public ?bool $sendEmailToUser;
-        });
+        $user = $this->getJsonBodyDecodedAsClass($request, new User());
 
-        $passwordGenerationMethodIsAuto = empty($user->unencryptedPassword);
-        if ($passwordGenerationMethodIsAuto) {
-            $user->unencryptedPassword = $this->passwordGenerator->generate(24);
-        }
+        $unencryptedPassword = $this->passwordGenerator->generate(24);
 
-        $user->subject_id = $this->keycloakService->createUser($user, $user->unencryptedPassword);
+        $user->subject_id = $this->keycloakService->createUser($user, $unencryptedPassword);
 
         $user->id = $this->userRepository->create($user);
 
-        if ($passwordGenerationMethodIsAuto || $user->sendEmailToUser) {
-            $this->emailService->queueTemplatedEmail(
-                'users/newAccount',
-                [
-                    'user' => (array)$user,
-                    'unencryptedPassword' => $user->unencryptedPassword
-                ],
-                'Account created',
-                [$user->email => $user->full_name]
-            );
-        } else {
-            $this->logger->debug('Email invitation not sent', ['email' => $user->email]);
-        }
+        $this->emailService->queueTemplatedEmail(
+            'users/newAccount',
+            [
+                'user' => (array)$user,
+                'unencryptedPassword' => $unencryptedPassword
+            ],
+            'Account created',
+            [$user->email => $user->full_name]
+        );
 
         $loggedInUserId = $request->getAttribute('userId');
 

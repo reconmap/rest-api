@@ -42,7 +42,9 @@ CREATE TABLE user
     email         VARCHAR(200)  NOT NULL,
     role          ENUM ('administrator', 'superuser', 'user', 'client'),
     username      VARCHAR(80)   NOT NULL,
-    full_name     VARCHAR(200)  NOT NULL,
+    first_name    VARCHAR(100)  NOT NULL,
+    last_name     VARCHAR(100)  NOT NULL,
+    full_name     VARCHAR(210) AS (CONCAT(first_name, ' ', last_name)),
     short_bio     VARCHAR(1000) NULL,
     timezone      VARCHAR(200)  NOT NULL DEFAULT 'UTC',
     mfa_enabled   BOOLEAN       NOT NULL DEFAULT FALSE,
@@ -466,8 +468,6 @@ CREATE TABLE custom_field
     PRIMARY KEY (id),
     UNIQUE KEY (parent_type, name)
 ) ENGINE = InnoDB;
-
-# INSERT INTO custom_field (parent_type, name, label, kind, config) VALUES ('vulnerability', 'cost_pounds', 'Cost in pounds', 'text', '{}');
 
 DROP TABLE IF EXISTS document;
 

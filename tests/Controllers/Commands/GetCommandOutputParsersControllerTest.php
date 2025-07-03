@@ -18,6 +18,6 @@ class GetCommandOutputParsersControllerTest extends TestCase
 
         $controller = new GetCommandOutputParsersController($processorFactory);
         $response = $controller($serverRequestInterface);
-        $this->assertIsArray(json_decode($response->getContent(), true));
+        $this->assertIsArray($response);
     }
 }

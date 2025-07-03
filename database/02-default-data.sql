@@ -2,8 +2,8 @@ USE reconmap;
 
 SET @admin_user_id = 1;
 
-INSERT INTO user (id, subject_id, full_name, username, email, role)
-VALUES (@admin_user_id, 'fec17265-a0ae-4d5a-9e20-63487fc21b67', 'Administrator', 'admin', 'admin@localhost',
+INSERT INTO user (id, subject_id, first_name, last_name, username, email, role)
+VALUES (@admin_user_id, 'fec17265-a0ae-4d5a-9e20-63487fc21b67', 'Administrator', '-', 'admin','admin@localhost',
         'administrator');
 
 INSERT INTO audit_log (user_id, client_ip, action, object)

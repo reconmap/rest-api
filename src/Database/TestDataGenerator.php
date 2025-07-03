@@ -17,23 +17,23 @@ use Reconmap\Repositories\ProjectUserRepository;
 use Reconmap\Repositories\ReportRepository;
 use Reconmap\Repositories\TargetRepository;
 
-class TestDataGenerator
+readonly class TestDataGenerator
 {
     public function __construct(
-        private readonly UserTestDataGenerator          $userTestDataGenerator,
-        private readonly ContactRepository              $contactRepository,
-        private readonly ClientRepository               $clientRepository,
-        private readonly ClientContactRepository        $clientContactRepository,
-        private readonly ProjectTestDataGenerator       $projectTestDataGenerator,
-        private readonly NoteTestDataGenerator          $noteTestDataGenerator,
-        private readonly DocumentRepository             $documentRepository,
-        private readonly TaskTestDataGenerator          $taskTestDataGenerator,
-        private readonly VulnerabilityTestDataGenerator $vulnerabilityTestDataGenerator,
-        private readonly NotificationsRepository        $notificationsRepository,
-        private readonly ReportRepository               $reportRepository,
-        private readonly ProjectUserRepository          $projectUserRepository,
-        private readonly TargetRepository               $targetRepository,
-        private readonly CommandTestDataGenerator       $commandTestDataGenerator
+        private UserTestDataGenerator          $userTestDataGenerator,
+        private ContactRepository              $contactRepository,
+        private ClientRepository               $clientRepository,
+        private ClientContactRepository        $clientContactRepository,
+        private ProjectTestDataGenerator       $projectTestDataGenerator,
+        private NoteTestDataGenerator          $noteTestDataGenerator,
+        private DocumentRepository             $documentRepository,
+        private TaskTestDataGenerator          $taskTestDataGenerator,
+        private VulnerabilityTestDataGenerator $vulnerabilityTestDataGenerator,
+        private NotificationsRepository        $notificationsRepository,
+        private ReportRepository               $reportRepository,
+        private ProjectUserRepository          $projectUserRepository,
+        private TargetRepository               $targetRepository,
+        private CommandTestDataGenerator       $commandTestDataGenerator
     )
     {
     }

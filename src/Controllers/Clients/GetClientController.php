@@ -10,7 +10,7 @@ use Reconmap\Http\Docs\InPathIdParameter;
 use Reconmap\Repositories\ClientRepository;
 
 #[OpenApi\Get(
-    path: "/clients/{clientId}/contacts",
+    path: "/clients/{clientId}",
     description: "Returns information about the client with the given id",
     security: ["bearerAuth"],
     tags: ["Organisations"],

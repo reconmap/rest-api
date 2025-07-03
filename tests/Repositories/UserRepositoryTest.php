@@ -42,7 +42,8 @@ class UserRepositoryTest extends DatabaseTestCase
     public function testInsert()
     {
         $user = new User();
-        $user->full_name = 'Mr Happy';
+        $user->first_name = 'Mr Happy';
+        $user->last_name = 'IsHappy';
         $user->username = 'mrhappy';
         $user->subject_id = 'yyyy-xxxx';
         $user->email = 'mr.happy@emailprovider.internet';

@@ -1,14 +1,13 @@
 FROM mysql:9.3
 
-LABEL maintainer="Reconmap engineering" \
-    org.opencontainers.image.title="Reconmap Rest API database" \
+LABEL org.opencontainers.image.vendor="Netfoe" \
     org.opencontainers.image.authors="Santiago Lizardo" \
-    org.opencontainers.image.vendor="Reconmap" \
-    org.opencontainers.image.documentation="https://docs.reconmap.com" \
-    org.opencontainers.image.licenses="GPL" \
-    org.opencontainers.image.url="https://github.com/reconmap/rest-api"
-LABEL org.opencontainers.image.source=https://github.com/reconmap/reconmap
-LABEL org.opencontainers.image.description="reconmap/rest-api-db"
+	org.opencontainers.image.title="Reconmap MySQL" \
+	org.opencontainers.image.description="Custom MySQL for Reconmap" \
+	org.opencontainers.image.licenses="Apache-2.0" \
+    org.opencontainers.image.url="https://github.com/reconmap/reconmap" \
+	org.opencontainers.image.source="https://github.com/reconmap/rest-api" \
+	org.opencontainers.image.documentation="https://github.com/reconmap/documentation"
 
 ARG HOST_UID
 ARG HOST_GID

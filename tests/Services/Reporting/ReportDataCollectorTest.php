@@ -40,7 +40,7 @@ class ReportDataCollectorTest extends TestCase
         $projectRepository = $this->createMock(ProjectRepository::class);
         $projectRepository->expects($this->once())
             ->method('findById')
-            ->willReturn(['service_provider_id' => 1]);
+            ->willReturn(['service_provider_id' => 1, 'client_id' => 2]);
 
         $reportRepository = $this->createMock(ReportRepository::class);
         $vulnerabilityRepository = $this->createMock(VulnerabilityRepository::class);
@@ -58,25 +58,26 @@ class ReportDataCollectorTest extends TestCase
 
         $expectedResult = [
             'date' => date('Y-m-d'),
-            'revisions' => array(),
+            'revisions' => [],
             'project' => array(
                 'attachments' => array(),
-                'service_provider_id' => 1
+                'service_provider_id' => 1,
+                'client_id' => 2
             ),
             'serviceProvider' => null,
             'client' => null,
-            'assets' => array(),
-            'tasks' => array(),
+            'assets' => [],
+            'tasks' => [],
             'findings' => [
-                'list' => array(),
+                'list' => [],
                 'stats' => [
                     0 => ['severity' => 'low', 'count' => 0],
                     1 => ['severity' => 'medium', 'count' => 0],
                     2 => ['severity' => 'high', 'count' => 0],
                     3 => ['severity' => 'critical', 'count' => 0],
                 ]],
-            'users' => array(),
-            'lastRevisionName' => ''
+            'users' => [],
+            'lastRevisionName' => null
         ];
         $this->assertEquals($expectedResult, $result);
     }

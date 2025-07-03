@@ -14,7 +14,9 @@ class User {
 	public ?string $subject_id;
 	public ?bool $active = true;
 	public bool $mfa_enabled = false;
-	public string $full_name;
+	public string $first_name;
+	public string $last_name;
+	public ?string $full_name = '';
 	public ?string $short_bio;
 	public string $username;
 	public string $email;

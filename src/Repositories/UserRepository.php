@@ -10,7 +10,8 @@ class UserRepository extends MysqlRepository
 {
     public const array UPDATABLE_COLUMNS_TYPES = [
         'active' => 'i',
-        'full_name' => 's',
+        'first_name' => 's',
+        'last_name' => 's',
         'short_bio' => 's',
         'email' => 's',
         'role' => 's',
@@ -62,7 +63,7 @@ class UserRepository extends MysqlRepository
     protected function getBaseSelectQueryBuilder(): SelectQueryBuilder
     {
         $queryBuilder = new SelectQueryBuilder('user u');
-        $queryBuilder->setColumns('u.id, u.insert_ts, u.update_ts, u.last_login_ts, u.subject_id, u.active, u.full_name, u.short_bio, u.username, u.email, u.role, u.timezone, u.preferences, u.mfa_enabled');
+        $queryBuilder->setColumns('u.id, u.insert_ts, u.update_ts, u.last_login_ts, u.subject_id, u.active, u.first_name, u.last_name, u.full_name, u.short_bio, u.username, u.email, u.role, u.timezone, u.preferences, u.mfa_enabled');
         return $queryBuilder;
     }
 
@@ -95,9 +96,9 @@ class UserRepository extends MysqlRepository
     public function create(User $user): int
     {
         $insertStmt = new InsertQueryBuilder('user');
-        $insertStmt->setColumns('subject_id, active, full_name, short_bio, username, email, role');
+        $insertStmt->setColumns('subject_id, active, first_name, last_name, short_bio, username, email, role');
         $stmt = $this->mysqlServer->prepare($insertStmt->toSql());
-        $stmt->bind_param('sisssss', $user->subject_id, $user->active, $user->full_name, $user->short_bio, $user->username, $user->email, $user->role);
+        $stmt->bind_param('sissssss', $user->subject_id, $user->active, $user->first_name, $user->last_name, $user->short_bio, $user->username, $user->email, $user->role);
         return $this->executeInsertStatement($stmt);
     }
 
