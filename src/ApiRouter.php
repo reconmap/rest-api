@@ -11,7 +11,8 @@ use OpenApi\Attributes\SecurityScheme;
 use OpenApi\Attributes\Server;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
-use Reconmap\{Controllers\Attachments\ServeAttachmentController,
+use Reconmap\{Controllers\Agents\AgentsRouter,
+    Controllers\Attachments\ServeAttachmentController,
     Controllers\AuditLog\AuditLogRouter,
     Controllers\Auth\AuthRouter,
     Controllers\Clients\ClientsRouter,
@@ -49,6 +50,7 @@ class ApiRouter extends Router
 {
     private const array ROUTER_CLASSES = [
         AuthRouter::class,
+        AgentsRouter::class,
         AttachmentsRouter::class,
         AuditLogRouter::class,
         CommandsRouter::class,

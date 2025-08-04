@@ -65,7 +65,8 @@ readonly class AuthMiddleware implements MiddlewareInterface
 
                 $tokenRole = $this->extractRoleFromToken($token);
                 $request = $request->withAttribute('userId', $dbUser['id'])
-                    ->withAttribute('role', $tokenRole);
+                    ->withAttribute('role', $tokenRole)
+                    ->withAttribute('token', $jwt);
             }
             return $handler->handle($request);
         } catch (ForbiddenException|ExpiredException $e) {

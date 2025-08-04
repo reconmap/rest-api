@@ -561,5 +561,24 @@ CREATE TABLE notification
 ) ENGINE = InnoDB
   CHARSET = utf8mb4;
 
+DROP TABLE IF EXISTS agent;
+
+CREATE TABLE agent
+(
+    id           INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    client_id    VARCHAR(100) NOT NULL,
+    last_boot_at TIMESTAMP    NULL,
+    last_ping_at TIMESTAMP    NULL,
+    active       BOOLEAN      NOT NULL DEFAULT FALSE,
+    version      VARCHAR(100) NULL,
+    hostname     VARCHAR(100) NULL,
+    arch         VARCHAR(100) NULL,
+    cpu          VARCHAR(100) NULL,
+    memory       VARCHAR(100) NULL,
+    os           VARCHAR(100) NULL,
+    PRIMARY KEY (id)
+) ENGINE = InnoDB,
+  CHARSET = utf8mb4;
+
 SET
     FOREIGN_KEY_CHECKS = 1;
