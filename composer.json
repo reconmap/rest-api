@@ -42,7 +42,7 @@
         "symfony/http-foundation": "^7.3",
         "symfony/mailer": "^7.3",
         "symfony/psr-http-message-bridge": "^7.3",
-        "theodo-group/llphant": "^0.10.2",
+        "theodo-group/llphant": "^0.11.1",
         "twig/twig": "^3.0",
         "zircote/swagger-php": "^5"
     },

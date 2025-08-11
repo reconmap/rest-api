@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "692581e85c2d37bac3d10d0512697034",
+    "content-hash": "62ccee703c4b38e7643c41e413c03745",
     "packages": [
         {
             "name": "composer/ca-bundle",
@@ -4758,16 +4758,16 @@
         },
         {
             "name": "theodo-group/llphant",
-            "version": "0.10.8",
+            "version": "0.11.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/LLPhant/LLPhant.git",
-                "reference": "23163245d32b254a5e156e6514168225b0db3416"
+                "reference": "54863b05ebcb1bb5cf82d0542285e3980a3c4111"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/LLPhant/LLPhant/zipball/23163245d32b254a5e156e6514168225b0db3416",
-                "reference": "23163245d32b254a5e156e6514168225b0db3416",
+                "url": "https://api.github.com/repos/LLPhant/LLPhant/zipball/54863b05ebcb1bb5cf82d0542285e3980a3c4111",
+                "reference": "54863b05ebcb1bb5cf82d0542285e3980a3c4111",
                 "shasum": ""
             },
             "require": {
@@ -4841,9 +4841,9 @@
             ],
             "support": {
                 "issues": "https://github.com/LLPhant/LLPhant/issues",
-                "source": "https://github.com/LLPhant/LLPhant/tree/0.10.8"
+                "source": "https://github.com/LLPhant/LLPhant/tree/0.11.1"
             },
-            "time": "2025-07-03T20:03:48+00:00"
+            "time": "2025-08-02T10:08:26+00:00"
         },
         {
             "name": "twig/twig",
