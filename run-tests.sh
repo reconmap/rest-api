@@ -2,7 +2,7 @@
 set -e
 
 export XDEBUG_MODE=coverage
-export PHPUNIT_ARGS=" --display-warnings --coverage-clover=\"/var/www/webapp/tests/clover.xml\""
+export PHPUNIT_ARGS=" --display-warnings --coverage-clover=tests/clover.xml"
 
 pushd /var/www/webapp
 ./vendor/bin/phpunit $PHPUNIT_ARGS
