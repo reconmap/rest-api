@@ -4832,16 +4832,16 @@
         },
         {
             "name": "theodo-group/llphant",
-            "version": "0.11.7",
+            "version": "0.11.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/LLPhant/LLPhant.git",
-                "reference": "33315cf4e250bc238c3fb7efb90df63a3503c6b2"
+                "reference": "070b3818d538725a0e4938f806be808fa5f0d610"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/LLPhant/LLPhant/zipball/33315cf4e250bc238c3fb7efb90df63a3503c6b2",
-                "reference": "33315cf4e250bc238c3fb7efb90df63a3503c6b2",
+                "url": "https://api.github.com/repos/LLPhant/LLPhant/zipball/070b3818d538725a0e4938f806be808fa5f0d610",
+                "reference": "070b3818d538725a0e4938f806be808fa5f0d610",
                 "shasum": ""
             },
             "require": {
@@ -4915,9 +4915,9 @@
             ],
             "support": {
                 "issues": "https://github.com/LLPhant/LLPhant/issues",
-                "source": "https://github.com/LLPhant/LLPhant/tree/0.11.7"
+                "source": "https://github.com/LLPhant/LLPhant/tree/0.11.8"
             },
-            "time": "2025-09-27T20:10:39+00:00"
+            "time": "2025-10-01T07:11:32+00:00"
         },
         {
             "name": "twig/twig",
