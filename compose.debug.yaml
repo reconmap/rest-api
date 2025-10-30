@@ -4,7 +4,7 @@ services:
     image: ghcr.io/reconmap/rest-api:latest
     build:
       context: ./
-      dockerfile: docker/api/development.Dockerfile
+      dockerfile: docker/api/Dockerfile
     volumes:
       - "./config.json:/var/www/webapp/config.json"
       - "./logs:/var/www/webapp/logs"
