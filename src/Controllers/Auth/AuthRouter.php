@@ -9,7 +9,7 @@ class AuthRouter
 
     public function mapRoutes(RouteCollectionInterface $router): void
     {
-        $router->map('POST', '/users/login', LoginController::class);
-        $router->map('POST', '/users/logout', LogoutController::class);
+        $router->map('POST', '/sessions', LoginController::class);
+        $router->map('DELETE', '/sessions', LogoutController::class);
     }
 }
