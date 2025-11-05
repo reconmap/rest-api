@@ -1,8 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Cli\Commands;
 
 use Reconmap\Services\QueueProcessor;
+use Reconmap\Tasks\AiTaskProcessor;
 use Reconmap\Tasks\TaskResultProcessor;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -10,9 +13,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class TaskProcessorCommand extends Command
 {
-    public function __construct(private readonly QueueProcessor      $queueProcessor,
-                                private readonly TaskResultProcessor $taskResultProcessor)
-    {
+    public function __construct(
+        private readonly QueueProcessor      $queueProcessor,
+        private readonly TaskResultProcessor $taskResultProcessor,
+        private readonly AiTaskProcessor $aiTaskProcessor,
+    ) {
         parent::__construct();
     }
 
@@ -24,6 +29,7 @@ class TaskProcessorCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        return $this->queueProcessor->run($this->taskResultProcessor, 'tasks:queue');
+        return $this->queueProcessor->run($this->taskResultProcessor, 'tasks:queue') +
+            $this->queueProcessor->run($this->aiTaskProcessor, 'llm:queue');
     }
 }

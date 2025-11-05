@@ -1,8 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Controllers\Agents;
 
 use OpenApi\Attributes as OpenApi;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
 use Reconmap\Http\Docs\Default200OkResponse;
@@ -15,12 +18,14 @@ use Reconmap\Repositories\AgentRepository;
 class PingAgentController extends Controller
 {
 
-    public function __construct(private readonly AgentRepository $repository)
-    {
-    }
+    public function __construct(private readonly AgentRepository $repository) {}
 
-    public function __invoke(ServerRequestInterface $request): array
+    public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
-        return $this->repository->updateLastPingAt();
+        if ($this->repository->updateLastPingAt()) {
+            return $this->createNoContentResponse();
+        }
+
+        return $this->createBadRequestResponse();
     }
 }
