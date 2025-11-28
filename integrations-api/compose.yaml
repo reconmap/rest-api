@@ -20,7 +20,7 @@ services:
       dockerfile: docker/mysql/Dockerfile
     volumes:
       - mysql_varlib:/var/lib/mysql
-      - ./docker/mysql/initdb:/docker-entrypoint-initdb.d:ro
+      - ./database:/docker-entrypoint-initdb.d:ro
       - ./docker/mysql/overrides.cnf:/etc/mysql/conf.d/overrides.cnf:ro
     ports:
       - "3306:3306"
@@ -55,3 +55,29 @@ services:
       mysql:
         condition: service_healthy
 
+  api:
+    container_name: rmap-api
+    image: ghcr.io/reconmap/rest-api:latest
+    build:
+      context: ./
+      dockerfile: docker/api/Dockerfile
+    volumes:
+      - "./config.json:/var/www/webapp/config.json"
+      - "./logs:/var/www/webapp/logs"
+      - "./data:/var/www/webapp/data"
+      - "./composer.json:/var/www/webapp/composer.json"
+      - "./composer.lock:/var/www/webapp/composer.lock"
+      - "./vendor:/var/www/webapp/vendor"
+      - "./public:/var/www/webapp/public"
+      - "./src:/var/www/webapp/src"
+      - "./packages:/var/www/webapp/packages"
+      - "./resources:/var/www/webapp/resources"
+      - "./tests:/var/www/webapp/tests"
+      - "./phpunit.xml.dist:/var/www/webapp/phpunit.xml.dist"
+      - "./run-tests.sh:/var/www/webapp/run-tests.sh"
+      - "./database:/var/www/webapp/database"
+    ports:
+      - "5510:5510"
+    depends_on:
+      mysql:
+        condition: service_healthy
