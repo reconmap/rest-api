@@ -12,9 +12,9 @@ This is a component of many in the [Reconmap's architecture](https://reconmap.co
 
 ## Runtime requirements
 
-- Docker
-- Docker compose
-- Make
+-   Docker
+-   Docker compose
+-   Make
 
 ## Documentation
 
@@ -54,4 +54,3 @@ save us all time. Thanks!
 
 If you have bugs or feature requests to report please use the [issues](https://github.com/reconmap/application/issues)
 tab on Github.
-

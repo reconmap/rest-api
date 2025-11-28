@@ -20,7 +20,6 @@ class CommandsRouter
         $router->map('DELETE', '/commands/schedules/{commandScheduleId:number}', DeleteCommandScheduleController::class);
         $router->map('PUT', '/commands/{commandId:number}', UpdateCommandController::class);
         $router->map('POST', '/commands/{commandId:number}/schedule', AddCommandScheduleController::class);
-        $router->map('DELETE', '/commands/{commandId:number}', DeleteCommandController::class);
         $router->map('GET', '/commands/output-parsers', GetCommandOutputParsersController::class);
         $router->map('POST', '/commands', CreateCommandController::class);
         $router->map('GET', '/commands', GetCommandsController::class);

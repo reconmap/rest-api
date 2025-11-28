@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Controllers\Projects;
 
@@ -11,7 +13,6 @@ class ProjectsRouter
     {
         $router->map('GET', '/projects', GetProjectsController::class);
         $router->map('GET', '/projects/{projectId:number}', GetProjectController::class);
-        $router->map('DELETE', '/projects/{projectId:number}', DeleteProjectController::class);
         $router->map('GET', '/projects/{projectId:number}/vault', ReadProjectVaultController::class);
         $router->map('PUT', '/projects/{projectId:number}', UpdateProjectController::class);
         $router->map('PATCH', '/projects/{projectId:number}', UpdateProjectController::class);
