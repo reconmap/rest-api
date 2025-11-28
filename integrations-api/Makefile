@@ -19,11 +19,19 @@ ifndef GIT_BRANCH_NAME
 GIT_BRANCH_NAME = $(shell git rev-parse --abbrev-ref HEAD)
 endif
 
-define composer_install
+define composer_install 
 	echo
 	echo Running composer install on $(1)
 	docker compose run --rm --user reconmapper -w $(1) --entrypoint composer api install
 endef
+
+.PHONY: prepare-config
+prepare-config:
+	[ -f config.json ] || cp config-template.json config.json
+
+.PHONY: prepare-dirs
+prepare-dirs:
+	mkdir -p vendor logs
 
 .SILENT: install-deps
 .PHONY: install-deps
@@ -52,7 +60,7 @@ security-tests:
 	docker compose run --rm -w /var/www/webapp --entrypoint bash api -c "wget https://github.com/fabpot/local-php-security-checker/releases/download/v2.0.5/local-php-security-checker_2.0.5_linux_amd64 -O security-checker && chmod +x security-checker && ./security-checker"
 
 .PHONY: start
-start:
+start: prepare-config prepare-dirs
 	docker compose up -d
 
 .PHONY: validate

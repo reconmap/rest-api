@@ -1,7 +1,0 @@
-SET FOREIGN_KEY_CHECKS = 0;
-
-ALTER TABLE audit_log
-    DROP FOREIGN KEY audit_log_ibfk_1,
-    ADD CONSTRAINT audit_log_fk_user_id FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE;
-
-SET FOREIGN_KEY_CHECKS = 1;
