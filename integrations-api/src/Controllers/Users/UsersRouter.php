@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Controllers\Users;
 
@@ -16,6 +18,5 @@ class UsersRouter
         $router->map('GET', '/users/{userId:number}', GetUserController::class);
         $router->map('PATCH', '/users/{userId:number}', UpdateUserController::class);
         $router->map('GET', '/users/{userId:number}/activity', GetUserActivityController::class);
-        $router->map('DELETE', '/users/{userId:number}', DeleteUserController::class);
     }
 }

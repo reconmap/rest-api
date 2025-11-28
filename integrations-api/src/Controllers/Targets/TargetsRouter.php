@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Controllers\Targets;
 
@@ -11,6 +13,5 @@ class TargetsRouter
         $router->map('POST', '/targets', CreateTargetController::class);
         $router->map('GET', '/targets', GetTargetsController::class);
         $router->map('GET', '/targets/{targetId:number}', GetTargetController::class);
-        $router->map('DELETE', '/targets/{targetId:number}', DeleteTargetController::class);
     }
 }

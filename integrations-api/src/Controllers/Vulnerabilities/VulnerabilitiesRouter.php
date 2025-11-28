@@ -1,10 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Controllers\Vulnerabilities;
 
 use League\Route\RouteCollectionInterface;
 use Reconmap\Controllers\Vulnerabilities\Categories\CreateVulnerabilityCategoryController;
-use Reconmap\Controllers\Vulnerabilities\Categories\DeleteVulnerabilityCategoryController;
 use Reconmap\Controllers\Vulnerabilities\Categories\GetVulnerabilityCategoriesController;
 use Reconmap\Controllers\Vulnerabilities\Categories\GetVulnerabilityChildrenCategoriesController;
 use Reconmap\Controllers\Vulnerabilities\Categories\UpdateVulnerabilityCategoryController;
@@ -18,7 +19,6 @@ class VulnerabilitiesRouter
         $router->map('GET', '/vulnerabilities/categories', GetVulnerabilityCategoriesController::class);
         $router->map('GET', '/vulnerabilities/categories/{categoryId:number}', GetVulnerabilityChildrenCategoriesController::class);
         $router->map('PUT', '/vulnerabilities/categories/{categoryId:number}', UpdateVulnerabilityCategoryController::class);
-        $router->map('DELETE', '/vulnerabilities/categories/{categoryId:number}', DeleteVulnerabilityCategoryController::class);
 
         /** Vulnerabilities */
         $router->map('GET', '/vulnerabilities', GetVulnerabilitiesController::class);

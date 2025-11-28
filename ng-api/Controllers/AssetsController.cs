@@ -1,3 +1,5 @@
+using api_v2.Common.Extensions;
+using api_v2.Domain.Entities;
 using api_v2.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +10,15 @@ namespace api_v2.Controllers;
 [ApiController]
 public class AssetsController(AppDbContext dbContext) : ControllerBase
 {
+    [HttpPost]
+    public async Task<IActionResult> Create(Asset asset)
+    {
+        dbContext.Assets.Add(asset);
+        await dbContext.SaveChangesAsync();
+
+        return CreatedAtAction(nameof(GetAll), new { id = asset.Id }, asset);
+    }
+
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] int? limit)
     {
@@ -19,5 +30,17 @@ public class AssetsController(AppDbContext dbContext) : ControllerBase
 
         var page = await q.Take(take).ToListAsync();
         return Ok(page);
+    }
+
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var deleted = await dbContext.Assets
+            .Where(n => n.Id == id)
+            .ExecuteDeleteAsync();
+
+        if (deleted == 0) return NotFound();
+
+        return NoContent();
     }
 }

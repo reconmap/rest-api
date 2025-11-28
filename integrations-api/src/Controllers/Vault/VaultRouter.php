@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Controllers\Vault;
 
@@ -10,7 +12,6 @@ class VaultRouter
     {
         $router->map('GET', '/vault', GetVaultSecretsController::class);
         $router->map('POST', '/vault', CreateVaultItemController::class);
-        $router->map('DELETE', '/vault/{vaultItemId:number}', DeleteVaultItemController::class);
         $router->map('POST', '/vault/{vaultItemId:number}', ReadVaultItemController::class);
         $router->map('PUT', '/vault/{vaultItemId:number}', UpdateVaultItemController::class);
     }

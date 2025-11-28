@@ -102,10 +102,6 @@ db-reset:
 db-import:
 	cat database/{01,02,03}*.sql | docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet reconmap
 
-.PHONY: db-migrate
-db-migrate:
-	cat database/migrations/changes$(MIGRATE_FROM_VERSION)-$(MIGRATE_TO_VERSION).sql | docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet reconmap
-
 .PHONY: redis-shell
 redis-shell:
 	@docker compose exec redis redis-cli

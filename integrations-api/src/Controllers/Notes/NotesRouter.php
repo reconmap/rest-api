@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Controllers\Notes;
 
@@ -10,6 +12,5 @@ class NotesRouter
     {
         $router->map('POST', '/notes', CreateNoteController::class);
         $router->map('GET', '/notes', GetNotesController::class);
-        $router->map('DELETE', '/notes/{entityId:number}', DeleteNoteController::class);
     }
 }

@@ -1,3 +1,5 @@
+using api_v2.Common.Extensions;
+using api_v2.Domain.Entities;
 using api_v2.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +12,16 @@ public class NotesController(AppDbContext dbContext, ILogger<NotesController> lo
     : ControllerBase
 {
     private readonly ILogger _logger = logger;
+
+    [HttpPost]
+    public async Task<IActionResult> Create(Note note)
+    {
+        note.CreatedByUid = HttpContext.GetCurrentUser()!.Id;
+        dbContext.Notes.Add(note);
+        await dbContext.SaveChangesAsync();
+
+        return CreatedAtAction(nameof(GetAll), new { id = note.Id }, note);
+    }
 
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] int? limit)

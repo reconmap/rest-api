@@ -19,7 +19,7 @@ ifndef GIT_BRANCH_NAME
 GIT_BRANCH_NAME = $(shell git rev-parse --abbrev-ref HEAD)
 endif
 
-define composer_install 
+define composer_install
 	echo
 	echo Running composer install on $(1)
 	docker compose run --rm --user reconmapper -w $(1) --entrypoint composer api install
@@ -98,10 +98,6 @@ push:
 
 # Database targets
 
-.PHONY: db-shell
-db-shell:
-	@docker compose exec mysql mysql --silent -uroot -preconmuppet reconmap
-
 .PHONY: db-reset
 db-reset:
 	cat database/{01,02}*.sql | docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet reconmap
@@ -110,10 +106,4 @@ db-reset:
 db-import:
 	cat database/{01,02,03}*.sql | docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet reconmap
 
-.PHONY: db-migrate
-db-migrate:
-	cat database/migrations/changes$(MIGRATE_FROM_VERSION)-$(MIGRATE_TO_VERSION).sql | docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet reconmap
 
-.PHONY: redis-shell
-redis-shell:
-	@docker compose exec redis redis-cli

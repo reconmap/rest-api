@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Controllers\Clients;
 
@@ -13,6 +15,5 @@ class ClientsRouter
         $router->map('GET', '/clients/{clientId:number}', GetClientController::class);
         $router->map('GET', '/clients/{clientId:number}/contacts', GetClientContactsController::class);
         $router->map('PUT', '/clients/{clientId:number}', UpdateClientController::class);
-        $router->map('DELETE', '/clients/{clientId:number}', DeleteClientController::class);
     }
 }
