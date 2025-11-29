@@ -40,6 +40,8 @@ public class User : TimestampedEntity
     [StringLength(100)]
     public string LastName { get; set; } = default!;
 
+    [Column("role")] public UserRole Role { get; set; } = UserRole.User;
+
     // Computed column in SQL (VIRTUAL GENERATED)
     [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     [Column("full_name")]

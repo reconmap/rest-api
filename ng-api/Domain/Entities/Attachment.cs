@@ -15,7 +15,9 @@ public class Attachment : TimestampedEntity
 
     [Column("parent_id")] public uint ParentId { get; set; }
 
-    [Column("submitter_uid")] public uint SubmitterUserId { get; set; }
+    [Column("created_by_uid")] public uint CreatedByUid { get; set; }
+
+    [ForeignKey(nameof(CreatedByUid))] public User? CreatedBy { get; set; }
 
     [Column("client_file_name")]
     [Required]

@@ -82,7 +82,7 @@ public class AttachmentsController(AppDbContext dbContext, ILogger<AttachmentsCo
 
             var attachment = new Attachment
             {
-                SubmitterUserId = HttpContext.GetCurrentUser()!.Id,
+                CreatedByUid = HttpContext.GetCurrentUser()!.Id,
                 ParentType = parentType,
                 ParentId = parentId,
                 ClientFileName = file.FileName,

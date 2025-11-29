@@ -20,4 +20,16 @@ public class NotificationsController(AppDbContext dbContext) : ControllerBase
         var page = await q.Take(take).ToListAsync();
         return Ok(page);
     }
+
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var deleted = await dbContext.Notifications
+            .Where(n => n.Id == id)
+            .ExecuteDeleteAsync();
+
+        if (deleted == 0) return NotFound();
+
+        return NoContent();
+    }
 }

@@ -30,6 +30,5 @@ class VulnerabilitiesRouter
         $router->map('POST', '/vulnerabilities/{vulnerabilityId:number}/clone', CloneVulnerabilityController::class);
         $router->map('PUT', '/vulnerabilities/{vulnerabilityId:number}', UpdateVulnerabilityController::class);
         $router->map('PATCH', '/vulnerabilities/{vulnerabilityId:number}', UpdateVulnerabilityController::class);
-        $router->map('DELETE', '/vulnerabilities/{vulnerabilityId:number}', DeleteVulnerabilityController::class);
     }
 }

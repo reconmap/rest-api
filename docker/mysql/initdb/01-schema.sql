@@ -509,10 +509,10 @@ CREATE TABLE attachment
 (
     id               INT UNSIGNED                                                                             NOT NULL AUTO_INCREMENT,
     created_at  TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_by_uid    INT UNSIGNED                                                                             NOT NULL,
     updated_at  TIMESTAMP               NULL ON UPDATE CURRENT_TIMESTAMP,
     parent_type      ENUM ('project', 'report', 'command', 'task', 'vulnerability', 'organisation', 'client') NOT NULL,
     parent_id        INT UNSIGNED                                                                             NOT NULL,
-    submitter_uid    INT UNSIGNED                                                                             NOT NULL,
     client_file_name VARCHAR(200)                                                                             NOT NULL,
     file_name        VARCHAR(200)                                                                             NOT NULL,
     file_size        INT UNSIGNED                                                                             NOT NULL,
@@ -520,7 +520,7 @@ CREATE TABLE attachment
     file_hash        VARCHAR(10000)                                                                           NOT NULL,
 
     PRIMARY KEY (id),
-    FOREIGN KEY (submitter_uid) REFERENCES user (id) ON DELETE NO ACTION
+    FOREIGN KEY (created_by_uid) REFERENCES user (id) ON DELETE NO ACTION
 ) ENGINE = InnoDB;
 
 DROP FUNCTION IF EXISTS PARENT_CHILD_NAME;

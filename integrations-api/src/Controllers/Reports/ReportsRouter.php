@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Controllers\Reports;
 
@@ -15,6 +17,5 @@ class ReportsRouter
         $router->map('GET', '/reports/preview', GetReportPreviewController::class);
         $router->map('POST', '/reports/{reportId:number}/send', SendReportController::class);
         $router->map('POST', '/reports', CreateReportController::class);
-        $router->map('DELETE', '/reports/{reportId:number}', DeleteReportController::class);
     }
 }

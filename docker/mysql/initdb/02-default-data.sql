@@ -138,42 +138,42 @@ VALUES ('Contributors', 'no-reply@reconmap.com');
 INSERT INTO organisation (name, url, contact_id)
 VALUES ('Reconmap organisation', 'https://reconmap.com', LAST_INSERT_ID());
 
-INSERT INTO report (project_id, generated_by_uid, is_template, version_name, version_description)
+INSERT INTO report (project_id, created_by_uid, is_template, version_name, version_description)
 VALUES (NULL, @admin_user_id, TRUE, 'Report template (HTML)', 'Default report template in HTML format');
 
-INSERT INTO attachment (parent_type, parent_id, submitter_uid, client_file_name, file_name, file_size, file_mimetype,
+INSERT INTO attachment (parent_type, parent_id, created_by_uid, client_file_name, file_name, file_size, file_mimetype,
                         file_hash)
 VALUES ('report', LAST_INSERT_ID(), @admin_user_id, 'default-report-template.html', 'default-report-template.html', 0,
         'text/html', '');
 
-INSERT INTO report (project_id, generated_by_uid, is_template, version_name, version_description)
+INSERT INTO report (project_id, created_by_uid, is_template, version_name, version_description)
 VALUES (NULL, @admin_user_id, TRUE, 'Report template (Word)', 'Default report template in Word format');
 
-INSERT INTO attachment (parent_type, parent_id, submitter_uid, client_file_name, file_name, file_size, file_mimetype,
+INSERT INTO attachment (parent_type, parent_id, created_by_uid, client_file_name, file_name, file_size, file_mimetype,
                         file_hash)
 VALUES ('report', LAST_INSERT_ID(), @admin_user_id, 'default-report-template.docx', 'default-report-template.docx', 0,
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document', '');
 
-INSERT INTO report (project_id, generated_by_uid, is_template, version_name, version_description)
+INSERT INTO report (project_id, created_by_uid, is_template, version_name, version_description)
 VALUES (NULL, @admin_user_id, TRUE, 'Report template (MD)', 'Default report template in Markdown format');
 
-INSERT INTO attachment (parent_type, parent_id, submitter_uid, client_file_name, file_name, file_size, file_mimetype,
+INSERT INTO attachment (parent_type, parent_id, created_by_uid, client_file_name, file_name, file_size, file_mimetype,
                         file_hash)
 VALUES ('report', LAST_INSERT_ID(), @admin_user_id, 'default-report-template.md', 'default-report-template.md', 0,
         'text/markdown', '');
 
-INSERT INTO report (project_id, generated_by_uid, is_template, version_name, version_description)
+INSERT INTO report (project_id, created_by_uid, is_template, version_name, version_description)
 VALUES (NULL, @admin_user_id, TRUE, 'Report template (TXT)', 'Default report template in Text format');
 
-INSERT INTO attachment (parent_type, parent_id, submitter_uid, client_file_name, file_name, file_size, file_mimetype,
+INSERT INTO attachment (parent_type, parent_id, created_by_uid, client_file_name, file_name, file_size, file_mimetype,
                         file_hash)
 VALUES ('report', LAST_INSERT_ID(), @admin_user_id, 'default-report-template.txt', 'default-report-template.txt', 0,
         'text/plain', '');
 
-INSERT INTO report (project_id, generated_by_uid, is_template, version_name, version_description)
+INSERT INTO report (project_id, created_by_uid, is_template, version_name, version_description)
 VALUES (NULL, @admin_user_id, TRUE, 'Report template (TEX)', 'Default report template in LaTeX format');
 
-INSERT INTO attachment (parent_type, parent_id, submitter_uid, client_file_name, file_name, file_size, file_mimetype,
+INSERT INTO attachment (parent_type, parent_id, created_by_uid, client_file_name, file_name, file_size, file_mimetype,
                         file_hash)
 VALUES ('report', LAST_INSERT_ID(), @admin_user_id, 'default-report-template.tex', 'default-report-template.tex', 0,
         'application/x-tex', '');

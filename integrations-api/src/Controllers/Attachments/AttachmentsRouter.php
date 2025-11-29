@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Controllers\Attachments;
 
@@ -12,6 +14,5 @@ class AttachmentsRouter
         $router->map('GET', '/attachments/{attachmentId:number}', DownloadAttachmentController::class);
         $router->map('POST', '/attachments', UploadAttachmentController::class);
         $router->map('POST', '/attachments/{attachmentId:number}', UpdateAttachmentController::class);
-        $router->map('DELETE', '/attachments/{attachmentId:number}', DeleteAttachmentController::class);
     }
 }

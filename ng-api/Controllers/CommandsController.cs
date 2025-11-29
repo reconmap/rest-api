@@ -36,6 +36,30 @@ public class CommandsController(AppDbContext dbContext) : ControllerBase
         return Ok(page);
     }
 
+
+    [HttpGet("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetCommand(int id)
+    {
+        var command = await dbContext.Commands.Include(c => c.CreatedBy).FirstOrDefaultAsync(c => c.Id == id);
+        if (command == null) return NotFound();
+
+        return Ok(command);
+    }
+
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> DeleteCommand(int id)
+    {
+        var deleted = await dbContext.Commands
+            .Where(n => n.Id == id)
+            .ExecuteDeleteAsync();
+
+        if (deleted == 0) return NotFound();
+
+        return NoContent();
+    }
+
     [HttpGet("schedules")]
     public async Task<IActionResult> GetCommandSchedules([FromQuery] int? limit)
     {
@@ -63,43 +87,7 @@ public class CommandsController(AppDbContext dbContext) : ControllerBase
         return CreatedAtAction(nameof(GetCommand), new { id = command.Id }, command);
     }
 
-    [HttpGet("{id}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetCommand(int id)
-    {
-        var command = await dbContext.Commands.Include(c => c.CreatedBy).FirstOrDefaultAsync(c => c.Id == id);
-        if (command == null) return NotFound();
-
-        return Ok(command);
-    }
-
-    [HttpDelete("{id:int}")]
-    public async Task<IActionResult> DeleteCommand(int id)
-    {
-        var deleted = await dbContext.Commands
-            .Where(n => n.Id == id)
-            .ExecuteDeleteAsync();
-
-        if (deleted == 0) return NotFound();
-
-        return NoContent();
-    }
-
-    [HttpGet("{id}/usages")]
-    public async Task<IActionResult> GetUsages([FromQuery] int? limit)
-    {
-        const int maxLimit = 500;
-        var take = Math.Min(limit ?? 100, maxLimit);
-
-        var q = dbContext.CommandUsages.AsNoTracking()
-            .OrderByDescending(a => a.CreatedAt);
-
-        var page = await q.Take(take).ToListAsync();
-        return Ok(page);
-    }
-
-    [HttpGet("{id}/schedules")]
+    [HttpGet("{commandId:int}/schedules")]
     public async Task<IActionResult> GetSchedules([FromQuery] int? limit)
     {
         const int maxLimit = 500;
@@ -110,5 +98,17 @@ public class CommandsController(AppDbContext dbContext) : ControllerBase
 
         var page = await q.Take(take).ToListAsync();
         return Ok(page);
+    }
+
+    [HttpDelete("{commandId:int}/schedules/{id:int}")]
+    public async Task<IActionResult> DeleteSchedule(int commandId, int id)
+    {
+        var deleted = await dbContext.CommandSchedules
+            .Where(n => n.CommandId == commandId && n.Id == id)
+            .ExecuteDeleteAsync();
+
+        if (deleted == 0) return NotFound();
+
+        return NoContent();
     }
 }

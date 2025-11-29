@@ -43,10 +43,17 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<User>()
+            .Property(d => d.Role)
+            .HasConversion(
+                v => v.ToString().ToLower(), // C# enum → DB string
+                v => Enum.Parse<UserRole>(v, ignoreCase: true)
+            );
+
         modelBuilder.Entity<Document>()
             .Property(d => d.Visibility)
             .HasConversion(
-                v => v.ToString().ToLower(), // C# enum → DB string
+                v => v.ToString().ToLower(),
                 v => Enum.Parse<DocumentVisibility>(v, ignoreCase: true)
             );
         modelBuilder.Entity<Document>()

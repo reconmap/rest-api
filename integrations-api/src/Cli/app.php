@@ -1,10 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 $applicationDir = dirname(__DIR__, 2);
 require $applicationDir . '/vendor/autoload.php';
 
 use Monolog\Logger;
-use Reconmap\Cli\Commands\DatabaseMigratorCommand;
 use Reconmap\Cli\Commands\EmailProcessorCommand;
 use Reconmap\Cli\Commands\TaskProcessorCommand;
 use Reconmap\Cli\Commands\TestDataGeneratorCommand;
@@ -40,7 +41,6 @@ $container->compile();
 ApplicationContainer::initialise($container, $config, $logger);
 
 $app = new Application('Reconmap internal CLI');
-$app->add($container->get(DatabaseMigratorCommand::class));
 $app->add($container->get(EmailProcessorCommand::class));
 $app->add($container->get(TaskProcessorCommand::class));
 $app->add($container->get(TestDataGeneratorCommand::class));

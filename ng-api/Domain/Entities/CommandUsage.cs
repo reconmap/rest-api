@@ -11,9 +11,9 @@ public class CommandUsage : TimestampedEntity
     [Column("command_id")] [Required] public uint CommandId { get; set; }
 
     [Column("created_by_uid")] public uint CreatedByUid { get; set; }
-    
+
     [ForeignKey(nameof(CreatedByUid))]
-    public User CreatedBy { get; set; }
+    public User? CreatedBy { get; set; }
 
     [Column("name")] [MaxLength(2000)] public string? Name { get; set; }
 

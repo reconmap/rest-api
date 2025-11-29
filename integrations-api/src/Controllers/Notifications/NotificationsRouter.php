@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Controllers\Notifications;
 
@@ -11,6 +13,5 @@ class NotificationsRouter
         $router->map('GET', '/notifications', GetNotificationsController::class);
         $router->map('PATCH', '/notifications', BulkUpdateNotificationsController::class);
         $router->map('PUT', '/notifications/{notificationId:number}', UpdateNotificationController::class);
-        $router->map('DELETE', '/notifications/{notificationId:number}', DeleteNotificationController::class);
     }
 }
