@@ -24,6 +24,7 @@ public class AuditLogController(AppDbContext dbContext) : ControllerBase
         var totalPages = total == 0 ? 0 : Math.Ceiling((decimal)(total / maxLimit));
 
         var q = dbContext.AuditEntries.AsNoTracking()
+            .Include(a=>a.CreatedBy)
             .OrderByDescending(a => a.CreatedAt);
 
         var page = await q.Skip(start).Take(maxLimit).ToListAsync();

@@ -9,9 +9,6 @@ VALUES (@admin_user_id, 'fec17265-a0ae-4d5a-9e20-63487fc21b67', 'Administrator',
 INSERT INTO audit_log (user_id, client_ip, action, object)
 VALUES (NULL, INET_ATON('127.0.0.1'), 'Initialised', 'System');
 
-INSERT INTO database_migration(from_version, to_version)
-VALUES (0, 10000);
-
 INSERT INTO vulnerability_category (id, parent_id, name, description)
 VALUES (1, NULL, 'General', 'General categories.'),
        (2, 1, 'Access Controls', 'Related to authorization of users, and assessment of rights.'),
@@ -196,12 +193,12 @@ VALUES ('Managed security monitoring',
        ('Penetration testing',
         'Also known as pentesting, which entails simulating a cyberattack against the organization’s information and technology assets to check for exploitable vulnerabilities. This service constitutes a form of ethical hacking that can be very effective at uncovering the vulnerabilities that may be successfully targeted by hackers ');
 
-INSERT INTO project (creator_uid, name, description, engagement_end_date)
+INSERT INTO project (created_by_uid, name, description, engagement_end_date)
 VALUES (@admin_user_id, 'Onboarding to Reconmap',
         'Project to ensure all Reconmap\'s onboarding tasks are done in order.',
         CURRENT_DATE);
 
-INSERT INTO task (creator_uid, assignee_uid, project_id, summary, description, priority)
+INSERT INTO task (creator_uid, assigned_to_uid, project_id, summary, description, priority)
 VALUES (1, 1, 1, '1. Update your organisation details', '[Follow this link](/settings/organisation)', 'medium'),
        (1, 1, 1, '2. Update your preferences', '[Follow this link](/users/preferences)', 'medium'),
        (1, 1, 1, '3. Invite your team', '[Follow this link](/users/create)', 'medium'),

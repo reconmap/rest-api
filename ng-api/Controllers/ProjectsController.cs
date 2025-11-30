@@ -4,31 +4,39 @@ using api_v2.Domain.Entities;
 using api_v2.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 
 namespace api_v2.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class ProjectsController(AppDbContext dbContext) : ControllerBase
+public class ProjectsController(AppDbContext dbContext, IConnectionMultiplexer redis) : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> CreateCommand([FromBody] Project command)
+    public async Task<IActionResult> Create([FromBody] Project project)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        command.CreatedByUid = HttpContext.GetCurrentUser()!.Id;
-        dbContext.Projects.Add(command);
+        project.CreatedByUid = HttpContext.GetCurrentUser()!.Id;
+        dbContext.Projects.Add(project);
         await dbContext.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetProject), new { id = command.Id }, command);
+        return CreatedAtAction(nameof(GetOne), new { id = project.Id }, project);
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetProjects([FromQuery] int? limit)
+    public async Task<IActionResult> GetMany([FromQuery] int? limit, [FromQuery] string? keywords)
     {
         const int maxLimit = 500;
         var take = Math.Min(limit ?? 100, maxLimit);
+
+        if (!string.IsNullOrEmpty(keywords))
+        {
+            var setName = $"recent-searches-user${HttpContext.GetCurrentUser()!.Id}";
+            var db = redis.GetDatabase();
+            db.SortedSetAdd(setName, keywords, new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds());
+        }
 
         var q = dbContext.Projects.AsNoTracking()
             .OrderByDescending(a => a.CreatedAt);
@@ -50,7 +58,7 @@ public class ProjectsController(AppDbContext dbContext) : ControllerBase
     [HttpGet("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetProject(uint id)
+    public async Task<IActionResult> GetOne(uint id)
     {
         var existing = await dbContext.Projects.FindAsync(id);
         if (existing == null) return NotFound();
@@ -73,16 +81,19 @@ public class ProjectsController(AppDbContext dbContext) : ControllerBase
     [HttpPost("{projectId:int}/members")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> AddProjectMember(uint projectId,  [FromBody] JsonElement body)
+    public async Task<IActionResult> AddProjectMember(uint projectId, [FromBody] JsonElement body)
     {
         if (!body.TryGetProperty("userId", out var value))
             return BadRequest("Missing userId");
 
         uint userId;
 
-        try {
+        try
+        {
             userId = value.GetUInt32();
-        } catch {
+        }
+        catch
+        {
             return BadRequest("Invalid userId");
         }
 
@@ -110,11 +121,11 @@ public class ProjectsController(AppDbContext dbContext) : ControllerBase
                 u => u.Id,
                 (pu, u) => new
                 {
-                    Id = pu.Id,
+                    pu.Id,
                     UserId = u.Id,
-                    FullName = u.FullName,
-                    Email = u.Email,
-                    Role = u.Role
+                    u.FullName,
+                    u.Email,
+                    u.Role
                 }
             )
             .ToListAsync();

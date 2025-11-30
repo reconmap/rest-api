@@ -50,13 +50,16 @@ public class AttachmentsController(AppDbContext dbContext, ILogger<AttachmentsCo
     }
 
     [HttpDelete("{id:int}")]
-    public async Task<IActionResult> DeleteAttachment(int id)
+    public async Task<IActionResult> DeleteAttachment(uint id)
     {
-        var deleted = await dbContext.Attachments
-            .Where(n => n.Id == id)
-            .ExecuteDeleteAsync();
+        var attachment = await dbContext.Attachments.FindAsync(id);
+        if (attachment == null) return NotFound();
 
-        if (deleted == 0) return NotFound();
+        var path = Path.Combine(Directory.GetCurrentDirectory(), "data", "attachments", attachment.FileName);
+        System.IO.File.Delete(path);
+
+        dbContext.Attachments.Remove(attachment);
+        await dbContext.SaveChangesAsync();
 
         return NoContent();
     }

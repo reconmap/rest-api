@@ -32,6 +32,17 @@ public class AssetsController(AppDbContext dbContext) : ControllerBase
         return Ok(page);
     }
 
+    [HttpGet("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetOne(uint id)
+    {
+        var document = await dbContext.Assets.FindAsync(id);
+        if (document == null) return NotFound();
+
+        return Ok(document);
+    }
+
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {

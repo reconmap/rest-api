@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap;
 
@@ -7,7 +9,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Reconmap\Controllers\Attachments\AttachmentsRouter;
 use Reconmap\Controllers\AuditLog\AuditLogRouter;
-use Reconmap\Controllers\Auth\AuthRouter;
 use Reconmap\Controllers\Clients\ClientsRouter;
 use Reconmap\Controllers\Commands\CommandsRouter;
 use Reconmap\Controllers\Contacts\ContactsRouter;
@@ -26,7 +27,6 @@ class ControllerRoutesTest extends TestCase
     public static function routerDataProvider(): array
     {
         return [
-            [AuthRouter::class],
             [AttachmentsRouter::class],
             [AuditLogRouter::class],
             [CommandsRouter::class],

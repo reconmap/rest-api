@@ -12,6 +12,5 @@ class TargetsRouter
     {
         $router->map('POST', '/targets', CreateTargetController::class);
         $router->map('GET', '/targets', GetTargetsController::class);
-        $router->map('GET', '/targets/{targetId:number}', GetTargetController::class);
     }
 }

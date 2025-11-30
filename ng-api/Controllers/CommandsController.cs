@@ -36,7 +36,6 @@ public class CommandsController(AppDbContext dbContext) : ControllerBase
         return Ok(page);
     }
 
-
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

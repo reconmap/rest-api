@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 $applicationDir = realpath('../');
 
@@ -6,11 +8,9 @@ require $applicationDir . '/vendor/autoload.php';
 
 use Monolog\Logger;
 use Reconmap\ApiRouter;
-use Reconmap\Events\SearchEvent;
 use Reconmap\Services\ApplicationConfig;
 use Reconmap\Services\ApplicationContainer;
 use Reconmap\Services\Logging\LoggingConfigurator;
-use Reconmap\Services\SearchListener;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -55,7 +55,6 @@ $apiRouter->mapRoutes($container, $config);
  * @var EventDispatcher $eventDispatcher
  */
 $eventDispatcher = $container->get(EventDispatcher::class);
-$eventDispatcher->addListener(SearchEvent::class, $container->get(SearchListener::class));
 
 $apiResponse = $apiRouter->dispatch($guzzleRequest);
 

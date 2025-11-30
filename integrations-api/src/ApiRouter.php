@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap;
 
@@ -11,20 +13,16 @@ use OpenApi\Attributes\SecurityScheme;
 use OpenApi\Attributes\Server;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
-use Reconmap\{Controllers\Agents\AgentsRouter,
+use Reconmap\{
     Controllers\Attachments\ServeAttachmentController,
     Controllers\AuditLog\AuditLogRouter,
-    Controllers\Auth\AuthRouter,
     Controllers\Clients\ClientsRouter,
     Controllers\Commands\CommandsRouter,
-    Controllers\Contacts\ContactsRouter,
     Controllers\Documents\DocumentsRouter,
     Controllers\Notes\NotesRouter,
     Controllers\Notifications\NotificationsRouter,
-    Controllers\ProjectCategories\ProjectCategoriesRouter,
     Controllers\Projects\ProjectsRouter,
     Controllers\Reports\ReportsRouter,
-    Controllers\System\CustomFields\CustomFieldsRouter,
     Controllers\System\GetOpenApiYamlController,
     Controllers\System\SystemRouter,
     Controllers\Targets\TargetsRouter,
@@ -37,7 +35,8 @@ use Reconmap\{Controllers\Agents\AgentsRouter,
     Http\CorsResponseDecorator,
     Http\SecurityMiddleware,
     Http\StaticMiddleware,
-    Services\ApplicationConfig};
+    Services\ApplicationConfig
+};
 use Reconmap\Controllers\Attachments\AttachmentsRouter;
 
 #[OpenApi(
@@ -49,21 +48,16 @@ use Reconmap\Controllers\Attachments\AttachmentsRouter;
 class ApiRouter extends Router
 {
     private const array ROUTER_CLASSES = [
-        AuthRouter::class,
-        AgentsRouter::class,
         AttachmentsRouter::class,
         AuditLogRouter::class,
         CommandsRouter::class,
-        ContactsRouter::class,
         ClientsRouter::class,
         DocumentsRouter::class,
         NotesRouter::class,
         NotificationsRouter::class,
         ProjectsRouter::class,
-        ProjectCategoriesRouter::class,
         ReportsRouter::class,
         SystemRouter::class,
-        CustomFieldsRouter::class,
         TargetsRouter::class,
         TasksRouter::class,
         UsersRouter::class,

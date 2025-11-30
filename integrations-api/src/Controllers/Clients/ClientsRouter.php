@@ -12,7 +12,6 @@ class ClientsRouter
     {
         $router->map('POST', '/clients', CreateClientController::class);
         $router->map('GET', '/clients', GetClientsController::class);
-        $router->map('GET', '/clients/{clientId:number}', GetClientController::class);
         $router->map('GET', '/clients/{clientId:number}/contacts', GetClientContactsController::class);
         $router->map('PUT', '/clients/{clientId:number}', UpdateClientController::class);
     }

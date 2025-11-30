@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Controllers\Projects;
 
@@ -7,7 +9,6 @@ use OpenApi\Attributes as OpenApi;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Reconmap\Controllers\Controller;
-use Reconmap\Events\SearchEvent;
 use Reconmap\Http\Docs\Default200OkResponse;
 use Reconmap\Http\Docs\Default403UnauthorisedResponse;
 use Reconmap\Repositories\ProjectRepository;
@@ -25,11 +26,11 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 #[Default403UnauthorisedResponse]
 class GetProjectsController extends Controller
 {
-    public function __construct(private readonly ProjectRepository     $projectRepository,
-                                private readonly ProjectSearchCriteria $projectSearchCriteria,
-                                private readonly EventDispatcher       $eventDispatcher)
-    {
-    }
+    public function __construct(
+        private readonly ProjectRepository     $projectRepository,
+        private readonly ProjectSearchCriteria $projectSearchCriteria,
+        private readonly EventDispatcher       $eventDispatcher
+    ) {}
 
     public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
@@ -39,7 +40,6 @@ class GetProjectsController extends Controller
 
         if (isset($params['keywords'])) {
             $this->projectSearchCriteria->addKeywordsCriterion($params['keywords']);
-            $this->eventDispatcher->dispatch(new SearchEvent($user->id, $params['keywords']));
         }
         if (isset($params['clientId'])) {
             $this->projectSearchCriteria->addClientCriterion(intval($params['clientId']));
