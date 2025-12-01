@@ -23,7 +23,7 @@ public class OrganisationsController(AppDbContext dbContext, ILogger<Organisatio
         AuditAction(AuditActions.Created, "Organisation", new { id = entity.Id });
         await dbContext.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(Get), new { id = entity.Id }, entity);
+        return CreatedAtAction(nameof(GetOne), new { id = entity.Id }, entity);
     }
 
     [HttpGet]
@@ -42,9 +42,11 @@ public class OrganisationsController(AppDbContext dbContext, ILogger<Organisatio
     [HttpGet("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Get(uint id)
+    public async Task<IActionResult> GetOne(uint id)
     {
-        var existing = await dbContext.Organisations.FindAsync(id);
+        var existing = await dbContext.Organisations
+            .Include(o => o.CreatedBy)
+            .FirstOrDefaultAsync(o => o.Id == id);
         if (existing == null) return NotFound();
 
         return Ok(existing);
@@ -70,7 +72,7 @@ public class OrganisationsController(AppDbContext dbContext, ILogger<Organisatio
         AuditAction(AuditActions.Created, "Contact", new { id = entity.Id });
         await dbContext.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(Get), new { id = entity.Id }, entity);
+        return CreatedAtAction(nameof(GetOne), new { id = entity.Id }, entity);
     }
 
     [HttpGet("{id:int}/contacts")]

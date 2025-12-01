@@ -10,9 +10,6 @@ class VaultRouter
 {
     public function mapRoutes(RouteCollectionInterface $router): void
     {
-        $router->map('GET', '/vault', GetVaultSecretsController::class);
-        $router->map('POST', '/vault', CreateVaultItemController::class);
-        $router->map('POST', '/vault/{vaultItemId:number}', ReadVaultItemController::class);
         $router->map('PUT', '/vault/{vaultItemId:number}', UpdateVaultItemController::class);
     }
 }

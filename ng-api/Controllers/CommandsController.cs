@@ -1,14 +1,18 @@
+using System.Security.Cryptography;
+using System.Text.Json;
 using api_v2.Common.Extensions;
 using api_v2.Domain.Entities;
 using api_v2.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 
 namespace api_v2.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class CommandsController(AppDbContext dbContext) : ControllerBase
+public class CommandsController(AppDbContext dbContext, IConnectionMultiplexer conn, IConfiguration config)
+    : ControllerBase
 {
     [HttpPost]
     public async Task<IActionResult> CreateCommand([FromBody] Command command)
@@ -84,6 +88,82 @@ public class CommandsController(AppDbContext dbContext) : ControllerBase
         await dbContext.SaveChangesAsync();
 
         return CreatedAtAction(nameof(GetCommand), new { id = command.Id }, command);
+    }
+
+    [HttpPost("outputs")]
+    public async Task<IActionResult> UploadOutput()
+    {
+        // Parsed body
+        var form = await Request.ReadFormAsync();
+        var commandUsageId = int.Parse(form["commandUsageId"]);
+
+        // Uploaded file
+        var resultFile = form.Files["resultFile"];
+
+        // Data lookups
+        var usage = await dbContext.CommandUsages.FindAsync((uint)commandUsageId);
+        var command = await dbContext.Commands.FindAsync((int)usage.CommandId);
+
+        // User Id from request context
+        var userId = (int)HttpContext.GetCurrentUser()!.Id;
+
+        ///////////////
+        var relativePath = config["AttachmentSettings:SavePath"];
+        var pathToSave = Path.Combine(relativePath, "data", "attachments");
+        if (!Directory.Exists(pathToSave))
+            Directory.CreateDirectory(pathToSave);
+
+        var uniqueName = Guid.NewGuid().ToString("N") + Path.GetExtension(resultFile.FileName);
+        var fullPath = Path.Combine(pathToSave, uniqueName);
+        await using FileStream stream = new(fullPath, FileMode.Create);
+        await resultFile.CopyToAsync(stream);
+
+        var attachment = new Attachment
+        {
+            CreatedByUid = HttpContext.GetCurrentUser()!.Id,
+            ParentType = "command",
+            ParentId = (uint)command.Id,
+            ClientFileName = resultFile.FileName,
+            FileName = Path.GetFileName(fullPath),
+            FileSize = (uint)resultFile.Length,
+            FileMimeType = resultFile.ContentType
+        };
+        using (var md5 = MD5.Create())
+        {
+            await using (var stream2 = System.IO.File.OpenRead(fullPath))
+            {
+                var hash = await md5.ComputeHashAsync(stream2);
+                attachment.FileHash = Convert.ToHexStringLower(hash);
+            }
+        }
+
+        await dbContext.Attachments.AddAsync(attachment);
+        await dbContext.SaveChangesAsync();
+        /// /////////////
+
+        // Optional project ID
+        int? projectId = null;
+        if (form.TryGetValue("projectId", out var projectIdValue) &&
+            int.TryParse(projectIdValue, out var parsedProjectId))
+            projectId = parsedProjectId;
+
+        if (projectId.HasValue)
+        {
+            var payload = new
+            {
+                commandUsageId,
+                projectId = projectId.Value,
+                userId,
+                filePath = uniqueName
+            };
+
+            var pushed = await conn.GetDatabase().ListLeftPushAsync(
+                "tasks:queue",
+                JsonSerializer.Serialize(payload)
+            );
+        }
+
+        return new JsonResult(new { success = true });
     }
 
     [HttpGet("{commandId:int}/schedules")]

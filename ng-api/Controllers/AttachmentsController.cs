@@ -35,7 +35,9 @@ public class AttachmentsController(AppDbContext dbContext, ILogger<AttachmentsCo
         var existing = await dbContext.Attachments.FindAsync(id);
         if (existing == null) return NotFound();
 
-        var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), "data", "attachments", existing.FileName);
+        var pathToSave = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory())?.FullName, "data",
+            "attachments",
+            existing.FileName);
 
         var stream = System.IO.File.OpenRead(pathToSave);
 
@@ -55,7 +57,8 @@ public class AttachmentsController(AppDbContext dbContext, ILogger<AttachmentsCo
         var attachment = await dbContext.Attachments.FindAsync(id);
         if (attachment == null) return NotFound();
 
-        var path = Path.Combine(Directory.GetCurrentDirectory(), "data", "attachments", attachment.FileName);
+        var path = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory())?.Name, "data", "attachments",
+            attachment.FileName);
         System.IO.File.Delete(path);
 
         dbContext.Attachments.Remove(attachment);

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
@@ -22,7 +24,7 @@ class ProjectRepositoryTest extends DatabaseTestCase
 
         $expectedProject = [
             'id' => $projectId,
-            'update_ts' => null,
+            'updated_at' => null,
             'creator_uid' => 1,
             'client_id' => null,
             'is_template' => 1,
@@ -44,7 +46,7 @@ class ProjectRepositoryTest extends DatabaseTestCase
         ];
 
         $project1 = $this->subject->findById($projectId);
-        unset($project1['insert_ts']); // Can't compare against a changing date/time
+        unset($project1['created_at']); // Can't compare against a changing date/time
         $this->assertEquals($expectedProject, $project1);
     }
 

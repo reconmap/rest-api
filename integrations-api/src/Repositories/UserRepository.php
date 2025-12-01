@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
@@ -63,7 +65,7 @@ class UserRepository extends MysqlRepository
     protected function getBaseSelectQueryBuilder(): SelectQueryBuilder
     {
         $queryBuilder = new SelectQueryBuilder('user u');
-        $queryBuilder->setColumns('u.id, u.insert_ts, u.update_ts, u.last_login_ts, u.subject_id, u.active, u.first_name, u.last_name, u.full_name, u.short_bio, u.username, u.email, u.role, u.timezone, u.preferences, u.mfa_enabled');
+        $queryBuilder->setColumns('u.id, u.created_at, u.updated_at, u.last_login_ts, u.subject_id, u.active, u.first_name, u.last_name, u.full_name, u.short_bio, u.username, u.email, u.role, u.timezone, u.preferences, u.mfa_enabled');
         return $queryBuilder;
     }
 
@@ -107,7 +109,7 @@ class UserRepository extends MysqlRepository
         $sql = <<<SQL
         SELECT
             pu.id AS membership_id,
-            u.id, u.insert_ts, u.update_ts, u.full_name, u.short_bio, u.username, u.email, u.role
+            u.id, u.created_at, u.updated_at, u.full_name, u.short_bio, u.username, u.email, u.role
         FROM
             user u INNER JOIN project_user pu ON (pu.user_id = u.id)
         WHERE

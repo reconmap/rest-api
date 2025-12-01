@@ -61,7 +61,7 @@ security-tests:
 
 .PHONY: start
 start: prepare-config prepare-dirs
-	docker compose up -d
+	docker compose -p rest-api up -d
 
 .PHONY: validate
 validate:
@@ -79,7 +79,7 @@ clean: stop
 
 .PHONY: api-shell
 api-shell:
-	@docker compose exec -u reconmapper -w /var/www/webapp api bash
+	@docker compose -p rest-api exec -u reconmapper -w /var/www/webapp api bash
 
 .PHONY: api-rootshell
 api-rootshell:

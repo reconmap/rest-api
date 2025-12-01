@@ -198,7 +198,7 @@ VALUES (@admin_user_id, 'Onboarding to Reconmap',
         'Project to ensure all Reconmap\'s onboarding tasks are done in order.',
         CURRENT_DATE);
 
-INSERT INTO task (creator_uid, assigned_to_uid, project_id, summary, description, priority)
+INSERT INTO task (created_by_uid, assigned_to_uid, project_id, summary, description, priority)
 VALUES (1, 1, 1, '1. Update your organisation details', '[Follow this link](/settings/organisation)', 'medium'),
        (1, 1, 1, '2. Update your preferences', '[Follow this link](/users/preferences)', 'medium'),
        (1, 1, 1, '3. Invite your team', '[Follow this link](/users/create)', 'medium'),

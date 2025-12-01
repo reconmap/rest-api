@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
@@ -69,14 +71,14 @@ SQL;
         $this->mysqlServer->begin_transaction();
 
         $projectSql = <<<SQL
-        INSERT INTO project (creator_uid, name, description, category_id, engagement_start_date, engagement_end_date, vulnerability_metrics) SELECT ?, CONCAT(name, ' - ', CURRENT_TIMESTAMP()), description, category_id, engagement_start_date, engagement_end_date, vulnerability_metrics FROM project WHERE id = ?
+        INSERT INTO project (created_by_uid, name, description, category_id, engagement_start_date, engagement_end_date, vulnerability_metrics) SELECT ?, CONCAT(name, ' - ', CURRENT_TIMESTAMP()), description, category_id, engagement_start_date, engagement_end_date, vulnerability_metrics FROM project WHERE id = ?
         SQL;
         $stmt = $this->mysqlServer->prepare($projectSql);
         $stmt->bind_param('ii', $userId, $templateId);
         $projectId = $this->executeInsertStatement($stmt);
 
         $tasksSql = <<<SQL
-        INSERT INTO task (project_id, creator_uid, command_id, summary, description, priority) SELECT ?, creator_uid, command_id, summary, description, priority FROM task WHERE project_id = ?
+        INSERT INTO task (project_id, created_by_uid, command_id, summary, description, priority) SELECT ?, created_by_uid, command_id, summary, description, priority FROM task WHERE project_id = ?
         SQL;
         $stmt = $this->mysqlServer->prepare($tasksSql);
         $stmt->bind_param('ii', $projectId, $templateId);
@@ -93,10 +95,10 @@ SQL;
     public function insert(Project $project): int
     {
         $insertStmt = new InsertQueryBuilder('project');
-        $insertStmt->setColumns('creator_uid, service_provider_id, client_id, name, description, is_template, category_id, engagement_start_date, engagement_end_date, visibility, external_id, vulnerability_metrics');
+        $insertStmt->setColumns('created_by_uid, service_provider_id, client_id, name, description, is_template, category_id, engagement_start_date, engagement_end_date, visibility, external_id, vulnerability_metrics');
 
         $stmt = $this->mysqlServer->prepare($insertStmt->toSql());
-        $stmt->bind_param('iiississssss', $project->creator_uid, $project->service_provider_id, $project->client_id, $project->name, $project->description, $project->is_template, $project->category_id, $project->engagement_start_date, $project->engagement_end_date, $project->visibility, $project->external_id, $project->vulnerability_metrics);
+        $stmt->bind_param('iiississssss', $project->created_by_uid, $project->service_provider_id, $project->client_id, $project->name, $project->description, $project->is_template, $project->category_id, $project->engagement_start_date, $project->engagement_end_date, $project->visibility, $project->external_id, $project->vulnerability_metrics);
         return $this->executeInsertStatement($stmt);
     }
 
@@ -122,7 +124,7 @@ SQL;
         ');
         $queryBuilder->addJoin('LEFT JOIN client c ON (c.id = p.client_id)');
         $queryBuilder->addJoin('LEFT JOIN project_category pc ON (pc.id = p.category_id)');
-        $queryBuilder->addJoin('INNER JOIN user u ON (u.id = p.creator_uid)');
+        $queryBuilder->addJoin('INNER JOIN user u ON (u.id = p.created_by_uid)');
         return $queryBuilder;
     }
 }

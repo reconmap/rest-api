@@ -11,7 +11,7 @@ namespace api_v2.Controllers;
 public class CommandUsagesController(AppDbContext dbContext) : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CommandUsage usage)
+    public async Task<IActionResult> Create(uint commandId, [FromBody] CommandUsage usage)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -35,6 +35,17 @@ public class CommandUsagesController(AppDbContext dbContext) : ControllerBase
 
         var page = await q.Take(take).ToListAsync();
         return Ok(page);
+    }
+
+    [HttpGet("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetOne(uint id)
+    {
+        var entity = await dbContext.CommandUsages.FindAsync(id);
+        if (entity == null) return NotFound();
+
+        return Ok(entity);
     }
 
     [HttpDelete("{id:int}")]

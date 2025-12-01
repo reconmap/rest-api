@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
@@ -51,7 +53,7 @@ class AuditLogRepository extends MysqlRepository
     public function findCountByDayStats(): array
     {
         $sql = <<<SQL
-        SELECT DATE(insert_ts) AS log_date, COUNT(*) AS total
+        SELECT DATE(created_at) AS log_date, COUNT(*) AS total
         FROM audit_log
         GROUP BY log_date
         ORDER BY log_date
@@ -71,10 +73,10 @@ class AuditLogRepository extends MysqlRepository
     protected function getBaseSelectQueryBuilder(): SelectQueryBuilder
     {
         $queryBuilder = new SelectQueryBuilder('audit_log al');
-        $queryBuilder->setColumns('al.id, al.insert_ts, al.user_agent, INET_NTOA(al.client_ip) AS client_ip, al.action, al.object, al.context,
+        $queryBuilder->setColumns('al.id, al.created_at, al.user_agent, INET_NTOA(al.client_ip) AS client_ip, al.action, al.object, al.context,
                u.id AS user_id, u.username AS user_name, COALESCE(u.role, \'system\') AS user_role');
         $queryBuilder->addJoin('LEFT JOIN user u ON (u.id = al.user_id)');
-        $queryBuilder->setOrderBy('al.insert_ts DESC');
+        $queryBuilder->setOrderBy('al.created_at DESC');
         return $queryBuilder;
     }
 }

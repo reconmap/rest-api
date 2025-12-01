@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
@@ -40,10 +42,13 @@ class TaskRepository extends MysqlRepository implements Findable
 
     public function clone(int $taskId, int $userId): array
     {
-        $originalTask = array_filter($this->findById($taskId),
-            fn($key) => in_array($key, array_keys(self::UPDATABLE_COLUMNS_TYPES)), mode: ARRAY_FILTER_USE_KEY);
+        $originalTask = array_filter(
+            $this->findById($taskId),
+            fn($key) => in_array($key, array_keys(self::UPDATABLE_COLUMNS_TYPES)),
+            mode: ARRAY_FILTER_USE_KEY
+        );
         $task = new Task();
-        $task->creator_uid = $userId;
+        $task->created_by_uid = $userId;
         foreach ($originalTask as $k => $v) {
             $task->{$k} = $v;
         }
@@ -83,18 +88,16 @@ class TaskRepository extends MysqlRepository implements Findable
     {
         $queryBuilder = new SelectQueryBuilder('task t');
         $queryBuilder->setColumns('
-            t.id, t.project_id, t.insert_ts, t.update_ts, t.priority, t.summary, t.description, t.status, t.duration_estimate, t.due_date,
+            t.id, t.project_id, t.created_at, t.updated_at, t.priority, t.summary, t.description, t.status, t.duration_estimate, t.due_date,
             p.name AS project_name, p.is_template AS project_is_template,
-            t.creator_uid, creator.full_name AS creator_full_name,
-            t.assignee_uid, assignee.full_name AS assignee_full_name,
-            c.id AS command_id, c.name AS command_name
+            t.created_by_uid, creator.full_name AS creator_full_name,
+            t.assignee_uid, assignee.full_name AS assignee_full_name
         ');
 
-        $queryBuilder->addJoin('INNER JOIN user creator ON (creator.id = t.creator_uid)');
+        $queryBuilder->addJoin('INNER JOIN user creator ON (creator.id = t.created_by_uid)');
         $queryBuilder->addJoin('LEFT JOIN user assignee ON (assignee.id = t.assignee_uid)');
         $queryBuilder->addJoin('LEFT JOIN project p ON (p.id = t.project_id)');
-        $queryBuilder->addJoin('LEFT JOIN command c ON (c.id = t.command_id)');
-        $queryBuilder->setOrderBy('t.insert_ts DESC');
+        $queryBuilder->setOrderBy('t.created_at DESC');
         return $queryBuilder;
     }
 

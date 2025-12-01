@@ -11,11 +11,12 @@ public class ProjectTask : TimestampedEntity
     [Required] [Column("project_id")] public uint ProjectId { get; set; }
 
     [Column("created_by_uid")] public uint CreatedByUid { get; set; }
-    
-    [ForeignKey(nameof(CreatedByUid))]
-    public User? CreatedBy { get; set; }
 
-    [Column("assignee_uid")] public uint? AssigneeUid { get; set; }
+    [ForeignKey(nameof(CreatedByUid))] public UserInfo? CreatedBy { get; set; }
+
+    [Column("assigned_to_uid")] public uint? AssignedToUid { get; set; }
+
+    [ForeignKey(nameof(AssignedToUid))] public UserInfo? AssignedTo { get; set; }
 
     [Required] [Column("priority")] public string? Priority { get; set; }
 

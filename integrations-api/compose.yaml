@@ -8,7 +8,7 @@ services:
     volumes:
       - "./config.json:/var/www/webapp/config.json"
       - "./logs:/var/www/webapp/logs"
-      - "./data:/var/www/webapp/data"
+      - "../data:/var/www/webapp/data"
       - "./composer.json:/var/www/webapp/composer.json"
       - "./composer.lock:/var/www/webapp/composer.lock"
       - "./vendor:/var/www/webapp/vendor"
@@ -22,6 +22,3 @@ services:
       - "./database:/var/www/webapp/database"
     ports:
       - "5510:5510"
-    depends_on:
-      mysql:
-        condition: service_healthy

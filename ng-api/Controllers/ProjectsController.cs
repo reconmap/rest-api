@@ -60,7 +60,8 @@ public class ProjectsController(AppDbContext dbContext, IConnectionMultiplexer r
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetOne(uint id)
     {
-        var existing = await dbContext.Projects.FindAsync(id);
+        var existing = await dbContext.Projects.Include(p => p.CreatedBy).Where(p => p.Id == id)
+            .FirstOrDefaultAsync();
         if (existing == null) return NotFound();
 
         return Ok(existing);

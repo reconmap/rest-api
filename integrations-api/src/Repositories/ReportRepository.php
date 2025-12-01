@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
@@ -27,7 +29,7 @@ class ReportRepository extends MysqlRepository
             FROM report r
             INNER JOIN project p ON (p.id = r.project_id)
             INNER JOIN attachment a ON (a.parent_id = r.id AND a.parent_type = 'report')
-            ORDER BY r.insert_ts DESC
+            ORDER BY r.created_at DESC
             LIMIT 20
         SQL;
         $result = $this->mysqlServer->query($sql);
@@ -36,8 +38,8 @@ class ReportRepository extends MysqlRepository
 
     public function insert(Report $report): int
     {
-        $stmt = $this->mysqlServer->prepare('INSERT INTO report (project_id, generated_by_uid, is_template, version_name, version_description) VALUES (?, ?, ?, ?, ?)');
-        $stmt->bind_param('iiiss', $report->projectId, $report->generatedByUid, $report->is_template, $report->versionName, $report->versionDescription);
+        $stmt = $this->mysqlServer->prepare('INSERT INTO report (project_id, created_by_uid, is_template, version_name, version_description) VALUES (?, ?, ?, ?, ?)');
+        $stmt->bind_param('iiiss', $report->project_id, $report->created_by_uid, $report->is_template, $report->version_name, $report->version_description);
         return $this->executeInsertStatement($stmt);
     }
 
@@ -52,8 +54,13 @@ class ReportRepository extends MysqlRepository
         $sql = <<<SQL
 SELECT
        r.*,
-       a.id AS attachment_id,
-       a.client_file_name
+       r.project_id AS projectId,
+       r.created_by_uid AS createdByUid,
+       r.created_at AS createdAt,
+       r.version_name AS versionName,
+       r.version_description AS versionDescription,
+       a.id AS attachmentId,
+       a.client_file_name AS clientFileName
 FROM
     report r
 INNER JOIN
@@ -61,7 +68,7 @@ INNER JOIN
 WHERE
     r.project_id = ?
 ORDER BY
-    r.insert_ts DESC
+    r.created_at DESC
 SQL;
 
         $stmt = $this->mysqlServer->prepare($sql);
@@ -80,7 +87,7 @@ SQL;
         $sql = <<<SQL
 SELECT
        r.*,
-       a.id AS attachment_id, a.insert_ts, a.parent_type, a.parent_id, a.submitter_uid, a.client_file_name, a.file_name, a.file_size, a.file_mimetype, a.file_hash
+       a.id AS attachment_id, a.created_at, a.parent_type, a.parent_id, a.created_by_uid, a.client_file_name, a.file_name, a.file_size, a.file_mimetype, a.file_hash
 FROM
     report r
 INNER JOIN
@@ -90,7 +97,7 @@ WHERE
 AND
     a.parent_type = 'report'
 ORDER BY
-    r.insert_ts DESC
+    r.created_at DESC
 SQL;
 
         $stmt = $this->mysqlServer->prepare($sql);

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Controllers\Reports;
 
@@ -21,9 +23,7 @@ class CreateReportController extends Controller
         private readonly ReportRepository     $reportRepository,
         private readonly AttachmentRepository $attachmentRepository,
         private readonly ReportDataCollector  $reportDataCollector,
-    )
-    {
-    }
+    ) {}
 
     public function __invoke(ServerRequestInterface $request): array
     {
@@ -42,10 +42,10 @@ class CreateReportController extends Controller
         $reportTemplateAttachment = $attachments[0];
 
         $report = new Report();
-        $report->generatedByUid = $userId;
-        $report->projectId = $projectId;
-        $report->versionName = $versionName;
-        $report->versionDescription = $params['description'];
+        $report->created_by_uid = $userId;
+        $report->project_id = $projectId;
+        $report->version_name = $versionName;
+        $report->version_description = $params['description'];
         $report->id = $this->reportRepository->insert($report);
 
         $project = $this->projectRepository->findById($projectId);
@@ -69,7 +69,6 @@ class CreateReportController extends Controller
                     $attachmentIds[] = $textReportRenderer->render($project, $report, $reportTemplateAttachment, $vars);
                     break;
             }
-
         } catch (\Exception $e) {
             $msg = $e->getMessage();
             $this->logger->error("General error: $msg");

@@ -1,3 +1,5 @@
+using api_v2.Common.Extensions;
+using api_v2.Domain.Entities;
 using api_v2.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +13,16 @@ public class ReportsController(AppDbContext dbContext, ILogger<ReportsController
     : ControllerBase
 {
     private readonly ILogger _logger = logger;
+
+    [HttpPost]
+    public async Task<IActionResult> Create(Report report)
+    {
+        report.CreatedByUid = HttpContext.GetCurrentUser()!.Id;
+        dbContext.Reports.Add(report);
+        await dbContext.SaveChangesAsync();
+
+        return CreatedAtAction(nameof(GetAll), new { id = report.Id }, report);
+    }
 
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] int? limit)

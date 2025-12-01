@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Services\Reporting\Renderers;
 
@@ -19,10 +21,11 @@ use Reconmap\Utils\ArrayUtils;
 
 readonly class WordReportRenderer
 {
-    public function __construct(private LoggerInterface      $logger,
-                                private AttachmentFilePath   $attachmentFilePathService,
-                                private AttachmentRepository $attachmentRepository)
-    {
+    public function __construct(
+        private LoggerInterface      $logger,
+        private AttachmentFilePath   $attachmentFilePathService,
+        private AttachmentRepository $attachmentRepository
+    ) {
         Settings::setOutputEscapingEnabled(true);
     }
 
@@ -203,7 +206,7 @@ readonly class WordReportRenderer
             $template->cloneRow('revisionHistoryDateTime', count($vars['revisions']));
             foreach ($vars['revisions'] as $index => $reportRevision) {
                 $indexPlusOne = $index + 1;
-                $template->setValue('revisionHistoryDateTime#' . $indexPlusOne, $reportRevision['insert_ts']);
+                $template->setValue('revisionHistoryDateTime#' . $indexPlusOne, $reportRevision['created_at']);
                 $template->setValue('revisionHistoryVersionName#' . $indexPlusOne, $reportRevision['version_name']);
                 $template->setValue('revisionHistoryVersionDescription#' . $indexPlusOne, $reportRevision['version_description']);
             }
@@ -219,12 +222,12 @@ readonly class WordReportRenderer
         $template->saveAs($filePath);
 
         $projectName = str_replace(' ', '_', strtolower($project['name']));
-        $clientFileName = "reconmap-$projectName-v{$report->versionName}.docx";
+        $clientFileName = "reconmap-$projectName-v{$report->version_name}.docx";
 
         $attachment = new Attachment();
         $attachment->parent_type = 'report';
         $attachment->parent_id = $report->id;;
-        $attachment->submitter_uid = $report->generatedByUid;
+        $attachment->created_by_uid = $report->created_by_uid;
 
         $attachment->file_name = $fileName;
         $attachment->file_mimetype = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';

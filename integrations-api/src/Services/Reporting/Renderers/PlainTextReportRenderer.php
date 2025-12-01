@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Services\Reporting\Renderers;
 
@@ -12,11 +14,11 @@ use Twig\Loader\FilesystemLoader;
 
 class PlainTextReportRenderer
 {
-    public function __construct(private readonly LoggerInterface      $logger,
-                                private readonly AttachmentFilePath   $attachmentFilePathService,
-                                private readonly AttachmentRepository $attachmentRepository,)
-    {
-    }
+    public function __construct(
+        private readonly LoggerInterface      $logger,
+        private readonly AttachmentFilePath   $attachmentFilePathService,
+        private readonly AttachmentRepository $attachmentRepository,
+    ) {}
 
     public function render(array $project, Report $report, array $reportTemplateAttachment, array $vars): int
     {
@@ -34,12 +36,12 @@ class PlainTextReportRenderer
         file_put_contents($filePath, $evaluatedContent);;
 
         $projectName = str_replace(' ', '_', strtolower($project['name']));
-        $clientFileName = "reconmap-$projectName-v{$report->versionName}." . $ext;
+        $clientFileName = "reconmap-$projectName-v{$report->version_name}." . $ext;
 
         $attachment = new Attachment();
         $attachment->parent_type = 'report';
         $attachment->parent_id = $report->id;;
-        $attachment->submitter_uid = $report->generatedByUid;
+        $attachment->created_by_uid = $report->created_by_uid;
 
         $attachment->file_name = $fileName;
         $attachment->file_mimetype = 'text/plain; charset=utf-8';

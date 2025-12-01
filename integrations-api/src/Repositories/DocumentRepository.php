@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
@@ -67,7 +69,7 @@ class DocumentRepository extends MysqlRepository implements Deletable
         $queryBuilder = new SelectQueryBuilder('document AS n');
         $queryBuilder->addJoin('INNER JOIN user u ON (u.id = n.user_id)');
         $queryBuilder->setColumns('n.*, u.username AS user_name');
-        $queryBuilder->setOrderBy('n.insert_ts DESC');
+        $queryBuilder->setOrderBy('n.created_at DESC');
 
         return $queryBuilder;
     }

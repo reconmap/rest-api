@@ -1,6 +1,5 @@
 using api_v2.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace api_v2.Infrastructure.Persistence;
 
@@ -44,6 +43,12 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<User>()
+            .Property(d => d.Role)
+            .HasConversion(
+                v => v.ToString().ToLower(), // C# enum → DB string
+                v => Enum.Parse<UserRole>(v, ignoreCase: true)
+            );
+        modelBuilder.Entity<UserInfo>()
             .Property(d => d.Role)
             .HasConversion(
                 v => v.ToString().ToLower(), // C# enum → DB string

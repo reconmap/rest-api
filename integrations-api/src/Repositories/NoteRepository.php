@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
@@ -8,7 +10,7 @@ class NoteRepository extends MysqlRepository
 {
     public function findByParentId(?string $parentType, int $parentId): array
     {
-        $stmt = $this->mysqlServer->prepare('SELECT n.*, u.username AS user_name FROM note AS n INNER JOIN user u ON (u.id = n.user_id) WHERE n.parent_type = ? AND n.parent_id = ? ORDER BY n.insert_ts DESC');
+        $stmt = $this->mysqlServer->prepare('SELECT n.*, u.username AS user_name FROM note AS n INNER JOIN user u ON (u.id = n.user_id) WHERE n.parent_type = ? AND n.parent_id = ? ORDER BY n.created_at DESC');
         $stmt->bind_param('si', $parentType, $parentId);
         $stmt->execute();
         $rs = $stmt->get_result();

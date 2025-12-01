@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
@@ -66,7 +68,7 @@ class CustomFieldRepository extends MysqlRepository implements Deletable
     protected function getBaseSelectQueryBuilder(): SelectQueryBuilder
     {
         $queryBuilder = new SelectQueryBuilder('custom_field AS cf');
-        $queryBuilder->setOrderBy('cf.insert_ts DESC');
+        $queryBuilder->setOrderBy('cf.created_at DESC');
 
         return $queryBuilder;
     }

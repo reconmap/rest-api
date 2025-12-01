@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
@@ -54,7 +56,7 @@ SELECT
        u.full_name AS creator_full_name
 FROM
     client c
-    INNER JOIN user u ON (u.id = c.creator_uid)
+    INNER JOIN user u ON (u.id = c.created_by_uid)
 WHERE c.id = ?
 SQL;
 
@@ -75,8 +77,8 @@ SQL;
 
     public function insert(Client $client): int
     {
-        $stmt = $this->mysqlServer->prepare('INSERT INTO client (kind, creator_uid, name, address, url, logo_attachment_id, small_logo_attachment_id) VALUES (?, ?, ?, ?, ?, ?, ?)');
-        if (false === $stmt->execute([$client->kind, $client->creator_uid, $client->name, $client->address, $client->url, $client->logo_attachment_id, $client->small_logo_attachment_id])) {
+        $stmt = $this->mysqlServer->prepare('INSERT INTO client (kind, created_by_uid, name, address, url, logo_attachment_id, small_logo_attachment_id) VALUES (?, ?, ?, ?, ?, ?, ?)');
+        if (false === $stmt->execute([$client->kind, $client->created_by_uid, $client->name, $client->address, $client->url, $client->logo_attachment_id, $client->small_logo_attachment_id])) {
             throw new \Exception('Failed to insert organisation record');
         }
         return $stmt->insert_id;

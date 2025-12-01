@@ -15,7 +15,7 @@ public class AuditLogDailySummary
 public class AuditLogController(AppDbContext dbContext) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery(Name = "page")] int p = 0)
+    public async Task<IActionResult> GetMany([FromQuery(Name = "page")] int p = 0)
     {
         const int maxLimit = 20;
         var start = maxLimit * p;
@@ -24,7 +24,7 @@ public class AuditLogController(AppDbContext dbContext) : ControllerBase
         var totalPages = total == 0 ? 0 : Math.Ceiling((decimal)(total / maxLimit));
 
         var q = dbContext.AuditEntries.AsNoTracking()
-            .Include(a=>a.CreatedBy)
+            .Include(a => a.CreatedBy)
             .OrderByDescending(a => a.CreatedAt);
 
         var page = await q.Skip(start).Take(maxLimit).ToListAsync();

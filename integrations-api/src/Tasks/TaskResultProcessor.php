@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Tasks;
 
@@ -12,6 +14,7 @@ use Reconmap\Repositories\CommandUsageRepository;
 use Reconmap\Repositories\NotificationsRepository;
 use Reconmap\Repositories\TargetRepository;
 use Reconmap\Repositories\VulnerabilityRepository;
+use Reconmap\Services\Filesystem\AttachmentFilePath;
 use Reconmap\Services\RedisServer;
 
 readonly class TaskResultProcessor implements ItemProcessor
@@ -23,9 +26,9 @@ readonly class TaskResultProcessor implements ItemProcessor
         private NotificationsRepository $notificationsRepository,
         private CommandUsageRepository  $commandUsageRepository,
         private TargetRepository        $targetRepository,
-        private ProcessorFactory        $processorFactory)
-    {
-    }
+        private ProcessorFactory        $processorFactory,
+        private AttachmentFilePath   $attachmentFilePathService,
+    ) {}
 
     public function process(object $item): void
     {
@@ -46,16 +49,17 @@ readonly class TaskResultProcessor implements ItemProcessor
         }
 
         try {
-            $result = $processor->process($path);
+            $result = $processor->process($this->attachmentFilePathService->generateFilePath($path));
         } catch (\Exception $e) {
             $this->logger->error('unable to process file: ' . $e->getMessage());
             return;
         }
 
         $hosts = $result->getAssets();
+        $numHosts = count($hosts);
+        $this->logger->debug("Number of hosts in uploaded file: " . $numHosts);
         if (!empty($hosts)) {
             foreach ($hosts as $host) {
-                /** @var Asset $host */
                 $parentTarget = new Target();
                 $parentTarget->project_id = $item->projectId;
                 $parentTarget->kind = 'hostname';
@@ -72,17 +76,13 @@ readonly class TaskResultProcessor implements ItemProcessor
                     $this->findOrCreateHost($childTarget);
                 }
             }
-            $numHosts = count($hosts);
-            $this->logger->debug("Number of hosts in uploaded file: " . $numHosts);
 
-            if ($numHosts > 0) {
-                $notification = new Notification();
-                $notification->toUserId = $item->userId;
-                $notification->title = "New assets found";
-                $notification->content = "A total of '$numHosts' new assets have been found by the '$outputParserName' command";
-                $this->notificationsRepository->insert($notification);
-                $this->redis->lPush("notifications:queue", json_encode(['type' => 'message']));
-            }
+            $notification = new Notification();
+            $notification->toUserId = $item->userId;
+            $notification->title = "New assets found";
+            $notification->content = "A total of '$numHosts' new assets have been found by the '$outputParserName' command";
+            $this->notificationsRepository->insert($notification);
+            $this->redis->lPush("notifications:queue", json_encode(['type' => 'message']));
         }
 
         $vulnerabilities = $result->getVulnerabilities();

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
@@ -43,24 +45,23 @@ class VaultRepository extends MysqlRepository
     protected function getBaseSelectQueryBuilder(): SelectQueryBuilder
     {
         $queryBuilder = new SelectQueryBuilder('vault v');
-        $queryBuilder->setColumns('v.id, v.project_id, v.name, v.note, v.insert_ts, v.update_ts, v.type, v.url, v.expiration_date');
+        $queryBuilder->setColumns('v.id, v.project_id, v.name, v.note, v.created_at, v.updated_at, v.type, v.url, v.expiration_date');
         return $queryBuilder;
     }
 
     protected function getFullSelectQueryBuilder(): SelectQueryBuilder
     {
         $queryBuilder = new SelectQueryBuilder('vault v');
-        $queryBuilder->setColumns('v.id, v.project_id, v.name, v.value, v.tag, v.note, v.insert_ts, v.update_ts, v.type, v.iv, v.url, v.expiration_date');
+        $queryBuilder->setColumns('v.id, v.project_id, v.name, v.value, v.tag, v.note, v.created_at, v.updated_at, v.type, v.iv, v.url, v.expiration_date');
         return $queryBuilder;
     }
 
-    public function search(VaultSearchCriteria $searchCriteria, bool $fullQuery = false, ?PaginationRequestHandler $paginator = null, ?string $orderBy = 'v.insert_ts DESC'): array
+    public function search(VaultSearchCriteria $searchCriteria, bool $fullQuery = false, ?PaginationRequestHandler $paginator = null, ?string $orderBy = 'v.created_at DESC'): array
     {
         if ($fullQuery) {
             $queryBuilder = $this->getFullSelectQueryBuilder();
         } else {
             $queryBuilder = $this->getBaseSelectQueryBuilder();
-
         }
         return $this->searchAll($queryBuilder, $searchCriteria, $paginator, $orderBy);
     }
@@ -106,8 +107,8 @@ class VaultRepository extends MysqlRepository
             $item->name = $results[0]['name'];
             $item->id = $results[0]['id'];
             $item->project_id = $results[0]['project_id'];;
-            $item->insert_ts = $results[0]['insert_ts'];
-            $item->update_ts = $results[0]['update_ts'];
+            $item->created_at = $results[0]['created_at'];
+            $item->updated_at = $results[0]['updated_at'];
             $item->note = $results[0]['note'];
 
             $decrypted = $dataEncryptor->decrypt($results[0]['value'], $results[0]['iv'], $password, $results[0]['tag']);

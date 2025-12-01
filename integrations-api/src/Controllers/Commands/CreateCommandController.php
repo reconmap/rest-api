@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Controllers\Commands;
 
@@ -20,14 +22,12 @@ use Reconmap\Repositories\CommandRepository;
 #[Default403UnauthorisedResponse]
 class CreateCommandController extends Controller
 {
-    public function __construct(private readonly CommandRepository $repository)
-    {
-    }
+    public function __construct(private readonly CommandRepository $repository) {}
 
     public function __invoke(ServerRequestInterface $request): array
     {
         $command = $this->getJsonBodyDecodedAsClass($request, new Command());
-        $command->creator_uid = $request->getAttribute('userId');
+        $command->createdByUid = $request->getAttribute('userId');
 
         $result = $this->repository->insert($command);
 

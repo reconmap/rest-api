@@ -54,6 +54,10 @@ CREATE TABLE user
     UNIQUE KEY (username)
 ) ENGINE = InnoDB;
 
+DROP VIEW IF EXISTS user_info;
+
+CREATE VIEW user_info AS SELECT id, email, role, username, first_name, last_name, full_name, short_bio FROM user;
+
 DROP TABLE IF EXISTS audit_log;
 
 CREATE TABLE audit_log
@@ -343,7 +347,7 @@ CREATE TABLE task
     id                INT UNSIGNED                                        NOT NULL AUTO_INCREMENT,
     project_id        INT UNSIGNED                                        NOT NULL,
     created_by_uid       INT UNSIGNED                                        NOT NULL,
-    assignee_uid      INT UNSIGNED                                        NULL,
+    assigned_to_uid      INT UNSIGNED                                        NULL,
     created_at         TIMESTAMP                                           NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at         TIMESTAMP                                           NULL ON UPDATE CURRENT_TIMESTAMP,
     priority          ENUM ('highest', 'high', 'medium', 'low', 'lowest') NOT NULL,
@@ -356,7 +360,7 @@ CREATE TABLE task
     PRIMARY KEY (id),
     FOREIGN KEY (project_id) REFERENCES project (id) ON DELETE CASCADE,
     FOREIGN KEY (created_by_uid) REFERENCES user (id) ON DELETE NO ACTION,
-    FOREIGN KEY (assignee_uid) REFERENCES user (id) ON DELETE SET NULL
+    FOREIGN KEY (assigned_to_uid) REFERENCES user (id) ON DELETE SET NULL
 ) ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS command;

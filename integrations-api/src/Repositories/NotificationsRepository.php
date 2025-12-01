@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
@@ -46,7 +48,7 @@ class NotificationsRepository extends MysqlRepository implements Updateable, Del
     protected function getBaseSelectQueryBuilder(): SelectQueryBuilder
     {
         $queryBuilder = new SelectQueryBuilder('notification n');
-        $queryBuilder->setOrderBy('n.insert_ts DESC');
+        $queryBuilder->setOrderBy('n.created_at DESC');
         return $queryBuilder;
     }
 }

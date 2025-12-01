@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
@@ -11,7 +13,7 @@ class AttachmentRepository extends MysqlRepository
     private const string TABLE_NAME = 'attachment';
 
     public const array UPDATABLE_COLUMNS_TYPES = [
-        "submitter_uid" => "i",
+        "created_by_uid" => "i",
         "client_file_name" => "s",
         "file_hash" => "s",
         "file_size" => "i",
@@ -21,9 +23,9 @@ class AttachmentRepository extends MysqlRepository
     public function insert(Attachment $attachment): int
     {
         $insertQueryBuilder = new InsertQueryBuilder('attachment');
-        $insertQueryBuilder->setColumns('parent_type, parent_id, submitter_uid, client_file_name, file_name, file_hash, file_size, file_mimetype');
+        $insertQueryBuilder->setColumns('parent_type, parent_id, created_by_uid, client_file_name, file_name, file_hash, file_size, file_mimetype');
         $stmt = $this->mysqlServer->prepare($insertQueryBuilder->toSql());
-        $stmt->bind_param('siisssis', $attachment->parent_type, $attachment->parent_id, $attachment->submitter_uid, $attachment->client_file_name, $attachment->file_name, $attachment->file_hash, $attachment->file_size, $attachment->file_mimetype);
+        $stmt->bind_param('siisssis', $attachment->parent_type, $attachment->parent_id, $attachment->created_by_uid, $attachment->client_file_name, $attachment->file_name, $attachment->file_hash, $attachment->file_size, $attachment->file_mimetype);
         return $this->executeInsertStatement($stmt);
     }
 
@@ -51,8 +53,8 @@ SQL;
     {
         $queryBuilder = new SelectQueryBuilder('attachment a');
         $queryBuilder->setColumns('a.*, u.full_name AS submitter_name');
-        $queryBuilder->addJoin('LEFT JOIN user u ON (u.id = a.submitter_uid)');
-        $queryBuilder->setOrderBy('a.insert_ts DESC');
+        $queryBuilder->addJoin('LEFT JOIN user u ON (u.id = a.created_by_uid)');
+        $queryBuilder->setOrderBy('a.created_at DESC');
         $queryBuilder->setWhere('a.parent_type = ? AND a.parent_id = ?');
         if ($mimeType) {
             $queryBuilder->setWhere('AND a.file_mimetype = ?');
@@ -116,5 +118,4 @@ SQL;
     {
         return $this->updateByTableId(self::TABLE_NAME, $id, $newColumnValues);
     }
-
 }

@@ -11,13 +11,9 @@ use Reconmap\Controllers\Attachments\AttachmentsRouter;
 use Reconmap\Controllers\AuditLog\AuditLogRouter;
 use Reconmap\Controllers\Clients\ClientsRouter;
 use Reconmap\Controllers\Commands\CommandsRouter;
-use Reconmap\Controllers\Contacts\ContactsRouter;
-use Reconmap\Controllers\Documents\DocumentsRouter;
-use Reconmap\Controllers\Notes\NotesRouter;
 use Reconmap\Controllers\Projects\ProjectsRouter;
 use Reconmap\Controllers\Reports\ReportsRouter;
 use Reconmap\Controllers\System\SystemRouter;
-use Reconmap\Controllers\Targets\TargetsRouter;
 use Reconmap\Controllers\Tasks\TasksRouter;
 use Reconmap\Controllers\Users\UsersRouter;
 use Reconmap\Controllers\Vulnerabilities\VulnerabilitiesRouter;
@@ -30,14 +26,10 @@ class ControllerRoutesTest extends TestCase
             [AttachmentsRouter::class],
             [AuditLogRouter::class],
             [CommandsRouter::class],
-            [ContactsRouter::class],
             [ClientsRouter::class],
-            [DocumentsRouter::class],
-            [NotesRouter::class],
             [ProjectsRouter::class],
             [ReportsRouter::class],
             [SystemRouter::class],
-            [TargetsRouter::class],
             [TasksRouter::class],
             [UsersRouter::class],
             [VulnerabilitiesRouter::class]

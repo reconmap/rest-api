@@ -11,9 +11,8 @@ public class Report : CreationTimestampedEntity
     [Column("project_id")] public uint? ProjectId { get; set; }
 
     [Column("created_by_uid")] public uint CreatedByUid { get; set; }
-    
-    [ForeignKey(nameof(CreatedByUid))]
-    public User CreatedBy { get; set; }
+
+    [ForeignKey(nameof(CreatedByUid))] public User? CreatedBy { get; set; }
 
 
     [Column("is_template")] public bool IsTemplate { get; set; }

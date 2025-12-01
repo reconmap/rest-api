@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
@@ -99,7 +101,7 @@ class TargetRepository extends MysqlRepository implements Findable
             t.parent_id, parent_t.name AS parent_name,
             (SELECT COUNT(*) FROM vulnerability WHERE target_id = t.id) AS num_vulnerabilities
         ');
-        $queryBuilder->setOrderBy('t.insert_ts DESC, t.name ASC');
+        $queryBuilder->setOrderBy('t.created_at DESC, t.name ASC');
         return $queryBuilder;
     }
 }

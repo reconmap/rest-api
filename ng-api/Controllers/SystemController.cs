@@ -56,7 +56,7 @@ public class SystemController(
     SystemUsageService service)
     : ControllerBase
 {
-    private readonly string _attachmentsPath = "/var/data/attachments"; // adjust as needed
+    private readonly string _attachmentsPath = "../data/attachments";
 
     [HttpGet("custom-fields")]
     public async Task<IActionResult> GetAll([FromQuery] int? limit)

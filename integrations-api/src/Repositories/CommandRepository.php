@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
@@ -25,7 +27,7 @@ SELECT
        u.full_name AS creator_full_name
 FROM
     command c
-    INNER JOIN user u ON (u.id = c.creator_uid)
+    INNER JOIN user u ON (u.id = c.created_by_uid)
 WHERE c.id = ?
 SQL;
 
@@ -68,9 +70,9 @@ SQL;
     public function insert(Command|\stdClass $command): int
     {
         $insertStmt = new InsertQueryBuilder('command');
-        $insertStmt->setColumns('creator_uid, name, description, more_info_url, tags');
+        $insertStmt->setColumns('created_by_uid, name, description, more_info_url, tags');
         $stmt = $this->mysqlServer->prepare($insertStmt->toSql());
-        $stmt->bind_param('issss', $command->creator_uid, $command->name, $command->description, $command->more_info_url, $command->tags);
+        $stmt->bind_param('issss', $command->createdByUid, $command->name, $command->description, $command->moreInfoUrl, $command->tags);
         return $this->executeInsertStatement($stmt);
     }
 

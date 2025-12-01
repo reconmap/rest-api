@@ -10,32 +10,30 @@ namespace api_v2.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class DocumentsController(AppDbContext dbContext, ILogger<DocumentsController> logger)
+public class DocumentsController(AppDbContext dbContext)
     : AppController(dbContext)
 {
-    private readonly ILogger _logger = logger;
-
-    [Authorize(Roles = "administrator")]
-    [HttpGet]
-    public async Task<IActionResult> GetAll()
-    {
-        return Ok(await dbContext.Documents.Include(d=>d.CreatedBy).ToListAsync());
-    }
-
     [HttpPost]
-    public async Task<IActionResult> CreateDocument(Document product)
+    public async Task<IActionResult> Create(Document product)
     {
-        product.CreatedByUid = HttpContext.GetCurrentUser()!.Id; 
+        product.CreatedByUid = HttpContext.GetCurrentUser()!.Id;
         dbContext.Documents.Add(product);
         await dbContext.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetDocument), new { id = product.Id }, product);
+        return CreatedAtAction(nameof(GetOne), new { id = product.Id }, product);
+    }
+
+    [Authorize(Roles = "administrator")]
+    [HttpGet]
+    public async Task<IActionResult> GetMany()
+    {
+        return Ok(await dbContext.Documents.Include(d => d.CreatedBy).ToListAsync());
     }
 
     [HttpGet("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetDocument(uint id)
+    public async Task<IActionResult> GetOne(uint id)
     {
         var document = await dbContext.Documents.Include(d => d.CreatedBy).FirstOrDefaultAsync(d => d.Id == id);
         if (document == null) return NotFound();
@@ -44,14 +42,16 @@ public class DocumentsController(AppDbContext dbContext, ILogger<DocumentsContro
     }
 
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> UpdateDocument(int id, Document product)
+    public async Task<IActionResult> UpdateOne(int id, Document product)
     {
-        var existing = await dbContext.Documents.FindAsync(id);
-        if (existing == null) return NotFound();
+        var dbModel = await dbContext.Documents.FindAsync(id);
+        if (dbModel == null) return NotFound();
 
-        existing.Title = product.Title;
+        dbModel.Title = product.Title;
+        dbModel.Content = product.Content;
+        dbModel.Visibility = product.Visibility;
         await dbContext.SaveChangesAsync();
-        return Ok(existing);
+        return Ok(dbModel);
     }
 
     [HttpDelete("{id:int}")]
@@ -62,7 +62,7 @@ public class DocumentsController(AppDbContext dbContext, ILogger<DocumentsContro
             .ExecuteDeleteAsync();
 
         if (deleted == 0) return NotFound();
-        
+
         AuditAction(AuditActions.Deleted, "Document", new { id });
 
         return NoContent();

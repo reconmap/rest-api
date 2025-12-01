@@ -11,9 +11,8 @@ public class AuditEntry : CreationTimestampedEntity
     public int Id { get; set; }
 
     [Column("created_by_uid")] public uint? CreatedByUid { get; set; }
-    
-    [ForeignKey(nameof(CreatedByUid))]
-    public User CreatedBy { get; set; }
+
+    [ForeignKey(nameof(CreatedByUid))] public UserInfo? CreatedBy { get; set; }
 
     [Column("user_agent")]
     [MaxLength(250)]

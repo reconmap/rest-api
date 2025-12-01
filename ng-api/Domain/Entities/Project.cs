@@ -9,9 +9,8 @@ public class Project : TimestampedEntity
     [Key] [Column("id")] public uint Id { get; set; }
 
     [Column("created_by_uid")] public uint CreatedByUid { get; set; }
-    
-    [ForeignKey(nameof(CreatedByUid))]
-    public User? CreatedBy { get; set; }
+
+    [ForeignKey(nameof(CreatedByUid))] public UserInfo? CreatedBy { get; set; }
 
     [Column("service_provider_id")] public uint? ServiceProviderId { get; set; }
 

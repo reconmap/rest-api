@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Controllers\Reports;
 
@@ -10,14 +12,11 @@ use Reconmap\Services\Reporting\ReportGenerator;
 
 class GetReportPreviewController extends Controller
 {
-    public function __construct(private readonly ReportGenerator $reportGenerator)
-    {
-    }
+    public function __construct(private readonly ReportGenerator $reportGenerator) {}
 
-    public function __invoke(ServerRequestInterface $request): ResponseInterface
+    public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
     {
-        $params = $request->getQueryParams();
-        $projectId = (int)$params['projectId'];
+        $projectId = (int)$args['projectId'];
 
         $html = $this->reportGenerator->generate($projectId);
 

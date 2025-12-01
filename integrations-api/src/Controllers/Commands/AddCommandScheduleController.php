@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Controllers\Commands;
 
@@ -10,15 +12,13 @@ use Reconmap\Repositories\CommandScheduleRepository;
 
 class AddCommandScheduleController extends Controller
 {
-    public function __construct(private readonly CommandScheduleRepository $repository)
-    {
-    }
+    public function __construct(private readonly CommandScheduleRepository $repository) {}
 
     public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
         /** @var CommandSchedule $commandSchedule */
         $commandSchedule = $this->getJsonBodyDecodedAsClass($request, new CommandSchedule());
-        $commandSchedule->creator_uid = $request->getAttribute('userId');
+        $commandSchedule->createdByUid = $request->getAttribute('userId');
 
         $commandSchedule->id = $this->repository->insert($commandSchedule);
 

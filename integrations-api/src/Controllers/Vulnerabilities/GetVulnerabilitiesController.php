@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Controllers\Vulnerabilities;
 
@@ -27,9 +29,7 @@ class GetVulnerabilitiesController extends Controller
     public function __construct(
         private readonly VulnerabilityRepository     $repository,
         private readonly VulnerabilitySearchCriteria $searchCriteria,
-    )
-    {
-    }
+    ) {}
 
     public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
@@ -69,7 +69,7 @@ class GetVulnerabilitiesController extends Controller
             $this->searchCriteria->addStatusCriterion($params['status']);
         }
 
-        $orderByParser = new OrderByRequestHandler($params, 'insert_ts', validColumns: $this->repository->getSortableColumns());
+        $orderByParser = new OrderByRequestHandler($params, 'created_at', validColumns: $this->repository->getSortableColumns());
         $paginator = new PaginationRequestHandler($request);
         $vulnerabilities = $this->repository->search($this->searchCriteria, $paginator, $orderByParser->toSql());
         $count = $this->repository->count($this->searchCriteria);
