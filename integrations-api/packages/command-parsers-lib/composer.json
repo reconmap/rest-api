@@ -12,7 +12,7 @@
     ],
     "prefer-stable": true,
     "require": {
-        "php": "^8.4",
+        "php": "^8.5",
         "reconmap/shared-models": "^1.0",
         "league/html-to-markdown": "^5",
         "ext-simplexml": "*",

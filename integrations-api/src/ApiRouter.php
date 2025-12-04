@@ -15,8 +15,6 @@ use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Reconmap\{
     Controllers\Attachments\ServeAttachmentController,
-    Controllers\AuditLog\AuditLogRouter,
-    Controllers\Clients\ClientsRouter,
     Controllers\Commands\CommandsRouter,
     Controllers\Notifications\NotificationsRouter,
     Controllers\Projects\ProjectsRouter,
@@ -46,9 +44,7 @@ class ApiRouter extends Router
 {
     private const array ROUTER_CLASSES = [
         AttachmentsRouter::class,
-        AuditLogRouter::class,
         CommandsRouter::class,
-        ClientsRouter::class,
         NotificationsRouter::class,
         ProjectsRouter::class,
         ReportsRouter::class,

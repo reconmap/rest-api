@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Repositories\SearchCriterias;
 
@@ -28,7 +30,7 @@ class TaskSearchCriteria extends SearchCriteria
 
     public function addAssigneeCriterion(int $assigneeUid): void
     {
-        $this->addCriterion('t.assignee_uid = ?', [$assigneeUid]);
+        $this->addCriterion('t.assigned_to_uid = ?', [$assigneeUid]);
     }
 
     public function addPriorityCriterion(string $priority): void

@@ -12,8 +12,8 @@ class Task
 
 	public ?int $id;
 	public ?int $project_id;
-	public ?int $creator_uid;
-	public ?int $assignee_uid;
+	public ?int $created_by_uid;
+	public ?int $assigned_to_uid;
 	public ?string $created_at;
 	public ?string $updated_at;
 	public string $priority = 'medium';

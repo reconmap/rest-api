@@ -8,8 +8,6 @@ use League\Route\RouteCollectionInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Reconmap\Controllers\Attachments\AttachmentsRouter;
-use Reconmap\Controllers\AuditLog\AuditLogRouter;
-use Reconmap\Controllers\Clients\ClientsRouter;
 use Reconmap\Controllers\Commands\CommandsRouter;
 use Reconmap\Controllers\Projects\ProjectsRouter;
 use Reconmap\Controllers\Reports\ReportsRouter;
@@ -24,9 +22,7 @@ class ControllerRoutesTest extends TestCase
     {
         return [
             [AttachmentsRouter::class],
-            [AuditLogRouter::class],
             [CommandsRouter::class],
-            [ClientsRouter::class],
             [ProjectsRouter::class],
             [ReportsRouter::class],
             [SystemRouter::class],

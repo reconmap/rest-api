@@ -4,24 +4,24 @@
 
 ## Supported tools
 
-- Acunetix
-- Burp
-- Metasploit
-- Nessus
-- Nmap
-- Nuclei
-- OpenVAS
-- Qualys
-- SQLmap
-- Subfinder
-- shcheck
-- TestSSL
-- ZAP
+-   Acunetix
+-   Burp
+-   Metasploit
+-   Nessus
+-   Nmap
+-   Nuclei
+-   OpenVAS
+-   Qualys
+-   SQLmap
+-   Subfinder
+-   shcheck
+-   TestSSL
+-   ZAP
 
 ## Requirements
 
-* [PHP8.4](https://www.php.net/releases/8.4/en.php)
-* Composer
+-   [PHP8.5](https://www.php.net/releases/8.5/en.php)
+-   Composer
 
 ## Usage
 

@@ -23,6 +23,19 @@ public class TasksController(AppDbContext dbContext) : AppController(dbContext)
         return CreatedAtAction(nameof(GetOne), new { id = task.Id }, task);
     }
 
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> UpdateOne(uint id, ProjectTask requestModel)
+    {
+        var dbModel = await dbContext.Tasks.FindAsync(id);
+        if (dbModel == null) return NotFound();
+
+        dbContext.Entry(dbModel).CurrentValues.SetValues(requestModel);
+        dbContext.Entry(dbModel).Property(x => x.Id).IsModified = false;
+
+        await dbContext.SaveChangesAsync();
+        return Ok(dbModel);
+    }
+
     [HttpGet]
     public async Task<IActionResult> GetMany([FromQuery] int? limit)
     {

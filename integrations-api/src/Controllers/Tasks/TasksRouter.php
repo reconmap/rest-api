@@ -11,6 +11,5 @@ class TasksRouter
     public function mapRoutes(RouteCollectionInterface $router): void
     {
         $router->map('PATCH', '/tasks', BulkUpdateTasksController::class);
-        $router->map('PATCH', '/tasks/{taskId:number}', UpdateTaskController::class);
     }
 }

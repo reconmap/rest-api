@@ -15,7 +15,7 @@ class TaskRepository extends MysqlRepository implements Findable
 {
     public const array UPDATABLE_COLUMNS_TYPES = [
         'project_id' => 'i',
-        'assignee_uid' => 'i',
+        'assigned_to_uid' => 'i',
         'priority' => 's',
         'summary' => 's',
         'description' => 's',
@@ -91,11 +91,11 @@ class TaskRepository extends MysqlRepository implements Findable
             t.id, t.project_id, t.created_at, t.updated_at, t.priority, t.summary, t.description, t.status, t.duration_estimate, t.due_date,
             p.name AS project_name, p.is_template AS project_is_template,
             t.created_by_uid, creator.full_name AS creator_full_name,
-            t.assignee_uid, assignee.full_name AS assignee_full_name
+            t.assigned_to_uid, assignee.full_name AS assignee_full_name
         ');
 
         $queryBuilder->addJoin('INNER JOIN user creator ON (creator.id = t.created_by_uid)');
-        $queryBuilder->addJoin('LEFT JOIN user assignee ON (assignee.id = t.assignee_uid)');
+        $queryBuilder->addJoin('LEFT JOIN user assignee ON (assignee.id = t.assigned_to_uid)');
         $queryBuilder->addJoin('LEFT JOIN project p ON (p.id = t.project_id)');
         $queryBuilder->setOrderBy('t.created_at DESC');
         return $queryBuilder;

@@ -1,4 +1,5 @@
 using api_v2.Domain.AuditActions;
+using api_v2.Domain.Entities;
 using api_v2.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,8 +15,19 @@ public class VulnerabilitiesCategoriesController(
 {
     private readonly ILogger _logger = logger;
 
+    [HttpPost]
+    public async Task<IActionResult> Create(VulnerabilityCategory requestModel)
+    {
+        dbContext.VulnerabilityCategories.Add(requestModel);
+
+        AuditAction(AuditActions.Created, "Vulnerability Category", new { id = requestModel.Id });
+        await dbContext.SaveChangesAsync();
+
+        return CreatedAtAction(nameof(GetMany), new { id = requestModel.Id }, requestModel);
+    }
+
     [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery] int? limit)
+    public async Task<IActionResult> GetMany([FromQuery] int? limit)
     {
         const int maxLimit = 500;
         var take = Math.Min(limit ?? 100, maxLimit);
@@ -28,7 +40,7 @@ public class VulnerabilitiesCategoriesController(
     }
 
     [HttpDelete("{id:int}")]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> DeleteOne(int id)
     {
         var deleted = await dbContext.VulnerabilityCategories
             .Where(n => n.Id == id)

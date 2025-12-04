@@ -26,6 +26,21 @@ public class OrganisationsController(AppDbContext dbContext, ILogger<Organisatio
         return CreatedAtAction(nameof(GetOne), new { id = entity.Id }, entity);
     }
 
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> UpdateOne(uint id, Organisation requestModel)
+    {
+        var dbModel = await dbContext.Organisations.FindAsync(id);
+        if (dbModel == null) return NotFound();
+
+        dbContext.Entry(dbModel).State = EntityState.Modified;
+        dbModel.Name = requestModel.Name;
+        dbModel.Address = requestModel.Address;
+        dbModel.Kind = requestModel.Kind;
+        dbModel.Url = requestModel.Url;
+        await dbContext.SaveChangesAsync();
+        return Ok(dbModel);
+    }
+
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] int? limit)
     {
