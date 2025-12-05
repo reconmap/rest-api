@@ -22,6 +22,10 @@ public class ProjectsController(AppDbContext dbContext, IConnectionMultiplexer r
         dbContext.Projects.Add(project);
         await dbContext.SaveChangesAsync();
 
+        var projectUser = new ProjectMember() { ProjectId = project.Id, UserId = project.CreatedByUid };
+        dbContext.ProjectMembers.Add(projectUser);
+        await dbContext.SaveChangesAsync();
+
         return CreatedAtAction(nameof(GetOne), new { id = project.Id }, project);
     }
 

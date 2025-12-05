@@ -83,7 +83,7 @@ api-shell:
 
 .PHONY: api-rootshell
 api-rootshell:
-	@docker compose exec -u root -w /var/www/webapp api bash
+	@docker compose -p rest-api exec -u root -w /var/www/webapp api bash
 
 .PHONY: cache-clear
 cache-clear:

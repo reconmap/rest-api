@@ -16,7 +16,6 @@ class ProjectsRouter
         $router->map('GET', '/projects/{projectId:number}/vault', ReadProjectVaultController::class);
         $router->map('PUT', '/projects/{projectId:number}', UpdateProjectController::class);
         $router->map('PATCH', '/projects/{projectId:number}', UpdateProjectController::class);
-        $router->map('POST', '/projects', CreateProjectController::class);
         $router->map('POST', '/projects/{projectId:number}/clone', CloneProjectController::class);
         $router->map('GET', '/projects/{projectId:number}/tasks', GetProjectTasksController::class);
         $router->map('GET', '/projects/{projectId:number}/users', GetProjectUsersController::class);
