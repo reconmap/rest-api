@@ -12,7 +12,6 @@ use Reconmap\Controllers\Commands\CommandsRouter;
 use Reconmap\Controllers\Projects\ProjectsRouter;
 use Reconmap\Controllers\Reports\ReportsRouter;
 use Reconmap\Controllers\System\SystemRouter;
-use Reconmap\Controllers\Tasks\TasksRouter;
 use Reconmap\Controllers\Users\UsersRouter;
 use Reconmap\Controllers\Vulnerabilities\VulnerabilitiesRouter;
 
@@ -26,7 +25,6 @@ class ControllerRoutesTest extends TestCase
             [ProjectsRouter::class],
             [ReportsRouter::class],
             [SystemRouter::class],
-            [TasksRouter::class],
             [UsersRouter::class],
             [VulnerabilitiesRouter::class]
         ];

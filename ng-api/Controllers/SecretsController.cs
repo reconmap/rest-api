@@ -1,7 +1,6 @@
 using System.Net;
-using System.Security.Cryptography;
-using System.Text;
 using System.Text.Json;
+using api_v2.Common;
 using api_v2.Common.Extensions;
 using api_v2.Domain.AuditActions;
 using api_v2.Domain.Entities;
@@ -11,52 +10,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api_v2.Controllers;
 
-public sealed class DataEncryptor
-{
-    private const int KeySizeBytes = 32; // 256-bit
-    private const int IvSizeBytes = 12; // Recommended GCM nonce size
-    private const int TagSizeBytes = 16; // 128-bit authentication tag
-
-    public (byte[] Iv, byte[] Tag, byte[] CipherText) Encrypt(string plainText, string password)
-    {
-        var key = DeriveKey(password);
-        var iv = RandomNumberGenerator.GetBytes(IvSizeBytes);
-
-        var plainBytes = Encoding.UTF8.GetBytes(plainText);
-        var cipherBytes = new byte[plainBytes.Length];
-        var tag = new byte[TagSizeBytes];
-
-        using var aes = new AesGcm(key);
-        aes.Encrypt(iv, plainBytes, cipherBytes, tag);
-
-        return (iv, tag, cipherBytes);
-    }
-
-    public string? Decrypt(byte[] cipherText, byte[] iv, string password, byte[] tag)
-    {
-        var key = DeriveKey(password);
-
-        var plainBytes = new byte[cipherText.Length];
-
-        try
-        {
-            using var aes = new AesGcm(key);
-            aes.Decrypt(iv, cipherText, tag, plainBytes);
-            return Encoding.UTF8.GetString(plainBytes);
-        }
-        catch (CryptographicException)
-        {
-            return null; // Authentication failed
-        }
-    }
-
-    private static byte[] DeriveKey(string password)
-    {
-        // Equivalent to hash('sha256', $password, true)
-        return SHA256.HashData(Encoding.UTF8.GetBytes(password));
-    }
-}
-
 [Route("api/[controller]")]
 [ApiController]
 public class SecretsController(AppDbContext dbContext, ILogger<SecretsController> logger)
@@ -65,7 +18,7 @@ public class SecretsController(AppDbContext dbContext, ILogger<SecretsController
     private readonly ILogger _logger = logger;
 
     [HttpPost]
-    public async Task<IActionResult> CreateSecret(JsonElement json)
+    public async Task<IActionResult> CreateOne(JsonElement json)
     {
         var encryptor = new DataEncryptor();
         var product = new Secret();
@@ -78,6 +31,7 @@ public class SecretsController(AppDbContext dbContext, ILogger<SecretsController
         product.Value = cypher;
         product.Type = json.GetProperty("type").GetString();
         product.Note = json.GetProperty("note").GetString();
+        product.ProjectId = json.GetProperty("projectId").GetUInt32();
         dbContext.Secrets.Add(product);
         await dbContext.SaveChangesAsync();
 
@@ -127,7 +81,7 @@ public class SecretsController(AppDbContext dbContext, ILogger<SecretsController
     }
 
     [HttpDelete("{id:int}")]
-    public async Task<IActionResult> DeleteSecret(int id)
+    public async Task<IActionResult> DeleteOne(int id)
     {
         var deleted = await dbContext.Secrets
             .Where(n => n.Id == id)

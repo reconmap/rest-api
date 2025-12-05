@@ -22,7 +22,7 @@ public class ProjectsController(AppDbContext dbContext, IConnectionMultiplexer r
         dbContext.Projects.Add(project);
         await dbContext.SaveChangesAsync();
 
-        var projectUser = new ProjectMember() { ProjectId = project.Id, UserId = project.CreatedByUid };
+        var projectUser = new ProjectMember { ProjectId = project.Id, UserId = project.CreatedByUid };
         dbContext.ProjectMembers.Add(projectUser);
         await dbContext.SaveChangesAsync();
 
@@ -64,11 +64,11 @@ public class ProjectsController(AppDbContext dbContext, IConnectionMultiplexer r
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetOne(uint id)
     {
-        var existing = await dbContext.Projects.Include(p => p.CreatedBy).Where(p => p.Id == id)
+        var secret = await dbContext.Projects.Include(p => p.CreatedBy).Where(p => p.Id == id)
             .FirstOrDefaultAsync();
-        if (existing == null) return NotFound();
+        if (secret == null) return NotFound();
 
-        return Ok(existing);
+        return Ok(secret);
     }
 
     [HttpDelete("{id:int}")]
@@ -147,5 +147,16 @@ public class ProjectsController(AppDbContext dbContext, IConnectionMultiplexer r
         if (deleted == 0) return NotFound();
 
         return NoContent();
+    }
+
+    [HttpGet("{projectId:int}/secrets")]
+    public async Task<IActionResult> GetSecrets(int projectId)
+    {
+        var secrets = await dbContext.Secrets
+            .AsNoTracking()
+            .Where(s => s.ProjectId == projectId)
+            .ToListAsync();
+
+        return Ok(secrets);
     }
 }

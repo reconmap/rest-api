@@ -1,3 +1,4 @@
+using System.Text.Json;
 using api_v2.Common.Extensions;
 using api_v2.Domain.AuditActions;
 using api_v2.Domain.Entities;
@@ -73,5 +74,43 @@ public class TasksController(AppDbContext dbContext) : AppController(dbContext)
         if (deleted == 0) return NotFound();
 
         return NoContent();
+    }
+
+    [HttpPatch]
+    public async Task<IActionResult> PatchMany(
+        [FromHeader(Name = "Bulk-Operation")] string operation,
+        [FromBody] JsonElement body)
+    {
+        var ids = body.GetProperty("ids")
+            .EnumerateArray()
+            .Select(e => e.GetUInt32())
+            .ToList();
+
+        switch (operation)
+        {
+            case "UPDATE":
+                var status = body.GetProperty("newStatus").GetString();
+
+                await dbContext.Tasks
+                    .Where(t => ids.Contains(t.Id))
+                    .ExecuteUpdateAsync(u => u.SetProperty(
+                        t => t.Status,
+                        t => status
+                    ));
+
+                break;
+
+            case "DELETE":
+                await dbContext.Tasks
+                    .Where(t => ids.Contains(t.Id))
+                    .ExecuteDeleteAsync();
+
+                break;
+
+            default:
+                return BadRequest(new { message = "Unknown bulk operation." });
+        }
+
+        return Accepted();
     }
 }

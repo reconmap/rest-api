@@ -37,13 +37,31 @@ public class NotificationsController(AppDbContext dbContext) : ControllerBase
     }
 
     [HttpPatch("{id:int}")]
-    public async Task<IActionResult> PartiallyUpdateOne(uint id, [FromBody] JsonElement body)
+    public async Task<IActionResult> PatchOne(uint id, [FromBody] JsonElement body)
     {
         var dbModel = await dbContext.Notifications.FindAsync(id);
         if (dbModel == null) return NotFound();
 
         dbModel.Status = body.GetProperty("status").GetString();
         await dbContext.SaveChangesAsync();
+
+        return NoContent();
+    }
+
+    [HttpPatch]
+    public async Task<IActionResult> PatchMany([FromBody] JsonElement body)
+    {
+        var ids = body.GetProperty("ids")
+            .EnumerateArray()
+            .Select(e => e.GetUInt32())
+            .ToList();
+
+        var status = body.GetProperty("status").GetString();
+
+        await dbContext.Notifications
+            .Where(n => ids.Contains(n.Id))
+            .ExecuteUpdateAsync(upd => upd
+                .SetProperty(n => n.Status, status));
 
         return NoContent();
     }
