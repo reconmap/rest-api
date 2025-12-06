@@ -31,7 +31,10 @@ public class SecretsController(AppDbContext dbContext, ILogger<SecretsController
         product.Value = cypher;
         product.Type = json.GetProperty("type").GetString();
         product.Note = json.GetProperty("note").GetString();
-        product.ProjectId = json.GetProperty("projectId").GetUInt32();
+        if (json.TryGetProperty("projectId", out var projectIdElement) &&
+            projectIdElement.ValueKind == JsonValueKind.Number)
+            product.ProjectId = projectIdElement.GetUInt32();
+
         dbContext.Secrets.Add(product);
         await dbContext.SaveChangesAsync();
 

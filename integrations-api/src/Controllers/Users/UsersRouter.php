@@ -11,7 +11,6 @@ class UsersRouter
 
     public function mapRoutes(RouteCollectionInterface $router): void
     {
-        $router->map('POST', '/users', CreateUserController::class);
         $router->map('POST', '/users/{userId:number}/actions', CreateUserActionController::class);
         $router->map('PATCH', '/users', BulkUpdateUsersController::class);
         $router->map('PATCH', '/users/{userId:number}', UpdateUserController::class);

@@ -1,4 +1,4 @@
-using api_v2.Common.Extensions;
+using System.Text.Json;
 using api_v2.Domain.AuditActions;
 using api_v2.Domain.Entities;
 using api_v2.Infrastructure.Persistence;
@@ -17,19 +17,19 @@ namespace api_v2.Controllers;
 public class UsersController(AppDbContext dbContext) : AppController(dbContext)
 {
     [HttpPost]
-    public async Task<IActionResult> Create(User user)
+    public async Task<IActionResult> CreatOne(User user)
     {
-        var creds = new ClientCredentialsFlow()
+        var creds = new ClientCredentialsFlow
         {
             ClientId = "api-client",
             ClientSecret = "I0jppD5zSIXuBAql31zrXfe5OAa0nvyE",
             KeycloakUrl = "http://localhost:8080",
-            Realm = "reconmap",
+            Realm = "reconmap"
         };
 
         using var httpClient = AuthenticationHttpClientFactory.Create(creds);
         using var usersApi = ApiClientFactory.Create<UsersApi>(httpClient);
-        await usersApi.PostUsersAsync("reconmap", new UserRepresentation()
+        await usersApi.PostUsersAsync("reconmap", new UserRepresentation
         {
             FirstName = user.FirstName,
             LastName = user.LastName,
@@ -38,7 +38,7 @@ public class UsersController(AppDbContext dbContext) : AppController(dbContext)
             Username = user.Username,
             Credentials =
             [
-                new()
+                new CredentialRepresentation
                 {
                     Type = "password",
                     Temporary = false,
@@ -63,7 +63,7 @@ public class UsersController(AppDbContext dbContext) : AppController(dbContext)
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetMany()
     {
         return Ok(await dbContext.Users.ToListAsync());
     }
@@ -80,7 +80,7 @@ public class UsersController(AppDbContext dbContext) : AppController(dbContext)
     }
 
     [HttpGet("{id:int}/activity")]
-    public async Task<IActionResult> GetAll(uint id, [FromQuery] int? limit)
+    public async Task<IActionResult> GetActivity(uint id, [FromQuery] int? limit)
     {
         const int maxLimit = 500;
         var take = Math.Min(limit ?? 100, maxLimit);
@@ -94,13 +94,32 @@ public class UsersController(AppDbContext dbContext) : AppController(dbContext)
     }
 
     [HttpDelete("{id:int}")]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> DeleteOne(int id)
     {
         var deleted = await dbContext.Users
             .Where(n => n.Id == id)
             .ExecuteDeleteAsync();
 
         if (deleted == 0) return NotFound();
+
+        return NoContent();
+    }
+
+    [HttpPatch("{id}")]
+    public async Task<IActionResult> PatchOne(uint id, [FromBody] JsonElement body)
+    {
+        if (!body.TryGetProperty("preferences", out var prefs))
+            return BadRequest("Missing 'preferences' property in request body.");
+
+        var user = await dbContext.Users.FindAsync(id);
+        if (user == null)
+            return NotFound();
+
+        // Store the entire preferences object as JSON text
+        user.Preferences = prefs.GetRawText();
+
+        dbContext.Users.Update(user);
+        await dbContext.SaveChangesAsync();
 
         return NoContent();
     }

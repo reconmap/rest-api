@@ -59,7 +59,7 @@ public class User : TimestampedEntity
 
     [Required] [Column("mfa_enabled")] public bool MfaEnabled { get; set; } = false;
 
-    [Column("preferences")] public string? PreferencesJson { get; set; }
+    [Column("preferences")] public string? Preferences { get; set; }
 }
 
 public enum UserRole
