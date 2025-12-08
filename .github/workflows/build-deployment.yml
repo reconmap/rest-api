@@ -4,6 +4,12 @@ on:
   push:
     branches:
       - master
+    paths:
+      - 'integrations-api/**'
+
+defaults:
+  run:
+    working-directory: integrations-api
 
 jobs:
   main:
