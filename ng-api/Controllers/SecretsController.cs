@@ -1,4 +1,3 @@
-using System.Net;
 using System.Text.Json;
 using api_v2.Common;
 using api_v2.Common.Extensions;
@@ -21,24 +20,24 @@ public class SecretsController(AppDbContext dbContext, ILogger<SecretsController
     public async Task<IActionResult> CreateOne(JsonElement json)
     {
         var encryptor = new DataEncryptor();
-        var product = new Secret();
-        product.OwnerUid = HttpContext.GetCurrentUser().Id;
+        var secret = new Secret();
+        secret.OwnerUid = HttpContext.GetCurrentUser().Id;
         var (iv, tag, cypher) = encryptor.Encrypt(json.GetProperty("value").GetString(),
             json.GetProperty("password").GetString());
-        product.Iv = iv;
-        product.Name = json.GetProperty("name").GetString();
-        product.Tag = tag;
-        product.Value = cypher;
-        product.Type = json.GetProperty("type").GetString();
-        product.Note = json.GetProperty("note").GetString();
+        secret.Value = cypher;
+        secret.Iv = iv;
+        secret.Tag = tag;
+        secret.Name = json.GetProperty("name").GetString();
+        secret.Type = json.GetProperty("type").GetString();
+        secret.Note = json.GetProperty("note").GetString();
         if (json.TryGetProperty("projectId", out var projectIdElement) &&
             projectIdElement.ValueKind == JsonValueKind.Number)
-            product.ProjectId = projectIdElement.GetUInt32();
+            secret.ProjectId = projectIdElement.GetUInt32();
 
-        dbContext.Secrets.Add(product);
+        dbContext.Secrets.Add(secret);
         await dbContext.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetSecret), new { id = product.Id }, product);
+        return CreatedAtAction(nameof(GetSecret), new { id = secret.Id }, secret);
     }
 
     [HttpGet("{id:int}")]
@@ -66,14 +65,14 @@ public class SecretsController(AppDbContext dbContext, ILogger<SecretsController
     }
 
     [HttpPost("{id:int}/decrypt")]
-    public async Task<IActionResult>? GetOne(uint id, JsonElement json)
+    public async Task<IActionResult> GetOne(uint id, JsonElement json)
     {
         var password = json.GetProperty("password").GetString();
         var secret = await dbContext.Secrets.FindAsync(id);
         var encryptor = new DataEncryptor();
 
         var value = encryptor.Decrypt(secret.Value, secret.Iv, password, secret.Tag);
-        if (value == null) return Content(HttpStatusCode.Forbidden.ToString(), "wrong password");
+        if (value == null) return Forbid();
         return Ok(new
         {
             secret.Name,
@@ -81,6 +80,35 @@ public class SecretsController(AppDbContext dbContext, ILogger<SecretsController
             secret.Type,
             value
         });
+    }
+
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> PatchOne(uint id, JsonElement json)
+    {
+        var password = json.GetProperty("password").GetString();
+        var encryptor = new DataEncryptor();
+
+        var secret = await dbContext.Secrets.FindAsync(id);
+
+        var value = encryptor.Decrypt(secret.Value, secret.Iv, password, secret.Tag);
+        if (value == null) return Forbid();
+
+        var (iv, tag, cypher) = encryptor.Encrypt(json.GetProperty("value").GetString(),
+            password);
+        secret.Value = cypher;
+        secret.Iv = iv;
+        secret.Tag = tag;
+
+        secret.Name = json.GetProperty("name").GetString();
+        secret.Type = json.GetProperty("type").GetString();
+        secret.Note = json.GetProperty("note").GetString();
+
+        if (json.TryGetProperty("projectId", out var projectIdElement) &&
+            projectIdElement.ValueKind == JsonValueKind.Number)
+            secret.ProjectId = projectIdElement.GetUInt32();
+        await dbContext.SaveChangesAsync();
+
+        return Accepted();
     }
 
     [HttpDelete("{id:int}")]

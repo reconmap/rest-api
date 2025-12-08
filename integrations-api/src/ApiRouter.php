@@ -21,7 +21,6 @@ use Reconmap\{
     Controllers\System\GetOpenApiYamlController,
     Controllers\System\SystemRouter,
     Controllers\Users\UsersRouter,
-    Controllers\Vault\VaultRouter,
     Controllers\Vulnerabilities\VulnerabilitiesRouter,
     Http\AuthMiddleware,
     Http\CorsMiddleware,
@@ -33,7 +32,7 @@ use Reconmap\{
 use Reconmap\Controllers\Attachments\AttachmentsRouter;
 
 #[OpenApi(
-    info: new Info(version: "1.5.0", description: "Welcome to the Reconmap REST API.", title: "Reconmap API"),
+    info: new Info(version: "1.5.0", description: "Reconmap Integrations API.", title: "Reconmap API"),
     servers: [new Server("http://localhost:5510", "Local server")],
     security: [["bearerAuth" => []]],
 )]
@@ -47,7 +46,6 @@ class ApiRouter extends Router
         ReportsRouter::class,
         SystemRouter::class,
         UsersRouter::class,
-        VaultRouter::class,
         VulnerabilitiesRouter::class,
     ];
 
