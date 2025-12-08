@@ -19,20 +19,8 @@ ifndef GIT_BRANCH_NAME
 GIT_BRANCH_NAME = $(shell git rev-parse --abbrev-ref HEAD)
 endif
 
-define composer_install
-	echo
-	echo Running composer install on $(1)
-	docker compose run --rm --user reconmapper -w $(1) --entrypoint composer api install
-endef
-
-.SILENT: install-deps
-.PHONY: install-deps
-install-deps:
-	$(call composer_install, /var/www/webapp)
-	$(call composer_install, /var/www/webapp/packages/command-parsers-lib)
-
 .PHONY: prepare
-prepare: prepare-config prepare-dirs build install-deps
+prepare: prepare-config prepare-dirs build
 
 .PHONY: build
 build:
@@ -46,10 +34,6 @@ tests: start validate
 	docker compose run --rm -w /var/www/webapp --entrypoint php api src/Cli/app.php test:generate-data --use-test-database
 	docker compose run --rm -w /var/www/webapp -e CURRENT_PLANET=Moon --entrypoint ./run-tests.sh api
 	docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet -e "DROP DATABASE reconmap_test"
-
-.PHONY: security-tests
-security-tests:
-	docker compose run --rm -w /var/www/webapp --entrypoint bash api -c "wget https://github.com/fabpot/local-php-security-checker/releases/download/v2.0.5/local-php-security-checker_2.0.5_linux_amd64 -O security-checker && chmod +x security-checker && ./security-checker"
 
 .PHONY: start
 start:

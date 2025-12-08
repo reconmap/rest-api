@@ -21,7 +21,7 @@ jobs:
       - name: Login to container registry
         run: echo "${{ secrets.CR_PAT }}" | docker login ghcr.io -u "${{ secrets.CR_USERNAME }}" --password-stdin
       - name: Run containers
-        run: docker compose start mysql
+        run: docker compose up
         working-directory: $GITHUB_WORKSPACE
       - name: Build
         run: |

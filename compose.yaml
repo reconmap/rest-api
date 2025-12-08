@@ -1,6 +1,7 @@
 volumes:
   redis_data:
-  mysql_varlib: 
+  mysql_varlib:
+
 
 services:
   redis:
@@ -54,4 +55,5 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
-
+    profiles:
+      - testing
