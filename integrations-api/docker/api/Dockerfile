@@ -57,10 +57,9 @@ COPY composer.json composer.lock /var/www/webapp/
 COPY packages/ /var/www/webapp/packages/
 COPY src/ /var/www/webapp/src/
 
-RUN composer install --no-ansi --no-dev --no-interaction --no-plugins --no-progress --no-scripts --optimize-autoloader
+RUN composer install --no-ansi --no-dev --no-interaction --no-plugins --no-progress --no-scripts --optimize-autoloader --ignore-platform-reqs
 
 COPY public /var/www/webapp/public
-COPY database/ /var/www/webapp/database/
 COPY resources/ /var/www/webapp/resources/
 
 VOLUME /var/www/webapp

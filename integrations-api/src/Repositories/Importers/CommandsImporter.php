@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Repositories\Importers;
 
@@ -7,9 +9,7 @@ use Reconmap\Repositories\CommandRepository;
 
 class CommandsImporter implements Importable
 {
-    public function __construct(private CommandRepository $repository)
-    {
-    }
+    public function __construct(private CommandRepository $repository) {}
 
     /**
      * @param int $userId
@@ -24,7 +24,7 @@ class CommandsImporter implements Importable
         ];
 
         foreach ($commands as $jsonCommand) {
-            $jsonCommand->creator_uid = $userId;
+            $jsonCommand->created_by_uid = $userId;
             $this->repository->insert($jsonCommand);
 
             $response['count']++;

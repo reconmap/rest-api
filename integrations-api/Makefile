@@ -22,7 +22,7 @@ endif
 define composer_install
 	echo
 	echo Running composer install on $(1)
-	docker compose run --rm --user reconmapper -w $(1) --entrypoint composer api install
+	docker compose run --rm --user reconmapper -w $(1) --entrypoint composer api install --ignore-platform-reqs
 endef
 
 .PHONY: prepare-config

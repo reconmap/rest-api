@@ -59,15 +59,15 @@ class DocumentRepository extends MysqlRepository implements Deletable
 
     public function insert(Document|\Reconmap\DomainObjects\Document $document): int
     {
-        $stmt = $this->mysqlServer->prepare('INSERT INTO document (user_id, parent_type, parent_id, visibility, title, content) VALUES (?, ?, ?, ?, ?, ?)');
-        $stmt->bind_param('isisss', $document->user_id, $document->parent_type, $document->parent_id, $document->visibility, $document->title, $document->content);
+        $stmt = $this->mysqlServer->prepare('INSERT INTO document (created_by_uid, parent_type, parent_id, visibility, title, content) VALUES (?, ?, ?, ?, ?, ?)');
+        $stmt->bind_param('isisss', $document->created_by_uid, $document->parent_type, $document->parent_id, $document->visibility, $document->title, $document->content);
         return $this->executeInsertStatement($stmt);
     }
 
     protected function getBaseSelectQueryBuilder(): SelectQueryBuilder
     {
         $queryBuilder = new SelectQueryBuilder('document AS n');
-        $queryBuilder->addJoin('INNER JOIN user u ON (u.id = n.user_id)');
+        $queryBuilder->addJoin('INNER JOIN user u ON (u.id = n.created_by_uid)');
         $queryBuilder->setColumns('n.*, u.username AS user_name');
         $queryBuilder->setOrderBy('n.created_at DESC');
 

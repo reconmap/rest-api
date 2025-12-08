@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
@@ -42,7 +44,7 @@ SELECT
        u.full_name AS creator_full_name
 FROM
     command c
-    INNER JOIN user u ON (u.id = c.creator_uid)
+    INNER JOIN user u ON (u.id = c.created_by_uid)
 WHERE c.id = ?
 SQL;
 
@@ -85,9 +87,9 @@ SQL;
     public function insert(CommandSchedule $commandSchedule): int
     {
         $insertStmt = new InsertQueryBuilder('command_schedule');
-        $insertStmt->setColumns('command_id, creator_uid, argument_values, cron_expression');
+        $insertStmt->setColumns('command_id, created_by_uid, argument_values, cron_expression');
         $stmt = $this->mysqlServer->prepare($insertStmt->toSql());
-        $stmt->bind_param('iiss', $commandSchedule->command_id, $commandSchedule->creator_uid, $commandSchedule->argument_values, $commandSchedule->cron_expression);
+        $stmt->bind_param('iiss', $commandSchedule->command_id, $commandSchedule->createdByUid, $commandSchedule->argument_values, $commandSchedule->cron_expression);
         return $this->executeInsertStatement($stmt);
     }
 

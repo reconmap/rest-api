@@ -102,7 +102,7 @@ readonly class TaskResultProcessor implements ItemProcessor
                 if (empty($vulnerability->risk)) {
                     $vulnerability->risk = 'medium';
                 }
-                $vulnerability->creator_uid = $item->userId;
+                $vulnerability->created_by_uid = $item->userId;
 
                 $targetId = null;
                 if (!empty($vulnerability->asset)) {

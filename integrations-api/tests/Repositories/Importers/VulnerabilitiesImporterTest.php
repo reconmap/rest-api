@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Repositories\Importers;
 
@@ -11,7 +13,7 @@ class VulnerabilitiesImporterTest extends TestCase
     public function testHappyPath()
     {
         $fakeVulnerability = new Vulnerability();
-        $fakeVulnerability->creator_uid = 5;
+        $fakeVulnerability->created_by_uid = 5;
         $fakeVulnerability->summary = 'Summary';
         $fakeVulnerability->description = 'Desc Crip Tion';
         $fakeVulnerability->tags = 'foo,bar';

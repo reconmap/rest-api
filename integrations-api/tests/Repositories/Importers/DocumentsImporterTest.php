@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Repositories\Importers;
 
@@ -17,13 +19,13 @@ class DocumentsImporterTest extends TestCase
         $userId = 5;
 
         $jsonDoc = new \stdClass();
-        $jsonDoc->user_id = 5;
+        $jsonDoc->created_by_uid = 5;
         $jsonDoc->visibility = 'public';
         $jsonDoc->parent_id = null;
         $jsonDoc->parent_type = 'library';
 
         $docModel = new Document();
-        $docModel->user_id = 5;
+        $docModel->created_by_uid = 5;
         $docModel->visibility = 'public';
         $docModel->parent_id = null;
         $docModel->parent_type = 'library';

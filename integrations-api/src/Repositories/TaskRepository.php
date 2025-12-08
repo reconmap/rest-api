@@ -135,9 +135,9 @@ class TaskRepository extends MysqlRepository implements Findable
     public function insert(Task $task): int
     {
         $insertStmt = new InsertQueryBuilder('task');
-        $insertStmt->setColumns('creator_uid, project_id, priority, summary, description, due_date, command_id, duration_estimate');
+        $insertStmt->setColumns('created_by_uid, project_id, priority, summary, description, due_date, duration_estimate');
         $stmt = $this->mysqlServer->prepare($insertStmt->toSql());
-        $stmt->bind_param('iissssii', $task->creator_uid, $task->project_id, $task->priority, $task->summary, $task->description, $task->due_date, $task->command_id, $task->duration_estimate);
+        $stmt->bind_param('iissssi', $task->created_by_uid, $task->project_id, $task->priority, $task->summary, $task->description, $task->due_date, $task->duration_estimate);
         return $this->executeInsertStatement($stmt);
     }
 }

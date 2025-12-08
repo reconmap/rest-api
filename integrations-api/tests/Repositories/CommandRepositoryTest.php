@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
@@ -17,7 +19,7 @@ class CommandRepositoryTest extends DatabaseTestCase
     public function testInsert()
     {
         $command = new Command();
-        $command->creator_uid = 1;
+        $command->createdByUid = 1;
         $command->name = 'Nmap';
 
         $this->assertTrue($this->subject->insert($command) >= 1);

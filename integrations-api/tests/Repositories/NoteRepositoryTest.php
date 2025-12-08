@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
@@ -10,7 +12,7 @@ class NoteRepositoryTest extends DatabaseTestCase
     public function testInsert()
     {
         $note = new Note();
-		$note->user_id = 1;
+        $note->created_by_uid = 1;
         $note->parent_type = 'project';
         $note->parent_id = 1;
         $note->visibility = 'public';

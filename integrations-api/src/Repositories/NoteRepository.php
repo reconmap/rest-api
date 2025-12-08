@@ -27,8 +27,8 @@ class NoteRepository extends MysqlRepository
 
     public function insert(Note $note): int
     {
-        $stmt = $this->mysqlServer->prepare('INSERT INTO note (user_id, parent_type, parent_id, visibility, content) VALUES (?, ?, ?, ?, ?)');
-        $stmt->bind_param('isiss', $note->user_id, $note->parent_type, $note->parent_id, $note->visibility, $note->content);
+        $stmt = $this->mysqlServer->prepare('INSERT INTO note (created_by_uid, parent_type, parent_id, visibility, content) VALUES (?, ?, ?, ?, ?)');
+        $stmt->bind_param('isiss', $note->created_by_uid, $note->parent_type, $note->parent_id, $note->visibility, $note->content);
         return $this->executeInsertStatement($stmt);
     }
 }

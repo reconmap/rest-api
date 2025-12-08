@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
@@ -41,7 +43,7 @@ class ClientRepositoryTest extends DatabaseTestCase
     public function testSuccessfulInsert()
     {
         $client = new Client();
-        $client->creator_uid = 1;
+        $client->created_by_uid = 1;
         $client->name = 'Awesome client';
         $client->kind = 'client';
         $client->address = 'Fake address 123';
@@ -54,7 +56,7 @@ class ClientRepositoryTest extends DatabaseTestCase
         $this->expectException(\mysqli_sql_exception::class);
 
         $client = new Client();
-        $client->creator_uid = 1;
+        $client->created_by_uid = 1;
         $client->url = null;
         $client->name = 'foo';
         $client->address = null;

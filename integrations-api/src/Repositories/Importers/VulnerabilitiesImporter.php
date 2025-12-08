@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Repositories\Importers;
 
@@ -7,9 +9,7 @@ use Reconmap\Repositories\VulnerabilityRepository;
 
 readonly class VulnerabilitiesImporter implements Importable
 {
-    public function __construct(private VulnerabilityRepository $repository)
-    {
-    }
+    public function __construct(private VulnerabilityRepository $repository) {}
 
     public function import(int $userId, array $vulnerabilities): array
     {
@@ -21,7 +21,7 @@ readonly class VulnerabilitiesImporter implements Importable
         foreach ($vulnerabilities as $jsonDoc) {
             try {
                 $vulnerability = new Vulnerability();
-                $vulnerability->creator_uid = $userId;
+                $vulnerability->created_by_uid = $userId;
                 $vulnerability->category_id = intval($jsonDoc->category_id);
                 $vulnerability->is_template = false;
                 $vulnerability->summary = $jsonDoc->summary;

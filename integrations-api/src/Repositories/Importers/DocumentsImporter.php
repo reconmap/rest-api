@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Repositories\Importers;
 
@@ -7,9 +9,7 @@ use Reconmap\Repositories\DocumentRepository;
 
 readonly class DocumentsImporter implements Importable
 {
-    public function __construct(private DocumentRepository $repository)
-    {
-    }
+    public function __construct(private DocumentRepository $repository) {}
 
     /**
      * @param int $userId
@@ -26,7 +26,7 @@ readonly class DocumentsImporter implements Importable
         foreach ($documents as $jsonDoc) {
             try {
                 $document = Document::fromObject($jsonDoc);
-                $document->user_id = $userId;
+                $document->created_by_uid = $userId;
                 $this->repository->insert($document);
 
                 $response['count']++;

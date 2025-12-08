@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Tasks;
 
@@ -16,6 +18,7 @@ use Reconmap\Repositories\CommandUsageRepository;
 use Reconmap\Repositories\NotificationsRepository;
 use Reconmap\Repositories\TargetRepository;
 use Reconmap\Repositories\VulnerabilityRepository;
+use Reconmap\Services\Filesystem\AttachmentFilePath;
 use Reconmap\Services\RedisServer;
 
 class TaskResultProcessorTest extends TestCase
@@ -74,7 +77,9 @@ class TaskResultProcessorTest extends TestCase
         $mockItem->commandUsageId = 4;
         $mockItem->userId = 1;
 
-        $controller = new TaskResultProcessor($mockLogger, $mockRedisServer, $mockVulnerabilityRepository, $mockNotificationRepository, $mockCommandUsageRepository, $mockTargetRepository, $mockProcessorFactory);
+        $mockAttachmentFilePath = $this->createMock(AttachmentFilePath::class);
+
+        $controller = new TaskResultProcessor($mockLogger, $mockRedisServer, $mockVulnerabilityRepository, $mockNotificationRepository, $mockCommandUsageRepository, $mockTargetRepository, $mockProcessorFactory, $mockAttachmentFilePath);
         $controller->process($mockItem);
     }
 }

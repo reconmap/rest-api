@@ -25,7 +25,7 @@ class ProjectRepositoryTest extends DatabaseTestCase
         $expectedProject = [
             'id' => $projectId,
             'updated_at' => null,
-            'creator_uid' => 1,
+            'created_by_uid' => 1,
             'client_id' => null,
             'is_template' => 1,
             'visibility' => 'public',
@@ -89,7 +89,7 @@ class ProjectRepositoryTest extends DatabaseTestCase
     {
         $project = new Project();
         $project->name = 'Blackbox pentesting project';
-        $project->creator_uid = 1;
+        $project->created_by_uid = 1;
         $project->visibility = 'public';
         $projectId = $this->subject->insert($project);
         $this->assertEquals(7, $projectId);

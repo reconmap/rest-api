@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
@@ -57,7 +59,7 @@ class TaskRepositoryTest extends DatabaseTestCase
     public function testInsert()
     {
         $task = new Task();
-        $task->creator_uid = 1;
+        $task->created_by_uid = 1;
         $task->project_id = 1;
         $task->summary = 'Do all the things';
 

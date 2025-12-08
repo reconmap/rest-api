@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Repositories\Importers;
 
@@ -10,11 +12,11 @@ use Reconmap\Repositories\TaskRepository;
 
 class ProjectsImporter implements Importable
 {
-    public function __construct(private ProjectRepository     $projectRepository,
-                                private ProjectUserRepository $projectUserRepository,
-                                private TaskRepository        $taskRepository)
-    {
-    }
+    public function __construct(
+        private ProjectRepository     $projectRepository,
+        private ProjectUserRepository $projectUserRepository,
+        private TaskRepository        $taskRepository
+    ) {}
 
     public function import(int $userId, array $projects): array
     {
@@ -25,7 +27,7 @@ class ProjectsImporter implements Importable
 
         foreach ($projects as $jsonProject) {
             $project = new Project;
-            $project->creator_uid = $userId;
+            $project->created_by_uid = $userId;
             $project->name = $jsonProject->name;
             $project->description = $jsonProject->description;
             $project->is_template = (bool)$jsonProject->is_template;
@@ -36,7 +38,7 @@ class ProjectsImporter implements Importable
 
                 foreach ($jsonProject->tasks as $jsonTask) {
                     $task = new Task();
-                    $task->creator_uid = $userId;
+                    $task->created_by_uid = $userId;
                     $task->project_id = $projectId;
                     $task->summary = $jsonTask->summary;
                     $task->description = $jsonTask->description;

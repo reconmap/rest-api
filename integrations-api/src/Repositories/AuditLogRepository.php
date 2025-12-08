@@ -40,7 +40,7 @@ class AuditLogRepository extends MysqlRepository
     public function findByUserId(int $userId): array
     {
         $queryBuilder = $this->getBaseSelectQueryBuilder();
-        $queryBuilder->setWhere('al.user_id = ?');
+        $queryBuilder->setWhere('al.created_by_uid = ?');
         $queryBuilder->setLimit('10');
 
         $stmt = $this->mysqlServer->prepare($queryBuilder->toSql());
@@ -65,7 +65,7 @@ class AuditLogRepository extends MysqlRepository
 
     public function insert(?int $userId, ?string $userAgent, string $clientIp, string $action, string $object, ?string $context = null): int
     {
-        $stmt = $this->mysqlServer->prepare('INSERT INTO audit_log (user_id, user_agent, client_ip, action, object, context) VALUES (?, ?, INET_ATON(?), ?, ?, ?)');
+        $stmt = $this->mysqlServer->prepare('INSERT INTO audit_log (created_by_uid, user_agent, client_ip, action, object, context) VALUES (?, ?, INET_ATON(?), ?, ?, ?)');
         $stmt->bind_param('isssss', $userId, $userAgent, $clientIp, $action, $object, $context);
         return $this->executeInsertStatement($stmt);
     }
@@ -75,7 +75,7 @@ class AuditLogRepository extends MysqlRepository
         $queryBuilder = new SelectQueryBuilder('audit_log al');
         $queryBuilder->setColumns('al.id, al.created_at, al.user_agent, INET_NTOA(al.client_ip) AS client_ip, al.action, al.object, al.context,
                u.id AS user_id, u.username AS user_name, COALESCE(u.role, \'system\') AS user_role');
-        $queryBuilder->addJoin('LEFT JOIN user u ON (u.id = al.user_id)');
+        $queryBuilder->addJoin('LEFT JOIN user u ON (u.id = al.created_by_uid)');
         $queryBuilder->setOrderBy('al.created_at DESC');
         return $queryBuilder;
     }

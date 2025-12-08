@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
@@ -17,7 +19,7 @@ class DocumentRepositoryTest extends DatabaseTestCase
     public function testInsert()
     {
         $document = new Document();
-        $document->user_id = 1;
+        $document->created_by_uid = 1;
         $document->parent_type = 'library';
         $document->visibility = 'public';
         $document->content = 'Hacker\'s stuff';

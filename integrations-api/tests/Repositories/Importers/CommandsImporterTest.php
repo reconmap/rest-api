@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Repositories\Importers;
 
@@ -17,7 +19,7 @@ class CommandsImporterTest extends TestCase
         $mockCommandRepository = $this->createMock(CommandRepository::class);
         $mockCommandRepository->expects($this->once())
             ->method('insert')
-            ->with((object)['creator_uid' => 5]);
+            ->with((object)['created_by_uid' => 5]);
 
         $importer = new CommandsImporter($mockCommandRepository);
         $result = $importer->import($userId, $commands);

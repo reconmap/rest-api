@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Controllers\Attachments;
 
@@ -11,10 +13,10 @@ use Reconmap\Services\Filesystem\AttachmentFilePath;
 
 class UploadAttachmentController extends Controller
 {
-    public function __construct(protected readonly AttachmentRepository $attachmentRepository,
-                                protected readonly AttachmentFilePath   $attachmentFilePathService)
-    {
-    }
+    public function __construct(
+        protected readonly AttachmentRepository $attachmentRepository,
+        protected readonly AttachmentFilePath   $attachmentFilePathService
+    ) {}
 
     public function __invoke(ServerRequestInterface $request, array $args): array
     {
@@ -65,7 +67,7 @@ class UploadAttachmentController extends Controller
         $attachment = new Attachment();
         $attachment->parent_type = $parentType;
         $attachment->parent_id = $parentId;
-        $attachment->submitter_uid = $userId;
+        $attachment->created_by_uid = $userId;
         $attachment->client_file_name = $uploadedFile->getClientFilename();
         $attachment->file_name = $fileName;
         $attachment->file_hash = hash_file('md5', $pathName);

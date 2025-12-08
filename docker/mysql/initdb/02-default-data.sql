@@ -6,7 +6,7 @@ INSERT INTO user (id, subject_id, first_name, last_name, username, email, role)
 VALUES (@admin_user_id, 'fec17265-a0ae-4d5a-9e20-63487fc21b67', 'Administrator', '-', 'admin','admin@localhost',
         'administrator');
 
-INSERT INTO audit_log (user_id, client_ip, action, object)
+INSERT INTO audit_log (created_by_uid, client_ip, action, object)
 VALUES (NULL, INET_ATON('127.0.0.1'), 'Initialised', 'System');
 
 INSERT INTO vulnerability_category (id, parent_id, name, description)

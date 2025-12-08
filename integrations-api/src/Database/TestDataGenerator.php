@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Database;
 
@@ -34,9 +36,7 @@ readonly class TestDataGenerator
         private ProjectUserRepository          $projectUserRepository,
         private TargetRepository               $targetRepository,
         private CommandTestDataGenerator       $commandTestDataGenerator
-    )
-    {
-    }
+    ) {}
 
     public function generate(): void
     {
@@ -49,7 +49,7 @@ readonly class TestDataGenerator
 
         $client = new Client();
         $client->kind = 'client';
-        $client->creator_uid = 1;
+        $client->created_by_uid = 1;
         $client->name = 'Insecure Co.';
         $client->url = 'http://in.se.cure';
         $client->address = 'Fake address 124';
@@ -65,7 +65,7 @@ readonly class TestDataGenerator
 
         $client = new Client();
         $client->kind = 'client';
-        $client->creator_uid = 1;
+        $client->created_by_uid = 1;
         $client->name = 'The OWASP Foundation';
         $client->url = 'https://owasp.org';
         $client->address = 'Fake address 124';
@@ -73,7 +73,7 @@ readonly class TestDataGenerator
         $this->clientContactRepository->create($clientId, $contact->id);
 
         $document = new Document();
-        $document->user_id = 1;
+        $document->created_by_uid = 1;
         $document->visibility = 'public';
         $document->parent_type = 'library';
         $document->content = 'Some';
@@ -111,24 +111,24 @@ readonly class TestDataGenerator
         $this->vulnerabilityTestDataGenerator->run();
 
         $report = new Report();
-        $report->projectId = 2;
-        $report->generatedByUid = 1;
-        $report->versionName = '1.0';
-        $report->versionDescription = 'Initial version';
+        $report->project_id = 2;
+        $report->created_by_uid = 1;
+        $report->version_name = '1.0';
+        $report->version_description = 'Initial version';
         $this->reportRepository->insert($report);
 
         $report = new Report();
-        $report->projectId = 2;
-        $report->generatedByUid = 1;
-        $report->versionName = '1.1';
-        $report->versionDescription = 'Initial version after corrections';
+        $report->project_id = 2;
+        $report->created_by_uid = 1;
+        $report->version_name = '1.1';
+        $report->version_description = 'Initial version after corrections';
         $this->reportRepository->insert($report);
 
         $report = new Report();
-        $report->projectId = 2;
-        $report->generatedByUid = 1;
-        $report->versionName = '1.2 reviewed';
-        $report->versionDescription = 'Report reviewed and sent to the client';
+        $report->project_id = 2;
+        $report->created_by_uid = 1;
+        $report->version_name = '1.2 reviewed';
+        $report->version_description = 'Report reviewed and sent to the client';
         $this->reportRepository->insert($report);
 
         $this->projectUserRepository->create(2, 1);
