@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - master
-    paths:
-      - 'integrations-api/**'
+# paths:
+#      - 'integrations-api/**'
 
 defaults:
   run:
@@ -22,7 +22,7 @@ jobs:
         run: echo "${{ secrets.CR_PAT }}" | docker login ghcr.io -u "${{ secrets.CR_USERNAME }}" --password-stdin
       - name: Run containers
         run: docker compose up
-        working-directory: $GITHUB_WORKSPACE
+        working-directory:
       - name: Build
         run: |
           cp config-template.json config.json
