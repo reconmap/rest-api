@@ -12,28 +12,13 @@ DB_CONTAINER=rmap-mysql
 HOST_UID=$(shell id -u)
 HOST_GID=$(shell id -g)
 
-DOCKER_IMAGE_NAME = ghcr.io/reconmap/rest-api
-DOCKER_DEFAULT_TAG = $(DOCKER_IMAGE_NAME)
-
 ifndef GIT_BRANCH_NAME
 GIT_BRANCH_NAME = $(shell git rev-parse --abbrev-ref HEAD)
 endif
 
-.PHONY: prepare
-prepare: prepare-config prepare-dirs build
-
 .PHONY: build
 build:
 	docker compose build --no-cache --build-arg HOST_UID=$(HOST_UID) --build-arg HOST_GID=$(HOST_GID)
-
-.PHONY: tests
-tests: start validate
-	echo Importing SQL files: $(wildcard database/0*.sql)
-	cat tests/database.sql | docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet
-	cat database/0*.sql | sed "s/USE reconmap;/USE reconmap_test;/" | docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet reconmap_test
-	docker compose run --rm -w /var/www/webapp --entrypoint php api src/Cli/app.php test:generate-data --use-test-database
-	docker compose run --rm -w /var/www/webapp -e CURRENT_PLANET=Moon --entrypoint ./run-tests.sh api
-	docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet -e "DROP DATABASE reconmap_test"
 
 .PHONY: start
 start:
@@ -67,9 +52,6 @@ cache-clear:
 
 .PHONY: push
 push:
-	docker tag $(DOCKER_IMAGE_NAME):latest $(DOCKER_IMAGE_NAME):$(GIT_BRANCH_NAME)
-	docker push $(DOCKER_IMAGE_NAME):$(GIT_BRANCH_NAME)
-	docker push $(DOCKER_IMAGE_NAME):latest
 	docker compose push mysql
 
 # Database targets

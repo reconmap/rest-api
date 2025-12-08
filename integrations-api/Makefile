@@ -75,7 +75,6 @@ stop:
 clean: stop
 	docker compose down -v --remove-orphans
 	docker compose rm
-	rm -rf {data-mysql,data-redis}
 
 .PHONY: api-shell
 api-shell:
@@ -94,16 +93,3 @@ push:
 	docker tag $(DOCKER_IMAGE_NAME):latest $(DOCKER_IMAGE_NAME):$(GIT_BRANCH_NAME)
 	docker push $(DOCKER_IMAGE_NAME):$(GIT_BRANCH_NAME)
 	docker push $(DOCKER_IMAGE_NAME):latest
-	docker compose push mysql
-
-# Database targets
-
-.PHONY: db-reset
-db-reset:
-	cat database/{01,02}*.sql | docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet reconmap
-
-.PHONY: db-import
-db-import:
-	cat database/{01,02,03}*.sql | docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet reconmap
-
-
