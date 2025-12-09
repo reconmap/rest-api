@@ -41,8 +41,8 @@ $container->compile();
 ApplicationContainer::initialise($container, $config, $logger);
 
 $app = new Application('Reconmap internal CLI');
-$app->add($container->get(EmailProcessorCommand::class));
-$app->add($container->get(TaskProcessorCommand::class));
-$app->add($container->get(TestDataGeneratorCommand::class));
-$app->add($container->get(WeeklyEmailReportSenderCommand::class));
+$app->addCommand($container->get(EmailProcessorCommand::class));
+$app->addCommand($container->get(TaskProcessorCommand::class));
+$app->addCommand($container->get(TestDataGeneratorCommand::class));
+$app->addCommand($container->get(WeeklyEmailReportSenderCommand::class));
 $app->run(new ArgvInput($argv));

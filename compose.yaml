@@ -36,7 +36,7 @@ services:
   keycloak:
     container_name: rmap-keycloak
     image: ghcr.io/reconmap/keycloak-custom:latest
-    command: "start --hostname=http://localhost:8080 --proxy-headers xforwarded --http-enabled true --import-realm"
+    command: "start --hostname-strict false --proxy-headers xforwarded --http-enabled true --import-realm  --hostname-debug=true"
     environment:
       KC_BOOTSTRAP_ADMIN_USERNAME: admin
       KC_BOOTSTRAP_ADMIN_PASSWORD: admin

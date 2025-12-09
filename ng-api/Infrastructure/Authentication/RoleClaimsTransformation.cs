@@ -10,7 +10,6 @@ public class RoleClaimsTransformation : IClaimsTransformation
     public Task<ClaimsPrincipal> TransformAsync(ClaimsPrincipal principal)
     {
         var identity = principal.Identity as ClaimsIdentity;
-        // when decoding the token with jwt.io roles is present under realm_access
         var realmAccessClaim = identity?.FindFirst("resource_access");
         if (realmAccessClaim != null)
         {

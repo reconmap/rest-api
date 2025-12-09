@@ -14,7 +14,7 @@ public class CurrentDbUser : ICurrentDbUser
     public User? User { get; internal set; }
 }
 
-public class DbUserResolverMiddleware(RequestDelegate next)
+public class DbUserResolverMiddleware(RequestDelegate next, ILogger<DbUserResolverMiddleware> logger)
 {
     public async Task InvokeAsync(
         HttpContext context,
@@ -26,11 +26,16 @@ public class DbUserResolverMiddleware(RequestDelegate next)
 
         if (!string.IsNullOrEmpty(sub))
         {
-            // Using EF Core to fetch the user
-            current.User = await db.Users
+            var user = await db.Users
                 .AsNoTracking()
                 .FirstOrDefaultAsync(u => u.SubjectId == sub);
+            if (user == null) logger.LogWarning("No subject found in db for user {sub}", sub);
+            current.User = user;
             context.Items["DbUser"] = current.User;
+        }
+        else
+        {
+            logger.LogWarning("Invalid subject provided {sub}", sub);
         }
 
         await next(context);

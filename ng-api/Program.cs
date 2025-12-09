@@ -23,7 +23,7 @@ services.AddRedisServices(builder.Configuration);
 services.AddJwtAuthentication(builder.Configuration);
 services.AddDatabase(builder.Configuration);
 services.AddSwaggerDocumentation();
-services.AddCustomCors();
+services.AddCorsPolicies(builder.Configuration);
 services.AddRouting(options => options.LowercaseUrls = true);
 
 services.AddControllers()
@@ -38,10 +38,18 @@ services.AddAuthorization();
 
 var app = builder.Build();
 
+/*
+var redis = builder.Services.BuildServiceProvider()
+    .GetRequiredService<IConnectionMultiplexer>();
+builder.Services.AddDataProtection()
+    .PersistKeysToStackExchangeRedis(
+        redis,
+        "DataProtection-Keys");
+        */
 app.UseDefaultFiles();
 app.UseStaticFiles();
 app.UseRouting();
-app.UseCors("corsapp");
+app.UseCors(CorsExtensions.CustomCorsPolicy);
 
 if (app.Environment.IsDevelopment())
 {
@@ -53,7 +61,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseMiddleware<DbUserResolverMiddleware>();
 app.UseCustomWebSockets();
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.MapControllers();
 

@@ -22,7 +22,7 @@ build:
 
 .PHONY: start
 start:
-	docker compose up -d
+	docker compose --profile testing up -d
 
 .PHONY: validate
 validate:

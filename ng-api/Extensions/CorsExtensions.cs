@@ -1,15 +1,19 @@
-using Microsoft.Extensions.DependencyInjection;
-
 namespace api_v2.Extensions;
 
 public static class CorsExtensions
 {
-    public static IServiceCollection AddCustomCors(this IServiceCollection services)
+    public const string CustomCorsPolicy = "AllowCustomOrigins";
+
+    public static IServiceCollection AddCorsPolicies(this IServiceCollection services, IConfiguration configuration)
     {
+        var origins = configuration
+            .GetSection("Cors:AllowedOrigins")
+            .Get<string[]>() ?? [];
+
         services.AddCors(p =>
-            p.AddPolicy("corsapp", b =>
+            p.AddPolicy(CustomCorsPolicy, b =>
             {
-                b.WithOrigins("http://localhost:5500")
+                b.WithOrigins(origins)
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials();

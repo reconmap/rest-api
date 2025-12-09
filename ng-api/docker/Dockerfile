@@ -1,11 +1,13 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
-WORKDIR /App
+WORKDIR /Build
 
 COPY . ./
 RUN dotnet restore
-RUN dotnet publish -o out
+RUN dotnet publish -o /Build/Publish
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0
+
+EXPOSE 5253
 
 LABEL org.opencontainers.image.vendor="Netfoe" \
     org.opencontainers.image.authors="Santiago Lizardo" \
@@ -17,5 +19,5 @@ LABEL org.opencontainers.image.vendor="Netfoe" \
     org.opencontainers.image.documentation="https://github.com/reconmap/documentation"
 
 WORKDIR /App
-COPY --from=build /App/out .
+COPY --from=build /Build/Publish .
 ENTRYPOINT ["/App/ReconmapNg"]
