@@ -29,6 +29,18 @@ public class ProjectsController(AppDbContext dbContext, IConnectionMultiplexer r
         return CreatedAtAction(nameof(GetOne), new { id = project.Id }, project);
     }
 
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> UpdateOne(uint id, Project project)
+    {
+        var dbModel = await dbContext.Projects.FindAsync(id);
+        if (dbModel == null) return NotFound();
+
+        dbContext.Entry(dbModel).CurrentValues.SetValues(project);
+        dbContext.Entry(dbModel).Property(x => x.Id).IsModified = false;
+        await dbContext.SaveChangesAsync();
+        return Ok(dbModel);
+    }
+
     [HttpGet]
     public async Task<IActionResult> GetMany([FromQuery] int? limit, [FromQuery] string? keywords)
     {

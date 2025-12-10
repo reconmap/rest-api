@@ -32,6 +32,18 @@ public class VulnerabilitiesController(AppDbContext dbContext, ILogger<Vulnerabi
         return CreatedAtAction(nameof(Get), new { id = vulnerability.Id }, vulnerability);
     }
 
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> UpdateOne(uint id, Vulnerability vulnerability)
+    {
+        var dbModel = await dbContext.Vulnerabilities.FindAsync(id);
+        if (dbModel == null) return NotFound();
+
+        dbContext.Entry(dbModel).CurrentValues.SetValues(vulnerability);
+        dbContext.Entry(dbModel).Property(x => x.Id).IsModified = false;
+        await dbContext.SaveChangesAsync();
+        return Ok(dbModel);
+    }
+
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] int? limit)
     {

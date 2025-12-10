@@ -6,7 +6,7 @@ namespace api_v2.Domain.Entities;
 [Table("command")]
 public class Command : TimestampedEntity
 {
-    [Key] [Column("id")] public int Id { get; set; }
+    [Key] [Column("id")] public uint Id { get; set; }
 
     [Column("created_by_uid")] public uint CreatedByUid { get; set; }
 

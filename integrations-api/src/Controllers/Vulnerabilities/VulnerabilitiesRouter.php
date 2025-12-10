@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Reconmap\Controllers\Vulnerabilities;
 
 use League\Route\RouteCollectionInterface;
-use Reconmap\Controllers\Vulnerabilities\Categories\GetVulnerabilityChildrenCategoriesController;
 use Reconmap\Controllers\Vulnerabilities\Categories\UpdateVulnerabilityCategoryController;
 
 class VulnerabilitiesRouter
@@ -13,7 +12,6 @@ class VulnerabilitiesRouter
     public function mapRoutes(RouteCollectionInterface $router): void
     {
         /** Categories */
-        $router->map('GET', '/vulnerabilities/categories/{categoryId:number}', GetVulnerabilityChildrenCategoriesController::class);
         $router->map('PUT', '/vulnerabilities/categories/{categoryId:number}', UpdateVulnerabilityCategoryController::class);
 
         /** Vulnerabilities */

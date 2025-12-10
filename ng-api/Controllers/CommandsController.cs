@@ -27,6 +27,18 @@ public class CommandsController(AppDbContext dbContext, IConnectionMultiplexer c
         return CreatedAtAction(nameof(GetCommand), new { id = command.Id }, command);
     }
 
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> UpdateOne(uint id, Command command)
+    {
+        var dbModel = await dbContext.Commands.FindAsync(id);
+        if (dbModel == null) return NotFound();
+
+        dbContext.Entry(dbModel).CurrentValues.SetValues(command);
+        dbContext.Entry(dbModel).Property(x => x.Id).IsModified = false;
+        await dbContext.SaveChangesAsync();
+        return Ok(dbModel);
+    }
+
     [HttpGet]
     public async Task<IActionResult> GetCommands([FromQuery] int? limit)
     {
@@ -43,16 +55,18 @@ public class CommandsController(AppDbContext dbContext, IConnectionMultiplexer c
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetCommand(int id)
+    public async Task<IActionResult> GetCommand(uint id)
     {
-        var command = await dbContext.Commands.Include(c => c.CreatedBy).FirstOrDefaultAsync(c => c.Id == id);
+        var command = await dbContext.Commands
+            .Include(c => c.CreatedBy)
+            .FirstOrDefaultAsync(c => c.Id == id);
         if (command == null) return NotFound();
 
         return Ok(command);
     }
 
     [HttpDelete("{id:int}")]
-    public async Task<IActionResult> DeleteCommand(int id)
+    public async Task<IActionResult> DeleteCommand(uint id)
     {
         var deleted = await dbContext.Commands
             .Where(n => n.Id == id)
@@ -122,7 +136,7 @@ public class CommandsController(AppDbContext dbContext, IConnectionMultiplexer c
         {
             CreatedByUid = HttpContext.GetCurrentUser()!.Id,
             ParentType = "command",
-            ParentId = (uint)command.Id,
+            ParentId = command.Id,
             ClientFileName = resultFile.FileName,
             FileName = Path.GetFileName(fullPath),
             FileSize = (uint)resultFile.Length,
@@ -180,7 +194,7 @@ public class CommandsController(AppDbContext dbContext, IConnectionMultiplexer c
     }
 
     [HttpDelete("{commandId:int}/schedules/{id:int}")]
-    public async Task<IActionResult> DeleteSchedule(int commandId, int id)
+    public async Task<IActionResult> DeleteSchedule(uint commandId, int id)
     {
         var deleted = await dbContext.CommandSchedules
             .Where(n => n.CommandId == commandId && n.Id == id)
