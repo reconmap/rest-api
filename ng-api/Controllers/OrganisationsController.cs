@@ -80,8 +80,10 @@ public class OrganisationsController(AppDbContext dbContext, ILogger<Organisatio
     }
 
     [HttpPost("{id:int}/contacts")]
-    public async Task<IActionResult> CreateContact(Contact entity)
+    public async Task<IActionResult> CreateContact(uint id, Contact entity)
     {
+        entity.OrganisationId = id;
+
         dbContext.Contacts.Add(entity);
 
         AuditAction(AuditActions.Created, "Contact", new { id = entity.Id });
@@ -96,10 +98,12 @@ public class OrganisationsController(AppDbContext dbContext, ILogger<Organisatio
     public async Task<IActionResult> GetContacts(uint id)
     {
         var q = dbContext.Contacts.AsNoTracking()
+            .Where(n => n.OrganisationId == id)
             .OrderByDescending(a => a.Name);
 
-        var page = await q.Take(100).ToListAsync();
-        return Ok(page);
+        var contacts = await q.ToListAsync();
+
+        return Ok(contacts);
     }
 
     [HttpDelete("{organisationId:int}/contacts/{id:int}")]

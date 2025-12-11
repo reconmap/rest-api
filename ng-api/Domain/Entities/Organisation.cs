@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace api_v2.Domain.Entities;
 
-[Table("client")]
+[Table("organisation")]
 public class Organisation : TimestampedEntity
 {
     [Key] [Column("id")] public uint Id { get; set; }

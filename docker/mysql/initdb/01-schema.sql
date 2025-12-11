@@ -14,18 +14,42 @@ CREATE TABLE database_migration
     KEY (from_version, to_version)
 );
 
+DROP TABLE IF EXISTS organisation;
+
+CREATE TABLE organisation
+(
+    id                       INT UNSIGNED                        NOT NULL AUTO_INCREMENT,
+    created_at                TIMESTAMP                           NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at                TIMESTAMP                           NULL ON UPDATE CURRENT_TIMESTAMP,
+    created_by_uid INT UNSIGNED                        NOT NULL,
+    kind                     ENUM ('service_provider', 'client') NOT NULL,
+    name                     VARCHAR(80)                         NOT NULL COMMENT 'eg Company name',
+    address                  VARCHAR(400)                        NULL COMMENT 'eg 1 Hacker Way, Menlo Park, California',
+    url                      VARCHAR(255)                        NULL,
+    logo_attachment_id       INT UNSIGNED                        NULL,
+    small_logo_attachment_id INT UNSIGNED                        NULL,
+
+    PRIMARY KEY (id),
+    UNIQUE KEY (name),
+    FOREIGN KEY (created_by_uid) REFERENCES user (id) ON DELETE NO ACTION,
+    FOREIGN KEY (logo_attachment_id) REFERENCES attachment (id) ON DELETE SET NULL,
+    FOREIGN KEY (small_logo_attachment_id) REFERENCES attachment (id) ON DELETE SET NULL
+) ENGINE = InnoDB;
+
 DROP TABLE IF EXISTS contact;
 
 CREATE TABLE contact
 (
     id    INT UNSIGNED                             NOT NULL AUTO_INCREMENT,
+    organisation_id INT UNSIGNED             NOT NULL,
     kind  ENUM ('general', 'technical', 'billing') NOT NULL DEFAULT 'general',
     name  VARCHAR(200)                             NOT NULL,
     email VARCHAR(200)                             NOT NULL,
     phone VARCHAR(200)                             NULL,
     role  VARCHAR(200)                             NULL,
 
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    FOREIGN KEY (organisation_id) REFERENCES organisation (id) ON DELETE CASCADE
 ) ENGINE = InnoDB
   CHARSET = utf8mb4;
 
@@ -74,65 +98,6 @@ CREATE TABLE audit_log
     PRIMARY KEY (id),
     KEY (created_by_uid),
     CONSTRAINT audit_log_fk_user_id FOREIGN KEY (created_by_uid) REFERENCES user (id) ON DELETE CASCADE
-) ENGINE = InnoDB;
-
-DROP TABLE IF EXISTS organisation;
-
-CREATE TABLE organisation
-(
-    id                       INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    created_at                TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at                TIMESTAMP    NULL ON UPDATE CURRENT_TIMESTAMP,
-    name                     VARCHAR(200) NOT NULL,
-    url                      VARCHAR(255) NULL,
-    logo_attachment_id       INT UNSIGNED NULL,
-    small_logo_attachment_id INT UNSIGNED NULL,
-
-    contact_id               INT UNSIGNED NOT NULL,
-
-    PRIMARY KEY (id),
-    UNIQUE KEY (name),
-    FOREIGN KEY (logo_attachment_id) REFERENCES attachment (id) ON DELETE SET NULL,
-    FOREIGN KEY (small_logo_attachment_id) REFERENCES attachment (id) ON DELETE SET NULL,
-    FOREIGN KEY (contact_id) REFERENCES contact (id) ON DELETE RESTRICT
-) ENGINE = InnoDB;
-
-DROP TABLE IF EXISTS client;
-
-CREATE TABLE client
-(
-    id                       INT UNSIGNED                        NOT NULL AUTO_INCREMENT,
-    created_at                TIMESTAMP                           NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at                TIMESTAMP                           NULL ON UPDATE CURRENT_TIMESTAMP,
-    created_by_uid INT UNSIGNED                        NOT NULL,
-    kind                     ENUM ('service_provider', 'client') NOT NULL,
-    name                     VARCHAR(80)                         NOT NULL COMMENT 'eg Company name',
-    address                  VARCHAR(400)                        NULL COMMENT 'eg 1 Hacker Way, Menlo Park, California',
-    url                      VARCHAR(255)                        NULL,
-    logo_attachment_id       INT UNSIGNED                        NULL,
-    small_logo_attachment_id INT UNSIGNED                        NULL,
-
-    PRIMARY KEY (id),
-    UNIQUE KEY (name),
-    FOREIGN KEY (created_by_uid) REFERENCES user (id) ON DELETE NO ACTION,
-    FOREIGN KEY (logo_attachment_id) REFERENCES attachment (id) ON DELETE SET NULL,
-    FOREIGN KEY (small_logo_attachment_id) REFERENCES attachment (id) ON DELETE SET NULL
-) ENGINE = InnoDB;
-
-
-
-DROP TABLE IF EXISTS client_contact;
-
-CREATE TABLE client_contact
-(
-    id         INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    client_id  INT UNSIGNED NOT NULL,
-    contact_id INT UNSIGNED NOT NULL,
-
-    PRIMARY KEY (id),
-    UNIQUE KEY (client_id, contact_id),
-    FOREIGN KEY (client_id) REFERENCES client (id) ON DELETE CASCADE,
-    FOREIGN KEY (contact_id) REFERENCES contact (id) ON DELETE CASCADE
 ) ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS vault;

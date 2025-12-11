@@ -8,6 +8,8 @@ public class Contact
 {
     [Key] [Column("id")] public uint Id { get; set; }
 
+    [Column("organisation_id")] public uint OrganisationId { get; set; }
+
     [Column("kind")] [Required] public string? Kind { get; set; }
 
     [Column("name")]

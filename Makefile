@@ -7,6 +7,8 @@ SHELL := bash
 MAKEFLAGS += --warn-undefined-variables
 MAKEFLAGS += --no-builtin-rules
 
+PROJECT := rest-api
+DC := docker compose -p $(PROJECT)
 DB_CONTAINER=rmap-mysql
 
 HOST_UID=$(shell id -u)
@@ -18,33 +20,20 @@ endif
 
 .PHONY: build
 build:
-	docker compose build --no-cache --build-arg HOST_UID=$(HOST_UID) --build-arg HOST_GID=$(HOST_GID)
+	$(DC) build --no-cache --build-arg HOST_UID=$(HOST_UID) --build-arg HOST_GID=$(HOST_GID)
 
 .PHONY: start
 start:
-	docker compose --profile testing up -d
-
-.PHONY: validate
-validate:
-	docker compose run --rm -w /var/www/webapp --entrypoint composer api validate --strict
+	$(DC) --profile testing up -d
 
 .PHONY: stop
 stop:
-	docker compose stop
+	$(DC) stop
 
 .PHONY: clean
 clean: stop
-	docker compose down -v --remove-orphans
-	docker compose rm
-	rm -rf {data-mysql,data-redis}
-
-.PHONY: api-shell
-api-shell:
-	@docker compose exec -u reconmapper -w /var/www/webapp api bash
-
-.PHONY: api-rootshell
-api-rootshell:
-	@docker compose exec -u root -w /var/www/webapp api bash
+	$(DC) down -v --remove-orphans
+	$(DC) rm
 
 .PHONY: cache-clear
 cache-clear:
@@ -52,13 +41,13 @@ cache-clear:
 
 .PHONY: push
 push:
-	docker compose push mysql
+	$(DC) push mysql
 
 # Database targets
 
 .PHONY: db-shell
 db-shell:
-	@docker compose exec mysql mysql --silent -uroot -preconmuppet reconmap
+	$(DC) exec mysql mysql --silent -uroot -preconmuppet reconmap
 
 .PHONY: db-reset
 db-reset:
@@ -70,4 +59,4 @@ db-import:
 
 .PHONY: redis-shell
 redis-shell:
-	@docker compose exec redis redis-cli
+	$(DC) exec redis redis-cli

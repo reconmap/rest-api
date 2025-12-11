@@ -132,8 +132,8 @@ VALUES (1, NULL, 'General', 'General categories.'),
 INSERT INTO contact (name, email)
 VALUES ('Contributors', 'no-reply@reconmap.com');
 
-INSERT INTO organisation (name, url, contact_id)
-VALUES ('Reconmap organisation', 'https://reconmap.com', LAST_INSERT_ID());
+INSERT INTO organisation (created_by_uid, kind, name, url)
+VALUES (@admin_user_id, 'service_provider', 'Reconmap', 'https://reconmap.com');
 
 INSERT INTO report (project_id, created_by_uid, is_template, version_name, version_description)
 VALUES (NULL, @admin_user_id, TRUE, 'Report template (HTML)', 'Default report template in HTML format');

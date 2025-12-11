@@ -1,6 +1,14 @@
+PROJECT := rest-api
+DC := docker compose -p $(PROJECT)
 
+.PHONY: start
 start:
-	docker compose -p rest-api start ngapi
+	$(DC) start ngapi
 
+.PHONY: stop
 stop:
-	docker compose -p rest-api stop ngapi
+	$(DC) stop ngapi
+
+.PHONY: push
+push:
+	$(DC) push ngapi
