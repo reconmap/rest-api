@@ -11,4 +11,5 @@ stop:
 
 .PHONY: push
 push:
-	$(DC) push ngapi
+	$(DC) build
+	$(DC) push
