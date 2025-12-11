@@ -20,8 +20,8 @@ class ClientRepository extends MysqlRepository implements Updateable, Findable
     public function findAll(): array
     {
         $sql = <<<SQL
-SELECT *, (SELECT COUNT(*) FROM client_contact WHERE client_id = client.id) AS num_contacts
-FROM client
+SELECT *
+FROM organisation
 ORDER BY name ASC
 SQL;
 
@@ -33,7 +33,7 @@ SQL;
     {
         $sql = <<<SQL
 SELECT *, (SELECT COUNT(*) FROM client_contact WHERE client_id = client.id) AS num_contacts
-FROM client
+FROM organisation
 WHERE kind = ?
 ORDER BY name ASC
 SQL;
@@ -55,7 +55,7 @@ SELECT
        c.*,
        u.full_name AS creator_full_name
 FROM
-    client c
+    organisation c
     INNER JOIN user u ON (u.id = c.created_by_uid)
 WHERE c.id = ?
 SQL;
@@ -72,12 +72,12 @@ SQL;
 
     public function deleteById(int $id): bool
     {
-        return $this->deleteByTableId('client', $id);
+        return $this->deleteByTableId('organisation', $id);
     }
 
     public function insert(Client $client): int
     {
-        $stmt = $this->mysqlServer->prepare('INSERT INTO client (kind, created_by_uid, name, address, url, logo_attachment_id, small_logo_attachment_id) VALUES (?, ?, ?, ?, ?, ?, ?)');
+        $stmt = $this->mysqlServer->prepare('INSERT INTO organisation (kind, created_by_uid, name, address, url, logo_attachment_id, small_logo_attachment_id) VALUES (?, ?, ?, ?, ?, ?, ?)');
         if (false === $stmt->execute([$client->kind, $client->created_by_uid, $client->name, $client->address, $client->url, $client->logo_attachment_id, $client->small_logo_attachment_id])) {
             throw new \Exception('Failed to insert organisation record');
         }
@@ -86,6 +86,6 @@ SQL;
 
     public function updateById(int $id, array $newColumnValues): bool
     {
-        return $this->updateByTableId('client', $id, $newColumnValues);
+        return $this->updateByTableId('organisation', $id, $newColumnValues);
     }
 }

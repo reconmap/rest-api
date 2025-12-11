@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
@@ -12,20 +14,19 @@ class ContactRepository extends MysqlRepository implements Deletable
     public function insert(Contact $contact): int
     {
         $insertStmt = new InsertQueryBuilder(self::TABLE_NAME);
-        $insertStmt->setColumns('kind, name, email, phone, role');
+        $insertStmt->setColumns('organisation_id, kind, name, email, phone, role');
         $stmt = $this->mysqlServer->prepare($insertStmt->toSql());
-        $stmt->bind_param('sssss', $contact->kind, $contact->name, $contact->email, $contact->phone, $contact->role);
+        $stmt->bind_param('isssss', $contact->organisation_id, $contact->kind, $contact->name, $contact->email, $contact->phone, $contact->role);
         return $this->executeInsertStatement($stmt);
     }
 
     public function findByClientId(int $clientId): array
     {
         $sql = <<<SQL
-SELECT c.*
-FROM client_contact cc
-    INNER JOIN contact c ON c.id = cc.contact_id
+SELECT *
+FROM contact c
 WHERE
-      cc.client_id = ?
+      organisation_id = ?
 SQL;
 
         $stmt = $this->mysqlServer->prepare($sql);

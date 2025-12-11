@@ -27,7 +27,7 @@ jobs:
           password: ${{ secrets.CR_PAT }}
       
       - name: Run containers
-        run: docker compose up -d
+        run: docker compose -p rest-api up -d
         working-directory:
 
       - name: Build

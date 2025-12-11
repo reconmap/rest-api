@@ -19,14 +19,14 @@ class ClientRepositoryTest extends DatabaseTestCase
     public function testFindAll()
     {
         $clients = $this->subject->findAll();
-        $this->assertCount(2, $clients);
+        $this->assertCount(3, $clients);
     }
 
     public function testFindExistingClient()
     {
         $client = $this->subject->findById(1);
         $this->assertEquals(1, $client->getId());
-        $this->assertEquals('Insecure Co.', $client->getName());
+        $this->assertEquals('Reconmap', $client->getName());
     }
 
     public function testFindUnexistentClient()
@@ -67,7 +67,7 @@ class ClientRepositoryTest extends DatabaseTestCase
     public function testUpdate()
     {
         $client = $this->subject->findById(1);
-        $this->assertEquals('Insecure Co.', $client->name);
+        $this->assertEquals('Reconmap', $client->name);
 
         $this->assertTrue($this->subject->updateById(1, ['name' => 'A better name']));
 

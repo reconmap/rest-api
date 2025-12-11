@@ -10,7 +10,6 @@ use Reconmap\Models\Document;
 use Reconmap\Models\Notification;
 use Reconmap\Models\Report;
 use Reconmap\Models\Target;
-use Reconmap\Repositories\ClientContactRepository;
 use Reconmap\Repositories\ClientRepository;
 use Reconmap\Repositories\ContactRepository;
 use Reconmap\Repositories\DocumentRepository;
@@ -25,7 +24,6 @@ readonly class TestDataGenerator
         private UserTestDataGenerator          $userTestDataGenerator,
         private ContactRepository              $contactRepository,
         private ClientRepository               $clientRepository,
-        private ClientContactRepository        $clientContactRepository,
         private ProjectTestDataGenerator       $projectTestDataGenerator,
         private NoteTestDataGenerator          $noteTestDataGenerator,
         private DocumentRepository             $documentRepository,
@@ -40,13 +38,6 @@ readonly class TestDataGenerator
 
     public function generate(): void
     {
-        $contact = new Contact();
-        $contact->kind = 'billing';
-        $contact->name = 'John Doe';
-        $contact->email = 'John.Doe@in.se.cure';
-        $contact->phone = '+99 123 245 389';
-        $contact->id = $this->contactRepository->insert($contact);
-
         $client = new Client();
         $client->kind = 'client';
         $client->created_by_uid = 1;
@@ -54,9 +45,17 @@ readonly class TestDataGenerator
         $client->url = 'http://in.se.cure';
         $client->address = 'Fake address 124';
         $clientId = $this->clientRepository->insert($client);
-        $this->clientContactRepository->create($clientId, $contact->id);
 
         $contact = new Contact();
+        $contact->organisation_id = $clientId;
+        $contact->kind = 'billing';
+        $contact->name = 'John Doe';
+        $contact->email = 'John.Doe@in.se.cure';
+        $contact->phone = '+99 123 245 389';
+        $contact->id = $this->contactRepository->insert($contact);
+
+        $contact = new Contact();
+        $contact->organisation_id = $clientId;
         $contact->kind = 'billing';
         $contact->name = 'Jane Doe';
         $contact->email = 'Jane.Doe@in.se.cure';
@@ -70,7 +69,6 @@ readonly class TestDataGenerator
         $client->url = 'https://owasp.org';
         $client->address = 'Fake address 124';
         $clientId = $this->clientRepository->insert($client);
-        $this->clientContactRepository->create($clientId, $contact->id);
 
         $document = new Document();
         $document->created_by_uid = 1;

@@ -1,7 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\DomainObjects;
 
+use AllowDynamicProperties;
+
+#[AllowDynamicProperties]
 class Client extends \Reconmap\Models\Client
 {
     public function getId(): int

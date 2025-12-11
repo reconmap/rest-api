@@ -163,7 +163,7 @@ CREATE TABLE project
     UNIQUE KEY (name),
     KEY (is_template),
     FOREIGN KEY (created_by_uid) REFERENCES user (id) ON DELETE NO ACTION,
-    CONSTRAINT project_fk_client_id FOREIGN KEY (client_id) REFERENCES client (id) ON DELETE SET NULL,
+    CONSTRAINT project_fk_client_id FOREIGN KEY (client_id) REFERENCES organisation (id) ON DELETE SET NULL,
     CONSTRAINT project_fk_category_id FOREIGN KEY (category_id) REFERENCES project_category (id) ON DELETE SET NULL
 ) ENGINE = InnoDB;
 

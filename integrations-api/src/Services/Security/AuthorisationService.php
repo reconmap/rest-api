@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Services\Security;
 
@@ -6,7 +8,7 @@ class AuthorisationService
 {
     public function isRoleAllowed(?string $role, string $action): bool
     {
-        if (!isset(Permissions::ByRoles[$role])) {
+        if (!$role || !isset(Permissions::ByRoles[$role])) {
             return false;
         }
 

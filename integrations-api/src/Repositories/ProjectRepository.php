@@ -122,7 +122,7 @@ SQL;
             u.full_name AS creator_full_name,
             (SELECT COUNT(*) FROM task WHERE project_id = p.id) AS num_tasks
         ');
-        $queryBuilder->addJoin('LEFT JOIN client c ON (c.id = p.client_id)');
+        $queryBuilder->addJoin('LEFT JOIN organisation c ON (c.id = p.client_id)');
         $queryBuilder->addJoin('LEFT JOIN project_category pc ON (pc.id = p.category_id)');
         $queryBuilder->addJoin('INNER JOIN user u ON (u.id = p.created_by_uid)');
         return $queryBuilder;

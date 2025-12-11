@@ -129,11 +129,11 @@ VALUES (1, NULL, 'General', 'General categories.'),
        (117, 105, '4.11 - WSTG-CLNT-12 (Testing Browser Storage)', ''),
        (118, 105, '4.11 - WSTG-CLNT-13 (Testing for Cross Site Script Inclusion)', '');
 
-INSERT INTO contact (name, email)
-VALUES ('Contributors', 'no-reply@reconmap.com');
-
 INSERT INTO organisation (created_by_uid, kind, name, url)
 VALUES (@admin_user_id, 'service_provider', 'Reconmap', 'https://reconmap.com');
+
+INSERT INTO contact (organisation_id, name, email)
+VALUES (LAST_INSERT_ID(), 'Contributors', 'no-reply@reconmap.com');
 
 INSERT INTO report (project_id, created_by_uid, is_template, version_name, version_description)
 VALUES (NULL, @admin_user_id, TRUE, 'Report template (HTML)', 'Default report template in HTML format');

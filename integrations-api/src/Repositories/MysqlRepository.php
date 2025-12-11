@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Reconmap\Repositories;
 
@@ -14,9 +16,7 @@ abstract class MysqlRepository
 {
     protected ?LoggerInterface $logger = null;
 
-    public function __construct(protected readonly MysqlServer $mysqlServer)
-    {
-    }
+    public function __construct(protected readonly MysqlServer $mysqlServer) {}
 
     public function setLogger(LoggerInterface $logger): void
     {
