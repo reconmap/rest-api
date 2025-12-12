@@ -12,27 +12,24 @@ public class AgentsController(AppDbContext dbContext, ILogger<AgentsController> 
     private readonly ILogger _logger = logger;
 
     [HttpGet]
-    public async Task<IActionResult> GetAgents([FromQuery] int? limit)
+    public async Task<IActionResult> GetMany([FromQuery] int? limit)
     {
-        const int maxLimit = 500;
-        var take = Math.Min(limit ?? 100, maxLimit);
-
         var q = dbContext.Agents.AsNoTracking()
             .OrderByDescending(a => a.LastPingAt);
 
-        var page = await q.Take(take).ToListAsync();
-        return Ok(page);
+        var agents = await q.ToListAsync();
+        return Ok(agents);
     }
 
     [HttpGet("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetAgent(uint id)
+    public async Task<IActionResult> GetOne(uint id)
     {
-        var existing = await dbContext.Agents.FindAsync(id);
-        if (existing == null) return NotFound();
+        var agent = await dbContext.Agents.FindAsync(id);
+        if (agent == null) return NotFound();
 
-        return Ok(existing);
+        return Ok(agent);
     }
 
     [HttpPatch("{id:int}/ping")]

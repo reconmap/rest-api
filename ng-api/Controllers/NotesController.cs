@@ -20,20 +20,20 @@ public class NotesController(AppDbContext dbContext, ILogger<NotesController> lo
         dbContext.Notes.Add(note);
         await dbContext.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetAll), new { id = note.Id }, note);
+        return CreatedAtAction(nameof(GetMany), new { id = note.Id }, note);
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery] int? limit)
+    public async Task<IActionResult> GetMany([FromQuery] int? limit,
+        [FromQuery] string parentType,
+        [FromQuery] int parentId)
     {
-        const int maxLimit = 500;
-        var take = Math.Min(limit ?? 100, maxLimit);
-
         var q = dbContext.Notes.AsNoTracking()
+            .Where(n => n.ParentType == parentType && n.ParentId == parentId)
             .OrderByDescending(a => a.CreatedAt);
 
-        var page = await q.Take(take).ToListAsync();
-        return Ok(page);
+        var notes = await q.ToListAsync();
+        return Ok(notes);
     }
 
     [HttpDelete("{id:int}")]

@@ -11,7 +11,11 @@ namespace api_v2.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class CommandsController(AppDbContext dbContext, IConnectionMultiplexer conn, IConfiguration config)
+public class CommandsController(
+    AppDbContext dbContext,
+    IConnectionMultiplexer conn,
+    IConfiguration config,
+    ILogger<CommandsController> logger)
     : ControllerBase
 {
     [HttpPost]
@@ -109,14 +113,14 @@ public class CommandsController(AppDbContext dbContext, IConnectionMultiplexer c
     {
         // Parsed body
         var form = await Request.ReadFormAsync();
-        var commandUsageId = int.Parse(form["commandUsageId"]);
+        var commandUsageId = uint.Parse(form["commandUsageId"]);
 
         // Uploaded file
         var resultFile = form.Files["resultFile"];
 
         // Data lookups
-        var usage = await dbContext.CommandUsages.FindAsync((uint)commandUsageId);
-        var command = await dbContext.Commands.FindAsync((int)usage.CommandId);
+        var usage = await dbContext.CommandUsages.FindAsync(commandUsageId);
+        var command = await dbContext.Commands.FindAsync(usage.CommandId);
 
         // User Id from request context
         var userId = (int)HttpContext.GetCurrentUser()!.Id;
@@ -153,7 +157,6 @@ public class CommandsController(AppDbContext dbContext, IConnectionMultiplexer c
 
         await dbContext.Attachments.AddAsync(attachment);
         await dbContext.SaveChangesAsync();
-        /// /////////////
 
         // Optional project ID
         int? projectId = null;
@@ -175,6 +178,8 @@ public class CommandsController(AppDbContext dbContext, IConnectionMultiplexer c
                 "tasks:queue",
                 JsonSerializer.Serialize(payload)
             );
+
+            logger.LogInformation("pushed new job to {QueueName}", "tasks:queue");
         }
 
         return new JsonResult(new { success = true });

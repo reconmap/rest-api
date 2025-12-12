@@ -7,11 +7,22 @@ using api_v2.Infrastructure.Persistence;
 using api_v2.Infrastructure.Redis;
 using api_v2.Infrastructure.WebSockets;
 using Microsoft.AspNetCore.Authentication;
+using Serilog;
+
+var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+var isDevelopment = environmentName == "Development";
+var configuration = new ConfigurationBuilder()
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", false, isDevelopment)
+    .AddJsonFile($"appsettings.{environmentName}.json", true, isDevelopment).Build();
 
 var builder = WebApplication.CreateBuilder(args);
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(configuration)
+    .CreateLogger();
+builder.Host.UseSerilog();
 
 var services = builder.Services;
-builder.Logging.ClearProviders().AddConsole();
 services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 services.AddTransient<IClaimsTransformation, RoleClaimsTransformation>();
 services.AddSingleton<WebSocketConnectionManager>();

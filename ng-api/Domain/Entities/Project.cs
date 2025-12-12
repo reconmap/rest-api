@@ -16,7 +16,11 @@ public class Project : TimestampedEntity
 
     [Column("client_id")] public uint? ClientId { get; set; }
 
+    [ForeignKey(nameof(ClientId))] public Organisation? Client { get; set; }
+
     [Column("category_id")] public uint? CategoryId { get; set; }
+
+    [ForeignKey(nameof(CategoryId))] public ProjectCategory? Category { get; set; }
 
     [Required]
     [Column("is_template", TypeName = "tinyint(1)")]

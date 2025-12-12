@@ -42,16 +42,15 @@ public class OrganisationsController(AppDbContext dbContext, ILogger<Organisatio
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery] int? limit)
+    public async Task<IActionResult> GetMany([FromQuery] int? limit, [FromQuery] string? kind)
     {
-        const int maxLimit = 500;
-        var take = Math.Min(limit ?? 100, maxLimit);
+        var q = dbContext.Organisations.AsNoTracking();
+        if (kind != null)
+            q = q.Where(n => n.Kind == kind);
+        q = q.OrderByDescending(a => a.CreatedAt);
 
-        var q = dbContext.Organisations.AsNoTracking()
-            .OrderByDescending(a => a.CreatedAt);
-
-        var page = await q.Take(take).ToListAsync();
-        return Ok(page);
+        var organisations = await q.ToListAsync();
+        return Ok(organisations);
     }
 
     [HttpGet("{id:int}")]

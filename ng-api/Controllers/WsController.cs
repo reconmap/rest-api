@@ -9,19 +9,14 @@ namespace api_v2.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class WsController : ControllerBase
+public class WsController(
+    WebSocketConnectionManager manager,
+    AppDbContext dbContext,
+    ILogger<WsController> logger)
+    : ControllerBase
 {
-    private readonly AppDbContext _dbContext;
-    private readonly ILogger _logger;
-    private readonly WebSocketConnectionManager _manager;
-
-    public WsController(WebSocketConnectionManager manager, AppDbContext dbContext,
-        ILogger<WsController> logger)
-    {
-        _manager = manager;
-        _dbContext = dbContext;
-        _logger = logger;
-    }
+    private readonly AppDbContext _dbContext = dbContext;
+    private readonly ILogger _logger = logger;
 
     [HttpGet]
     public async Task Get()
@@ -29,7 +24,7 @@ public class WsController : ControllerBase
         if (HttpContext.WebSockets.IsWebSocketRequest)
         {
             var webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync();
-            var connectionId = _manager.AddSocket(webSocket);
+            var connectionId = manager.AddSocket(webSocket);
             _logger.LogInformation("WebSocket connection accepted: {ConnectionId}", connectionId);
             await ReceiveLoop(connectionId, webSocket); // stays open until closed
         }
@@ -53,7 +48,7 @@ public class WsController : ControllerBase
 
                 if (result.MessageType == WebSocketMessageType.Close)
                 {
-                    _logger.LogInformation("Client initiated close for {ConnectionId}");
+                    _logger.LogInformation("Client initiated close for {ConnectionId}", connectionId);
                     break;
                 }
 
@@ -84,7 +79,7 @@ public class WsController : ControllerBase
         }
         finally
         {
-            await _manager.RemoveSocketAsync(connectionId);
+            await manager.RemoveSocketAsync(connectionId);
             _logger.LogInformation("Receive loop ended for {ConnectionId}", connectionId);
         }
     }

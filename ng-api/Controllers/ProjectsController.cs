@@ -42,7 +42,8 @@ public class ProjectsController(AppDbContext dbContext, IConnectionMultiplexer r
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetMany([FromQuery] int? limit, [FromQuery] string? keywords)
+    public async Task<IActionResult> GetMany([FromQuery] int? limit, [FromQuery] string? keywords,
+        [FromQuery] uint? clientId)
     {
         const int maxLimit = 500;
         var take = Math.Min(limit ?? 100, maxLimit);
@@ -54,11 +55,13 @@ public class ProjectsController(AppDbContext dbContext, IConnectionMultiplexer r
             db.SortedSetAdd(setName, keywords, new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds());
         }
 
-        var q = dbContext.Projects.AsNoTracking()
-            .OrderByDescending(a => a.CreatedAt);
+        var q = dbContext.Projects.AsNoTracking();
+        if (clientId != null)
+            q = q.Where(p => p.ClientId == clientId);
+        q = q.OrderByDescending(a => a.CreatedAt);
 
-        var page = await q.Take(take).ToListAsync();
-        return Ok(page);
+        var projects = await q.Take(take).ToListAsync();
+        return Ok(projects);
     }
 
     [HttpGet("categories")]
@@ -76,7 +79,11 @@ public class ProjectsController(AppDbContext dbContext, IConnectionMultiplexer r
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetOne(uint id)
     {
-        var secret = await dbContext.Projects.Include(p => p.CreatedBy).Where(p => p.Id == id)
+        var secret = await dbContext.Projects
+            .Include(p => p.CreatedBy)
+            .Include(p => p.Category)
+            .Include(p => p.Client)
+            .Where(p => p.Id == id)
             .FirstOrDefaultAsync();
         if (secret == null) return NotFound();
 

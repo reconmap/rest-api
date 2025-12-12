@@ -9,7 +9,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Reconmap\Controllers\Attachments\AttachmentsRouter;
 use Reconmap\Controllers\Commands\CommandsRouter;
-use Reconmap\Controllers\Projects\ProjectsRouter;
 use Reconmap\Controllers\Reports\ReportsRouter;
 use Reconmap\Controllers\System\SystemRouter;
 use Reconmap\Controllers\Users\UsersRouter;
@@ -22,7 +21,6 @@ class ControllerRoutesTest extends TestCase
         return [
             [AttachmentsRouter::class],
             [CommandsRouter::class],
-            [ProjectsRouter::class],
             [ReportsRouter::class],
             [SystemRouter::class],
             [UsersRouter::class],

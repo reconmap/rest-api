@@ -16,7 +16,6 @@ use Psr\Log\LoggerInterface;
 use Reconmap\{
     Controllers\Attachments\ServeAttachmentController,
     Controllers\Commands\CommandsRouter,
-    Controllers\Projects\ProjectsRouter,
     Controllers\Reports\ReportsRouter,
     Controllers\System\GetOpenApiYamlController,
     Controllers\System\SystemRouter,
@@ -42,7 +41,6 @@ class ApiRouter extends Router
     private const array ROUTER_CLASSES = [
         AttachmentsRouter::class,
         CommandsRouter::class,
-        ProjectsRouter::class,
         ReportsRouter::class,
         SystemRouter::class,
         UsersRouter::class,

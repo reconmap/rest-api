@@ -15,22 +15,25 @@ public class AttachmentsController(AppDbContext dbContext, ILogger<AttachmentsCo
     private readonly ILogger _logger = logger;
 
     [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery] int? limit)
+    public async Task<IActionResult> GetMany([FromQuery] int? limit,
+        [FromQuery] string parentType,
+        [FromQuery] int parentId)
     {
         const int maxLimit = 500;
         var take = Math.Min(limit ?? 100, maxLimit);
 
         var q = dbContext.Attachments.AsNoTracking()
+            .Where(a => a.ParentType == parentType && a.ParentId == parentId)
             .OrderByDescending(a => a.CreatedAt);
 
-        var page = await q.Take(take).ToListAsync();
-        return Ok(page);
+        var attachments = await q.Take(take).ToListAsync();
+        return Ok(attachments);
     }
 
     [HttpGet("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Get(uint id)
+    public async Task<IActionResult> GetOne(uint id)
     {
         var existing = await dbContext.Attachments.FindAsync(id);
         if (existing == null) return NotFound();
@@ -52,7 +55,7 @@ public class AttachmentsController(AppDbContext dbContext, ILogger<AttachmentsCo
     }
 
     [HttpDelete("{id:int}")]
-    public async Task<IActionResult> DeleteAttachment(uint id)
+    public async Task<IActionResult> DeleteOne(uint id)
     {
         var attachment = await dbContext.Attachments.FindAsync(id);
         if (attachment == null) return NotFound();

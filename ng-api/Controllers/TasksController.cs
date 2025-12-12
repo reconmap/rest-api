@@ -38,16 +38,15 @@ public class TasksController(AppDbContext dbContext) : AppController(dbContext)
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetMany([FromQuery] int? limit)
+    public async Task<IActionResult> GetMany([FromQuery] int? limit, [FromQuery] uint? projectId)
     {
-        const int maxLimit = 500;
-        var take = Math.Min(limit ?? 100, maxLimit);
+        var q = dbContext.Tasks.AsNoTracking();
+        if (projectId != null)
+            q = q.Where(t => t.ProjectId == projectId);
+        q = q.OrderByDescending(a => a.CreatedAt);
 
-        var q = dbContext.Tasks.AsNoTracking()
-            .OrderByDescending(a => a.CreatedAt);
-
-        var page = await q.Take(take).ToListAsync();
-        return Ok(page);
+        var tasks = await q.ToListAsync();
+        return Ok(tasks);
     }
 
     [HttpGet("{id:int}")]

@@ -1,4 +1,3 @@
-using api_v2.Common.Extensions;
 using api_v2.Domain.Entities;
 using api_v2.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
@@ -16,11 +15,11 @@ public class AssetsController(AppDbContext dbContext) : ControllerBase
         dbContext.Assets.Add(asset);
         await dbContext.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetAll), new { id = asset.Id }, asset);
+        return CreatedAtAction(nameof(GetOne), new { id = asset.Id }, asset);
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery] int? limit)
+    public async Task<IActionResult> GetMany([FromQuery] int? limit)
     {
         const int maxLimit = 500;
         var take = Math.Min(limit ?? 100, maxLimit);
@@ -28,8 +27,8 @@ public class AssetsController(AppDbContext dbContext) : ControllerBase
         var q = dbContext.Assets.AsNoTracking()
             .OrderByDescending(a => a.CreatedAt);
 
-        var page = await q.Take(take).ToListAsync();
-        return Ok(page);
+        var assets = await q.Take(take).ToListAsync();
+        return Ok(assets);
     }
 
     [HttpGet("{id:int}")]

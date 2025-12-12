@@ -6,6 +6,7 @@ services:
       context: ./
       dockerfile: docker/Dockerfile
     volumes:
+      - "./appsettings.Production.json:/App/appsettings.Production.json"
       - "./appsettings.json:/App/appsettings.json"
       - dataprotection-keys:/root/.aspnet/DataProtection-Keys
     ports:
