@@ -47,8 +47,8 @@ public class Project : TimestampedEntity
     [Column("archived", TypeName = "tinyint(1)")]
     public bool Archived { get; set; }
 
-    [Column("archive_ts", TypeName = "timestamp")]
-    public DateTime? ArchiveTs { get; set; }
+    [Column("archived_at", TypeName = "timestamp")]
+    public DateTime? ArchiveAt { get; set; }
 
     [Column("external_id")]
     [MaxLength(40)]

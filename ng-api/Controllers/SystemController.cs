@@ -1,4 +1,3 @@
-using System.Net.Mime;
 using api_v2.Application.Services;
 using api_v2.Domain.Entities;
 using api_v2.Infrastructure.Persistence;
@@ -124,26 +123,6 @@ public class SystemController(
             .Select(x => new { x.Key, x.Description });
 
         return Ok(result);
-    }
-
-    [HttpGet("data")]
-    public IActionResult GetData()
-    {
-        var json = "[]";
-        var packageName = "agents";
-        var fileName = $"reconmap-{packageName}-{DateTime.Now:yyyyMMdd-HHmmss}.json";
-
-        var result = new ContentResult
-        {
-            Content = json,
-            ContentType = "application/json; charset=UTF-8"
-        };
-
-        Response.Headers.AccessControlExposeHeaders = "Content-Disposition";
-        var contentDispHeader = new ContentDisposition { FileName = fileName };
-        Response.Headers.ContentDisposition = contentDispHeader.ToString();
-
-        return result;
     }
 
     private bool CheckDirectoryWritable(string path)

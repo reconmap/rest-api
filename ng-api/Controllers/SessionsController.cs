@@ -1,7 +1,6 @@
 using api_v2.Common;
 using api_v2.Common.Extensions;
 using api_v2.Domain.AuditActions;
-using api_v2.Domain.Entities;
 using api_v2.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
 using StackExchange.Redis;
@@ -11,7 +10,7 @@ namespace api_v2.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 public class SessionsController(AppDbContext dbContext, IConnectionMultiplexer redis) : AppController(dbContext)
-{ 
+{
     [HttpPost]
     public async Task<OkObjectResult> GetSessions()
     {
@@ -41,7 +40,7 @@ public class SessionsController(AppDbContext dbContext, IConnectionMultiplexer r
     public void CloseSession()
     {
         AuditAction(UserAuditActions.LoggedOut, "User");
-        
+
         Response.Cookies.Delete("reconmap-static");
     }
 }

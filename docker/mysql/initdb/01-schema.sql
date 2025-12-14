@@ -1,18 +1,64 @@
 USE reconmap;
 
-SET
-    FOREIGN_KEY_CHECKS = 0;
+SET FOREIGN_KEY_CHECKS = 0;
 
-DROP TABLE IF EXISTS database_migration;
+DROP TABLE IF EXISTS project_category;
 
-CREATE TABLE database_migration
+CREATE TABLE project_category
 (
-    created_at    TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    from_version INT UNSIGNED NOT NULL,
-    to_version   INT UNSIGNED NOT NULL,
+    id          INT UNSIGNED  NOT NULL AUTO_INCREMENT,
+    name        VARCHAR(200)  NOT NULL,
+    description VARCHAR(2000) NULL,
 
-    KEY (from_version, to_version)
-);
+    PRIMARY KEY (id),
+    UNIQUE KEY (name)
+) ENGINE = InnoDB;
+
+DROP TABLE IF EXISTS project;
+
+CREATE TABLE project
+(
+    id                    INT UNSIGNED               NOT NULL AUTO_INCREMENT,
+    created_at             TIMESTAMP                  NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at             TIMESTAMP                  NULL ON UPDATE CURRENT_TIMESTAMP,
+    created_by_uid           INT UNSIGNED               NOT NULL,
+    service_provider_id   INT UNSIGNED               NULL COMMENT 'Null when project is template',
+    client_id             INT UNSIGNED               NULL COMMENT 'Null when project is template',
+    category_id           INT UNSIGNED               NULL,
+    is_template           BOOLEAN                    NOT NULL DEFAULT FALSE,
+    visibility            ENUM ('public', 'private') NOT NULL DEFAULT 'public',
+    name                  VARCHAR(200)               NOT NULL,
+    description           VARCHAR(2000)              NULL,
+    engagement_start_date DATE,
+    engagement_end_date   DATE,
+    archived              BOOLEAN                    NOT NULL DEFAULT FALSE,
+    archived_at            TIMESTAMP                  NULL,
+    external_id           VARCHAR(40)                NULL,
+    vulnerability_metrics ENUM ('CVSS', 'OWASP_RR')  NULL,
+
+    PRIMARY KEY (id),
+    UNIQUE KEY (name),
+    KEY (is_template),
+    FOREIGN KEY (created_by_uid) REFERENCES user (id) ON DELETE NO ACTION,
+    CONSTRAINT project_fk_client_id FOREIGN KEY (client_id) REFERENCES organisation (id) ON DELETE SET NULL,
+    CONSTRAINT project_fk_category_id FOREIGN KEY (category_id) REFERENCES project_category (id) ON DELETE SET NULL
+) ENGINE = InnoDB;
+
+DROP TABLE IF EXISTS contact;
+
+CREATE TABLE contact
+(
+    id    INT UNSIGNED                             NOT NULL AUTO_INCREMENT,
+    organisation_id INT UNSIGNED             NOT NULL,
+    kind  ENUM ('general', 'technical', 'billing') NOT NULL DEFAULT 'general',
+    name  VARCHAR(200)                             NOT NULL,
+    email VARCHAR(200)                             NOT NULL,
+    phone VARCHAR(200)                             NULL,
+    role  VARCHAR(200)                             NULL,
+
+    PRIMARY KEY (id),
+    FOREIGN KEY (organisation_id) REFERENCES organisation (id) ON DELETE CASCADE
+) ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS organisation;
 
@@ -35,23 +81,6 @@ CREATE TABLE organisation
     FOREIGN KEY (logo_attachment_id) REFERENCES attachment (id) ON DELETE SET NULL,
     FOREIGN KEY (small_logo_attachment_id) REFERENCES attachment (id) ON DELETE SET NULL
 ) ENGINE = InnoDB;
-
-DROP TABLE IF EXISTS contact;
-
-CREATE TABLE contact
-(
-    id    INT UNSIGNED                             NOT NULL AUTO_INCREMENT,
-    organisation_id INT UNSIGNED             NOT NULL,
-    kind  ENUM ('general', 'technical', 'billing') NOT NULL DEFAULT 'general',
-    name  VARCHAR(200)                             NOT NULL,
-    email VARCHAR(200)                             NOT NULL,
-    phone VARCHAR(200)                             NULL,
-    role  VARCHAR(200)                             NULL,
-
-    PRIMARY KEY (id),
-    FOREIGN KEY (organisation_id) REFERENCES organisation (id) ON DELETE CASCADE
-) ENGINE = InnoDB
-  CHARSET = utf8mb4;
 
 DROP TABLE IF EXISTS user;
 
@@ -90,7 +119,7 @@ CREATE TABLE audit_log
     created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     created_by_uid INT UNSIGNED NULL COMMENT 'The subject/actor. Null is system',
     user_agent VARCHAR(250) NULL,
-    client_ip  VARCHAR(100) NOT NULL COMMENT "Client's IP",
+    client_ip  VARBINARY(16) NOT NULL COMMENT "Client's IP",
     action     VARCHAR(200) NOT NULL,
     object     VARCHAR(200) NOT NULL COMMENT 'The entity',
     context    JSON         NULL,
@@ -124,49 +153,6 @@ CREATE TABLE vault
     FOREIGN KEY (project_id) REFERENCES project (id) ON DELETE CASCADE
 ) Engine = InnoDB;
 
-DROP TABLE IF EXISTS project_category;
-
-CREATE TABLE project_category
-(
-    id          INT UNSIGNED  NOT NULL AUTO_INCREMENT,
-    name        VARCHAR(200)  NOT NULL,
-    description VARCHAR(2000) NULL,
-
-    PRIMARY KEY (id),
-    UNIQUE KEY (name)
-) ENGINE = InnoDB
-  CHARSET = utf8mb4;
-
-DROP TABLE IF EXISTS project;
-
-CREATE TABLE project
-(
-    id                    INT UNSIGNED               NOT NULL AUTO_INCREMENT,
-    created_at             TIMESTAMP                  NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at             TIMESTAMP                  NULL ON UPDATE CURRENT_TIMESTAMP,
-    created_by_uid           INT UNSIGNED               NOT NULL,
-    service_provider_id   INT UNSIGNED               NULL COMMENT 'Null when project is template',
-    client_id             INT UNSIGNED               NULL COMMENT 'Null when project is template',
-    category_id           INT UNSIGNED               NULL,
-    is_template           BOOLEAN                    NOT NULL DEFAULT FALSE,
-    visibility            ENUM ('public', 'private') NOT NULL DEFAULT 'public',
-    name                  VARCHAR(200)               NOT NULL,
-    description           VARCHAR(2000)              NULL,
-    engagement_start_date DATE,
-    engagement_end_date   DATE,
-    archived              BOOLEAN                    NOT NULL DEFAULT FALSE,
-    archive_ts            TIMESTAMP                  NULL,
-    external_id           VARCHAR(40)                NULL,
-    vulnerability_metrics ENUM ('CVSS', 'OWASP_RR')  NULL,
-
-    PRIMARY KEY (id),
-    UNIQUE KEY (name),
-    KEY (is_template),
-    FOREIGN KEY (created_by_uid) REFERENCES user (id) ON DELETE NO ACTION,
-    CONSTRAINT project_fk_client_id FOREIGN KEY (client_id) REFERENCES organisation (id) ON DELETE SET NULL,
-    CONSTRAINT project_fk_category_id FOREIGN KEY (category_id) REFERENCES project_category (id) ON DELETE SET NULL
-) ENGINE = InnoDB;
-
 DROP VIEW IF EXISTS project_template;
 
 CREATE VIEW project_template
@@ -175,12 +161,24 @@ SELECT id, created_at, updated_at, created_by_uid, name, description, category_i
 FROM project
 WHERE is_template = 1;
 
-DROP TRIGGER IF EXISTS project_archive_ts_trigger;
+DROP TRIGGER IF EXISTS project_archived_at_trigger;
 
-CREATE TRIGGER project_archive_ts_trigger
-    BEFORE UPDATE
-    ON project
-    FOR EACH ROW SET NEW.archive_ts = IF(NEW.archived, CURRENT_TIMESTAMP, NULL);
+DELIMITER $$
+
+CREATE TRIGGER project_archived_at_trigger
+BEFORE UPDATE ON project
+FOR EACH ROW
+BEGIN
+    -- Set archive timestamp only when transitioning to archived
+    IF NEW.archived = 1 AND OLD.archived = 0 THEN
+        SET NEW.archived_at = CURRENT_TIMESTAMP;
+    -- Clear timestamp only when unarchiving
+    ELSEIF NEW.archived = 0 THEN
+        SET NEW.archived_at = NULL;
+    END IF;
+END$$
+
+DELIMITER ;
 
 DROP TABLE IF EXISTS project_user;
 
@@ -268,7 +266,7 @@ CREATE TABLE vulnerability
     substatus              ENUM ('reported', 'unresolved', 'unexploited', 'exploited', 'remediated', 'mitigated', 'rejected') NULL     DEFAULT 'reported',
     tags                   JSON                                                                                               NULL,
     owasp_vector           VARCHAR(80)                                                                                        NULL,
-    owasp_likehood         DECIMAL(5, 3)                                                                                      NULL,
+    owasp_likelihood         DECIMAL(5, 3)                                                                                      NULL,
     owasp_impact           DECIMAL(5, 3)                                                                                      NULL,
     owasp_overall          ENUM ('critical','high','medium','low','note')                                                     NULL,
     custom_fields          JSON                                                                                               NULL,
@@ -299,7 +297,7 @@ SELECT id,
        cvss_vector,
        tags,
        owasp_vector,
-       owasp_likehood,
+       owasp_likelihood,
        owasp_impact,
        owasp_overall
 FROM vulnerability
@@ -482,7 +480,7 @@ CREATE TABLE attachment
     file_name        VARCHAR(200)                                                                             NOT NULL,
     file_size        INT UNSIGNED                                                                             NOT NULL,
     file_mimetype    VARCHAR(200)                                                                             NULL,
-    file_hash        VARCHAR(10000)                                                                           NOT NULL,
+    file_hash        VARCHAR(128)                                                                           NOT NULL,
 
     PRIMARY KEY (id),
     FOREIGN KEY (created_by_uid) REFERENCES user (id) ON DELETE NO ACTION
@@ -522,8 +520,7 @@ CREATE TABLE notification
 
     PRIMARY KEY (id),
     FOREIGN KEY (to_user_id) REFERENCES user (id) ON DELETE CASCADE
-) ENGINE = InnoDB
-  CHARSET = utf8mb4;
+) ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS agent;
 
@@ -543,8 +540,7 @@ CREATE TABLE agent
     ip VARCHAR(100) NULL,
     listen_addr           VARCHAR(100) NULL,
     PRIMARY KEY (id)
-) ENGINE = InnoDB,
-  CHARSET = utf8mb4;
+) ENGINE = InnoDB;
 
 SET
     FOREIGN_KEY_CHECKS = 1;

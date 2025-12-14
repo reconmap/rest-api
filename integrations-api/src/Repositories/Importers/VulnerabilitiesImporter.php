@@ -36,7 +36,7 @@ readonly class VulnerabilitiesImporter implements Importable
                 $vulnerability->owasp_vector = $jsonDoc->owasp_vector ?? null;
                 $vulnerability->owasp_overall = $jsonDoc->owasp_overall ?? null;
                 $vulnerability->owasp_impact = isset($jsonDoc->owasp_impact) ? floatval($jsonDoc->owasp_impact) : null;
-                $vulnerability->owasp_likehood = isset($jsonDoc->owasp_likehood) ? floatval($jsonDoc->owasp_likehood) : null;
+                $vulnerability->owasp_likelihood = isset($jsonDoc->owasp_likelihood) ? floatval($jsonDoc->owasp_likelihood) : null;
 
                 $this->repository->insert($vulnerability);
 

@@ -36,7 +36,7 @@ class ProjectRepositoryTest extends DatabaseTestCase
             'engagement_start_date' => null,
             'engagement_end_date' => null,
             'archived' => 0,
-            'archive_ts' => null,
+            'archived_at' => null,
             'client_name' => null,
             'creator_full_name' => 'Jane Doe',
             'external_id' => null,

@@ -7,7 +7,7 @@ VALUES (@admin_user_id, 'fec17265-a0ae-4d5a-9e20-63487fc21b67', 'Administrator',
         'administrator');
 
 INSERT INTO audit_log (created_by_uid, client_ip, action, object)
-VALUES (NULL, INET_ATON('127.0.0.1'), 'Initialised', 'System');
+VALUES (NULL, INET6_ATON('127.0.0.1'), 'Initialised', 'System');
 
 INSERT INTO vulnerability_category (id, parent_id, name, description)
 VALUES (1, NULL, 'General', 'General categories.'),

@@ -125,7 +125,6 @@ public class CommandsController(
         // User Id from request context
         var userId = (int)HttpContext.GetCurrentUser()!.Id;
 
-        ///////////////
         var relativePath = config["AttachmentSettings:SavePath"];
         var pathToSave = Path.Combine(relativePath, "data", "attachments");
         if (!Directory.Exists(pathToSave))

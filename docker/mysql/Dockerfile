@@ -1,4 +1,4 @@
-FROM mysql:9.3
+FROM mysql:9.4
 
 LABEL org.opencontainers.image.vendor="Netfoe" \
     org.opencontainers.image.authors="Santiago Lizardo" \

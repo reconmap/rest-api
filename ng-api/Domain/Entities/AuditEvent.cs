@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Net;
+using System.Text.Json.Serialization;
 
 namespace api_v2.Domain.Entities;
 
@@ -18,7 +20,19 @@ public class AuditEntry : CreationTimestampedEntity
     [MaxLength(250)]
     public string? UserAgent { get; set; }
 
-    [Column("client_ip")] public string? ClientIp { get; set; }
+    [Required]
+    [Column("client_ip")]
+    [MinLength(4)]
+    [MaxLength(16)]
+    [JsonIgnore]
+    public byte[] ClientIpBinary { get; set; }
+
+    [NotMapped]
+    public string ClientIp
+    {
+        get => new IPAddress(ClientIpBinary).ToString();
+        set => ClientIpBinary = IPAddress.Parse(value).GetAddressBytes();
+    }
 
     [Column("action")] [MaxLength(200)] public string Action { get; set; } = string.Empty;
 

@@ -13,9 +13,5 @@ class SystemRouter
     {
         $router->map('GET', '/system/health', GetSystemHealthController::class);
         $router->map('GET', '/system/integrations', GetIntegrationsController::class);
-        $router->map('GET', '/system/exportables', GetExportablesController::class);
-        $router->map('GET', '/system/usage', GetSystemUsageController::class);
-        $router->map('GET', '/system/data', ExportDataController::class);
-        $router->map('POST', '/system/data', ImportDataController::class);
     }
 }

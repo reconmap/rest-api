@@ -175,7 +175,7 @@ readonly class WordReportRenderer
                 $template->setValue('findings.list.cvss_score#' . ($index + 1), $vulnerability['cvss_score']);
                 $template->setValue('findings.list.owasp_vector#' . ($index + 1), $vulnerability['owasp_vector']);
                 $template->setValue('findings.list.owasp_overall#' . ($index + 1), $vulnerability['owasp_overall']);
-                $template->setValue('findings.list.owasp_likelihood#' . ($index + 1), $vulnerability['owasp_likehood']);
+                $template->setValue('findings.list.owasp_likelihood#' . ($index + 1), $vulnerability['owasp_likelihood']);
                 $template->setValue('findings.list.owasp_impact#' . ($index + 1), $vulnerability['owasp_impact']);
                 $template->setValue('findings.list.severity#' . ($index + 1), $vulnerability['risk']);
                 $template->setValue('findings.list.impact#' . ($index + 1), $vulnerability['impact']);

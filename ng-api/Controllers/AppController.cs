@@ -12,14 +12,14 @@ public abstract class AppController(AppDbContext dbContext) : ControllerBase
     {
         var remoteIpAddress = HttpContext.Connection.RemoteIpAddress;
         var userAgent = Request.Headers.UserAgent.ToString();
-        var entry = new AuditEntry()
+        var entry = new AuditEntry
         {
-            ClientIp = remoteIpAddress?.ToString(),
+            ClientIp = remoteIpAddress.ToString(),
             UserAgent = userAgent,
             CreatedByUid = HttpContext.GetCurrentUser()!.Id,
             Action = action,
             Object = obj,
-            Context = (context != null ? JsonSerializer.Serialize(context) : null)
+            Context = context != null ? JsonSerializer.Serialize(context) : null
         };
         dbContext.AuditEntries.Add(entry);
     }
