@@ -39,7 +39,7 @@ jobs:
       - name: Run security tests
         run: make security-tests
       
-      - uses: codecov/codecov-action@v4
+      - uses: codecov/codecov-action@v5
         with:
           files: tests/clover.xml
 
