@@ -10,7 +10,7 @@ stop:
 	$(DC) stop ngapi
 
 .PHONY: build
-push:
+build:
 	$(DC) build
 
 .PHONY: push
