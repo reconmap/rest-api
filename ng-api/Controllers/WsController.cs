@@ -2,6 +2,7 @@ using System.Net.WebSockets;
 using System.Text;
 using api_v2.Infrastructure.Persistence;
 using api_v2.Infrastructure.WebSockets;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,6 +20,7 @@ public class WsController(
     private readonly ILogger _logger = logger;
 
     [HttpGet]
+    [AllowAnonymous]
     public async Task Get()
     {
         if (HttpContext.WebSockets.IsWebSocketRequest)

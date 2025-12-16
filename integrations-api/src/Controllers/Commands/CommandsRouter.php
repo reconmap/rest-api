@@ -10,8 +10,6 @@ class CommandsRouter
 {
     public function mapRoutes(RouteCollectionInterface $router): void
     {
-        $router->map('GET', '/commands/usage/{commandId:number}', GetCommandUsageController::class);
-        $router->map('POST', '/commands/{commandId:number}/usages', AddCommandUsageController::class);
         $router->map('PUT', '/commands/{commandId:number}', UpdateCommandController::class);
         $router->map('POST', '/commands/{commandId:number}/schedule', AddCommandScheduleController::class);
         $router->map('GET', '/commands/output-parsers', GetCommandOutputParsersController::class);

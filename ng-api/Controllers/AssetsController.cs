@@ -19,15 +19,13 @@ public class AssetsController(AppDbContext dbContext) : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetMany([FromQuery] int? limit)
+    public async Task<IActionResult> GetMany([FromQuery] int projectId, [FromQuery] int? limit)
     {
-        const int maxLimit = 500;
-        var take = Math.Min(limit ?? 100, maxLimit);
-
         var q = dbContext.Assets.AsNoTracking()
+            .Where(a => a.ProjectId == projectId)
             .OrderByDescending(a => a.CreatedAt);
 
-        var assets = await q.Take(take).ToListAsync();
+        var assets = await q.ToListAsync();
         return Ok(assets);
     }
 

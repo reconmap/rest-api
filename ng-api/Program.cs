@@ -7,6 +7,7 @@ using api_v2.Infrastructure.Persistence;
 using api_v2.Infrastructure.Redis;
 using api_v2.Infrastructure.WebSockets;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Serilog;
 
 var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
@@ -26,8 +27,6 @@ var services = builder.Services;
 services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 services.AddTransient<IClaimsTransformation, RoleClaimsTransformation>();
 services.AddSingleton<WebSocketConnectionManager>();
-services.AddScoped<CurrentDbUser>();
-services.AddScoped<ICurrentDbUser>(sp => sp.GetRequiredService<CurrentDbUser>());
 services.AddScoped<SystemUsageService>();
 
 services.AddRedisServices(builder.Configuration);
@@ -45,18 +44,21 @@ services.AddControllers()
         );
     });
 
-services.AddAuthorization();
+services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .RequireRole("administrator")
+        .Build();
+
+    options.AddPolicy("AdminOnly", policy =>
+        policy.RequireRole("administrator"));
+
+    options.AddPolicy("AdminOrUser", policy =>
+        policy.RequireRole("administrator", "user"));
+});
 
 var app = builder.Build();
-
-/*
-var redis = builder.Services.BuildServiceProvider()
-    .GetRequiredService<IConnectionMultiplexer>();
-builder.Services.AddDataProtection()
-    .PersistKeysToStackExchangeRedis(
-        redis,
-        "DataProtection-Keys");
-        */
 app.UseDefaultFiles();
 app.UseStaticFiles();
 app.UseRouting();
@@ -64,7 +66,7 @@ app.UseCors(CorsExtensions.CustomCorsPolicy);
 
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.MapOpenApi().AllowAnonymous();
     app.UseSwaggerUI(options => { options.SwaggerEndpoint("/openapi/v1.json", "v1"); });
 }
 
@@ -72,7 +74,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseMiddleware<DbUserResolverMiddleware>();
 app.UseCustomWebSockets();
-//app.UseHttpsRedirection();
 
 app.MapControllers();
 

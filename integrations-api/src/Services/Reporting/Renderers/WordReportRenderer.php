@@ -121,14 +121,10 @@ readonly class WordReportRenderer
             foreach ($vars['findings']['list'] as $index => $vulnerability) {
                 $template->setValue('findings.list.summary#' . ($index + 1), $vulnerability['summary']);
 
-                if (!is_null($vulnerability['description'])) {
+                if (!empty($vulnerability['description'])) {
                     $description = $markdownParser->convert($vulnerability['description']);
 
-                    $tempTable = $word->addSection()->addTable();
-                    $cell = $tempTable->addRow()->addCell();
-                    Html::addHtml($cell, $description);
-
-                    $template->setComplexBlock('findings.list.description#' . ($index + 1), $tempTable);
+                    $this->replaceRowWithHtml($template, 'findings.list.description#' . ($index + 1), $description->getContent());
                 }
 
                 if (!is_null($vulnerability['remediation'])) {
@@ -236,5 +232,19 @@ readonly class WordReportRenderer
         $attachment->client_file_name = $clientFileName;
 
         return $this->attachmentRepository->insert($attachment);
+    }
+
+    private function replaceRowWithHtml(TemplateProcessor $template, string $placeholder, string $html): void
+    {
+        $word = new PhpWord();
+        $table = $word->addSection()->addTable();
+        $cell = $table->addRow()->addCell();
+        Html::addHtml($cell, $html);
+        try {
+            $template->setComplexBlock($placeholder, $table);
+        } catch (\Exception $e) {
+            $msg = $e->getMessage();
+            $this->logger->warning("Error replacing row with HTML: $msg");
+        }
     }
 }

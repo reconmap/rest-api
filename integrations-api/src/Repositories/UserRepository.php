@@ -130,10 +130,4 @@ class UserRepository extends MysqlRepository
     {
         return $this->updateByTableId('user', $id, $newColumnValues);
     }
-
-    public function updateLastLoginTime(int $userId): bool
-    {
-        $stmt = $this->mysqlServer->prepare('UPDATE user SET last_login_ts = NOW() WHERE id = ?');
-        return $stmt->execute([$userId]);
-    }
 }

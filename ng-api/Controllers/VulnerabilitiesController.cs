@@ -29,7 +29,7 @@ public class VulnerabilitiesController(AppDbContext dbContext, ILogger<Vulnerabi
         AuditAction(AuditActions.Created, "Vulnerability", new { id = vulnerability.Id });
         await dbContext.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(Get), new { id = vulnerability.Id }, vulnerability);
+        return CreatedAtAction(nameof(GetOne), new { id = vulnerability.Id }, vulnerability);
     }
 
     [HttpPut("{id:int}")]
@@ -45,13 +45,15 @@ public class VulnerabilitiesController(AppDbContext dbContext, ILogger<Vulnerabi
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery] int? limit)
+    public async Task<IActionResult> GetMany([FromQuery] int? projectId, [FromQuery] int? limit)
     {
         const int maxLimit = 500;
         var take = Math.Min(limit ?? 100, maxLimit);
 
-        var q = dbContext.Vulnerabilities.AsNoTracking()
-            .OrderByDescending(a => a.CreatedAt);
+        var q = dbContext.Vulnerabilities.AsNoTracking();
+        if (projectId.HasValue)
+            q = q.Where(v => v.ProjectId == projectId);
+        q = q.OrderByDescending(a => a.CreatedAt);
 
         var page = await q.Take(take).ToListAsync();
         return Ok(page);
@@ -60,9 +62,15 @@ public class VulnerabilitiesController(AppDbContext dbContext, ILogger<Vulnerabi
     [HttpGet("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Get(uint id)
+    public async Task<IActionResult> GetOne(uint id)
     {
-        var existing = await dbContext.Vulnerabilities.FindAsync(id);
+        var existing = await dbContext.Vulnerabilities
+            .Include(v => v.Project)
+            .Include(v => v.Category)
+            .Include(v => v.CreatedBy)
+            .Include(v => v.Asset)
+            .Where(v => v.Id == id)
+            .FirstOrDefaultAsync();
         if (existing == null) return NotFound();
 
         return Ok(existing);

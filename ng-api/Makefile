@@ -9,7 +9,10 @@ start:
 stop:
 	$(DC) stop ngapi
 
-.PHONY: push
+.PHONY: build
 push:
 	$(DC) build
+
+.PHONY: push
+push:
 	$(DC) push

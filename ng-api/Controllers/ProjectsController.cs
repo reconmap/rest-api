@@ -55,7 +55,10 @@ public class ProjectsController(AppDbContext dbContext, IConnectionMultiplexer r
             db.SortedSetAdd(setName, keywords, new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds());
         }
 
-        var q = dbContext.Projects.AsNoTracking();
+        var q = dbContext.Projects
+            .Include(p => p.Client)
+            .Include(p => p.Category)
+            .AsNoTracking();
         if (clientId != null)
             q = q.Where(p => p.ClientId == clientId);
         q = q.OrderByDescending(a => a.CreatedAt);
