@@ -1,86 +1,100 @@
 # Penetration Test Report
 
-**Project:** {{ project.name }}  
-**Prepared for:** {{ client.name }}  
-**Prepared by:** {{ serviceProvider.name }}  
-**Date:** {{ date }}
+**Project:** {{ project != null && project.name != null ? project.name : "" }}  
+**Prepared for:** {{ client != null && client.name != null ? client.name : "" }}  
+**Prepared by:** {{ serviceProvider != null && serviceProvider.name != null ? serviceProvider.name : "" }}  
+**Date:** {{ date != null ? date : "" }}
+
+{{ if lastRevisionName != null }}
+**Last revision:** {{ lastRevisionName }}
+{{ end }}
 
 ---
 
+{{ if revisions != null && revisions.size > 0 }}
 ## Revisions
 
-{% for revision in revisions %}
-
--   **{{ revision.created_at }}**  
-     _{{ revision.version_name }}_ — {{ revision.version_description }}
-    {% endfor %}
+| Date | Revision name | Description |
+|------|---------------|-------------|
+{{ for revision in revisions }}
+| {{ revision.insert_ts != null ? revision.insert_ts : "" }} | {{ revision.version_name != null ? revision.version_name : "" }} | {{ revision.version_description != null ? revision.version_description : "" }} |
+{{ end }}
+{{ end }}
 
 ---
 
-## Contacts
+## Client
 
-{% for contact in client.contacts %}
+**Name**  
+{{ client != null && client.name != null ? client.name : "" }}
 
--   **Name:** {{ contact.name }}  
-    **Phone:** {{ contact.phone }}  
-    **Email:** {{ contact.email }}  
-    **Role:** {{ contact.role }}
+**Address**  
+{{ client != null && client.address != null ? client.address : "" }}
 
-{% endfor %}
+**URL**  
+{{ client != null && client.url != null ? client.url : "" }}
+
+{{ for c in (client != null && client.contacts != null ? client.contacts : empty_array) }}
+- **Name:** {{ c.name != null ? c.name : "" }}  
+  **Phone:** {{ c.phone != null ? c.phone : "" }}  
+  **Email:** {{ c.email != null ? c.email : "" }}  
+  **Role:** {{ c.role != null ? c.role : "" }}
+{{ end }}
 
 ---
 
 ## Pentesting Team
 
-{% for user in users %}
-
--   **{{ user.full_name }}**  
-     _{{ user.short_bio }}_
-    {% endfor %}
+{{ for u in (users != null ? users : empty_array) }}
+- **{{ u.full_name != null ? u.full_name : "" }}**  
+  *{{ u.short_bio != null ? u.short_bio : "" }}*
+{{ end }}
 
 ---
 
 ## Project Overview
 
-{{ project.description }}
+{{ project != null && project.description != null ? project.description : "" }}
 
-{% for finding in findings.stats %}
+### Findings Overview
 
--   **{{ finding.severity|capitalize }}:** {{ finding.count }}
-    {% endfor %}
-
----
-
-## Targets
-
-{% for asset in assets %}
-
--   **{{ asset.name }}** (_{{ asset.kind }}_)
-    {% endfor %}
+| Severity | Count |
+|----------|-------|
+{{ for f in (findings != null && findings.stats != null ? findings.stats : empty_array) }}
+| {{ f.severity != null ? string.capitalize f.severity : "" }} | {{ f.count != null ? f.count : "0" }} |
+{{ end }}
 
 ---
 
-## Vulnerabilities
+## Assets
 
-{% for vulnerability in findings.list %}
-
-### {{ vulnerability.summary }}
-
--   **Category:** {{ vulnerability.category_name }}
--   **Severity:** {{ vulnerability.risk|capitalize }}
--   **CVSS Score:** {{ vulnerability.cvss_score }}
--   **OWASP Vector:** {{ vulnerability.owasp_vector }}
--   **OWASP Overall Rating:** {{ vulnerability.owasp_overall }}
-
-**Description:**  
-{{ vulnerability.description }}
-
-**Proof of Concept:**  
-{{ vulnerability.proof_of_concept }}
-
-**Remediation:**  
-{{ vulnerability.remediation }}
+| Target Name | Type |
+|-------------|------|
+{{ for a in (assets != null ? assets : empty_array) }}
+| {{ a.name != null ? a.name : "" }} | {{ a.kind != null ? a.kind : "" }} |
+{{ end }}
 
 ---
 
-{% endfor %}
+## Findings
+
+{{ for v in (findings != null && findings.list != null ? findings.list : empty_array) }}
+### {{ v.summary != null ? v.summary : "" }}
+
+- **Category:** {{ v.category_name != null ? v.category_name : "" }}
+- **Severity:** {{ v.risk != null ? string.capitalize v.risk : "" }}
+- **CVSS Score:** {{ v.cvss_score != null ? v.cvss_score : "" }}
+- **OWASP Vector:** {{ v.owasp_vector != null ? v.owasp_vector : "" }}
+- **OWASP Overall Rating:** {{ v.owasp_overall != null ? v.owasp_overall : "" }}
+
+**Description**  
+{{ v.description != null ? v.description : "" }}
+
+**Proof of Concept**  
+{{ v.proof_of_concept != null ? v.proof_of_concept : "" }}
+
+**Remediation**  
+{{ v.remediation != null ? v.remediation : "" }}
+
+---
+{{ end }}

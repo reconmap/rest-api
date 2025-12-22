@@ -175,6 +175,14 @@ INSERT INTO attachment (parent_type, parent_id, created_by_uid, client_file_name
 VALUES ('report', LAST_INSERT_ID(), @admin_user_id, 'default-report-template.tex', 'default-report-template.tex', 0,
         'application/x-tex', '');
 
+INSERT INTO report (project_id, created_by_uid, is_template, version_name, version_description)
+VALUES (NULL, @admin_user_id, TRUE, 'Report template (Typst)', 'Default report template in Typst format');
+
+INSERT INTO attachment (parent_type, parent_id, created_by_uid, client_file_name, file_name, file_size, file_mimetype,
+        file_hash)
+VALUES ('report', LAST_INSERT_ID(), @admin_user_id, 'default-report-template.typ', 'default-report-template.typ', 0,
+        'text/typst', '');
+
 INSERT INTO project_category (name, description)
 VALUES ('Managed security monitoring',
         'Includes the day-to-day monitoring and investigation of system events throughout the network as well as security events, such as user permission changes and user logins.'),

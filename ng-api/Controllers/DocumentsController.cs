@@ -14,13 +14,13 @@ public class DocumentsController(AppDbContext dbContext)
     : AppController(dbContext)
 {
     [HttpPost]
-    public async Task<IActionResult> Create(Document product)
+    public async Task<IActionResult> CreateOne(Document document)
     {
-        product.CreatedByUid = HttpContext.GetCurrentUser()!.Id;
-        dbContext.Documents.Add(product);
+        document.CreatedByUid = HttpContext.GetCurrentUser()!.Id;
+        dbContext.Documents.Add(document);
         await dbContext.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetOne), new { id = product.Id }, product);
+        return CreatedAtAction(nameof(GetOne), new { id = document.Id }, document);
     }
 
     [Authorize(Roles = "administrator")]
@@ -42,26 +42,27 @@ public class DocumentsController(AppDbContext dbContext)
     }
 
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> UpdateOne(int id, Document product)
+    public async Task<IActionResult> UpdateOne(int id, Document document)
     {
         var dbModel = await dbContext.Documents.FindAsync(id);
         if (dbModel == null) return NotFound();
 
-        dbModel.Title = product.Title;
-        dbModel.Content = product.Content;
-        dbModel.Visibility = product.Visibility;
+        dbModel.Title = document.Title;
+        dbModel.Content = document.Content;
+        dbModel.Visibility = document.Visibility;
         await dbContext.SaveChangesAsync();
+
         return Ok(dbModel);
     }
 
     [HttpDelete("{id:int}")]
-    public async Task<IActionResult> DeleteDocument(int id)
+    public async Task<IActionResult> DeleteOne(int id)
     {
-        var deleted = await dbContext.Documents
+        var rowsDeleted = await dbContext.Documents
             .Where(n => n.Id == id)
             .ExecuteDeleteAsync();
 
-        if (deleted == 0) return NotFound();
+        if (rowsDeleted == 0) return NotFound();
 
         AuditAction(AuditActions.Deleted, "Document", new { id });
 

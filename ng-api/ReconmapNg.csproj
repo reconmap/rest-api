@@ -10,9 +10,10 @@
 
 
     <ItemGroup>
+        <PackageReference Include="DocumentFormat.OpenXml" Version="3.3.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="10.0.0" />
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0" GeneratePathProperty="true"  />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0" GeneratePathProperty="true" />
         <PackageReference Include="Microsoft.AspNetCore.WebSockets" Version="2.3.0" />
         <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" />
         <PackageReference Include="Schick.Keycloak.RestApiClient" Version="26.4.2" />
