@@ -39,7 +39,7 @@
         "symfony/dependency-injection": "^7.3",
         "symfony/filesystem": "^7.3",
         "symfony/http-foundation": "^7.3",
-        "symfony/mailer": "^7.3",
+        "symfony/mailer": "^8.0",
         "symfony/psr-http-message-bridge": "^7.3",
         "theodo-group/llphant": "^0.11.7",
         "twig/twig": "^3.0",
