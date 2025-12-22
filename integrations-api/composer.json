@@ -38,7 +38,7 @@
         "symfony/console": "^7.3",
         "symfony/dependency-injection": "^7.3",
         "symfony/filesystem": "^7.3",
-        "symfony/http-foundation": "^7.3",
+        "symfony/http-foundation": "^8.0",
         "symfony/mailer": "^7.3",
         "symfony/psr-http-message-bridge": "^7.3",
         "theodo-group/llphant": "^0.11.7",
