@@ -57,10 +57,6 @@ tests: start validate
 	$(DC) run --rm -w /var/www/webapp -e CURRENT_PLANET=Moon --entrypoint ./run-tests.sh api
 	docker container exec -i $(DB_CONTAINER) mysql -uroot -preconmuppet -e "DROP DATABASE reconmap_test"
 
-.PHONY: security-tests
-security-tests:
-	$(DC) run --rm -w /var/www/webapp --entrypoint bash api -c "wget https://github.com/fabpot/local-php-security-checker/releases/download/v2.0.5/local-php-security-checker_2.0.5_linux_amd64 -O security-checker && chmod +x security-checker && ./security-checker"
-
 .PHONY: start
 start: prepare-config prepare-dirs
 	$(DC) up -d

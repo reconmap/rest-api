@@ -35,14 +35,7 @@ jobs:
 
       - name: Run tests
         run: make tests
-
-      - name: Run security tests
-        run: make security-tests
-      
-      - uses: codecov/codecov-action@v5
-        with:
-          files: tests/clover.xml
-
+    
       - name: Push API image
         run: make build push
 

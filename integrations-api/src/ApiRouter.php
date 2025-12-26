@@ -17,7 +17,6 @@ use Reconmap\{
     Controllers\Attachments\ServeAttachmentController,
     Controllers\Commands\CommandsRouter,
     Controllers\Reports\ReportsRouter,
-    Controllers\System\GetOpenApiYamlController,
     Controllers\System\SystemRouter,
     Controllers\Users\UsersRouter,
     Controllers\Vulnerabilities\VulnerabilitiesRouter,
@@ -67,7 +66,6 @@ class ApiRouter extends Router
         $cookieMiddleware = $container->get(StaticMiddleware::class);
 
         $this->map('GET', '/image/{attachmentId:number}', ServeAttachmentController::class)->middlewares([$cookieMiddleware]);
-        $this->map('GET', '/openapi.json', GetOpenApiYamlController::class);
 
         $this->group('', function (RouteGroup $router): void {
             foreach (self::ROUTER_CLASSES as $mappable) {

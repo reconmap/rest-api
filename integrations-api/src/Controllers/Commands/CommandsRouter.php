@@ -12,7 +12,6 @@ class CommandsRouter
     {
         $router->map('PUT', '/commands/{commandId:number}', UpdateCommandController::class);
         $router->map('POST', '/commands/{commandId:number}/schedule', AddCommandScheduleController::class);
-        $router->map('GET', '/commands/output-parsers', GetCommandOutputParsersController::class);
         $router->map('POST', '/commands/outputs', UploadCommandOutputController::class);
     }
 }

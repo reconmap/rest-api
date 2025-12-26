@@ -30,6 +30,7 @@ services.AddSingleton<WebSocketConnectionManager>();
 services.AddScoped<SystemUsageService>();
 
 services.AddRedisServices(builder.Configuration);
+services.AddHostedService<CommandResultProcessor>();
 services.AddJwtAuthentication(builder.Configuration);
 services.AddDatabase(builder.Configuration);
 services.AddSwaggerDocumentation();
@@ -44,19 +45,15 @@ services.AddControllers()
         );
     });
 
-services.AddAuthorization(options =>
-{
-    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+services.AddAuthorizationBuilder()
+    .SetFallbackPolicy(new AuthorizationPolicyBuilder()
         .RequireAuthenticatedUser()
         .RequireRole("administrator")
-        .Build();
-
-    options.AddPolicy("AdminOnly", policy =>
-        policy.RequireRole("administrator"));
-
-    options.AddPolicy("AdminOrUser", policy =>
+        .Build())
+    .AddPolicy("AdminOnly", policy =>
+        policy.RequireRole("administrator"))
+    .AddPolicy("AdminOrUser", policy =>
         policy.RequireRole("administrator", "user"));
-});
 
 var app = builder.Build();
 app.UseDefaultFiles();

@@ -5,12 +5,129 @@ using api_v2.Domain.AuditActions;
 using api_v2.Domain.Entities;
 using api_v2.Infrastructure.Persistence;
 using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Scriban;
 
 namespace api_v2.Controllers;
+
+public static class WordTemplateReplacer
+{
+    public static void ReplaceContentControls(
+        Body body,
+        IReadOnlyDictionary<string, string> values)
+    {
+        foreach (var sdt in body.Descendants<SdtElement>())
+        {
+            var tag = sdt.SdtProperties?
+                .GetFirstChild<Tag>()?
+                .Val?.Value;
+
+            if (tag == null)
+                continue;
+
+            if (!values.TryGetValue(tag, out var replacement))
+                continue;
+
+            ReplaceSdtText(sdt, replacement);
+        }
+    }
+
+    public static void PopulateTableAtBookmark(
+        Body body,
+        string bookmarkName,
+        IEnumerable<IDictionary<string, string>> rows)
+    {
+        // 1. Find the bookmark
+        var bookmark = body.Descendants<BookmarkStart>()
+            .FirstOrDefault(b => b.Name == bookmarkName);
+
+        if (bookmark == null)
+            return;
+
+        // 2. Find the table
+        var table = bookmark.Ancestors<Table>().FirstOrDefault();
+        if (table == null)
+            return;
+
+        // 3. Get the template row (first row AFTER header)
+        var allRows = table.Elements<TableRow>().ToList();
+        if (allRows.Count < 2)
+            return;
+
+        var templateRow = allRows[1];
+        templateRow.Remove();
+
+        // 4. Populate
+        foreach (var rowData in rows)
+        {
+            var newRow = (TableRow)templateRow.CloneNode(true);
+
+            // Replace SDTs if present
+            foreach (var sdt in newRow.Descendants<SdtElement>())
+            {
+                var tag = sdt.SdtProperties?
+                    .GetFirstChild<Tag>()?
+                    .Val?.Value;
+
+                if (tag != null && rowData.TryGetValue(tag, out var value)) ReplaceSdtText(sdt, value);
+            }
+
+            table.AppendChild(newRow);
+        }
+    }
+
+    private static void ReplaceSdtText(SdtElement sdt, string value)
+    {
+        var textElements = sdt.Descendants<Text>().ToList();
+
+        if (!textElements.Any())
+            return;
+
+        // Replace first text node
+        textElements.First().Text = value;
+
+        // Clear remaining text nodes to avoid duplication
+        foreach (var text in textElements.Skip(1))
+            text.Text = string.Empty;
+    }
+
+    public static void PopulateRichTextList(
+        Body body,
+        string outerSdtTag,
+        IEnumerable<Dictionary<string, string>> items)
+    {
+        // Find template SDT
+        var templateSdt = body.Descendants<SdtElement>()
+            .FirstOrDefault(sdt =>
+                sdt.SdtProperties?
+                    .GetFirstChild<Tag>()?.Val == outerSdtTag);
+
+        if (templateSdt == null)
+            return;
+
+
+        foreach (var item in items)
+        {
+            var newSdt = (SdtElement)templateSdt.CloneNode(true);
+
+            foreach (var innerSdt in newSdt.Descendants<SdtElement>())
+            {
+                var tag = innerSdt.SdtProperties?
+                    .GetFirstChild<Tag>()?
+                    .Val?.Value;
+
+                if (tag != null && item.TryGetValue(tag, out var value)) ReplaceSdtText(innerSdt, value);
+            }
+
+            templateSdt.Parent.AppendChild(newSdt);
+        }
+
+        templateSdt.Remove(); // remove placeholder
+    }
+}
 
 public class ReportRequestDto
 {
@@ -62,12 +179,58 @@ public class ReportsController(AppDbContext dbContext, ILogger<ReportsController
 
         if (templateExtension == ".docx")
         {
-            using var wordDocument =
-                WordprocessingDocument.Open(templateFilePath, false);
-            // Assign a reference to the existing document body.
-            var body = wordDocument.MainDocumentPart.Document.Body;
-            logger.LogInformation(body.InnerText);
-            wordDocument.Clone(reportFilePath);
+            var replacements = new Dictionary<string, string>
+            {
+                ["project.name"] = "Patcare pentest",
+                ["client.name"] = "Patcare",
+                ["serviceProvider.name"] = "Netfoe",
+                ["report.date"] = DateTime.Today.ToString("dd/MM/yyyy")
+            };
+
+            var rows = new[]
+            {
+                new Dictionary<string, string>
+                {
+                    ["asset.name"] = "127.0.0.1",
+                    ["asset.type"] = "ip"
+                },
+                new Dictionary<string, string>
+                {
+                    ["asset.name"] = "patcare.com.ar",
+                    ["asset.type"] = "domain"
+                }
+            };
+
+            var findings = new[]
+            {
+                new Dictionary<string, string>
+                {
+                    ["finding.summary"] = "SQL Injection vulnerability",
+                    ["finding.category.name"] = "Injection",
+                    ["finding.severity"] = "High"
+                },
+                new Dictionary<string, string>
+                {
+                    ["finding.summary"] = "SQL Injection vulnerability",
+                    ["finding.category.name"] = "Injection",
+                    ["finding.severity"] = "High"
+                }
+            };
+
+            System.IO.File.Copy(templateFilePath, reportFilePath, true);
+
+            using var document =
+                WordprocessingDocument.Open(reportFilePath, true);
+
+            var body = document.MainDocumentPart!.Document.Body;
+
+            WordTemplateReplacer.ReplaceContentControls(
+                body,
+                replacements);
+            WordTemplateReplacer.PopulateTableAtBookmark(body, "assetsTable", rows);
+            WordTemplateReplacer.PopulateRichTextList(body, "finding", findings);
+
+            document.MainDocumentPart.Document.Save();
         }
         else
         {

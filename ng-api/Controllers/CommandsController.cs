@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using System.Text.Json;
+using api_v2.Application.Services;
 using api_v2.Common.Extensions;
 using api_v2.Domain.Entities;
 using api_v2.Infrastructure.Persistence;
@@ -8,6 +9,14 @@ using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
 
 namespace api_v2.Controllers;
+
+public class CommandProcessorJob
+{
+    public uint CommandUsageId { get; set; }
+    public uint ProjectId { get; set; }
+    public uint UserId { get; set; }
+    public string FilePath { get; set; }
+}
 
 [Route("api/[controller]")]
 [ApiController]
@@ -107,6 +116,20 @@ public class CommandsController(
 
         return CreatedAtAction(nameof(GetCommand), new { id = command.Id }, command);
     }
+
+    [HttpGet("output-parsers")]
+    public IActionResult GetOutputParsers()
+    {
+        var result = ProcessorIntegrationDiscovery.Discover()
+            .Select(i => new
+            {
+                name = i.Name,
+                code = i.Name.ToLowerInvariant()
+            });
+
+        return Ok(result);
+    }
+
 
     [HttpPost("outputs")]
     public async Task<IActionResult> UploadOutput()

@@ -1,5 +1,3 @@
-[![codecov](https://codecov.io/gh/reconmap/php-command-output-parsers/branch/master/graph/badge.svg?token=t3ODnO2R8u)](https://codecov.io/gh/reconmap/php-command-output-parsers)
-
 # Reconmap security command output parsers library
 
 ## Supported tools
