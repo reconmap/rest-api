@@ -23,7 +23,6 @@ use Reconmap\{
     Http\AuthMiddleware,
     Http\CorsMiddleware,
     Http\CorsResponseDecorator,
-    Http\SecurityMiddleware,
     Http\StaticMiddleware,
     Services\ApplicationConfig
 };
@@ -62,7 +61,6 @@ class ApiRouter extends Router
         $this->prependMiddleware($corsMiddleware);
 
         $authMiddleware = $container->get(AuthMiddleware::class);
-        $securityMiddleware = $container->get(SecurityMiddleware::class);
         $cookieMiddleware = $container->get(StaticMiddleware::class);
 
         $this->map('GET', '/image/{attachmentId:number}', ServeAttachmentController::class)->middlewares([$cookieMiddleware]);
@@ -71,6 +69,6 @@ class ApiRouter extends Router
             foreach (self::ROUTER_CLASSES as $mappable) {
                 (new $mappable)->mapRoutes($router);
             }
-        })->middlewares([$securityMiddleware, $authMiddleware]);
+        })->middlewares([$authMiddleware]);
     }
 }

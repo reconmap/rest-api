@@ -21,7 +21,7 @@ public class VulnerabilitiesController(AppDbContext dbContext, ILogger<Vulnerabi
     private readonly ILogger _logger = logger;
 
     [HttpPost]
-    public async Task<IActionResult> CreateTask(Vulnerability vulnerability)
+    public async Task<IActionResult> CreateOne(Vulnerability vulnerability)
     {
         vulnerability.CreatedByUid = HttpContext.GetCurrentUser()!.Id;
         dbContext.Vulnerabilities.Add(vulnerability);
@@ -45,18 +45,26 @@ public class VulnerabilitiesController(AppDbContext dbContext, ILogger<Vulnerabi
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetMany([FromQuery] int? projectId, [FromQuery] int? limit)
+    public async Task<IActionResult> GetMany([FromQuery] int? projectId,
+        [FromQuery] string? status,
+        [FromQuery] string? risk,
+        [FromQuery] int? limit)
     {
         const int maxLimit = 500;
         var take = Math.Min(limit ?? 100, maxLimit);
 
-        var q = dbContext.Vulnerabilities.AsNoTracking();
+        var q = dbContext.Vulnerabilities
+            .Include(v => v.Project)
+            .AsNoTracking()
+            .Where(v => string.IsNullOrEmpty(risk) || v.Risk == risk);
         if (projectId.HasValue)
             q = q.Where(v => v.ProjectId == projectId);
+        if (!string.IsNullOrWhiteSpace(status))
+            q = q.Where(v => v.Status == status);
         q = q.OrderByDescending(a => a.CreatedAt);
 
-        var page = await q.Take(take).ToListAsync();
-        return Ok(page);
+        var results = await q.Take(take).ToListAsync();
+        return Ok(results);
     }
 
     [HttpGet("{id:int}")]
@@ -77,7 +85,7 @@ public class VulnerabilitiesController(AppDbContext dbContext, ILogger<Vulnerabi
     }
 
     [HttpDelete("{id:int}")]
-    public async Task<IActionResult> DeleteVulnerability(int id)
+    public async Task<IActionResult> DeleteOne(int id)
     {
         var deleted = await dbContext.Vulnerabilities
             .Where(n => n.Id == id)

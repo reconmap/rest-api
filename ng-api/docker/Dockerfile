@@ -1,9 +1,10 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
-WORKDIR /Build
+WORKDIR /build
 
 COPY . ./
 RUN dotnet restore
-RUN dotnet publish -o /Build/Publish
+RUN dotnet list package --vulnerable --include-transitive
+RUN dotnet publish -o /build/publish
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0
 
@@ -18,6 +19,6 @@ LABEL org.opencontainers.image.vendor="Netfoe" \
     org.opencontainers.image.source="https://github.com/reconmap/rest-api" \
     org.opencontainers.image.documentation="https://github.com/reconmap/documentation"
 
-WORKDIR /App
-COPY --from=build /Build/Publish .
-ENTRYPOINT ["/App/ReconmapNg"]
+WORKDIR /app
+COPY --from=build /build/publish .
+ENTRYPOINT ["/app/ReconmapNg"]

@@ -14,7 +14,7 @@ class TestsslOutputProcessor extends AbstractOutputProcessor
 {
     public function getCommandUsageExample(): string
     {
-        return 'docker run --rm -ti -v $PWD:/data --workdir /data drwetter/testssl.sh --jsonfile testssl-output.json https://localhost';
+        return 'run --rm -ti -v $PWD:/data --workdir /data ghcr.io/testssl/testssl.sh --jsonfile testssl-output.json https://localhost';
     }
 
     public function process(string $path): ProcessorResult

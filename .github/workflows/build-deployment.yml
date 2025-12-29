@@ -5,10 +5,6 @@ on:
     branches:
       - master
 
-defaults:
-  run:
-    working-directory: integrations-api
-
 jobs:
   main:
     runs-on: ubuntu-latest
@@ -26,19 +22,7 @@ jobs:
       
       - name: Run containers
         run: docker compose -p rest-api up -d
-        working-directory:
-
-      - name: Build
-        run: |
-          cp config-template.json config.json
-          make
-
-      - name: Run tests
-        run: make tests
-    
-      - name: Push API image
-        run: make build push
-
+   
       - name: Push MySQL image
         run: make build push
         working-directory:

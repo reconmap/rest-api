@@ -41,8 +41,20 @@ public class ProjectsController(AppDbContext dbContext, IConnectionMultiplexer r
         return Ok(dbModel);
     }
 
+    [HttpPatch("{id:int}")]
+    public async Task<IActionResult> PatchOne(uint id, [FromBody] JsonElement json)
+    {
+        await dbContext.Projects
+            .Where(n => n.Id == id)
+            .ExecuteUpdateAsync(upd => upd
+                .SetProperty(n => n.Archived, json.GetProperty("archived").GetBoolean()));
+
+        return NoContent();
+    }
+
     [HttpGet]
-    public async Task<IActionResult> GetMany([FromQuery] int? limit, [FromQuery] string? keywords,
+    public async Task<IActionResult> GetMany([FromQuery] int? limit, [FromQuery] string? status,
+        [FromQuery] string? keywords,
         [FromQuery] uint? clientId)
     {
         const int maxLimit = 500;
@@ -61,6 +73,8 @@ public class ProjectsController(AppDbContext dbContext, IConnectionMultiplexer r
             .AsNoTracking();
         if (clientId != null)
             q = q.Where(p => p.ClientId == clientId);
+        if (!string.IsNullOrEmpty(status))
+            q = q.Where(p => p.Archived == (status == "archived"));
         q = q.OrderByDescending(a => a.CreatedAt);
 
         var projects = await q.Take(take).ToListAsync();

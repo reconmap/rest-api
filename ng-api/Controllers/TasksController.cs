@@ -13,7 +13,7 @@ namespace api_v2.Controllers;
 public class TasksController(AppDbContext dbContext) : AppController(dbContext)
 {
     [HttpPost]
-    public async Task<IActionResult> Create(ProjectTask task)
+    public async Task<IActionResult> CreateOne(ProjectTask task)
     {
         task.CreatedByUid = HttpContext.GetCurrentUser()!.Id;
         dbContext.Tasks.Add(task);
@@ -38,9 +38,16 @@ public class TasksController(AppDbContext dbContext) : AppController(dbContext)
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetMany([FromQuery] int? limit, [FromQuery] uint? projectId)
+    public async Task<IActionResult> GetMany([FromQuery] int? limit,
+        [FromQuery] uint? projectId,
+        [FromQuery] string? priority,
+        [FromQuery] string? status)
     {
-        var q = dbContext.Tasks.AsNoTracking();
+        var q = dbContext.Tasks
+            .Include(t => t.AssignedTo)
+            .AsNoTracking()
+            .Where(t => string.IsNullOrEmpty(priority) || t.Priority == priority)
+            .Where(t => string.IsNullOrEmpty(status) || t.Status == status);
         if (projectId != null)
             q = q.Where(t => t.ProjectId == projectId);
         q = q.OrderByDescending(a => a.CreatedAt);

@@ -2,6 +2,7 @@ using System.Text.Json;
 using api_v2.Controllers;
 using api_v2.Domain.Entities;
 using api_v2.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
 
 namespace api_v2.Application.Services;
@@ -23,22 +24,22 @@ public class CommandResultProcessor(
             if (item.HasValue)
             {
                 logger.LogInformation("Task queue popped");
-                var obj = JsonSerializer.Deserialize<CommandProcessorJob>(
+                var job = JsonSerializer.Deserialize<CommandProcessorJob>(
                     item.ToString(),
                     new JsonSerializerOptions
                     {
                         PropertyNameCaseInsensitive = true
                     }
                 );
-                var commandUsage = await db.CommandUsages.FindAsync(obj.CommandUsageId);
+                var commandUsage = await db.CommandUsages.FindAsync(job.CommandUsageId);
                 var processor = ProcessorIntegrationDiscovery.Create(commandUsage.OutputParser);
-                var result = processor.Process(obj);
+                var result = processor.Process(job);
                 var numHosts = result.assets.Count;
                 if (numHosts > 0)
                 {
                     foreach (var asset in result.assets)
                     {
-                        asset.ProjectId = obj.ProjectId;
+                        asset.ProjectId = job.ProjectId;
                         db.Assets.Add(asset);
                     }
 
@@ -54,7 +55,7 @@ public class CommandResultProcessor(
 
                     var notification = new Notification
                     {
-                        ToUserId = obj.UserId,
+                        ToUserId = job.UserId,
                         Title = "New assets found",
                         Content =
                             $"A total of '{numHosts}' new assets have been found by the '{commandUsage.OutputParser}' command",
@@ -69,9 +70,17 @@ public class CommandResultProcessor(
                 {
                     foreach (var finding in result.findings)
                     {
-                        finding.ProjectId = obj.ProjectId;
-                        if (finding.Risk == null) finding.Risk = "medium";
-                        finding.CreatedByUid = obj.UserId;
+                        finding.ProjectId = job.ProjectId;
+                        finding.Risk ??= "medium";
+                        finding.Risk = "medium"; // @todo convert non-conventional risks
+
+                        finding.CreatedByUid = job.UserId;
+                        if (finding.Asset != null)
+                        {
+                            finding.TargetId = await GetAssetId(db, finding.Asset);
+                            finding.Asset = null;
+                        }
+
                         db.Vulnerabilities.Add(finding);
                     }
 
@@ -87,7 +96,7 @@ public class CommandResultProcessor(
 
                     var notification = new Notification
                     {
-                        ToUserId = obj.UserId,
+                        ToUserId = job.UserId,
                         Title = "New findings found",
                         Content =
                             $"A total of '{numFindings}' new findings have been found by the '{commandUsage.OutputParser}' command",
@@ -102,5 +111,17 @@ public class CommandResultProcessor(
                         JsonSerializer.Serialize(new { type = "message" }));
             }
         }
+    }
+
+    private async Task<uint> GetAssetId(AppDbContext db, Asset asset)
+    {
+        var dbAsset = await db.Assets.AsNoTracking().Where(a => a.Kind == asset.Kind && a.Name == asset.Name)
+            .SingleOrDefaultAsync();
+        if (dbAsset != null) return dbAsset.Id;
+
+        db.Assets.Add(asset);
+        await db.SaveChangesAsync();
+
+        return asset.Id;
     }
 }

@@ -11,7 +11,7 @@ public class ShcheckProcessor : IProcessor
 
     public string Name => "Shcheck";
     public string Description => "Shcheck integration";
-    public string ExternalUrl => "https://github.com/reconmap/reconmap";
+    public string ExternalUrl => "https://github.com/santoru/shcheck";
     public bool IsConfigured => true;
 
     public ProcessorResult Process(CommandProcessorJob job)

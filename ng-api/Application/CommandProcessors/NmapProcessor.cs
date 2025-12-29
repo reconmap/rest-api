@@ -11,7 +11,7 @@ public class NmapProcessor : IProcessor
 
     public string Name => "Nmap";
     public string Description => "Nmap integration";
-    public string ExternalUrl => "https://github.com/reconmap/reconmap";
+    public string ExternalUrl => "https://nmap.org/";
     public bool IsConfigured => true;
 
     public ProcessorResult Process(CommandProcessorJob job)

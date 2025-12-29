@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 using api_v2.Application.Services;
 using api_v2.Extensions;
 using api_v2.Infrastructure.Authentication;
+using api_v2.Infrastructure.Http;
 using api_v2.Infrastructure.Persistence;
 using api_v2.Infrastructure.Redis;
 using api_v2.Infrastructure.WebSockets;
@@ -18,6 +19,7 @@ var configuration = new ConfigurationBuilder()
     .AddJsonFile($"appsettings.{environmentName}.json", true, isDevelopment).Build();
 
 var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.ConfigureKestrel(serverOptions => { serverOptions.AddServerHeader = false; });
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(configuration)
     .CreateLogger();
@@ -36,6 +38,13 @@ services.AddDatabase(builder.Configuration);
 services.AddSwaggerDocumentation();
 services.AddCorsPolicies(builder.Configuration);
 services.AddRouting(options => options.LowercaseUrls = true);
+services.AddHsts(options =>
+{
+    options.Preload = true;
+    options.IncludeSubDomains = true;
+    options.MaxAge = TimeSpan.FromDays(365);
+    options.ExcludedHosts.Add("reconmap.com");
+});
 
 services.AddControllers()
     .AddJsonOptions(opt =>
@@ -66,10 +75,15 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi().AllowAnonymous();
     app.UseSwaggerUI(options => { options.SwaggerEndpoint("/openapi/v1.json", "v1"); });
 }
+else
+{
+    app.UseHsts();
+}
 
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseMiddleware<DbUserResolverMiddleware>();
+app.UseMiddleware<SecurityHeadersMiddleware>();
 app.UseCustomWebSockets();
 
 app.MapControllers();
