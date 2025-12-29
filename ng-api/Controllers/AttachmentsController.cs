@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using api_v2.Application.Services;
 using api_v2.Common.Extensions;
 using api_v2.Domain.Entities;
 using api_v2.Infrastructure.Persistence;
@@ -12,7 +13,7 @@ namespace api_v2.Controllers;
 public class AttachmentsController(AppDbContext dbContext, ILogger<AttachmentsController> logger)
     : ControllerBase
 {
-    private readonly ILogger _logger = logger;
+    private readonly AttachmentFilePath _attachmentFilePath = new();
 
     [HttpGet]
     public async Task<IActionResult> GetMany([FromQuery] int? limit,
@@ -38,9 +39,7 @@ public class AttachmentsController(AppDbContext dbContext, ILogger<AttachmentsCo
         var existing = await dbContext.Attachments.FindAsync(id);
         if (existing == null) return NotFound();
 
-        var pathToSave = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory())?.FullName, "data",
-            "attachments",
-            existing.FileName);
+        var pathToSave = _attachmentFilePath.GenerateFilePath(existing.FileName);
 
         var stream = System.IO.File.OpenRead(pathToSave);
 
@@ -60,8 +59,7 @@ public class AttachmentsController(AppDbContext dbContext, ILogger<AttachmentsCo
         var attachment = await dbContext.Attachments.FindAsync(id);
         if (attachment == null) return NotFound();
 
-        var path = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory())?.Name, "data", "attachments",
-            attachment.FileName);
+        var path = _attachmentFilePath.GenerateFilePath(attachment.FileName);
         System.IO.File.Delete(path);
 
         dbContext.Attachments.Remove(attachment);
@@ -73,18 +71,18 @@ public class AttachmentsController(AppDbContext dbContext, ILogger<AttachmentsCo
     [HttpPost]
     [DisableRequestSizeLimit]
     [RequestFormLimits(MultipartBodyLengthLimit = int.MaxValue, ValueLengthLimit = int.MaxValue)]
-    public async Task<IActionResult> CreateAttachments([FromForm] uint parentId, [FromForm] string parentType)
+    public async Task<IActionResult> CreateMany([FromForm] uint parentId, [FromForm] string parentType)
     {
         if (!Request.Form.Files.Any())
             return BadRequest();
 
         foreach (var file in Request.Form.Files)
         {
-            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), "data", "attachments");
+            var pathToSave = _attachmentFilePath.GetDirectory();
             if (!Directory.Exists(pathToSave))
                 Directory.CreateDirectory(pathToSave);
 
-            var uniqueName = Guid.NewGuid().ToString("N") + Path.GetExtension(file.FileName);
+            var uniqueName = _attachmentFilePath.GenerateFileName(Path.GetExtension(file.FileName));
             var fullPath = Path.Combine(pathToSave, uniqueName);
             await using FileStream stream = new(fullPath, FileMode.Create);
             await file.CopyToAsync(stream);
