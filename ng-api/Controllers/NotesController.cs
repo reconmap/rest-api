@@ -11,10 +11,8 @@ namespace api_v2.Controllers;
 public class NotesController(AppDbContext dbContext, ILogger<NotesController> logger)
     : ControllerBase
 {
-    private readonly ILogger _logger = logger;
-
     [HttpPost]
-    public async Task<IActionResult> Create(Note note)
+    public async Task<IActionResult> CreateOne(Note note)
     {
         note.CreatedByUid = HttpContext.GetCurrentUser()!.Id;
         dbContext.Notes.Add(note);
@@ -28,7 +26,9 @@ public class NotesController(AppDbContext dbContext, ILogger<NotesController> lo
         [FromQuery] string parentType,
         [FromQuery] int parentId)
     {
-        var q = dbContext.Notes.AsNoTracking()
+        var q = dbContext.Notes
+            .Include(n => n.CreatedBy)
+            .AsNoTracking()
             .Where(n => n.ParentType == parentType && n.ParentId == parentId)
             .OrderByDescending(a => a.CreatedAt);
 
@@ -37,7 +37,7 @@ public class NotesController(AppDbContext dbContext, ILogger<NotesController> lo
     }
 
     [HttpDelete("{id:int}")]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> DeleteOne(int id)
     {
         var deleted = await dbContext.Notes
             .Where(n => n.Id == id)

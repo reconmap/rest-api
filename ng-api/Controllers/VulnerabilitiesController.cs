@@ -1,3 +1,4 @@
+using api_v2.Common;
 using api_v2.Common.Extensions;
 using api_v2.Domain.AuditActions;
 using api_v2.Domain.Entities;
@@ -47,12 +48,8 @@ public class VulnerabilitiesController(AppDbContext dbContext, ILogger<Vulnerabi
     [HttpGet]
     public async Task<IActionResult> GetMany([FromQuery] int? projectId,
         [FromQuery] string? status,
-        [FromQuery] string? risk,
-        [FromQuery] int? limit)
+        [FromQuery] string? risk)
     {
-        const int maxLimit = 500;
-        var take = Math.Min(limit ?? 100, maxLimit);
-
         var q = dbContext.Vulnerabilities
             .Include(v => v.Project)
             .AsNoTracking()
@@ -63,8 +60,23 @@ public class VulnerabilitiesController(AppDbContext dbContext, ILogger<Vulnerabi
             q = q.Where(v => v.Status == status);
         q = q.OrderByDescending(a => a.CreatedAt);
 
-        var results = await q.Take(take).ToListAsync();
-        return Ok(results);
+        var totalCount = await q.CountAsync();
+
+        var pagination = new PaginationRequestHandler(HttpContext.Request.Query, totalCount);
+        var resultsPerPage = pagination.GetResultsPerPage();
+        var pageCount = pagination.CalculatePageCount();
+
+        var results = await q
+            .Skip(pagination.CalculateOffset())
+            .Take(resultsPerPage)
+            .ToListAsync();
+
+        return Ok(new
+        {
+            pageCount,
+            totalCount,
+            data = results
+        });
     }
 
     [HttpGet("{id:int}")]

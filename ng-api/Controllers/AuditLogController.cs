@@ -1,3 +1,4 @@
+using api_v2.Common;
 using api_v2.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,22 +18,27 @@ public class AuditLogController(AppDbContext dbContext) : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetMany([FromQuery(Name = "page")] int p = 0)
     {
-        const int maxLimit = 20;
-        var start = maxLimit * p;
-
-        var total = await dbContext.AuditEntries.CountAsync();
-        var totalPages = total == 0 ? 0 : Math.Ceiling((decimal)(total / maxLimit));
-
         var q = dbContext.AuditEntries.AsNoTracking()
             .Include(a => a.CreatedBy)
             .OrderByDescending(a => a.CreatedAt);
 
-        var page = await q.Skip(start).Take(maxLimit).ToListAsync();
+        var totalCount = await q.CountAsync();
 
-        Response.Headers.AccessControlExposeHeaders = "X-Page-Count";
-        Response.Headers["X-Page-Count"] = totalPages.ToString();
+        var pagination = new PaginationRequestHandler(HttpContext.Request.Query, totalCount);
+        var resultsPerPage = pagination.GetResultsPerPage();
+        var pageCount = pagination.CalculatePageCount();
 
-        return Ok(page);
+        var results = await q
+            .Skip(pagination.CalculateOffset())
+            .Take(resultsPerPage)
+            .ToListAsync();
+
+        return Ok(new
+        {
+            pageCount,
+            totalCount,
+            data = results
+        });
     }
 
     [HttpGet]
