@@ -1,5 +1,4 @@
 [![Build and deployment workflow](https://github.com/reconmap/rest-api/actions/workflows/build-deployment.yml/badge.svg)](https://github.com/reconmap/rest-api/actions/workflows/build-deployment.yml)
-[![Maintainability](https://api.codeclimate.com/v1/badges/7bebfcc41dce2610de78/maintainability)](https://codeclimate.com/github/reconmap/rest-api/maintainability)
 
 # Reconmap Rest API
 
