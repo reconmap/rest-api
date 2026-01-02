@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using api_v2.Application.Services;
+using api_v2.Common;
 using api_v2.Extensions;
 using api_v2.Infrastructure.Authentication;
 using api_v2.Infrastructure.Http;
@@ -30,6 +31,11 @@ services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 services.AddTransient<IClaimsTransformation, RoleClaimsTransformation>();
 services.AddSingleton<WebSocketConnectionManager>();
 services.AddScoped<SystemUsageService>();
+services.AddScoped<AuditService>();
+services.Configure<AiOptions>(
+    builder.Configuration.GetSection("AI"));
+
+services.AddScoped<IAiService, AiService>();
 
 services.AddRedisServices(builder.Configuration);
 services.AddHostedService<CommandResultProcessor>();

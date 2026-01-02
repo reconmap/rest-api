@@ -14,7 +14,7 @@ public abstract class AppController(AppDbContext dbContext) : ControllerBase
         var userAgent = Request.Headers.UserAgent.ToString();
         var entry = new AuditEntry
         {
-            ClientIp = remoteIpAddress.ToString(),
+            ClientIp = remoteIpAddress?.ToString(),
             UserAgent = userAgent,
             CreatedByUid = HttpContext.GetCurrentUser()!.Id,
             Action = action,

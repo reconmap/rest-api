@@ -3,6 +3,7 @@ using System.Text.Json;
 using api_v2.Application.Services;
 using api_v2.Common;
 using api_v2.Common.Extensions;
+using api_v2.Domain.AuditActions;
 using api_v2.Domain.Entities;
 using api_v2.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
@@ -38,7 +39,7 @@ public class CommandsController(
         dbContext.Commands.Add(command);
         await dbContext.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetCommand), new { id = command.Id }, command);
+        return CreatedAtAction(nameof(GetOne), new { id = command.Id }, command);
     }
 
     [HttpPut("{id:int}")]
@@ -81,7 +82,7 @@ public class CommandsController(
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetCommand(uint id)
+    public async Task<IActionResult> GetOne(uint id)
     {
         var command = await dbContext.Commands
             .Include(c => c.CreatedBy)
@@ -92,42 +93,18 @@ public class CommandsController(
     }
 
     [HttpDelete("{id:int}")]
-    public async Task<IActionResult> DeleteCommand(uint id)
+    [Audit(AuditActions.Deleted, "Command")]
+    public async Task<IActionResult> DeleteOne(uint id)
     {
-        var deleted = await dbContext.Commands
+        var deleteCount = await dbContext.Commands
             .Where(n => n.Id == id)
             .ExecuteDeleteAsync();
 
-        if (deleted == 0) return NotFound();
+        if (deleteCount == 0) return NotFound();
+
+        HttpContext.Items["AuditData"] = new { id };
 
         return NoContent();
-    }
-
-    [HttpGet("schedules")]
-    public async Task<IActionResult> GetCommandSchedules([FromQuery] int? limit)
-    {
-        const int maxLimit = 500;
-        var take = Math.Min(limit ?? 100, maxLimit);
-
-        var q = dbContext.CommandSchedules.AsNoTracking()
-            .OrderByDescending(a => a.CreatedAt);
-
-        var page = await q.Take(take).ToListAsync();
-        return Ok(page);
-    }
-
-    [HttpPost("{commandId:int}/schedules")]
-    public async Task<IActionResult> CreateCommandSchedules(uint commandId, [FromBody] CommandSchedule command)
-    {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
-        command.CommandId = commandId;
-        command.CreatedByUid = HttpContext.GetCurrentUser()!.Id;
-        dbContext.CommandSchedules.Add(command);
-        await dbContext.SaveChangesAsync();
-
-        return CreatedAtAction(nameof(GetCommand), new { id = command.Id }, command);
     }
 
     [HttpGet("output-parsers")]
@@ -218,30 +195,5 @@ public class CommandsController(
         }
 
         return new JsonResult(new { success = true });
-    }
-
-    [HttpGet("{commandId:int}/schedules")]
-    public async Task<IActionResult> GetSchedules([FromQuery] int? limit)
-    {
-        const int maxLimit = 500;
-        var take = Math.Min(limit ?? 100, maxLimit);
-
-        var q = dbContext.CommandSchedules.AsNoTracking()
-            .OrderByDescending(a => a.CreatedAt);
-
-        var page = await q.Take(take).ToListAsync();
-        return Ok(page);
-    }
-
-    [HttpDelete("{commandId:int}/schedules/{id:int}")]
-    public async Task<IActionResult> DeleteSchedule(uint commandId, int id)
-    {
-        var deleted = await dbContext.CommandSchedules
-            .Where(n => n.CommandId == commandId && n.Id == id)
-            .ExecuteDeleteAsync();
-
-        if (deleted == 0) return NotFound();
-
-        return NoContent();
     }
 }

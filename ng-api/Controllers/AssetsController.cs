@@ -1,3 +1,4 @@
+using api_v2.Domain.AuditActions;
 using api_v2.Domain.Entities;
 using api_v2.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +11,7 @@ namespace api_v2.Controllers;
 public class AssetsController(AppDbContext dbContext) : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> Create(Asset asset)
+    public async Task<IActionResult> CreateOne(Asset asset)
     {
         dbContext.Assets.Add(asset);
         await dbContext.SaveChangesAsync();
@@ -19,7 +20,7 @@ public class AssetsController(AppDbContext dbContext) : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetMany([FromQuery] int projectId, [FromQuery] int? limit)
+    public async Task<IActionResult> GetMany([FromQuery] int projectId)
     {
         var q = dbContext.Assets.AsNoTracking()
             .Where(a => a.ProjectId == projectId)
@@ -34,20 +35,23 @@ public class AssetsController(AppDbContext dbContext) : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetOne(uint id)
     {
-        var document = await dbContext.Assets.FindAsync(id);
-        if (document == null) return NotFound();
+        var asset = await dbContext.Assets.FindAsync(id);
+        if (asset == null) return NotFound();
 
-        return Ok(document);
+        return Ok(asset);
     }
 
     [HttpDelete("{id:int}")]
-    public async Task<IActionResult> Delete(int id)
+    [Audit(AuditActions.Deleted, "Asset")]
+    public async Task<IActionResult> DeleteOne(int id)
     {
-        var deleted = await dbContext.Assets
+        var deleteCount = await dbContext.Assets
             .Where(n => n.Id == id)
             .ExecuteDeleteAsync();
 
-        if (deleted == 0) return NotFound();
+        if (deleteCount == 0) return NotFound();
+
+        HttpContext.Items["AuditData"] = new { id };
 
         return NoContent();
     }

@@ -71,13 +71,16 @@ public class TasksController(AppDbContext dbContext) : AppController(dbContext)
     }
 
     [HttpDelete("{id:int}")]
+    [Audit(AuditActions.Deleted, "Task")]
     public async Task<IActionResult> DeleteOne(int id)
     {
-        var deleted = await dbContext.Tasks
+        var deleteCount = await dbContext.Tasks
             .Where(n => n.Id == id)
             .ExecuteDeleteAsync();
 
-        if (deleted == 0) return NotFound();
+        if (deleteCount == 0) return NotFound();
+
+        HttpContext.Items["AuditData"] = new { id };
 
         return NoContent();
     }

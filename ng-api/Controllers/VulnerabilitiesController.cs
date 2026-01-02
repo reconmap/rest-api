@@ -1,3 +1,4 @@
+using System.Text.Json;
 using api_v2.Common;
 using api_v2.Common.Extensions;
 using api_v2.Domain.AuditActions;
@@ -5,22 +6,18 @@ using api_v2.Domain.Entities;
 using api_v2.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 
 namespace api_v2.Controllers;
 
-public class RiskCountDto
-{
-    public string Risk { get; set; } = string.Empty;
-    public int Total { get; set; }
-}
-
 [Route("api/[controller]")]
 [ApiController]
-public class VulnerabilitiesController(AppDbContext dbContext, ILogger<VulnerabilitiesController> logger)
+public class VulnerabilitiesController(
+    AppDbContext dbContext,
+    ILogger<VulnerabilitiesController> logger,
+    IConnectionMultiplexer redisConnections)
     : AppController(dbContext)
 {
-    private readonly ILogger _logger = logger;
-
     [HttpPost]
     public async Task<IActionResult> CreateOne(Vulnerability vulnerability)
     {
@@ -97,68 +94,48 @@ public class VulnerabilitiesController(AppDbContext dbContext, ILogger<Vulnerabi
     }
 
     [HttpDelete("{id:int}")]
+    [Audit(AuditActions.Deleted, "Vulnerability")]
     public async Task<IActionResult> DeleteOne(int id)
     {
-        var deleted = await dbContext.Vulnerabilities
+        var deleteCount = await dbContext.Vulnerabilities
             .Where(n => n.Id == id)
             .ExecuteDeleteAsync();
 
-        if (deleted == 0) return NotFound();
+        if (deleteCount == 0) return NotFound();
+
+        HttpContext.Items["AuditData"] = new { id };
 
         return NoContent();
     }
 
-    [HttpGet]
-    [Route("stats")]
-    public async Task<IActionResult> GetStats([FromQuery] int? projectId = null, [FromQuery] string? groupBy = null)
+    [HttpPut]
+    [Route("{id:int}/remediation")]
+    public async Task<IActionResult> PutRemediation(
+        uint id,
+        [FromServices] IAiService aiService)
     {
-        if (groupBy != null) return Ok(await FindCountByRiskAsync(projectId));
+        var vulnerability = await dbContext.Vulnerabilities.FindAsync(id);
 
-        return Ok(await FindCountByCategoryAsync(projectId));
+        vulnerability.Remediation =
+            await aiService.GenerateRemediationAsync(vulnerability.Summary);
+        dbContext.Vulnerabilities.Update(vulnerability);
+        await dbContext.SaveChangesAsync();
+
+        var notification = new Notification
+        {
+            ToUserId = HttpContext.GetCurrentUser().Id,
+            Title = "Job completed",
+            Content =
+                "The vulnerability remediation instructions have now been generated",
+            Status = "unread"
+        };
+        dbContext.Notifications.Add(notification);
+        await dbContext.SaveChangesAsync();
+
+        var redis = redisConnections.GetDatabase();
+        await redis.ListLeftPushAsync("notifications:queue",
+            JsonSerializer.Serialize(new { type = "message" }));
+
+        return Ok();
     }
-
-    private async Task<List<RiskCountDto>> FindCountByRiskAsync(int? projectId = null)
-    {
-        var query = dbContext.Vulnerabilities.AsQueryable();
-
-        if (projectId.HasValue)
-            query = query.Where(v => v.ProjectId == projectId.Value);
-
-        return await query
-            .GroupBy(v => v.Risk)
-            .Select(g => new RiskCountDto
-            {
-                Risk = g.Key,
-                Total = g.Count()
-            })
-            .OrderByDescending(x => x.Total)
-            .ToListAsync();
-    }
-
-    private async Task<List<CategoryCountDto>> FindCountByCategoryAsync(int? projectId = null)
-    {
-        var query = dbContext.Vulnerabilities
-            .Include(v => v.Category)
-            .Where(v => v.Category.ParentId == null)
-            .AsQueryable();
-
-        if (projectId.HasValue)
-            query = query.Where(v => v.ProjectId == projectId.Value);
-
-        return await query
-            .GroupBy(v => v.Category.Name)
-            .Select(g => new CategoryCountDto
-            {
-                CategoryName = g.Key,
-                Total = g.Count()
-            })
-            .OrderByDescending(x => x.Total)
-            .ToListAsync();
-    }
-}
-
-public class CategoryCountDto
-{
-    public string CategoryName { get; set; } = string.Empty;
-    public int Total { get; set; }
 }

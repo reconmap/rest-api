@@ -9,10 +9,8 @@ namespace api_v2.Controllers;
 public class AgentsController(AppDbContext dbContext, ILogger<AgentsController> logger)
     : ControllerBase
 {
-    private readonly ILogger _logger = logger;
-
     [HttpGet]
-    public async Task<IActionResult> GetMany([FromQuery] int? limit)
+    public async Task<IActionResult> GetMany()
     {
         var q = dbContext.Agents.AsNoTracking()
             .OrderByDescending(a => a.LastPingAt);
@@ -37,11 +35,11 @@ public class AgentsController(AppDbContext dbContext, ILogger<AgentsController> 
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> PatchAgent(uint id)
     {
-        var existing = await dbContext.Agents.FindAsync(id);
-        if (existing == null) return NotFound();
+        var agent = await dbContext.Agents.FindAsync(id);
+        if (agent == null) return NotFound();
 
-        existing.LastPingAt = DateTime.UtcNow;
-        dbContext.Update(existing);
+        agent.LastPingAt = DateTime.UtcNow;
+        dbContext.Update(agent);
         await dbContext.SaveChangesAsync();
 
         return Accepted();
@@ -52,21 +50,21 @@ public class AgentsController(AppDbContext dbContext, ILogger<AgentsController> 
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> BootAgent(uint id, [FromBody] Dictionary<string, object> body)
     {
-        var existing = await dbContext.Agents.FindAsync(id);
-        if (existing == null) return NotFound();
+        var agent = await dbContext.Agents.FindAsync(id);
+        if (agent == null) return NotFound();
 
-        existing.LastBootAt = DateTime.UtcNow;
-        existing.LastPingAt = DateTime.UtcNow;
-        existing.Version = body["version"]?.ToString();
-        existing.Hostname = body["hostname"]?.ToString();
-        existing.Arch = body["arch"]?.ToString();
-        existing.Cpu = body["cpu"]?.ToString();
-        existing.Memory = body["memory"]?.ToString();
-        existing.Os = body["os"]?.ToString();
-        existing.Ip = body["ip"]?.ToString();
-        existing.ListenAddr = body["listen_addr"]?.ToString();
+        agent.LastBootAt = DateTime.UtcNow;
+        agent.LastPingAt = DateTime.UtcNow;
+        agent.Version = body["version"]?.ToString();
+        agent.Hostname = body["hostname"]?.ToString();
+        agent.Arch = body["arch"]?.ToString();
+        agent.Cpu = body["cpu"]?.ToString();
+        agent.Memory = body["memory"]?.ToString();
+        agent.Os = body["os"]?.ToString();
+        agent.Ip = body["ip"]?.ToString();
+        agent.ListenAddr = body["listen_addr"]?.ToString();
 
-        dbContext.Update(existing);
+        dbContext.Update(agent);
         await dbContext.SaveChangesAsync();
 
         return Accepted();

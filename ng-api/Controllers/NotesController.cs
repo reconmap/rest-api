@@ -1,4 +1,5 @@
 using api_v2.Common.Extensions;
+using api_v2.Domain.AuditActions;
 using api_v2.Domain.Entities;
 using api_v2.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +19,7 @@ public class NotesController(AppDbContext dbContext, ILogger<NotesController> lo
         dbContext.Notes.Add(note);
         await dbContext.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetMany), new { id = note.Id }, note);
+        return Created();
     }
 
     [HttpGet]
@@ -37,13 +38,16 @@ public class NotesController(AppDbContext dbContext, ILogger<NotesController> lo
     }
 
     [HttpDelete("{id:int}")]
+    [Audit(AuditActions.Deleted, "Comment")]
     public async Task<IActionResult> DeleteOne(int id)
     {
-        var deleted = await dbContext.Notes
+        var deleteCount = await dbContext.Notes
             .Where(n => n.Id == id)
             .ExecuteDeleteAsync();
 
-        if (deleted == 0) return NotFound();
+        if (deleteCount == 0) return NotFound();
+
+        HttpContext.Items["AuditData"] = new { id };
 
         return NoContent();
     }

@@ -88,13 +88,16 @@ public class UsersController(AppDbContext dbContext, IOptions<KeycloakOptions> k
     }
 
     [HttpDelete("{id:int}")]
+    [Audit(AuditActions.Deleted, "User")]
     public async Task<IActionResult> DeleteOne(int id)
     {
-        var deleted = await dbContext.Users
+        var deleteCount = await dbContext.Users
             .Where(n => n.Id == id)
             .ExecuteDeleteAsync();
 
-        if (deleted == 0) return NotFound();
+        if (deleteCount == 0) return NotFound();
+
+        HttpContext.Items["AuditData"] = new { id };
 
         return NoContent();
     }

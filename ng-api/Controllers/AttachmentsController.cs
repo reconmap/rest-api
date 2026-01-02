@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using api_v2.Application.Services;
 using api_v2.Common.Extensions;
+using api_v2.Domain.AuditActions;
 using api_v2.Domain.Entities;
 using api_v2.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
@@ -16,18 +17,15 @@ public class AttachmentsController(AppDbContext dbContext, ILogger<AttachmentsCo
     private readonly AttachmentFilePath _attachmentFilePath = new();
 
     [HttpGet]
-    public async Task<IActionResult> GetMany([FromQuery] int? limit,
+    public async Task<IActionResult> GetMany(
         [FromQuery] string parentType,
         [FromQuery] int parentId)
     {
-        const int maxLimit = 500;
-        var take = Math.Min(limit ?? 100, maxLimit);
-
         var q = dbContext.Attachments.AsNoTracking()
             .Where(a => a.ParentType == parentType && a.ParentId == parentId)
             .OrderByDescending(a => a.CreatedAt);
 
-        var attachments = await q.Take(take).ToListAsync();
+        var attachments = await q.ToListAsync();
         return Ok(attachments);
     }
 
@@ -36,10 +34,10 @@ public class AttachmentsController(AppDbContext dbContext, ILogger<AttachmentsCo
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetOne(uint id)
     {
-        var existing = await dbContext.Attachments.FindAsync(id);
-        if (existing == null) return NotFound();
+        var attachment = await dbContext.Attachments.FindAsync(id);
+        if (attachment == null) return NotFound();
 
-        var pathToSave = _attachmentFilePath.GenerateFilePath(existing.FileName);
+        var pathToSave = _attachmentFilePath.GenerateFilePath(attachment.FileName);
 
         var stream = System.IO.File.OpenRead(pathToSave);
 
@@ -47,13 +45,14 @@ public class AttachmentsController(AppDbContext dbContext, ILogger<AttachmentsCo
 
         return File(
             stream,
-            existing.FileMimeType,
-            existing.ClientFileName,
+            attachment.FileMimeType,
+            attachment.ClientFileName,
             true // allows efficient large-file downloads
         );
     }
 
     [HttpDelete("{id:int}")]
+    [Audit(AuditActions.Deleted, "Attachment")]
     public async Task<IActionResult> DeleteOne(uint id)
     {
         var attachment = await dbContext.Attachments.FindAsync(id);
@@ -64,6 +63,8 @@ public class AttachmentsController(AppDbContext dbContext, ILogger<AttachmentsCo
 
         dbContext.Attachments.Remove(attachment);
         await dbContext.SaveChangesAsync();
+
+        HttpContext.Items["AuditData"] = new { id };
 
         return NoContent();
     }

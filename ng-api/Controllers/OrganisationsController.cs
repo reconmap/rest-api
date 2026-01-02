@@ -12,10 +12,8 @@ namespace api_v2.Controllers;
 public class OrganisationsController(AppDbContext dbContext, ILogger<OrganisationsController> logger)
     : AppController(dbContext)
 {
-    private readonly ILogger _logger = logger;
-
     [HttpPost]
-    public async Task<IActionResult> Create([FromForm] Organisation entity)
+    public async Task<IActionResult> CreateOne([FromForm] Organisation entity)
     {
         entity.CreatedByUid = HttpContext.GetCurrentUser()!.Id;
         dbContext.Organisations.Add(entity);
@@ -38,6 +36,7 @@ public class OrganisationsController(AppDbContext dbContext, ILogger<Organisatio
         dbModel.Kind = requestModel.Kind;
         dbModel.Url = requestModel.Url;
         await dbContext.SaveChangesAsync();
+
         return Ok(dbModel);
     }
 
@@ -58,61 +57,25 @@ public class OrganisationsController(AppDbContext dbContext, ILogger<Organisatio
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetOne(uint id)
     {
-        var existing = await dbContext.Organisations
+        var org = await dbContext.Organisations
             .Include(o => o.CreatedBy)
             .FirstOrDefaultAsync(o => o.Id == id);
-        if (existing == null) return NotFound();
+        if (org == null) return NotFound();
 
-        return Ok(existing);
+        return Ok(org);
     }
 
     [HttpDelete("{id:int}")]
-    public async Task<IActionResult> DeleteOrganisation(int id)
+    [Audit(AuditActions.Deleted, "Organisation")]
+    public async Task<IActionResult> DeleteOne(int id)
     {
-        var deleted = await dbContext.Organisations
+        var deleteCount = await dbContext.Organisations
             .Where(n => n.Id == id)
             .ExecuteDeleteAsync();
 
-        if (deleted == 0) return NotFound();
+        if (deleteCount == 0) return NotFound();
 
-        return NoContent();
-    }
-
-    [HttpPost("{id:int}/contacts")]
-    public async Task<IActionResult> CreateContact(uint id, Contact entity)
-    {
-        entity.OrganisationId = id;
-
-        dbContext.Contacts.Add(entity);
-
-        AuditAction(AuditActions.Created, "Contact", new { id = entity.Id });
-        await dbContext.SaveChangesAsync();
-
-        return CreatedAtAction(nameof(GetOne), new { id = entity.Id }, entity);
-    }
-
-    [HttpGet("{id:int}/contacts")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetContacts(uint id)
-    {
-        var q = dbContext.Contacts.AsNoTracking()
-            .Where(n => n.OrganisationId == id)
-            .OrderByDescending(a => a.Name);
-
-        var contacts = await q.ToListAsync();
-
-        return Ok(contacts);
-    }
-
-    [HttpDelete("{organisationId:int}/contacts/{id:int}")]
-    public async Task<IActionResult> DeleteContact(int id)
-    {
-        var deleted = await dbContext.Contacts
-            .Where(n => n.Id == id)
-            .ExecuteDeleteAsync();
-
-        if (deleted == 0) return NotFound();
+        HttpContext.Items["AuditData"] = new { id };
 
         return NoContent();
     }

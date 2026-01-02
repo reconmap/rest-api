@@ -56,6 +56,7 @@ public class DocumentsController(AppDbContext dbContext)
     }
 
     [HttpDelete("{id:int}")]
+    [Audit(AuditActions.Deleted, "Document")]
     public async Task<IActionResult> DeleteOne(int id)
     {
         var rowsDeleted = await dbContext.Documents
@@ -64,7 +65,7 @@ public class DocumentsController(AppDbContext dbContext)
 
         if (rowsDeleted == 0) return NotFound();
 
-        AuditAction(AuditActions.Deleted, "Document", new { id });
+        HttpContext.Items["AuditData"] = new { id };
 
         return NoContent();
     }

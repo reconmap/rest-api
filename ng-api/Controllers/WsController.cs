@@ -16,7 +16,6 @@ public class WsController(
     ILogger<WsController> logger)
     : ControllerBase
 {
-    private readonly AppDbContext _dbContext = dbContext;
     private readonly ILogger _logger = logger;
 
     [HttpGet]

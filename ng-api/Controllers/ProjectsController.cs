@@ -1,6 +1,7 @@
 using System.Text.Json;
 using api_v2.Common;
 using api_v2.Common.Extensions;
+using api_v2.Domain.AuditActions;
 using api_v2.Domain.Entities;
 using api_v2.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +15,7 @@ namespace api_v2.Controllers;
 public class ProjectsController(AppDbContext dbContext, IConnectionMultiplexer redis) : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] Project project)
+    public async Task<IActionResult> CreateOne([FromBody] Project project)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -57,6 +58,7 @@ public class ProjectsController(AppDbContext dbContext, IConnectionMultiplexer r
     public async Task<IActionResult> GetMany(
         [FromQuery] string? status,
         [FromQuery] string? keywords,
+        [FromQuery] bool? isTemplate,
         [FromQuery] uint? clientId)
     {
         if (!string.IsNullOrEmpty(keywords))
@@ -69,7 +71,8 @@ public class ProjectsController(AppDbContext dbContext, IConnectionMultiplexer r
         var q = dbContext.Projects
             .Include(p => p.Client)
             .Include(p => p.Category)
-            .AsNoTracking();
+            .AsNoTracking()
+            .Where(p => !isTemplate.HasValue || p.IsTemplate == isTemplate);
         if (clientId != null)
             q = q.Where(p => p.ClientId == clientId);
         if (!string.IsNullOrEmpty(status))
@@ -101,8 +104,8 @@ public class ProjectsController(AppDbContext dbContext, IConnectionMultiplexer r
         var q = dbContext.ProjectCategories.AsNoTracking()
             .OrderBy(a => a.Name);
 
-        var page = await q.ToListAsync();
-        return Ok(page);
+        var results = await q.ToListAsync();
+        return Ok(results);
     }
 
     [HttpGet("{id:int}")]
@@ -110,25 +113,28 @@ public class ProjectsController(AppDbContext dbContext, IConnectionMultiplexer r
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetOne(uint id)
     {
-        var secret = await dbContext.Projects
+        var project = await dbContext.Projects
             .Include(p => p.CreatedBy)
             .Include(p => p.Category)
             .Include(p => p.Client)
             .Where(p => p.Id == id)
             .FirstOrDefaultAsync();
-        if (secret == null) return NotFound();
+        if (project == null) return NotFound();
 
-        return Ok(secret);
+        return Ok(project);
     }
 
     [HttpDelete("{id:int}")]
+    [Audit(AuditActions.Deleted, "Project")]
     public async Task<IActionResult> DeleteOne(int id)
     {
-        var deleted = await dbContext.Projects
+        var deleteCount = await dbContext.Projects
             .Where(n => n.Id == id)
             .ExecuteDeleteAsync();
 
-        if (deleted == 0) return NotFound();
+        if (deleteCount == 0) return NotFound();
+
+        HttpContext.Items["AuditData"] = new { id };
 
         return NoContent();
     }

@@ -1,6 +1,6 @@
 namespace api_v2.Domain.AuditActions;
 
-public static class AuditActions
+public class AuditActions
 {
     public const string Created = "Created";
     public const string Read = "Read";

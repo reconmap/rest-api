@@ -22,7 +22,6 @@ use Reconmap\{
     Controllers\Vulnerabilities\VulnerabilitiesRouter,
     Http\AuthMiddleware,
     Http\CorsMiddleware,
-    Http\CorsResponseDecorator,
     Http\StaticMiddleware,
     Services\ApplicationConfig
 };
@@ -49,10 +48,9 @@ class ApiRouter extends Router
     {
         $responseFactory = new HttpFactory();
 
-        $corsResponseDecorator = $container->get(CorsResponseDecorator::class);
         $logger = $container->get(LoggerInterface::class);
 
-        $strategy = new ApiStrategy($responseFactory, $corsResponseDecorator, $logger);
+        $strategy = new ApiStrategy($responseFactory, $logger);
         $strategy->setContainer($container);
 
         $this->setStrategy($strategy);

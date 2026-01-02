@@ -1,4 +1,5 @@
 using api_v2.Common.Extensions;
+using api_v2.Domain.AuditActions;
 using api_v2.Domain.Entities;
 using api_v2.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
@@ -49,13 +50,16 @@ public class CommandUsagesController(AppDbContext dbContext) : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
-    public async Task<IActionResult> Delete(int commandId, int id)
+    [Audit(AuditActions.Deleted, "Command Usage")]
+    public async Task<IActionResult> DeleteOne(int commandId, int id)
     {
-        var deleted = await dbContext.CommandUsages
+        var deleteCount = await dbContext.CommandUsages
             .Where(n => n.CommandId == commandId && n.Id == id)
             .ExecuteDeleteAsync();
 
-        if (deleted == 0) return NotFound();
+        if (deleteCount == 0) return NotFound();
+
+        HttpContext.Items["AuditData"] = new { id };
 
         return NoContent();
     }

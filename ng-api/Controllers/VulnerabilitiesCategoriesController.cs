@@ -40,15 +40,16 @@ public class VulnerabilitiesCategoriesController(
     }
 
     [HttpDelete("{id:int}")]
+    [Audit(AuditActions.Deleted, "Vulnerability Category")]
     public async Task<IActionResult> DeleteOne(int id)
     {
-        var deleted = await dbContext.VulnerabilityCategories
+        var deleteCount = await dbContext.VulnerabilityCategories
             .Where(n => n.Id == id)
             .ExecuteDeleteAsync();
 
-        if (deleted == 0) return NotFound();
+        if (deleteCount == 0) return NotFound();
 
-        AuditAction(AuditActions.Deleted, "Vulnerability Category", new { id });
+        HttpContext.Items["AuditData"] = new { id };
 
         return NoContent();
     }

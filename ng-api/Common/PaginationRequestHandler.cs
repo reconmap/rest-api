@@ -4,7 +4,7 @@ public class PaginationRequestHandler(IQueryCollection query, int totalCount)
 {
     public int GetResultsPerPage()
     {
-        return query.TryGetValue("resultsPerPage", out var resultsPerPage) ? int.Parse(resultsPerPage) : 20;
+        return query.TryGetValue("limit", out var limit) ? int.Parse(limit) : 20;
     }
 
     public int CalculateOffset()

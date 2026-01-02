@@ -354,6 +354,7 @@ public class ReportsController(AppDbContext dbContext, ILogger<ReportsController
     }
 
     [HttpDelete("{id:int}")]
+    [Audit(AuditActions.Deleted, "Report")]
     public async Task<IActionResult> DeleteOne(uint id)
     {
         var deleted = await dbContext.Reports
@@ -362,7 +363,7 @@ public class ReportsController(AppDbContext dbContext, ILogger<ReportsController
 
         if (deleted == 0) return NotFound();
 
-        AuditAction(AuditActions.Deleted, "Report", new { id });
+        HttpContext.Items["AuditData"] = new { id };
 
         return NoContent();
     }

@@ -14,8 +14,6 @@ namespace api_v2.Controllers;
 public class SecretsController(AppDbContext dbContext, ILogger<SecretsController> logger)
     : AppController(dbContext)
 {
-    private readonly ILogger _logger = logger;
-
     [HttpPost]
     public async Task<IActionResult> CreateOne(JsonElement json)
     {
@@ -112,6 +110,7 @@ public class SecretsController(AppDbContext dbContext, ILogger<SecretsController
     }
 
     [HttpDelete("{id:int}")]
+    [Audit(AuditActions.Deleted, "Secret")]
     public async Task<IActionResult> DeleteOne(int id)
     {
         var deleted = await dbContext.Secrets
@@ -120,7 +119,7 @@ public class SecretsController(AppDbContext dbContext, ILogger<SecretsController
 
         if (deleted == 0) return NotFound();
 
-        AuditAction(AuditActions.Deleted, "Secret", new { id });
+        HttpContext.Items["AuditData"] = new { id };
 
         return NoContent();
     }
