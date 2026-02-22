@@ -1,5 +1,6 @@
 using System.Net.Mime;
 using System.Text.Json;
+using api_v2.Domain.AuditActions;
 using api_v2.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -35,7 +36,7 @@ public class SystemDataController(AppDbContext db) : AppController(db)
 
         var loaders = BuildLoaders();
         var response = new Dictionary<string, object>(requestedEntities.Length);
- foreach (var entity in requestedEntities)
+        foreach (var entity in requestedEntities)
         {
             if (!loaders.TryGetValue(entity, out var loader))
                 return BadRequest($"Unknown entity: {entity}");
@@ -53,6 +54,8 @@ public class SystemDataController(AppDbContext db) : AppController(db)
         {
             FileName = fileName
         }.ToString();
+
+        AuditAction(DataAuditActions.Exported, "System Data", new { packageName });
 
         return Content(json, "application/json; charset=UTF-8");
     }

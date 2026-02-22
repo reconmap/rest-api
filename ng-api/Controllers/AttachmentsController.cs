@@ -12,7 +12,7 @@ namespace api_v2.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 public class AttachmentsController(AppDbContext dbContext, ILogger<AttachmentsController> logger)
-    : ControllerBase
+    : AppController(dbContext)
 {
     private readonly AttachmentFilePath _attachmentFilePath = new();
 
@@ -42,6 +42,8 @@ public class AttachmentsController(AppDbContext dbContext, ILogger<AttachmentsCo
         var stream = System.IO.File.OpenRead(pathToSave);
 
         Response.Headers.AccessControlExposeHeaders = "Content-Disposition";
+
+        AuditAction(AttachmentAuditActions.Downloaded, "Attachment", new { attachment.ClientFileName });
 
         return File(
             stream,

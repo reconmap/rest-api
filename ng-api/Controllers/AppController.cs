@@ -22,5 +22,6 @@ public abstract class AppController(AppDbContext dbContext) : ControllerBase
             Context = context != null ? JsonSerializer.Serialize(context) : null
         };
         dbContext.AuditEntries.Add(entry);
+        dbContext.SaveChanges();
     }
 }
