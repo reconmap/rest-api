@@ -1,7 +1,0 @@
-/vendor/
-.phpunit.result.cache
-clover.xml
-.idea/
-tags
-tags.*
-results.sarif
