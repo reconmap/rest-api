@@ -14,6 +14,8 @@ public class Project : TimestampedEntity
 
     [Column("service_provider_id")] public uint? ServiceProviderId { get; set; }
 
+    [ForeignKey(nameof(ServiceProviderId))] public Organisation? ServiceProvider { get; set; }
+
     [Column("client_id")] public uint? ClientId { get; set; }
 
     [ForeignKey(nameof(ClientId))] public Organisation? Client { get; set; }

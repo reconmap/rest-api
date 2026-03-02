@@ -12,9 +12,9 @@ public class OrganisationContactsController(AppDbContext dbContext, ILogger<Orga
     : AppController(dbContext)
 {
     [HttpPost]
-    public async Task<IActionResult> CreateOne(uint id, Contact entity)
+    public async Task<IActionResult> CreateOne(uint organisationId, Contact entity)
     {
-        entity.OrganisationId = id;
+        entity.OrganisationId = organisationId;
 
         dbContext.Contacts.Add(entity);
 
@@ -27,10 +27,10 @@ public class OrganisationContactsController(AppDbContext dbContext, ILogger<Orga
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetMany(uint id)
+    public async Task<IActionResult> GetMany(uint organisationId)
     {
         var q = dbContext.Contacts.AsNoTracking()
-            .Where(n => n.OrganisationId == id)
+            .Where(n => n.OrganisationId == organisationId)
             .OrderByDescending(a => a.Name);
 
         var contacts = await q.ToListAsync();
@@ -40,7 +40,7 @@ public class OrganisationContactsController(AppDbContext dbContext, ILogger<Orga
 
     [HttpDelete("{id:int}")]
     [Audit(AuditActions.Deleted, "Organisation Contact")]
-    public async Task<IActionResult> DeleteOne(int id)
+    public async Task<IActionResult> DeleteOne(uint organisationId, int id)
     {
         var deleteCount = await dbContext.Contacts
             .Where(n => n.Id == id)

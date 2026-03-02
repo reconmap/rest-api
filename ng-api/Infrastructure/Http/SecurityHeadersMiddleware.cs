@@ -6,13 +6,12 @@ public class SecurityHeadersMiddleware(RequestDelegate next)
         HttpContext context)
     {
         context.Response.Headers.Add("X-Xss-Protection", "1; mode=block");
-        context.Response.Headers.Add("X-Frame-Options", "DENY");
         context.Response.Headers.Add("X-Content-Type-Options", "nosniff");
         context.Response.Headers.Add("X-Permitted-Cross-Domain-Policies", "none");
         context.Response.Headers.Add("Referrer-Policy", "no-referrer");
         context.Response.Headers.Add("Permissions-Policy",
             "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()");
-        context.Response.Headers.Add("Content-Security-Policy", "script-src 'self' frame-ancestors reconmap.com;");
+        context.Response.Headers.Add("Content-Security-Policy", "default-src 'self'; script-src 'self'; frame-src 'self' http://localhost:5253;");
 
         await next(context);
     }

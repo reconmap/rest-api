@@ -3,14 +3,8 @@
 
 version: 2
 updates:
-  - package-ecosystem: "composer"
-    directories:
-      - "/integrations-api"
-      - "/integrations-api/packages/command-parsers-lib"
-    schedule:
-      interval: "weekly"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
-      
+

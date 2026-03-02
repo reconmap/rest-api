@@ -148,7 +148,10 @@ public class ReportsController(AppDbContext dbContext, ILogger<ReportsController
     [HttpPost]
     public async Task<IActionResult> Create(ReportRequestDto reportRequest)
     {
-        var project = await dbContext.Projects.FindAsync(reportRequest.ProjectId);
+        var project = await dbContext.Projects.AsNoTracking()
+            .Include(p => p.Client)
+            .Include(p => p.ServiceProvider)
+            .FirstOrDefaultAsync(p => p.Id == reportRequest.ProjectId);
         if (project == null) return NotFound();
 
         var templateAttachment = await dbContext.Attachments
@@ -177,46 +180,39 @@ public class ReportsController(AppDbContext dbContext, ILogger<ReportsController
         var reportFilePath = _attachmentFilePath.GenerateFilePath(reportFileName);
 
 
+        var replacements = new Dictionary<string, string?>
+        {
+            ["project.name"] = project.Name,
+            ["client.name"] = project.Client?.Name,
+            ["serviceProvider.name"] = project.ServiceProvider?.Name,
+            ["report.date"] = DateTime.Today.ToString("dd/MM/yyyy")
+        };
+
+        var assets = (await dbContext.Assets
+                .Where(a => a.ProjectId == project.Id)
+                .Select(a => new { a.Name, a.Kind })
+                .ToListAsync())
+            .Select(a => new Dictionary<string, string>
+            {
+                ["asset.name"] = a.Name,
+                ["asset.type"] = a.Kind ??  string.Empty,
+            })
+            .ToArray();
+
+        var findings = (await dbContext.Vulnerabilities
+                .Where(v => v.ProjectId == project.Id)
+                .Select(v => new { v.Summary, v.Category.Name, v.Risk })
+                .ToListAsync())
+            .Select(v => new Dictionary<string, string>()
+            {
+                ["finding.summary"] = v.Summary,
+                ["finding.category.name"] = v.Name,
+                ["finding.severity"] = v.Risk
+            })
+            .ToArray();
+
         if (templateExtension == ".docx")
         {
-            var replacements = new Dictionary<string, string>
-            {
-                ["project.name"] = "Patcare pentest",
-                ["client.name"] = "Patcare",
-                ["serviceProvider.name"] = "Netfoe",
-                ["report.date"] = DateTime.Today.ToString("dd/MM/yyyy")
-            };
-
-            var rows = new[]
-            {
-                new Dictionary<string, string>
-                {
-                    ["asset.name"] = "127.0.0.1",
-                    ["asset.type"] = "ip"
-                },
-                new Dictionary<string, string>
-                {
-                    ["asset.name"] = "patcare.com.ar",
-                    ["asset.type"] = "domain"
-                }
-            };
-
-            var findings = new[]
-            {
-                new Dictionary<string, string>
-                {
-                    ["finding.summary"] = "SQL Injection vulnerability",
-                    ["finding.category.name"] = "Injection",
-                    ["finding.severity"] = "High"
-                },
-                new Dictionary<string, string>
-                {
-                    ["finding.summary"] = "SQL Injection vulnerability",
-                    ["finding.category.name"] = "Injection",
-                    ["finding.severity"] = "High"
-                }
-            };
-
             System.IO.File.Copy(templateFilePath, reportFilePath, true);
 
             using var document =
@@ -227,7 +223,7 @@ public class ReportsController(AppDbContext dbContext, ILogger<ReportsController
             WordTemplateReplacer.ReplaceContentControls(
                 body,
                 replacements);
-            WordTemplateReplacer.PopulateTableAtBookmark(body, "assetsTable", rows);
+            WordTemplateReplacer.PopulateTableAtBookmark(body, "assetsTable", assets);
             WordTemplateReplacer.PopulateRichTextList(body, "finding", findings);
 
             document.MainDocumentPart.Document.Save();
@@ -249,13 +245,15 @@ public class ReportsController(AppDbContext dbContext, ILogger<ReportsController
             await System.IO.File.WriteAllTextAsync(reportFilePath, renderedTemplate);
         }
 
-        var attachment = new Attachment();
-        attachment.ParentType = "report";
-        attachment.ParentId = report.Id;
-        attachment.CreatedByUid = report.CreatedByUid;
-        attachment.FileName = reportFileName;
-        attachment.FileMimeType = templateAttachment.FileMimeType;
-        attachment.ClientFileName = clientFileName;
+        var attachment = new Attachment
+        {
+            ParentType = "report",
+            ParentId = report.Id,
+            CreatedByUid = report.CreatedByUid,
+            FileName = reportFileName,
+            FileMimeType = templateAttachment.FileMimeType,
+            ClientFileName = clientFileName
+        };
 
         using (var md5 = MD5.Create())
         {
