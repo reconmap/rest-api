@@ -290,7 +290,9 @@ public class ReportsController(AppDbContext dbContext, ILogger<ReportsController
 
         var client = await dbContext.Organisations.FindAsync(existing.ClientId);
 
-        var fileName = "../data/attachments/default-report-template.html";
+        var attachmentFilePath = new AttachmentFilePath();
+
+        var fileName = attachmentFilePath.GenerateFilePath("default-report-template.html");
         var data = await System.IO.File.ReadAllTextAsync(fileName);
 
         var tpl = Template.Parse(data);

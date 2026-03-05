@@ -55,8 +55,6 @@ public class SystemController(
     SystemUsageService service)
     : ControllerBase
 {
-    private readonly string _attachmentsPath = "../data/attachments";
-
     [HttpGet("custom-fields")]
     public async Task<IActionResult> GetAll([FromQuery] int? limit)
     {
@@ -97,8 +95,9 @@ public class SystemController(
     [HttpGet("health")]
     public async Task<IActionResult> GetStatus()
     {
+        var attachmentsPath = new AttachmentFilePath();
         // Check writing to attachments directory
-        var attachmentsWritable = CheckDirectoryWritable(_attachmentsPath);
+        var attachmentsWritable = CheckDirectoryWritable(attachmentsPath.GetDirectory());
 
         // Check MySQL connection (Pomelo)
         var dbReachable = await CheckDatabaseAsync();
