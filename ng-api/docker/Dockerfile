@@ -8,7 +8,7 @@ RUN dotnet publish -o /build/publish
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0
 
-EXPOSE 5253
+EXPOSE 5510
 
 LABEL org.opencontainers.image.vendor="Netfoe" \
     org.opencontainers.image.authors="Santiago Lizardo" \

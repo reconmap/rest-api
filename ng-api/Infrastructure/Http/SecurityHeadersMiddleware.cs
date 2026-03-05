@@ -11,7 +11,7 @@ public class SecurityHeadersMiddleware(RequestDelegate next)
         context.Response.Headers.Add("Referrer-Policy", "no-referrer");
         context.Response.Headers.Add("Permissions-Policy",
             "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()");
-        context.Response.Headers.Add("Content-Security-Policy", "default-src 'self'; script-src 'self'; frame-src 'self' http://localhost:5253;");
+        context.Response.Headers.Add("Content-Security-Policy", "default-src 'self'; script-src 'self'; frame-src 'self' http://localhost:5510;");
 
         await next(context);
     }
