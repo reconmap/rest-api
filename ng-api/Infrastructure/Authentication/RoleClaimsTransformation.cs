@@ -10,19 +10,27 @@ public class RoleClaimsTransformation : IClaimsTransformation
     public Task<ClaimsPrincipal> TransformAsync(ClaimsPrincipal principal)
     {
         var identity = principal.Identity as ClaimsIdentity;
-        var realmAccessClaim = identity?.FindFirst("resource_access");
-        if (realmAccessClaim != null)
+        var username = identity?.FindFirst("preferred_username")?.Value;
+        // Detect service account
+        if (!string.IsNullOrEmpty(username) && username.StartsWith("service-account-"))
+        {
+            identity?.AddClaim(new Claim(ClaimTypes.Role, "administrator"));
+            return Task.FromResult(principal);
+        }
+
+        var resourceAccessClaims = identity?.FindFirst("resource_access");
+        if (resourceAccessClaims != null)
         {
             var options = new JsonSerializerOptions
                 { PropertyNameCaseInsensitive = true }; // Ignore case when deserializing JSON
 
             // Deserialize the realm_access JSON to extract the roles
-            var realmAccess = JsonSerializer.Deserialize<RealmAccess>(realmAccessClaim.Value, options);
+            var realmAccess = JsonSerializer.Deserialize<RealmAccess>(resourceAccessClaims.Value, options);
 
             if (realmAccess?.WebClient?.Roles != null)
                 foreach (var role in realmAccess.WebClient.Roles)
                     // Add each role as a Claim of type ClaimTypes.Role
-                    identity.AddClaim(new Claim(ClaimTypes.Role, role));
+                    identity?.AddClaim(new Claim(ClaimTypes.Role, role));
         }
 
         return Task.FromResult(principal);
