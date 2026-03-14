@@ -8,8 +8,11 @@ public class Agent
 {
     [Key] [Column("id")] public uint Id { get; set; }
 
-    [Column("client_id")]
     [Required]
+    [MaxLength(100)]
+    public string Name { get; set; } = string.Empty;
+
+    [Column("client_id")]
     [MaxLength(100)]
     public string ClientId { get; set; } = string.Empty;
 
