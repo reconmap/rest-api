@@ -17,7 +17,7 @@ public sealed class DataEncryptor
         var cipherBytes = new byte[plainBytes.Length];
         var tag = new byte[TagSizeBytes];
 
-        using var aes = new AesGcm(key);
+        using var aes = new AesGcm(key, TagSizeBytes);
         aes.Encrypt(iv, plainBytes, cipherBytes, tag);
 
         return (iv, tag, cipherBytes);
@@ -31,7 +31,7 @@ public sealed class DataEncryptor
 
         try
         {
-            using var aes = new AesGcm(key);
+            using var aes = new AesGcm(key, TagSizeBytes);
             aes.Decrypt(iv, cipherText, tag, plainBytes);
             return Encoding.UTF8.GetString(plainBytes);
         }
