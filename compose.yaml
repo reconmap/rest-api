@@ -2,7 +2,6 @@ volumes:
   redis_data:
   mysql_varlib:
 
-
 services:
   redis:
     container_name: rmap-redis
@@ -21,8 +20,6 @@ services:
       dockerfile: docker/mysql/Dockerfile
     volumes:
       - mysql_varlib:/var/lib/mysql
-      - ./docker/mysql/initdb:/docker-entrypoint-initdb.d:ro
-      - ./docker/mysql/overrides.cnf:/etc/mysql/conf.d/overrides.cnf:ro
     ports:
       - "3306:3306"
     environment:
