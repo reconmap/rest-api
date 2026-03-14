@@ -39,10 +39,6 @@ clean: stop
 cache-clear:
 	git clean -fdx data/cache
 
-.PHONY: push
-push:
-	$(DC) push mysql
-
 # Database targets
 
 .PHONY: db-shell

@@ -23,10 +23,6 @@ jobs:
       - name: Run containers
         run: docker compose -p rest-api up -d
    
-      - name: Push MySQL image
-        run: make build push
-        working-directory:
-
       - name: Push NGAPI image
         run: make build push
         working-directory: ng-api
